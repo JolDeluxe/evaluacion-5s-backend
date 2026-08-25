@@ -1,0 +1,550 @@
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+enum RolUsuario {
+  SUPER_ADMIN
+  ADMINISTRADOR
+  AUDITOR
+}
+
+enum TipoArea {
+  ADMINISTRATIVA
+  OPERATIVA
+}
+
+enum AlcanceFormulario {
+  ADMINISTRATIVO
+  OPERATIVO
+  AMBOS
+}
+
+enum EstadoCicloAuditoria {
+  BORRADOR
+  PUBLICADO
+  CERRADO
+  ARCHIVADO
+}
+
+enum EstadoAsignacionAuditoria {
+  PENDIENTE
+  EN_PROCESO
+  COMPLETADA
+  CANCELADA
+  VENCIDA
+}
+
+enum OrigenEnvioAuditoria {
+  USUARIO
+  INVITADO
+}
+
+enum TipoNotificacion {
+  NUEVA_ASIGNACION
+  RECORDATORIO
+  VENCIMIENTO_PROXIMO
+  AUDITORIA_VENCIDA
+  RESULTADO_PUBLICADO
+  APROBACION_PENDIENTE
+  SISTEMA
+}
+
+enum CanalNotificacion {
+  PUSH
+  CORREO
+  WHATSAPP
+}
+
+enum EstadoEntregaNotificacion {
+  PENDIENTE
+  PROCESANDO
+  ENVIADA
+  FALLIDA
+  CANCELADA
+}
+
+model Usuario {
+  id                    Int        @id @default(autoincrement())
+  nombreUsuario         String     @unique @db.VarChar(80)
+  correo                String?    @unique @db.VarChar(180)
+  telefonoE164          String?    @db.VarChar(24)
+  nombre                String     @db.VarChar(160)
+  hashContrasena        String     @db.VarChar(255)
+  rol                   RolUsuario
+  activo                Boolean    @default(true)
+  debeCambiarContrasena Boolean    @default(false)
+  ultimoInicioSesionEn  DateTime?  @db.DateTime(3)
+  contrasenaCambiadaEn  DateTime?  @db.DateTime(3)
+  creadoEn              DateTime   @default(now()) @db.DateTime(3)
+  actualizadoEn         DateTime   @updatedAt @db.DateTime(3)
+
+  sesiones                Sesion[]
+  tokensRestablecimiento  TokenRestablecimientoContrasena[]
+  areasUsuario            UsuarioArea[]
+  formulariosCreados      Formulario[]                      @relation("UsuarioCreadorFormulario")
+  versionesCreadas        VersionFormulario[]               @relation("UsuarioCreadorVersionFormulario")
+  ciclosCreados           CicloAuditoria[]                  @relation("UsuarioCreadorCicloAuditoria")
+  asignacionesComoAuditor AsignacionAuditoria[]             @relation("UsuarioAuditorAsignacion")
+  asignacionesCreadas     AsignacionAuditoria[]             @relation("UsuarioCreadorAsignacion")
+  enlacesCreados          EnlaceInvitado[]                  @relation("UsuarioCreadorEnlace")
+  enviosRealizados        EnvioAuditoria[]                  @relation("UsuarioEnviadorAuditoria")
+  suscripcionesPush       SuscripcionPush[]
+  notificaciones          Notificacion[]
+  registrosAuditoria      RegistroAuditoria[]
+
+  @@index([rol, activo])
+  @@map("usuarios")
+}
+
+model Sesion {
+  id                Int       @id @default(autoincrement())
+  usuarioId         Int
+  hashToken         String    @unique @db.Char(64)
+  expiraEn          DateTime  @db.DateTime(3)
+  ultimoUsoEn       DateTime? @db.DateTime(3)
+  revocadoEn        DateTime? @db.DateTime(3)
+  agenteUsuario     String?   @db.VarChar(512)
+  nombreDispositivo String?   @db.VarChar(120)
+  direccionIp       String?   @db.VarChar(64)
+  creadoEn          DateTime  @default(now()) @db.DateTime(3)
+  actualizadoEn     DateTime  @updatedAt @db.DateTime(3)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([usuarioId])
+  @@index([expiraEn])
+  @@index([usuarioId, revocadoEn, expiraEn])
+  @@map("sesiones")
+}
+
+model TokenRestablecimientoContrasena {
+  id            Int       @id @default(autoincrement())
+  usuarioId     Int
+  hashToken     String    @unique @db.Char(64)
+  expiraEn      DateTime  @db.DateTime(3)
+  usadoEn       DateTime? @db.DateTime(3)
+  creadoEn      DateTime  @default(now()) @db.DateTime(3)
+  actualizadoEn DateTime  @updatedAt @db.DateTime(3)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([usuarioId])
+  @@index([expiraEn])
+  @@index([usuarioId, usadoEn, expiraEn])
+  @@map("tokens_restablecimiento_contrasena")
+}
+
+model Area {
+  id                 Int      @id @default(autoincrement())
+  codigo             String   @unique @db.VarChar(50)
+  nombre             String   @db.VarChar(160)
+  tipo               TipoArea
+  areaPadreId        Int?
+  activo             Boolean  @default(true)
+  codigoVerificacion String   @unique @db.VarChar(16)
+  creadoEn           DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn      DateTime @updatedAt @db.DateTime(3)
+
+  areaPadre          Area?               @relation("JerarquiaArea", fields: [areaPadreId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  areasHijas         Area[]              @relation("JerarquiaArea")
+  usuariosArea       UsuarioArea[]
+  objetivosAuditoria ObjetivoAuditoria[]
+
+  @@index([tipo, activo])
+  @@index([areaPadreId])
+  @@map("areas")
+}
+
+model UsuarioArea {
+  id              Int      @id @default(autoincrement())
+  usuarioId       Int
+  areaId          Int
+  esResponsable   Boolean  @default(false)
+  creadoEn        DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn   DateTime @updatedAt @db.DateTime(3)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  area    Area    @relation(fields: [areaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([usuarioId, areaId])
+  @@index([usuarioId])
+  @@index([areaId])
+  @@map("usuarios_areas")
+}
+
+model Formulario {
+  id            Int               @id @default(autoincrement())
+  nombre        String            @db.VarChar(160)
+  slug          String            @unique @db.VarChar(120)
+  descripcion   String?           @db.Text
+  alcance       AlcanceFormulario
+  activo        Boolean           @default(true)
+  creadoPorId   Int
+  creadoEn      DateTime          @default(now()) @db.DateTime(3)
+  actualizadoEn DateTime          @updatedAt @db.DateTime(3)
+
+  creadoPor Usuario             @relation("UsuarioCreadorFormulario", fields: [creadoPorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  versiones VersionFormulario[]
+
+  @@index([alcance, activo])
+  @@index([creadoPorId])
+  @@map("formularios")
+}
+
+model VersionFormulario {
+  id            Int      @id @default(autoincrement())
+  formularioId  Int
+  numeroVersion Int
+  activa        Boolean  @default(true)
+  creadoPorId   Int
+  creadoEn      DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn DateTime @updatedAt @db.DateTime(3)
+
+  formulario       Formulario          @relation(fields: [formularioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  creadoPor        Usuario             @relation("UsuarioCreadorVersionFormulario", fields: [creadoPorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  secciones        SeccionFormulario[]
+  formulariosCiclo FormularioCiclo[]
+
+  @@unique([formularioId, numeroVersion])
+  @@index([formularioId, activa])
+  @@index([creadoPorId])
+  @@map("versiones_formulario")
+}
+
+model SeccionFormulario {
+  id                  Int      @id @default(autoincrement())
+  versionFormularioId Int
+  claveEstable        String   @db.Char(36)
+  nombre              String   @db.VarChar(160)
+  objetivo            String?  @db.Text
+  imagenPublicId      String?  @db.VarChar(255)
+  imagenAlt           String?  @db.VarChar(255)
+  orden               Int
+  creadoEn            DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn       DateTime @updatedAt @db.DateTime(3)
+
+  versionFormulario VersionFormulario    @relation(fields: [versionFormularioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  preguntas         PreguntaFormulario[]
+
+  @@unique([versionFormularioId, claveEstable])
+  @@index([versionFormularioId, orden])
+  @@map("secciones_formulario")
+}
+
+model PreguntaFormulario {
+  id                  Int      @id @default(autoincrement())
+  seccionFormularioId Int
+  claveEstable        String   @db.Char(36)
+  texto               String   @db.Text
+  orden               Int
+  creadoEn            DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn       DateTime @updatedAt @db.DateTime(3)
+
+  seccionFormulario   SeccionFormulario    @relation(fields: [seccionFormularioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  respuestasAuditoria RespuestaAuditoria[]
+
+  @@unique([seccionFormularioId, claveEstable])
+  @@index([seccionFormularioId, orden])
+  @@map("preguntas_formulario")
+}
+
+model CicloAuditoria {
+  id            Int                  @id @default(autoincrement())
+  anio          Int
+  mes           Int
+  numeroCorte   Int
+  nombre        String?              @db.VarChar(160)
+  estado        EstadoCicloAuditoria @default(BORRADOR)
+  iniciaEn      DateTime             @db.DateTime(3)
+  terminaEn     DateTime             @db.DateTime(3)
+  publicadoEn   DateTime?            @db.DateTime(3)
+  cerradoEn     DateTime?            @db.DateTime(3)
+  creadoPorId   Int
+  creadoEn      DateTime             @default(now()) @db.DateTime(3)
+  actualizadoEn DateTime             @updatedAt @db.DateTime(3)
+
+  creadoPor          Usuario             @relation("UsuarioCreadorCicloAuditoria", fields: [creadoPorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  formulariosCiclo   FormularioCiclo[]
+  objetivosAuditoria ObjetivoAuditoria[]
+
+  @@unique([anio, mes, numeroCorte])
+  @@index([estado, iniciaEn, terminaEn])
+  @@index([creadoPorId])
+  @@map("ciclos_auditoria")
+}
+
+model FormularioCiclo {
+  id                  Int      @id @default(autoincrement())
+  cicloAuditoriaId    Int
+  tipoArea            TipoArea
+  versionFormularioId Int
+  creadoEn            DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn       DateTime @updatedAt @db.DateTime(3)
+
+  cicloAuditoria     CicloAuditoria      @relation(fields: [cicloAuditoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  versionFormulario  VersionFormulario   @relation(fields: [versionFormularioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  objetivosAuditoria ObjetivoAuditoria[]
+
+  @@unique([cicloAuditoriaId, tipoArea])
+  @@index([versionFormularioId])
+  @@map("formularios_ciclo")
+}
+
+model ObjetivoAuditoria {
+  id                 Int      @id @default(autoincrement())
+  cicloAuditoriaId   Int
+  formularioCicloId  Int
+  areaId             Int
+  codigoAreaSnapshot String   @db.VarChar(50)
+  nombreAreaSnapshot String   @db.VarChar(160)
+  tipoAreaSnapshot   TipoArea
+  envioResultadoId   Int?     @unique
+  creadoEn           DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn      DateTime @updatedAt @db.DateTime(3)
+
+  cicloAuditoria        CicloAuditoria        @relation(fields: [cicloAuditoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  formularioCiclo       FormularioCiclo       @relation(fields: [formularioCicloId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  area                  Area                  @relation(fields: [areaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  envioResultado        EnvioAuditoria?       @relation("EnvioResultadoObjetivo", fields: [envioResultadoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  asignacionesAuditoria AsignacionAuditoria[]
+  enviosAuditoria       EnvioAuditoria[]      @relation("EnviosObjetivo")
+
+  @@unique([cicloAuditoriaId, areaId])
+  @@index([cicloAuditoriaId, tipoAreaSnapshot])
+  @@index([areaId, cicloAuditoriaId])
+  @@index([formularioCicloId])
+  @@map("objetivos_auditoria")
+}
+
+model AsignacionAuditoria {
+  id                  Int                       @id @default(autoincrement())
+  objetivoAuditoriaId Int
+  auditorId           Int
+  asignadoPorId       Int
+  estado              EstadoAsignacionAuditoria @default(PENDIENTE)
+  asignadoEn          DateTime?                 @db.DateTime(3)
+  venceEn             DateTime                  @db.DateTime(3)
+  iniciadoEn          DateTime?                 @db.DateTime(3)
+  completadoEn        DateTime?                 @db.DateTime(3)
+  canceladoEn         DateTime?                 @db.DateTime(3)
+  motivoCancelacion   String?                   @db.Text
+  creadoEn            DateTime                  @default(now()) @db.DateTime(3)
+  actualizadoEn       DateTime                  @updatedAt @db.DateTime(3)
+
+  objetivoAuditoria ObjetivoAuditoria @relation(fields: [objetivoAuditoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  auditor           Usuario           @relation("UsuarioAuditorAsignacion", fields: [auditorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  asignadoPor       Usuario           @relation("UsuarioCreadorAsignacion", fields: [asignadoPorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  enlacesInvitado   EnlaceInvitado[]
+  enviosAuditoria   EnvioAuditoria[]
+
+  @@index([auditorId, estado, venceEn])
+  @@index([objetivoAuditoriaId, estado])
+  @@index([asignadoPorId])
+  @@map("asignaciones_auditoria")
+}
+
+model EnlaceInvitado {
+  id                    Int       @id @default(autoincrement())
+  asignacionAuditoriaId Int
+  creadoPorId           Int
+  hashToken             String    @unique @db.Char(64)
+  expiraEn              DateTime  @db.DateTime(3)
+  usadoEn               DateTime? @db.DateTime(3)
+  revocadoEn            DateTime? @db.DateTime(3)
+  creadoEn              DateTime  @default(now()) @db.DateTime(3)
+  actualizadoEn         DateTime  @updatedAt @db.DateTime(3)
+
+  asignacionAuditoria AsignacionAuditoria @relation(fields: [asignacionAuditoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  creadoPor           Usuario             @relation("UsuarioCreadorEnlace", fields: [creadoPorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  enviosAuditoria     EnvioAuditoria[]
+
+  @@index([asignacionAuditoriaId])
+  @@index([creadoPorId])
+  @@index([expiraEn, revocadoEn])
+  @@map("enlaces_invitado")
+}
+
+model EnvioAuditoria {
+  id                    Int                  @id @default(autoincrement())
+  identificadorCliente  String               @unique @db.Char(36)
+  objetivoAuditoriaId   Int
+  asignacionAuditoriaId Int?
+  enviadoPorUsuarioId   Int?
+  enlaceInvitadoId      Int?
+  nombreAuditorSnapshot String               @db.VarChar(160)
+  origen                OrigenEnvioAuditoria
+  puntajeObtenido       Decimal              @db.Decimal(10, 4)
+  puntajePosible        Decimal              @db.Decimal(10, 4)
+  porcentaje            Decimal              @db.Decimal(10, 4)
+  finalizadoEn          DateTime             @db.DateTime(3)
+  verificadoEn          DateTime             @db.DateTime(3)
+  recibidoEn            DateTime             @default(now()) @db.DateTime(3)
+  invalidadoEn          DateTime?            @db.DateTime(3)
+  motivoInvalidacion    String?              @db.Text
+  creadoEn              DateTime             @default(now()) @db.DateTime(3)
+  actualizadoEn         DateTime             @updatedAt @db.DateTime(3)
+
+  objetivoAuditoria     ObjetivoAuditoria    @relation("EnviosObjetivo", fields: [objetivoAuditoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  asignacionAuditoria   AsignacionAuditoria? @relation(fields: [asignacionAuditoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  enviadoPorUsuario     Usuario?             @relation("UsuarioEnviadorAuditoria", fields: [enviadoPorUsuarioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  enlaceInvitado        EnlaceInvitado?      @relation(fields: [enlaceInvitadoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  objetivoComoResultado ObjetivoAuditoria?   @relation("EnvioResultadoObjetivo")
+  respuestasAuditoria   RespuestaAuditoria[]
+
+  @@index([objetivoAuditoriaId])
+  @@index([asignacionAuditoriaId])
+  @@index([enviadoPorUsuarioId, finalizadoEn(sort: Desc)])
+  @@index([recibidoEn(sort: Desc)])
+  @@index([enlaceInvitadoId])
+  @@map("envios_auditoria")
+}
+
+model RespuestaAuditoria {
+  id                   Int      @id @default(autoincrement())
+  envioAuditoriaId     Int
+  preguntaFormularioId Int
+  cumple               Boolean
+  hallazgo             String?  @db.Text
+  creadoEn             DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn        DateTime @updatedAt @db.DateTime(3)
+
+  envioAuditoria     EnvioAuditoria     @relation(fields: [envioAuditoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  preguntaFormulario PreguntaFormulario @relation(fields: [preguntaFormularioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  fotosAuditoria     FotoAuditoria[]
+
+  @@unique([envioAuditoriaId, preguntaFormularioId])
+  @@index([preguntaFormularioId])
+  @@map("respuestas_auditoria")
+}
+
+model FotoAuditoria {
+  id                   Int       @id @default(autoincrement())
+  identificadorCliente String    @unique @db.Char(36)
+  respuestaAuditoriaId Int
+  publicIdCloudinary   String    @db.VarChar(255)
+  assetIdCloudinary    String?   @db.VarChar(255)
+  formato              String?   @db.VarChar(20)
+  tipoMime             String?   @db.VarChar(120)
+  bytes                Int?
+  ancho                Int?
+  alto                 Int?
+  capturadaEn          DateTime? @db.DateTime(3)
+  subidaEn             DateTime? @db.DateTime(3)
+  creadoEn             DateTime  @default(now()) @db.DateTime(3)
+  actualizadoEn        DateTime  @updatedAt @db.DateTime(3)
+
+  respuestaAuditoria RespuestaAuditoria @relation(fields: [respuestaAuditoriaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([respuestaAuditoriaId])
+  @@index([publicIdCloudinary])
+  @@map("fotos_auditoria")
+}
+
+// ==========================================================
+// NOTIFICACIONES
+// Pendiente de definición funcional final.
+// ==========================================================
+
+model SuscripcionPush {
+  id                Int       @id @default(autoincrement())
+  usuarioId         Int
+  endpoint          String    @db.Text
+  hashEndpoint      String    @unique @db.Char(64)
+  p256dh            String    @db.VarChar(255)
+  auth              String    @db.VarChar(255)
+  nombreDispositivo String?   @db.VarChar(120)
+  agenteUsuario     String?   @db.VarChar(512)
+  expiraEn          DateTime? @db.DateTime(3)
+  ultimoUsoEn       DateTime? @db.DateTime(3)
+  revocadoEn        DateTime? @db.DateTime(3)
+  creadoEn          DateTime  @default(now()) @db.DateTime(3)
+  actualizadoEn     DateTime  @updatedAt @db.DateTime(3)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  entregasNotificacion EntregaNotificacion[]
+
+  @@index([usuarioId, revocadoEn])
+  @@index([expiraEn])
+  @@index([ultimoUsoEn])
+  @@map("suscripciones_push")
+}
+
+model Notificacion {
+  id            Int              @id @default(autoincrement())
+  usuarioId     Int
+  claveDedupe   String?          @unique @db.VarChar(191)
+  tipo          TipoNotificacion
+  titulo        String           @db.VarChar(180)
+  mensaje       String           @db.Text
+  ruta          String?          @db.VarChar(255)
+  datos         Json?
+  leidaEn       DateTime?        @db.DateTime(3)
+  creadoEn      DateTime         @default(now()) @db.DateTime(3)
+  actualizadoEn DateTime         @updatedAt @db.DateTime(3)
+
+  usuario              Usuario               @relation(fields: [usuarioId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  entregasNotificacion EntregaNotificacion[]
+
+  @@index([usuarioId, leidaEn, creadoEn(sort: Desc)])
+  @@index([tipo, creadoEn(sort: Desc)])
+  @@map("notificaciones")
+}
+
+model EntregaNotificacion {
+  id                Int                       @id @default(autoincrement())
+  notificacionId    Int
+  suscripcionPushId Int?
+  canal             CanalNotificacion
+  estado            EstadoEntregaNotificacion @default(PENDIENTE)
+  destinoSnapshot   String?                   @db.VarChar(255)
+  destinoHash       String?                   @db.Char(64)
+  programadoEn      DateTime                  @db.DateTime(3)
+  proximoIntentoEn  DateTime?                 @db.DateTime(3)
+  bloqueadoHasta    DateTime?                 @db.DateTime(3)
+  bloqueadoPor      String?                   @db.VarChar(120)
+  intentos          Int                       @default(0)
+  enviadoEn         DateTime?                 @db.DateTime(3)
+  ultimoIntentoEn   DateTime?                 @db.DateTime(3)
+  idMensajeExterno  String?                   @db.VarChar(255)
+  ultimoError       String?                   @db.Text
+  creadoEn          DateTime                  @default(now()) @db.DateTime(3)
+  actualizadoEn     DateTime                  @updatedAt @db.DateTime(3)
+
+  notificacion    Notificacion     @relation(fields: [notificacionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  suscripcionPush SuscripcionPush? @relation(fields: [suscripcionPushId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([notificacionId, canal, destinoHash])
+  @@index([estado, programadoEn])
+  @@index([estado, proximoIntentoEn])
+  @@index([estado, bloqueadoHasta])
+  @@index([suscripcionPushId])
+  @@index([notificacionId, canal])
+  @@map("entregas_notificacion")
+}
+
+model RegistroAuditoria {
+  id              Int      @id @default(autoincrement())
+  usuarioId       Int?
+  accion          String   @db.VarChar(120)
+  tipoEntidad     String   @db.VarChar(120)
+  idEntidad       Int?
+  datosAnteriores Json?
+  datosNuevos     Json?
+  direccionIp     String?  @db.VarChar(64)
+  agenteUsuario   String?  @db.VarChar(512)
+  creadoEn        DateTime @default(now()) @db.DateTime(3)
+  actualizadoEn   DateTime @updatedAt @db.DateTime(3)
+
+  usuario Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([usuarioId, creadoEn(sort: Desc)])
+  @@index([tipoEntidad, idEntidad, creadoEn(sort: Desc)])
+  @@index([accion, creadoEn(sort: Desc)])
+  @@map("registros_auditoria")
+}
