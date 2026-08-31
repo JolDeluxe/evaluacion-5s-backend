@@ -1,4 +1,4 @@
-import type { EnvioAuditoria, ObjetivoAuditoria, CicloAuditoria } from '../generated/prisma/client';
+import type { EnvioAuditoria, ObjetivoAuditoria } from '../generated/prisma/client';
 import { conflicto } from './errores';
 
 export const DIAS_HABILES_GRACIA = 5;
@@ -13,8 +13,7 @@ export const SituacionObjetivo = {
 
 export type SituacionObjetivo = (typeof SituacionObjetivo)[keyof typeof SituacionObjetivo];
 
-type ObjetivoConPeriodo = Pick<ObjetivoAuditoria, 'id' | 'areaId' | 'envioResultadoId'> & {
-  cicloAuditoria: Pick<CicloAuditoria, 'anio' | 'mes' | 'numeroCorte' | 'iniciaEn' | 'terminaEn'>;
+type ObjetivoConPeriodo = Pick<ObjetivoAuditoria, 'id' | 'areaId' | 'envioResultadoId' | 'anio' | 'mes' | 'periodo' | 'iniciaEn' | 'terminaEn'> & {
   envioResultado: Pick<EnvioAuditoria, 'id' | 'verificadoEn' | 'invalidadoEn' | 'porcentaje'> | null;
   enviosAuditoria?: Pick<EnvioAuditoria, 'id' | 'verificadoEn' | 'invalidadoEn' | 'porcentaje'>[];
 };
@@ -42,7 +41,7 @@ export const tieneEnvioResultadoValido = (objetivo: Pick<ObjetivoConPeriodo, 'en
   Boolean(objetivo.envioResultado && !objetivo.envioResultado.invalidadoEn);
 
 export const derivarSituacionObjetivo = (objetivo: ObjetivoConPeriodo, ahora = new Date()) => {
-  const cierreGracia = calcularCierreConGracia(objetivo.cicloAuditoria.terminaEn);
+  const cierreGracia = calcularCierreConGracia(objetivo.terminaEn);
   const enviosValidos = (objetivo.enviosAuditoria || []).filter((e) => !e.invalidadoEn);
   const envioValido = objetivo.envioResultado && !objetivo.envioResultado.invalidadoEn
     ? objetivo.envioResultado
@@ -50,7 +49,7 @@ export const derivarSituacionObjetivo = (objetivo: ObjetivoConPeriodo, ahora = n
 
   if (envioValido) {
     return {
-      situacion: envioValido.verificadoEn <= objetivo.cicloAuditoria.terminaEn
+      situacion: envioValido.verificadoEn <= objetivo.terminaEn
         ? SituacionObjetivo.REALIZADA_A_TIEMPO
         : SituacionObjetivo.REALIZADA_CON_ATRASO,
       cierreGracia,
@@ -63,7 +62,7 @@ export const derivarSituacionObjetivo = (objetivo: ObjetivoConPeriodo, ahora = n
     const enviosOrdenados = [...enviosValidos].sort((a, b) => a.verificadoEn.getTime() - b.verificadoEn.getTime());
     const primerEnvio = enviosOrdenados[0];
     return {
-      situacion: primerEnvio.verificadoEn <= objetivo.cicloAuditoria.terminaEn
+      situacion: primerEnvio.verificadoEn <= objetivo.terminaEn
         ? SituacionObjetivo.REALIZADA_A_TIEMPO
         : SituacionObjetivo.REALIZADA_CON_ATRASO,
       cierreGracia,
@@ -72,82 +71,58 @@ export const derivarSituacionObjetivo = (objetivo: ObjetivoConPeriodo, ahora = n
     };
   }
 
-  if (ahora <= objetivo.cicloAuditoria.terminaEn) {
-    return {
-      situacion: SituacionObjetivo.PENDIENTE,
-      cierreGracia,
-      fechaRealizacion: null,
-      realizada: false,
-    };
+  if (ahora <= objetivo.terminaEn) {
+    return { situacion: SituacionObjetivo.PENDIENTE, cierreGracia, fechaRealizacion: null, realizada: false };
   }
-
   if (ahora <= cierreGracia) {
-    return {
-      situacion: SituacionObjetivo.ATRASADA_EN_GRACIA,
-      cierreGracia,
-      fechaRealizacion: null,
-      realizada: false,
-    };
+    return { situacion: SituacionObjetivo.ATRASADA_EN_GRACIA, cierreGracia, fechaRealizacion: null, realizada: false };
   }
-
-  return {
-    situacion: SituacionObjetivo.NO_REALIZADA,
-    cierreGracia,
-    fechaRealizacion: null,
-    realizada: false,
-  };
+  return { situacion: SituacionObjetivo.NO_REALIZADA, cierreGracia, fechaRealizacion: null, realizada: false };
 };
 
-export const objetivoEsRealizable = (objetivo: ObjetivoConPeriodo, ahora = new Date()) => (
-  objetivo.cicloAuditoria.iniciaEn <= ahora
+export const objetivoEsRealizable = (objetivo: ObjetivoConPeriodo, ahora = new Date(), reabiertaHasta?: Date | null) => (
+  objetivo.iniciaEn <= ahora
   && !tieneEnvioResultadoValido(objetivo)
-  && ahora <= calcularCierreConGracia(objetivo.cicloAuditoria.terminaEn)
+  && (ahora <= calcularCierreConGracia(objetivo.terminaEn) || Boolean(reabiertaHasta && ahora <= reabiertaHasta))
 );
 
 export const compararObjetivosPorPeriodo = (a: ObjetivoConPeriodo, b: ObjetivoConPeriodo) => {
-  const porInicio = a.cicloAuditoria.iniciaEn.getTime() - b.cicloAuditoria.iniciaEn.getTime();
+  const porInicio = a.iniciaEn.getTime() - b.iniciaEn.getTime();
   if (porInicio !== 0) return porInicio;
-  const porAnio = a.cicloAuditoria.anio - b.cicloAuditoria.anio;
+  const porAnio = a.anio - b.anio;
   if (porAnio !== 0) return porAnio;
-  const porMes = a.cicloAuditoria.mes - b.cicloAuditoria.mes;
+  const porMes = a.mes - b.mes;
   if (porMes !== 0) return porMes;
-  return a.cicloAuditoria.numeroCorte - b.cicloAuditoria.numeroCorte;
+  return a.periodo - b.periodo;
 };
 
-export const assertObjetivoRealizable = (
-  objetivo: ObjetivoConPeriodo,
-  objetivoMasAntiguo: ObjetivoConPeriodo | null,
-  ahora = new Date()
-) => {
-  if (!objetivoEsRealizable(objetivo, ahora)) {
+export const assertObjetivoRealizable = (objetivo: ObjetivoConPeriodo, objetivoMasAntiguo: ObjetivoConPeriodo | null, ahora = new Date(), reabiertaHasta?: Date | null) => {
+  if (!objetivoEsRealizable(objetivo, ahora, reabiertaHasta)) {
     const detalle = derivarSituacionObjetivo(objetivo, ahora);
     throw conflicto(`El periodo no esta disponible para captura: ${detalle.situacion}`);
   }
-
-  if (objetivoMasAntiguo && objetivoMasAntiguo.id !== objetivo.id) {
-    throw conflicto('Existe un periodo anterior de esta area que debe resolverse primero');
-  }
+  if (objetivoMasAntiguo && objetivoMasAntiguo.id !== objetivo.id) throw conflicto('Existe un periodo anterior de esta area que debe resolverse primero');
 };
 
-export const construirDetalleAdminPeriodo = (objetivo: ObjetivoConPeriodo, ahora = new Date()) => {
+export const construirDetalleAdminPeriodo = (objetivo: ObjetivoConPeriodo, ahora = new Date(), reabiertaHasta?: Date | null) => {
   const detalle = derivarSituacionObjetivo(objetivo, ahora);
   return {
     objetivoAuditoriaId: objetivo.id,
-    numeroCorte: objetivo.cicloAuditoria.numeroCorte,
-    anio: objetivo.cicloAuditoria.anio,
-    mes: objetivo.cicloAuditoria.mes,
-    iniciaEn: objetivo.cicloAuditoria.iniciaEn,
-    terminaEn: objetivo.cicloAuditoria.terminaEn,
+    numeroCorte: objetivo.periodo,
+    anio: objetivo.anio,
+    mes: objetivo.mes,
+    iniciaEn: objetivo.iniciaEn,
+    terminaEn: objetivo.terminaEn,
     cierreGracia: detalle.cierreGracia,
     fechaRealizacion: detalle.fechaRealizacion,
-    porcentaje: objetivo.envioResultado && !objetivo.envioResultado.invalidadoEn
-      ? Number(objetivo.envioResultado.porcentaje)
-      : null,
+    porcentaje: objetivo.envioResultado && !objetivo.envioResultado.invalidadoEn ? Number(objetivo.envioResultado.porcentaje) : null,
     situacion: detalle.situacion,
     realizada: detalle.realizada,
     realizadaATiempo: detalle.situacion === SituacionObjetivo.REALIZADA_A_TIEMPO,
     realizadaConAtraso: detalle.situacion === SituacionObjetivo.REALIZADA_CON_ATRASO,
     enGracia: detalle.situacion === SituacionObjetivo.ATRASADA_EN_GRACIA,
+    reabierta: Boolean(reabiertaHasta && ahora <= reabiertaHasta),
+    reabiertaHasta: reabiertaHasta ?? null,
   };
 };
 
@@ -155,11 +130,22 @@ export const construirDetalleAuditorPeriodo = (objetivo: ObjetivoConPeriodo) => 
   const enviosValidos = (objetivo.enviosAuditoria || []).filter((e) => !e.invalidadoEn);
   return {
     objetivoAuditoriaId: objetivo.id,
-    numeroCorte: objetivo.cicloAuditoria.numeroCorte,
-    anio: objetivo.cicloAuditoria.anio,
-    mes: objetivo.cicloAuditoria.mes,
-    iniciaEn: objetivo.cicloAuditoria.iniciaEn,
-    terminaEn: objetivo.cicloAuditoria.terminaEn,
+    numeroCorte: objetivo.periodo,
+    anio: objetivo.anio,
+    mes: objetivo.mes,
+    iniciaEn: objetivo.iniciaEn,
+    terminaEn: objetivo.terminaEn,
     realizada: tieneEnvioResultadoValido(objetivo) || enviosValidos.length > 0,
   };
 };
+
+export const construirPeriodoCompat = (
+  objetivo: Pick<ObjetivoAuditoria, 'id' | 'anio' | 'mes' | 'periodo' | 'iniciaEn' | 'terminaEn'>,
+) => ({
+  id: objetivo.id,
+  anio: objetivo.anio,
+  mes: objetivo.mes,
+  numeroCorte: objetivo.periodo,
+  iniciaEn: objetivo.iniciaEn,
+  terminaEn: objetivo.terminaEn,
+});

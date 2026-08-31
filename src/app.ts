@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import { pinoHttp } from 'pino-http';
 import pino from 'pino';
-import { env } from './config/env';
+import { env, frontendOriginsPermitidos } from './config/env';
 import { prisma } from './db';
 import { validarOrigen } from './middlewares/validar_origen';
 import { manejoErrores, noEncontradoHandler } from './middlewares/manejo_errores';
@@ -14,7 +14,6 @@ import { authRouter } from './modules/auth/routes';
 import { usuariosRouter } from './modules/usuarios/routes';
 import { areasRouter } from './modules/areas/routes';
 import { formulariosRouter } from './modules/formularios/routes';
-import { ciclosRouter } from './modules/ciclos/routes';
 import { asignacionesRouter } from './modules/asignaciones/routes';
 import { invitadosRouter } from './modules/invitados/routes';
 import { auditoriasRouter } from './modules/auditorias/routes';
@@ -78,7 +77,13 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: env.FRONTEND_ORIGIN,
+    origin: (origin, callback) => {
+      if (!origin || frontendOriginsPermitidos.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    },
     credentials: true,
   })
 );
@@ -158,7 +163,6 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/usuarios', usuariosRouter);
 app.use('/api/v1/areas', areasRouter);
 app.use('/api/v1/formularios', formulariosRouter);
-app.use('/api/v1/ciclos', ciclosRouter);
 app.use('/api/v1/asignaciones', asignacionesRouter);
 app.use('/api/v1/invitados', invitadosRouter);
 app.use('/api/v1/auditorias', auditoriasRouter);

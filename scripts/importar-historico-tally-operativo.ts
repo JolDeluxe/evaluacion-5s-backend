@@ -7,7 +7,6 @@ import { cloudinary } from '../src/config/cloudinary';
 import { prisma } from '../src/db';
 import {
   AlcanceFormulario,
-  EstadoCicloAuditoria,
   OrigenEnvioAuditoria,
   RolUsuario,
   TipoArea,
@@ -500,13 +499,12 @@ const extraerUrls = (valor: Celda): string[] => {
 };
 
 const obtenerUltimoDiaMes = (anio: number, mes: number) =>
-  new Date(anio, mes, 0).getDate();
-
+  mes === 2 ? 28 : new Date(anio, mes, 0).getDate();
 const calcularCorte = (
   fecha: FechaSimple,
 ): 1 | 2 => (fecha.dia <= 15 ? 1 : 2);
 
-const obtenerLimitesCiclo = (
+const obtenerLimitesPeriodo = (
   anio: number,
   mes: number,
   corte: 1 | 2,
@@ -1319,8 +1317,6 @@ const crearFormularioOperativo =
                 nombre:
                   seccionDef.nombre,
                 objetivo: null,
-                imagenPublicId: null,
-                imagenAlt: null,
                 orden:
                   seccionDef.orden,
               },
@@ -1691,10 +1687,9 @@ const obtenerOCrearAreaOperativa =
     );
   };
 
-const asegurarCiclo =
-  async (
+const construirContextoPeriodo =
+  (
     fila: FilaHistorica,
-    creadoPorId: number,
     versionFormularioId: number,
   ) => {
     const {
@@ -1702,108 +1697,25 @@ const asegurarCiclo =
       mes,
     } = fila.fechaPeriodo;
 
-    const numeroCorte =
+    const periodo =
       fila.corte;
 
     const limites =
-      obtenerLimitesCiclo(
+      obtenerLimitesPeriodo(
         anio,
         mes,
-        numeroCorte,
+        periodo,
       );
-
-    let ciclo =
-      await prisma.cicloAuditoria.findFirst({
-        where: {
-          anio,
-          mes,
-          numeroCorte,
-        },
-      });
-
-    if (!ciclo) {
-      ciclo =
-        await prisma.cicloAuditoria.create({
-          data: {
-            anio,
-            mes,
-            numeroCorte,
-            nombre:
-              `HISTÓRICO 5S ${anio}-${String(
-                mes,
-              ).padStart(
-                2,
-                '0',
-              )} P${numeroCorte}`,
-            estado:
-              EstadoCicloAuditoria.ARCHIVADO,
-            iniciaEn:
-              limites.iniciaEn,
-            terminaEn:
-              limites.terminaEn,
-            publicadoEn:
-              limites.iniciaEn,
-            cerradoEn:
-              limites.terminaEn,
-            creadoPorId,
-          },
-        });
-    } else {
-      const diferenciaInicio =
-        Math.abs(
-          ciclo.iniciaEn.getTime() -
-            limites.iniciaEn.getTime(),
-        );
-
-      const diferenciaFin =
-        Math.abs(
-          ciclo.terminaEn.getTime() -
-            limites.terminaEn.getTime(),
-        );
-
-      if (
-        diferenciaInicio > 1000 ||
-        diferenciaFin > 1000
-      ) {
-        throw new Error(
-          `El ciclo ${anio}-${mes} P${numeroCorte} ya existe con fechas diferentes.`,
-        );
-      }
-    }
-
-    let formularioCiclo =
-      await prisma.formularioCiclo.findFirst({
-        where: {
-          cicloAuditoriaId:
-            ciclo.id,
-          tipoArea:
-            TipoArea.OPERATIVA,
-        },
-      });
-
-    if (!formularioCiclo) {
-      formularioCiclo =
-        await prisma.formularioCiclo.create({
-          data: {
-            cicloAuditoriaId:
-              ciclo.id,
-            tipoArea:
-              TipoArea.OPERATIVA,
-            versionFormularioId,
-          },
-        });
-    } else if (
-      formularioCiclo.versionFormularioId !==
-      versionFormularioId
-    ) {
-      throw new Error(
-        `El ciclo ${anio}-${mes} P${numeroCorte} ya utiliza otra versión OPERATIVA.`,
-      );
-    }
 
     return {
-      ciclo,
-      formularioCiclo,
+      anio,
+      mes,
+      periodo,
+      versionFormularioId,
+      iniciaEn:
+        limites.iniciaEn,
+      terminaEn:
+        limites.terminaEn,
     };
   };
 
@@ -1811,24 +1723,38 @@ const asegurarObjetivo =
   async (
     fila: FilaHistorica,
     areaId: number,
-    cicloAuditoriaId: number,
-    formularioCicloId: number,
+    contexto: ReturnType<typeof construirContextoPeriodo>,
   ) => {
     const existente =
-      await prisma.objetivoAuditoria.findFirst({
+      await prisma.objetivoAuditoria.findUnique({
         where: {
-          cicloAuditoriaId,
-          areaId,
+          areaId_anio_mes_periodo: {
+            areaId,
+            anio: contexto.anio,
+            mes: contexto.mes,
+            periodo: contexto.periodo,
+          },
         },
       });
 
     if (existente) {
+      const fechasCoinciden =
+        Math.abs(
+          existente.iniciaEn.getTime() -
+            contexto.iniciaEn.getTime(),
+        ) <= 1000
+        && Math.abs(
+          existente.terminaEn.getTime() -
+            contexto.terminaEn.getTime(),
+        ) <= 1000;
+
       if (
-        existente.formularioCicloId !==
-        formularioCicloId
+        existente.versionFormularioId !==
+          contexto.versionFormularioId
+        || !fechasCoinciden
       ) {
         throw new Error(
-          `El objetivo existente #${existente.id} pertenece a otro FormularioCiclo.`,
+          `El objetivo existente #${existente.id} ya utiliza otra versión o fechas para ${contexto.anio}-${contexto.mes} P${contexto.periodo}.`,
         );
       }
 
@@ -1837,9 +1763,19 @@ const asegurarObjetivo =
 
     return prisma.objetivoAuditoria.create({
       data: {
-        cicloAuditoriaId,
-        formularioCicloId,
         areaId,
+        anio:
+          contexto.anio,
+        mes:
+          contexto.mes,
+        periodo:
+          contexto.periodo,
+        versionFormularioId:
+          contexto.versionFormularioId,
+        iniciaEn:
+          contexto.iniciaEn,
+        terminaEn:
+          contexto.terminaEn,
         codigoAreaSnapshot:
           fila.area.codigo,
         nombreAreaSnapshot:
@@ -1849,7 +1785,6 @@ const asegurarObjetivo =
       },
     });
   };
-
 const obtenerMensajeError = (error: unknown): string => {
   if (error instanceof Error) {
     return error.message;
@@ -1927,6 +1862,7 @@ const subirImagenTally = async (
             errorFetch,
           )}`,
         ].join(' | '),
+        { cause: errorFetch }
       );
     }
 
@@ -1936,6 +1872,7 @@ const subirImagenTally = async (
           `Cloudinary rechazó la evidencia: ${mensajeCloudinary}`,
           `Tally respondió HTTP ${response.status} ${response.statusText}`,
         ].join(' | '),
+        { cause: errorCloudinary }
       );
     }
 
@@ -1981,6 +1918,7 @@ const subirImagenTally = async (
         `Cloudinary no pudo importar la evidencia como imagen: ${mensajeCloudinary}`,
         `content-type Tally=${contentType || 'desconocido'}`,
       ].join(' | '),
+      { cause: errorCloudinary }
     );
   }
 };
@@ -2135,6 +2073,7 @@ const subirFotosFila =
         if (!ALLOW_MISSING_PHOTOS) {
           throw new Error(
             `No se pudieron migrar todas las fotos de la fila ${fila.filaExcel}. Último error: ${mensaje}`,
+            { cause: error }
           );
         }
       }
@@ -2412,16 +2351,13 @@ const aplicarImportacion =
         >
       >();
 
-    const ciclosCache =
+    const periodosCache =
       new Map<
         string,
-        Awaited<
-          ReturnType<
-            typeof asegurarCiclo
-          >
+        ReturnType<
+          typeof construirContextoPeriodo
         >
       >();
-
     const objetivosTocados =
       new Set<number>();
 
@@ -2496,25 +2432,24 @@ const aplicarImportacion =
           );
         }
 
-        const claveCiclo =
-          `${fila.fechaPeriodo.anio}-${fila.fechaPeriodo.mes}-${fila.corte}`;
+        const clavePeriodo =
+          `${fila.fechaPeriodo.anio}-${fila.fechaPeriodo.mes}-${fila.corte}-${version.id}`;
 
-        let contextoCiclo =
-          ciclosCache.get(
-            claveCiclo,
+        let contextoPeriodo =
+          periodosCache.get(
+            clavePeriodo,
           );
 
-        if (!contextoCiclo) {
-          contextoCiclo =
-            await asegurarCiclo(
+        if (!contextoPeriodo) {
+          contextoPeriodo =
+            construirContextoPeriodo(
               fila,
-              creador.id,
               version.id,
             );
 
-          ciclosCache.set(
-            claveCiclo,
-            contextoCiclo,
+          periodosCache.set(
+            clavePeriodo,
+            contextoPeriodo,
           );
         }
 
@@ -2522,16 +2457,12 @@ const aplicarImportacion =
           await asegurarObjetivo(
             fila,
             area.id,
-            contextoCiclo.ciclo.id,
-            contextoCiclo
-              .formularioCiclo.id,
+            contextoPeriodo,
           );
 
         objetivosTocados.add(
           objetivo.id,
         );
-
-        // Red fuera de transacción.
         const fotos =
           await subirFotosFila(
             fila,

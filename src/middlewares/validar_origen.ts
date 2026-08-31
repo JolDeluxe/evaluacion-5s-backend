@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { env } from '../config/env';
+import { frontendOriginsPermitidos } from '../config/env';
 import { prohibido } from '../utils/errores';
 
 const metodosProtegidos = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
@@ -11,7 +11,7 @@ export const validarOrigen = (req: Request, _res: Response, next: NextFunction) 
   }
 
   const origin = req.get('origin');
-  if (!origin || origin === env.FRONTEND_ORIGIN) {
+  if (!origin || frontendOriginsPermitidos.includes(origin)) {
     next();
     return;
   }

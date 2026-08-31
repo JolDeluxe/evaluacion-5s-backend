@@ -3,10 +3,6 @@ import type { AlcanceFormulario } from '../src/generated/prisma/enums';
 export type SeccionFormulario5S = {
   titulo: string;
   objetivo: string;
-  imagen?: {
-    publicIdCloudinary: string;
-    alt: string;
-  };
   preguntas: string[];
 };
 

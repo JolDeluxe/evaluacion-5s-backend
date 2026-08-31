@@ -7,9 +7,9 @@ import { noAutenticado } from '../utils/errores';
 
 const horasAMs = (horas: number) => horas * 60 * 60 * 1000;
 
-export const autenticar = async (req: Request, res: Response, next: NextFunction) => {
+const leerSesion = async (req: Request, res: Response) => {
   const token = req.signedCookies?.[env.SESION_NOMBRE_COOKIE] ?? req.cookies?.[env.SESION_NOMBRE_COOKIE];
-  if (!token || typeof token !== 'string') throw noAutenticado();
+  if (!token || typeof token !== 'string') return null;
 
   const sesion = await prisma.sesion.findUnique({
     where: { hashToken: hashSha256(token) },
@@ -19,7 +19,7 @@ export const autenticar = async (req: Request, res: Response, next: NextFunction
   const ahora = new Date();
   if (!sesion || sesion.revocadoEn || sesion.expiraEn <= ahora || !sesion.usuario.activo) {
     limpiarCookieSesion(res);
-    throw noAutenticado();
+    return null;
   }
 
   req.autenticacion = {
@@ -38,5 +38,17 @@ export const autenticar = async (req: Request, res: Response, next: NextFunction
     establecerCookieSesion(res, token);
   }
 
+  return sesion;
+};
+
+export const autenticar = async (req: Request, res: Response, next: NextFunction) => {
+  const sesion = await leerSesion(req, res);
+  if (!sesion) throw noAutenticado();
+
+  next();
+};
+
+export const autenticarOpcional = async (req: Request, res: Response, next: NextFunction) => {
+  await leerSesion(req, res);
   next();
 };

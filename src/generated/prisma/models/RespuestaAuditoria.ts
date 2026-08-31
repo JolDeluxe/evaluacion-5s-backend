@@ -240,9 +240,9 @@ export type RespuestaAuditoriaWhereInput = {
   hallazgo?: Prisma.StringNullableFilter<"RespuestaAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"RespuestaAuditoria"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"RespuestaAuditoria"> | Date | string
+  fotosAuditoria?: Prisma.FotoAuditoriaListRelationFilter
   envioAuditoria?: Prisma.XOR<Prisma.EnvioAuditoriaScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput>
   preguntaFormulario?: Prisma.XOR<Prisma.PreguntaFormularioScalarRelationFilter, Prisma.PreguntaFormularioWhereInput>
-  fotosAuditoria?: Prisma.FotoAuditoriaListRelationFilter
 }
 
 export type RespuestaAuditoriaOrderByWithRelationInput = {
@@ -253,9 +253,9 @@ export type RespuestaAuditoriaOrderByWithRelationInput = {
   hallazgo?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
+  fotosAuditoria?: Prisma.FotoAuditoriaOrderByRelationAggregateInput
   envioAuditoria?: Prisma.EnvioAuditoriaOrderByWithRelationInput
   preguntaFormulario?: Prisma.PreguntaFormularioOrderByWithRelationInput
-  fotosAuditoria?: Prisma.FotoAuditoriaOrderByRelationAggregateInput
   _relevance?: Prisma.RespuestaAuditoriaOrderByRelevanceInput
 }
 
@@ -271,9 +271,9 @@ export type RespuestaAuditoriaWhereUniqueInput = Prisma.AtLeast<{
   hallazgo?: Prisma.StringNullableFilter<"RespuestaAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"RespuestaAuditoria"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"RespuestaAuditoria"> | Date | string
+  fotosAuditoria?: Prisma.FotoAuditoriaListRelationFilter
   envioAuditoria?: Prisma.XOR<Prisma.EnvioAuditoriaScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput>
   preguntaFormulario?: Prisma.XOR<Prisma.PreguntaFormularioScalarRelationFilter, Prisma.PreguntaFormularioWhereInput>
-  fotosAuditoria?: Prisma.FotoAuditoriaListRelationFilter
 }, "id" | "envioAuditoriaId_preguntaFormularioId">
 
 export type RespuestaAuditoriaOrderByWithAggregationInput = {
@@ -309,9 +309,9 @@ export type RespuestaAuditoriaCreateInput = {
   hallazgo?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  fotosAuditoria?: Prisma.FotoAuditoriaCreateNestedManyWithoutRespuestaAuditoriaInput
   envioAuditoria: Prisma.EnvioAuditoriaCreateNestedOneWithoutRespuestasAuditoriaInput
   preguntaFormulario: Prisma.PreguntaFormularioCreateNestedOneWithoutRespuestasAuditoriaInput
-  fotosAuditoria?: Prisma.FotoAuditoriaCreateNestedManyWithoutRespuestaAuditoriaInput
 }
 
 export type RespuestaAuditoriaUncheckedCreateInput = {
@@ -330,9 +330,9 @@ export type RespuestaAuditoriaUpdateInput = {
   hallazgo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fotosAuditoria?: Prisma.FotoAuditoriaUpdateManyWithoutRespuestaAuditoriaNestedInput
   envioAuditoria?: Prisma.EnvioAuditoriaUpdateOneRequiredWithoutRespuestasAuditoriaNestedInput
   preguntaFormulario?: Prisma.PreguntaFormularioUpdateOneRequiredWithoutRespuestasAuditoriaNestedInput
-  fotosAuditoria?: Prisma.FotoAuditoriaUpdateManyWithoutRespuestaAuditoriaNestedInput
 }
 
 export type RespuestaAuditoriaUncheckedUpdateInput = {
@@ -544,8 +544,8 @@ export type RespuestaAuditoriaCreateWithoutPreguntaFormularioInput = {
   hallazgo?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  envioAuditoria: Prisma.EnvioAuditoriaCreateNestedOneWithoutRespuestasAuditoriaInput
   fotosAuditoria?: Prisma.FotoAuditoriaCreateNestedManyWithoutRespuestaAuditoriaInput
+  envioAuditoria: Prisma.EnvioAuditoriaCreateNestedOneWithoutRespuestasAuditoriaInput
 }
 
 export type RespuestaAuditoriaUncheckedCreateWithoutPreguntaFormularioInput = {
@@ -602,8 +602,8 @@ export type RespuestaAuditoriaCreateWithoutEnvioAuditoriaInput = {
   hallazgo?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  preguntaFormulario: Prisma.PreguntaFormularioCreateNestedOneWithoutRespuestasAuditoriaInput
   fotosAuditoria?: Prisma.FotoAuditoriaCreateNestedManyWithoutRespuestaAuditoriaInput
+  preguntaFormulario: Prisma.PreguntaFormularioCreateNestedOneWithoutRespuestasAuditoriaInput
 }
 
 export type RespuestaAuditoriaUncheckedCreateWithoutEnvioAuditoriaInput = {
@@ -710,8 +710,8 @@ export type RespuestaAuditoriaUpdateWithoutPreguntaFormularioInput = {
   hallazgo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  envioAuditoria?: Prisma.EnvioAuditoriaUpdateOneRequiredWithoutRespuestasAuditoriaNestedInput
   fotosAuditoria?: Prisma.FotoAuditoriaUpdateManyWithoutRespuestaAuditoriaNestedInput
+  envioAuditoria?: Prisma.EnvioAuditoriaUpdateOneRequiredWithoutRespuestasAuditoriaNestedInput
 }
 
 export type RespuestaAuditoriaUncheckedUpdateWithoutPreguntaFormularioInput = {
@@ -747,8 +747,8 @@ export type RespuestaAuditoriaUpdateWithoutEnvioAuditoriaInput = {
   hallazgo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  preguntaFormulario?: Prisma.PreguntaFormularioUpdateOneRequiredWithoutRespuestasAuditoriaNestedInput
   fotosAuditoria?: Prisma.FotoAuditoriaUpdateManyWithoutRespuestaAuditoriaNestedInput
+  preguntaFormulario?: Prisma.PreguntaFormularioUpdateOneRequiredWithoutRespuestasAuditoriaNestedInput
 }
 
 export type RespuestaAuditoriaUncheckedUpdateWithoutEnvioAuditoriaInput = {
@@ -809,9 +809,9 @@ export type RespuestaAuditoriaSelect<ExtArgs extends runtime.Types.Extensions.In
   hallazgo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
+  fotosAuditoria?: boolean | Prisma.RespuestaAuditoria$fotosAuditoriaArgs<ExtArgs>
   envioAuditoria?: boolean | Prisma.EnvioAuditoriaDefaultArgs<ExtArgs>
   preguntaFormulario?: boolean | Prisma.PreguntaFormularioDefaultArgs<ExtArgs>
-  fotosAuditoria?: boolean | Prisma.RespuestaAuditoria$fotosAuditoriaArgs<ExtArgs>
   _count?: boolean | Prisma.RespuestaAuditoriaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["respuestaAuditoria"]>
 
@@ -829,18 +829,18 @@ export type RespuestaAuditoriaSelectScalar = {
 
 export type RespuestaAuditoriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "envioAuditoriaId" | "preguntaFormularioId" | "cumple" | "hallazgo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["respuestaAuditoria"]>
 export type RespuestaAuditoriaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  fotosAuditoria?: boolean | Prisma.RespuestaAuditoria$fotosAuditoriaArgs<ExtArgs>
   envioAuditoria?: boolean | Prisma.EnvioAuditoriaDefaultArgs<ExtArgs>
   preguntaFormulario?: boolean | Prisma.PreguntaFormularioDefaultArgs<ExtArgs>
-  fotosAuditoria?: boolean | Prisma.RespuestaAuditoria$fotosAuditoriaArgs<ExtArgs>
   _count?: boolean | Prisma.RespuestaAuditoriaCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $RespuestaAuditoriaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "RespuestaAuditoria"
   objects: {
+    fotosAuditoria: Prisma.$FotoAuditoriaPayload<ExtArgs>[]
     envioAuditoria: Prisma.$EnvioAuditoriaPayload<ExtArgs>
     preguntaFormulario: Prisma.$PreguntaFormularioPayload<ExtArgs>
-    fotosAuditoria: Prisma.$FotoAuditoriaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1190,9 +1190,9 @@ readonly fields: RespuestaAuditoriaFieldRefs;
  */
 export interface Prisma__RespuestaAuditoriaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  fotosAuditoria<T extends Prisma.RespuestaAuditoria$fotosAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RespuestaAuditoria$fotosAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FotoAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   envioAuditoria<T extends Prisma.EnvioAuditoriaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EnvioAuditoriaDefaultArgs<ExtArgs>>): Prisma.Prisma__EnvioAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   preguntaFormulario<T extends Prisma.PreguntaFormularioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PreguntaFormularioDefaultArgs<ExtArgs>>): Prisma.Prisma__PreguntaFormularioClient<runtime.Types.Result.GetResult<Prisma.$PreguntaFormularioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  fotosAuditoria<T extends Prisma.RespuestaAuditoria$fotosAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RespuestaAuditoria$fotosAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FotoAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

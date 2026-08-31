@@ -8,7 +8,6 @@ import { env } from '../src/config/env';
 import { prisma } from '../src/db';
 import {
   AlcanceFormulario,
-  EstadoCicloAuditoria,
   OrigenEnvioAuditoria,
   RolUsuario,
   TipoArea,
@@ -330,12 +329,11 @@ const extraerUrls = (valor: Celda): string[] => {
 };
 
 const obtenerUltimoDiaMes = (anio: number, mes: number) =>
-  new Date(anio, mes, 0).getDate();
-
+  mes === 2 ? 28 : new Date(anio, mes, 0).getDate();
 const calcularCorte = (fecha: FechaSimple): 1 | 2 =>
   fecha.dia <= 15 ? 1 : 2;
 
-const obtenerLimitesCiclo = (
+const obtenerLimitesPeriodo = (
   anio: number,
   mes: number,
   corte: 1 | 2,
@@ -847,108 +845,57 @@ const obtenerOCrearArea = async (config: AreaConfig) => {
   );
 };
 
-const asegurarCiclo = async (
+const construirContextoPeriodo = (
   fila: FilaHistorica,
-  creadoPorId: number,
   versionFormularioId: number,
 ) => {
   const { anio, mes } = fila.fechaPeriodo;
-  const numeroCorte = fila.corte;
-  const limites = obtenerLimitesCiclo(anio, mes, numeroCorte);
-
-  let ciclo = await prisma.cicloAuditoria.findFirst({
-    where: {
-      anio,
-      mes,
-      numeroCorte,
-    },
-  });
-
-  if (!ciclo) {
-    ciclo = await prisma.cicloAuditoria.create({
-      data: {
-        anio,
-        mes,
-        numeroCorte,
-        nombre: `HISTÓRICO 5S ADMIN ${anio}-${String(mes).padStart(
-          2,
-          '0',
-        )} P${numeroCorte}`,
-        estado: EstadoCicloAuditoria.ARCHIVADO,
-        iniciaEn: limites.iniciaEn,
-        terminaEn: limites.terminaEn,
-        publicadoEn: limites.iniciaEn,
-        cerradoEn: limites.terminaEn,
-        creadoPorId,
-      },
-    });
-  } else {
-    const diferenciaInicio = Math.abs(
-      ciclo.iniciaEn.getTime() - limites.iniciaEn.getTime(),
-    );
-
-    const diferenciaFin = Math.abs(
-      ciclo.terminaEn.getTime() - limites.terminaEn.getTime(),
-    );
-
-    if (diferenciaInicio > 1000 || diferenciaFin > 1000) {
-      throw new Error(
-        `El ciclo ${anio}-${mes} P${numeroCorte} ya existe con fechas diferentes.`,
-      );
-    }
-  }
-
-  let formularioCiclo = await prisma.formularioCiclo.findFirst({
-    where: {
-      cicloAuditoriaId: ciclo.id,
-      tipoArea: TipoArea.ADMINISTRATIVA,
-    },
-  });
-
-  if (!formularioCiclo) {
-    formularioCiclo = await prisma.formularioCiclo.create({
-      data: {
-        cicloAuditoriaId: ciclo.id,
-        tipoArea: TipoArea.ADMINISTRATIVA,
-        versionFormularioId,
-      },
-    });
-  } else if (
-    formularioCiclo.versionFormularioId !== versionFormularioId
-  ) {
-    throw new Error(
-      `El ciclo ${anio}-${mes} P${numeroCorte} ya apunta a otra versión administrativa.`,
-    );
-  }
+  const periodo = fila.corte;
+  const limites = obtenerLimitesPeriodo(anio, mes, periodo);
 
   return {
-    ciclo,
-    formularioCiclo,
+    anio,
+    mes,
+    periodo,
+    versionFormularioId,
+    iniciaEn: limites.iniciaEn,
+    terminaEn: limites.terminaEn,
   };
 };
 
 const asegurarObjetivo = async (
   fila: FilaHistorica,
   areaId: number,
-  cicloAuditoriaId: number,
-  formularioCicloId: number,
+  contexto: ReturnType<typeof construirContextoPeriodo>,
 ) => {
   const existente = await prisma.objetivoAuditoria.findFirst({
     where: {
-      cicloAuditoriaId,
       areaId,
+      anio: contexto.anio,
+      mes: contexto.mes,
+      periodo: contexto.periodo,
     },
   });
 
   if (existente) {
+    if (existente.versionFormularioId !== contexto.versionFormularioId) {
+      throw new Error(
+        `El objetivo existente #${existente.id} ya apunta a otra versión administrativa.`,
+      );
+    }
+
     return existente;
   }
 
   return prisma.objetivoAuditoria.create({
     data: {
-      cicloAuditoriaId,
-      formularioCicloId,
       areaId,
+      anio: contexto.anio,
+      mes: contexto.mes,
+      periodo: contexto.periodo,
+      versionFormularioId: contexto.versionFormularioId,
+      iniciaEn: contexto.iniciaEn,
+      terminaEn: contexto.terminaEn,
       codigoAreaSnapshot: fila.area.codigo,
       nombreAreaSnapshot: fila.area.nombre,
       tipoAreaSnapshot: TipoArea.ADMINISTRATIVA,
@@ -1126,7 +1073,7 @@ const aplicarImportacion = async (
   );
 
   const areasCache = new Map<string, Awaited<ReturnType<typeof obtenerOCrearArea>>>();
-  const ciclosCache = new Map<string, Awaited<ReturnType<typeof asegurarCiclo>>>();
+  const periodosCache = new Map<string, ReturnType<typeof construirContextoPeriodo>>();
   const objetivosTocados = new Set<number>();
 
   let creados = 0;
@@ -1171,25 +1118,23 @@ const aplicarImportacion = async (
         areasCache.set(fila.area.codigo, area);
       }
 
-      const claveCiclo = `${fila.fechaPeriodo.anio}-${fila.fechaPeriodo.mes}-${fila.corte}`;
+      const clavePeriodo = `${fila.fechaPeriodo.anio}-${fila.fechaPeriodo.mes}-${fila.corte}`;
 
-      let contextoCiclo = ciclosCache.get(claveCiclo);
+      let contextoPeriodo = periodosCache.get(clavePeriodo);
 
-      if (!contextoCiclo) {
-        contextoCiclo = await asegurarCiclo(
+      if (!contextoPeriodo) {
+        contextoPeriodo = construirContextoPeriodo(
           fila,
-          creador.id,
           version.id,
         );
 
-        ciclosCache.set(claveCiclo, contextoCiclo);
+        periodosCache.set(clavePeriodo, contextoPeriodo);
       }
 
       const objetivo = await asegurarObjetivo(
         fila,
         area.id,
-        contextoCiclo.ciclo.id,
-        contextoCiclo.formularioCiclo.id,
+        contextoPeriodo,
       );
 
       objetivosTocados.add(objetivo.id);

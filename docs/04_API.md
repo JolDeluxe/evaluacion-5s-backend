@@ -66,9 +66,6 @@ como fotografia historica.
 
 ### Ciclos y Asignaciones
 
-- `GET /api/v1/ciclos`
-- `POST /api/v1/ciclos`
-- `POST /api/v1/ciclos/:id/publicar`
 - `GET /api/v1/asignaciones`
 - `GET /api/v1/asignaciones/:id/auditoria`
 - `POST /api/v1/asignaciones`

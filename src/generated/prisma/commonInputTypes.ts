@@ -199,17 +199,6 @@ export type EnumTipoAreaFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTipoAreaFilter<$PrismaModel> | $Enums.TipoArea
 }
 
-export type IntNullableFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
-  in?: number[] | null
-  notIn?: number[] | null
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
-}
-
 export type EnumTipoAreaWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TipoArea | Prisma.EnumTipoAreaFieldRefInput<$PrismaModel>
   in?: $Enums.TipoArea[]
@@ -218,22 +207,6 @@ export type EnumTipoAreaWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTipoAreaFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTipoAreaFilter<$PrismaModel>
-}
-
-export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
-  in?: number[] | null
-  notIn?: number[] | null
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
-  _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
 }
 
 export type EnumAlcanceFormularioFilter<$PrismaModel = never> = {
@@ -253,21 +226,31 @@ export type EnumAlcanceFormularioWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAlcanceFormularioFilter<$PrismaModel>
 }
 
-export type EnumEstadoCicloAuditoriaFilter<$PrismaModel = never> = {
-  equals?: $Enums.EstadoCicloAuditoria | Prisma.EnumEstadoCicloAuditoriaFieldRefInput<$PrismaModel>
-  in?: $Enums.EstadoCicloAuditoria[]
-  notIn?: $Enums.EstadoCicloAuditoria[]
-  not?: Prisma.NestedEnumEstadoCicloAuditoriaFilter<$PrismaModel> | $Enums.EstadoCicloAuditoria
+export type IntNullableFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  in?: number[] | null
+  notIn?: number[] | null
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
 }
 
-export type EnumEstadoCicloAuditoriaWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.EstadoCicloAuditoria | Prisma.EnumEstadoCicloAuditoriaFieldRefInput<$PrismaModel>
-  in?: $Enums.EstadoCicloAuditoria[]
-  notIn?: $Enums.EstadoCicloAuditoria[]
-  not?: Prisma.NestedEnumEstadoCicloAuditoriaWithAggregatesFilter<$PrismaModel> | $Enums.EstadoCicloAuditoria
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumEstadoCicloAuditoriaFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumEstadoCicloAuditoriaFilter<$PrismaModel>
+export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  in?: number[] | null
+  notIn?: number[] | null
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
 }
 
 export type EnumEstadoAsignacionAuditoriaFilter<$PrismaModel = never> = {
@@ -645,6 +628,23 @@ export type NestedEnumTipoAreaWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumTipoAreaFilter<$PrismaModel>
 }
 
+export type NestedEnumAlcanceFormularioFilter<$PrismaModel = never> = {
+  equals?: $Enums.AlcanceFormulario | Prisma.EnumAlcanceFormularioFieldRefInput<$PrismaModel>
+  in?: $Enums.AlcanceFormulario[]
+  notIn?: $Enums.AlcanceFormulario[]
+  not?: Prisma.NestedEnumAlcanceFormularioFilter<$PrismaModel> | $Enums.AlcanceFormulario
+}
+
+export type NestedEnumAlcanceFormularioWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AlcanceFormulario | Prisma.EnumAlcanceFormularioFieldRefInput<$PrismaModel>
+  in?: $Enums.AlcanceFormulario[]
+  notIn?: $Enums.AlcanceFormulario[]
+  not?: Prisma.NestedEnumAlcanceFormularioWithAggregatesFilter<$PrismaModel> | $Enums.AlcanceFormulario
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAlcanceFormularioFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAlcanceFormularioFilter<$PrismaModel>
+}
+
 export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
   in?: number[] | null
@@ -670,40 +670,6 @@ export type NestedFloatNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
-}
-
-export type NestedEnumAlcanceFormularioFilter<$PrismaModel = never> = {
-  equals?: $Enums.AlcanceFormulario | Prisma.EnumAlcanceFormularioFieldRefInput<$PrismaModel>
-  in?: $Enums.AlcanceFormulario[]
-  notIn?: $Enums.AlcanceFormulario[]
-  not?: Prisma.NestedEnumAlcanceFormularioFilter<$PrismaModel> | $Enums.AlcanceFormulario
-}
-
-export type NestedEnumAlcanceFormularioWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.AlcanceFormulario | Prisma.EnumAlcanceFormularioFieldRefInput<$PrismaModel>
-  in?: $Enums.AlcanceFormulario[]
-  notIn?: $Enums.AlcanceFormulario[]
-  not?: Prisma.NestedEnumAlcanceFormularioWithAggregatesFilter<$PrismaModel> | $Enums.AlcanceFormulario
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumAlcanceFormularioFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumAlcanceFormularioFilter<$PrismaModel>
-}
-
-export type NestedEnumEstadoCicloAuditoriaFilter<$PrismaModel = never> = {
-  equals?: $Enums.EstadoCicloAuditoria | Prisma.EnumEstadoCicloAuditoriaFieldRefInput<$PrismaModel>
-  in?: $Enums.EstadoCicloAuditoria[]
-  notIn?: $Enums.EstadoCicloAuditoria[]
-  not?: Prisma.NestedEnumEstadoCicloAuditoriaFilter<$PrismaModel> | $Enums.EstadoCicloAuditoria
-}
-
-export type NestedEnumEstadoCicloAuditoriaWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.EstadoCicloAuditoria | Prisma.EnumEstadoCicloAuditoriaFieldRefInput<$PrismaModel>
-  in?: $Enums.EstadoCicloAuditoria[]
-  notIn?: $Enums.EstadoCicloAuditoria[]
-  not?: Prisma.NestedEnumEstadoCicloAuditoriaWithAggregatesFilter<$PrismaModel> | $Enums.EstadoCicloAuditoria
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumEstadoCicloAuditoriaFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumEstadoCicloAuditoriaFilter<$PrismaModel>
 }
 
 export type NestedEnumEstadoAsignacionAuditoriaFilter<$PrismaModel = never> = {

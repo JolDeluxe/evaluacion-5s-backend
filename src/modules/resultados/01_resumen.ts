@@ -3,7 +3,7 @@ import { prisma } from '../../db';
 import { TipoArea } from '../../generated/prisma/enums';
 import { tieneEnvioResultadoValido } from '../../utils/periodos';
 import { responder } from '../../utils/respuesta';
-import { calcularGanadores, construirWhereCiclo, promedio } from './helper';
+import { calcularGanadores, construirWherePeriodo, promedio } from './helper';
 import { esquemaFiltros } from './zod';
 
 export const resumenResultados = async (req: Request, res: Response) => {
@@ -11,11 +11,10 @@ export const resumenResultados = async (req: Request, res: Response) => {
   const objetivos = await prisma.objetivoAuditoria.findMany({
     where: {
       tipoAreaSnapshot: filtros.tipoArea,
-      cicloAuditoria: construirWhereCiclo(filtros),
+      ...construirWherePeriodo(filtros),
     },
     include: {
       envioResultado: true,
-      cicloAuditoria: true,
       enviosAuditoria: {
         where: { invalidadoEn: null },
         orderBy: [{ recibidoEn: 'asc' }, { id: 'asc' }],

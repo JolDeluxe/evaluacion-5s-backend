@@ -28,55 +28,77 @@ export type AggregateObjetivoAuditoria = {
 
 export type ObjetivoAuditoriaAvgAggregateOutputType = {
   id: number | null
-  cicloAuditoriaId: number | null
-  formularioCicloId: number | null
   areaId: number | null
+  anio: number | null
+  mes: number | null
+  periodo: number | null
+  versionFormularioId: number | null
   envioResultadoId: number | null
 }
 
 export type ObjetivoAuditoriaSumAggregateOutputType = {
   id: number | null
-  cicloAuditoriaId: number | null
-  formularioCicloId: number | null
   areaId: number | null
+  anio: number | null
+  mes: number | null
+  periodo: number | null
+  versionFormularioId: number | null
   envioResultadoId: number | null
 }
 
 export type ObjetivoAuditoriaMinAggregateOutputType = {
   id: number | null
-  cicloAuditoriaId: number | null
-  formularioCicloId: number | null
   areaId: number | null
+  anio: number | null
+  mes: number | null
+  periodo: number | null
+  versionFormularioId: number | null
+  iniciaEn: Date | null
+  terminaEn: Date | null
   codigoAreaSnapshot: string | null
   nombreAreaSnapshot: string | null
   tipoAreaSnapshot: $Enums.TipoArea | null
   envioResultadoId: number | null
+  canceladoEn: Date | null
+  motivoCancelacion: string | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
 
 export type ObjetivoAuditoriaMaxAggregateOutputType = {
   id: number | null
-  cicloAuditoriaId: number | null
-  formularioCicloId: number | null
   areaId: number | null
+  anio: number | null
+  mes: number | null
+  periodo: number | null
+  versionFormularioId: number | null
+  iniciaEn: Date | null
+  terminaEn: Date | null
   codigoAreaSnapshot: string | null
   nombreAreaSnapshot: string | null
   tipoAreaSnapshot: $Enums.TipoArea | null
   envioResultadoId: number | null
+  canceladoEn: Date | null
+  motivoCancelacion: string | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
 
 export type ObjetivoAuditoriaCountAggregateOutputType = {
   id: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: number
+  terminaEn: number
   codigoAreaSnapshot: number
   nombreAreaSnapshot: number
   tipoAreaSnapshot: number
   envioResultadoId: number
+  canceladoEn: number
+  motivoCancelacion: number
   creadoEn: number
   actualizadoEn: number
   _all: number
@@ -85,55 +107,77 @@ export type ObjetivoAuditoriaCountAggregateOutputType = {
 
 export type ObjetivoAuditoriaAvgAggregateInputType = {
   id?: true
-  cicloAuditoriaId?: true
-  formularioCicloId?: true
   areaId?: true
+  anio?: true
+  mes?: true
+  periodo?: true
+  versionFormularioId?: true
   envioResultadoId?: true
 }
 
 export type ObjetivoAuditoriaSumAggregateInputType = {
   id?: true
-  cicloAuditoriaId?: true
-  formularioCicloId?: true
   areaId?: true
+  anio?: true
+  mes?: true
+  periodo?: true
+  versionFormularioId?: true
   envioResultadoId?: true
 }
 
 export type ObjetivoAuditoriaMinAggregateInputType = {
   id?: true
-  cicloAuditoriaId?: true
-  formularioCicloId?: true
   areaId?: true
+  anio?: true
+  mes?: true
+  periodo?: true
+  versionFormularioId?: true
+  iniciaEn?: true
+  terminaEn?: true
   codigoAreaSnapshot?: true
   nombreAreaSnapshot?: true
   tipoAreaSnapshot?: true
   envioResultadoId?: true
+  canceladoEn?: true
+  motivoCancelacion?: true
   creadoEn?: true
   actualizadoEn?: true
 }
 
 export type ObjetivoAuditoriaMaxAggregateInputType = {
   id?: true
-  cicloAuditoriaId?: true
-  formularioCicloId?: true
   areaId?: true
+  anio?: true
+  mes?: true
+  periodo?: true
+  versionFormularioId?: true
+  iniciaEn?: true
+  terminaEn?: true
   codigoAreaSnapshot?: true
   nombreAreaSnapshot?: true
   tipoAreaSnapshot?: true
   envioResultadoId?: true
+  canceladoEn?: true
+  motivoCancelacion?: true
   creadoEn?: true
   actualizadoEn?: true
 }
 
 export type ObjetivoAuditoriaCountAggregateInputType = {
   id?: true
-  cicloAuditoriaId?: true
-  formularioCicloId?: true
   areaId?: true
+  anio?: true
+  mes?: true
+  periodo?: true
+  versionFormularioId?: true
+  iniciaEn?: true
+  terminaEn?: true
   codigoAreaSnapshot?: true
   nombreAreaSnapshot?: true
   tipoAreaSnapshot?: true
   envioResultadoId?: true
+  canceladoEn?: true
+  motivoCancelacion?: true
   creadoEn?: true
   actualizadoEn?: true
   _all?: true
@@ -227,13 +271,19 @@ export type ObjetivoAuditoriaGroupByArgs<ExtArgs extends runtime.Types.Extension
 
 export type ObjetivoAuditoriaGroupByOutputType = {
   id: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: Date
+  terminaEn: Date
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId: number | null
+  canceladoEn: Date | null
+  motivoCancelacion: string | null
   creadoEn: Date
   actualizadoEn: Date
   _count: ObjetivoAuditoriaCountAggregateOutputType | null
@@ -263,75 +313,96 @@ export type ObjetivoAuditoriaWhereInput = {
   OR?: Prisma.ObjetivoAuditoriaWhereInput[]
   NOT?: Prisma.ObjetivoAuditoriaWhereInput | Prisma.ObjetivoAuditoriaWhereInput[]
   id?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
-  cicloAuditoriaId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
-  formularioCicloId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
   areaId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  anio?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  mes?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  periodo?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  versionFormularioId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  iniciaEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
+  terminaEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
   codigoAreaSnapshot?: Prisma.StringFilter<"ObjetivoAuditoria"> | string
   nombreAreaSnapshot?: Prisma.StringFilter<"ObjetivoAuditoria"> | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFilter<"ObjetivoAuditoria"> | $Enums.TipoArea
   envioResultadoId?: Prisma.IntNullableFilter<"ObjetivoAuditoria"> | number | null
+  canceladoEn?: Prisma.DateTimeNullableFilter<"ObjetivoAuditoria"> | Date | string | null
+  motivoCancelacion?: Prisma.StringNullableFilter<"ObjetivoAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
-  cicloAuditoria?: Prisma.XOR<Prisma.CicloAuditoriaScalarRelationFilter, Prisma.CicloAuditoriaWhereInput>
-  formularioCiclo?: Prisma.XOR<Prisma.FormularioCicloScalarRelationFilter, Prisma.FormularioCicloWhereInput>
-  area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
-  envioResultado?: Prisma.XOR<Prisma.EnvioAuditoriaNullableScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput> | null
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaListRelationFilter
   enviosAuditoria?: Prisma.EnvioAuditoriaListRelationFilter
+  area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
+  envioResultado?: Prisma.XOR<Prisma.EnvioAuditoriaNullableScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput> | null
+  versionFormulario?: Prisma.XOR<Prisma.VersionFormularioScalarRelationFilter, Prisma.VersionFormularioWhereInput>
 }
 
 export type ObjetivoAuditoriaOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  cicloAuditoriaId?: Prisma.SortOrder
-  formularioCicloId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  anio?: Prisma.SortOrder
+  mes?: Prisma.SortOrder
+  periodo?: Prisma.SortOrder
+  versionFormularioId?: Prisma.SortOrder
+  iniciaEn?: Prisma.SortOrder
+  terminaEn?: Prisma.SortOrder
   codigoAreaSnapshot?: Prisma.SortOrder
   nombreAreaSnapshot?: Prisma.SortOrder
   tipoAreaSnapshot?: Prisma.SortOrder
   envioResultadoId?: Prisma.SortOrderInput | Prisma.SortOrder
+  canceladoEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  motivoCancelacion?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
-  cicloAuditoria?: Prisma.CicloAuditoriaOrderByWithRelationInput
-  formularioCiclo?: Prisma.FormularioCicloOrderByWithRelationInput
-  area?: Prisma.AreaOrderByWithRelationInput
-  envioResultado?: Prisma.EnvioAuditoriaOrderByWithRelationInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaOrderByRelationAggregateInput
   enviosAuditoria?: Prisma.EnvioAuditoriaOrderByRelationAggregateInput
+  area?: Prisma.AreaOrderByWithRelationInput
+  envioResultado?: Prisma.EnvioAuditoriaOrderByWithRelationInput
+  versionFormulario?: Prisma.VersionFormularioOrderByWithRelationInput
   _relevance?: Prisma.ObjetivoAuditoriaOrderByRelevanceInput
 }
 
 export type ObjetivoAuditoriaWhereUniqueInput = Prisma.AtLeast<{
   id?: number
   envioResultadoId?: number
-  cicloAuditoriaId_areaId?: Prisma.ObjetivoAuditoriaCicloAuditoriaIdAreaIdCompoundUniqueInput
+  areaId_anio_mes_periodo?: Prisma.ObjetivoAuditoriaAreaIdAnioMesPeriodoCompoundUniqueInput
   AND?: Prisma.ObjetivoAuditoriaWhereInput | Prisma.ObjetivoAuditoriaWhereInput[]
   OR?: Prisma.ObjetivoAuditoriaWhereInput[]
   NOT?: Prisma.ObjetivoAuditoriaWhereInput | Prisma.ObjetivoAuditoriaWhereInput[]
-  cicloAuditoriaId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
-  formularioCicloId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
   areaId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  anio?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  mes?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  periodo?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  versionFormularioId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  iniciaEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
+  terminaEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
   codigoAreaSnapshot?: Prisma.StringFilter<"ObjetivoAuditoria"> | string
   nombreAreaSnapshot?: Prisma.StringFilter<"ObjetivoAuditoria"> | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFilter<"ObjetivoAuditoria"> | $Enums.TipoArea
+  canceladoEn?: Prisma.DateTimeNullableFilter<"ObjetivoAuditoria"> | Date | string | null
+  motivoCancelacion?: Prisma.StringNullableFilter<"ObjetivoAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
-  cicloAuditoria?: Prisma.XOR<Prisma.CicloAuditoriaScalarRelationFilter, Prisma.CicloAuditoriaWhereInput>
-  formularioCiclo?: Prisma.XOR<Prisma.FormularioCicloScalarRelationFilter, Prisma.FormularioCicloWhereInput>
-  area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
-  envioResultado?: Prisma.XOR<Prisma.EnvioAuditoriaNullableScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput> | null
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaListRelationFilter
   enviosAuditoria?: Prisma.EnvioAuditoriaListRelationFilter
-}, "id" | "envioResultadoId" | "cicloAuditoriaId_areaId">
+  area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
+  envioResultado?: Prisma.XOR<Prisma.EnvioAuditoriaNullableScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput> | null
+  versionFormulario?: Prisma.XOR<Prisma.VersionFormularioScalarRelationFilter, Prisma.VersionFormularioWhereInput>
+}, "id" | "envioResultadoId" | "areaId_anio_mes_periodo">
 
 export type ObjetivoAuditoriaOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  cicloAuditoriaId?: Prisma.SortOrder
-  formularioCicloId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  anio?: Prisma.SortOrder
+  mes?: Prisma.SortOrder
+  periodo?: Prisma.SortOrder
+  versionFormularioId?: Prisma.SortOrder
+  iniciaEn?: Prisma.SortOrder
+  terminaEn?: Prisma.SortOrder
   codigoAreaSnapshot?: Prisma.SortOrder
   nombreAreaSnapshot?: Prisma.SortOrder
   tipoAreaSnapshot?: Prisma.SortOrder
   envioResultadoId?: Prisma.SortOrderInput | Prisma.SortOrder
+  canceladoEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  motivoCancelacion?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   _count?: Prisma.ObjetivoAuditoriaCountOrderByAggregateInput
@@ -346,40 +417,58 @@ export type ObjetivoAuditoriaScalarWhereWithAggregatesInput = {
   OR?: Prisma.ObjetivoAuditoriaScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ObjetivoAuditoriaScalarWhereWithAggregatesInput | Prisma.ObjetivoAuditoriaScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"ObjetivoAuditoria"> | number
-  cicloAuditoriaId?: Prisma.IntWithAggregatesFilter<"ObjetivoAuditoria"> | number
-  formularioCicloId?: Prisma.IntWithAggregatesFilter<"ObjetivoAuditoria"> | number
   areaId?: Prisma.IntWithAggregatesFilter<"ObjetivoAuditoria"> | number
+  anio?: Prisma.IntWithAggregatesFilter<"ObjetivoAuditoria"> | number
+  mes?: Prisma.IntWithAggregatesFilter<"ObjetivoAuditoria"> | number
+  periodo?: Prisma.IntWithAggregatesFilter<"ObjetivoAuditoria"> | number
+  versionFormularioId?: Prisma.IntWithAggregatesFilter<"ObjetivoAuditoria"> | number
+  iniciaEn?: Prisma.DateTimeWithAggregatesFilter<"ObjetivoAuditoria"> | Date | string
+  terminaEn?: Prisma.DateTimeWithAggregatesFilter<"ObjetivoAuditoria"> | Date | string
   codigoAreaSnapshot?: Prisma.StringWithAggregatesFilter<"ObjetivoAuditoria"> | string
   nombreAreaSnapshot?: Prisma.StringWithAggregatesFilter<"ObjetivoAuditoria"> | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaWithAggregatesFilter<"ObjetivoAuditoria"> | $Enums.TipoArea
   envioResultadoId?: Prisma.IntNullableWithAggregatesFilter<"ObjetivoAuditoria"> | number | null
+  canceladoEn?: Prisma.DateTimeNullableWithAggregatesFilter<"ObjetivoAuditoria"> | Date | string | null
+  motivoCancelacion?: Prisma.StringNullableWithAggregatesFilter<"ObjetivoAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"ObjetivoAuditoria"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"ObjetivoAuditoria"> | Date | string
 }
 
 export type ObjetivoAuditoriaCreateInput = {
+  anio: number
+  mes: number
+  periodo: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  cicloAuditoria: Prisma.CicloAuditoriaCreateNestedOneWithoutObjetivosAuditoriaInput
-  formularioCiclo: Prisma.FormularioCicloCreateNestedOneWithoutObjetivosAuditoriaInput
-  area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
-  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
+  area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
+  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
+  versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateInput = {
   id?: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId?: number | null
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
@@ -387,28 +476,40 @@ export type ObjetivoAuditoriaUncheckedCreateInput = {
 }
 
 export type ObjetivoAuditoriaUpdateInput = {
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cicloAuditoria?: Prisma.CicloAuditoriaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  formularioCiclo?: Prisma.FormularioCicloUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
+  area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
+  versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  versionFormularioId?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
@@ -417,34 +518,53 @@ export type ObjetivoAuditoriaUncheckedUpdateInput = {
 
 export type ObjetivoAuditoriaCreateManyInput = {
   id?: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId?: number | null
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
 
 export type ObjetivoAuditoriaUpdateManyMutationInput = {
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  versionFormularioId?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -465,63 +585,87 @@ export type ObjetivoAuditoriaOrderByRelevanceInput = {
   search: string
 }
 
-export type ObjetivoAuditoriaCicloAuditoriaIdAreaIdCompoundUniqueInput = {
-  cicloAuditoriaId: number
+export type ObjetivoAuditoriaAreaIdAnioMesPeriodoCompoundUniqueInput = {
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
 }
 
 export type ObjetivoAuditoriaCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  cicloAuditoriaId?: Prisma.SortOrder
-  formularioCicloId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  anio?: Prisma.SortOrder
+  mes?: Prisma.SortOrder
+  periodo?: Prisma.SortOrder
+  versionFormularioId?: Prisma.SortOrder
+  iniciaEn?: Prisma.SortOrder
+  terminaEn?: Prisma.SortOrder
   codigoAreaSnapshot?: Prisma.SortOrder
   nombreAreaSnapshot?: Prisma.SortOrder
   tipoAreaSnapshot?: Prisma.SortOrder
   envioResultadoId?: Prisma.SortOrder
+  canceladoEn?: Prisma.SortOrder
+  motivoCancelacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
 
 export type ObjetivoAuditoriaAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  cicloAuditoriaId?: Prisma.SortOrder
-  formularioCicloId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  anio?: Prisma.SortOrder
+  mes?: Prisma.SortOrder
+  periodo?: Prisma.SortOrder
+  versionFormularioId?: Prisma.SortOrder
   envioResultadoId?: Prisma.SortOrder
 }
 
 export type ObjetivoAuditoriaMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  cicloAuditoriaId?: Prisma.SortOrder
-  formularioCicloId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  anio?: Prisma.SortOrder
+  mes?: Prisma.SortOrder
+  periodo?: Prisma.SortOrder
+  versionFormularioId?: Prisma.SortOrder
+  iniciaEn?: Prisma.SortOrder
+  terminaEn?: Prisma.SortOrder
   codigoAreaSnapshot?: Prisma.SortOrder
   nombreAreaSnapshot?: Prisma.SortOrder
   tipoAreaSnapshot?: Prisma.SortOrder
   envioResultadoId?: Prisma.SortOrder
+  canceladoEn?: Prisma.SortOrder
+  motivoCancelacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
 
 export type ObjetivoAuditoriaMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  cicloAuditoriaId?: Prisma.SortOrder
-  formularioCicloId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  anio?: Prisma.SortOrder
+  mes?: Prisma.SortOrder
+  periodo?: Prisma.SortOrder
+  versionFormularioId?: Prisma.SortOrder
+  iniciaEn?: Prisma.SortOrder
+  terminaEn?: Prisma.SortOrder
   codigoAreaSnapshot?: Prisma.SortOrder
   nombreAreaSnapshot?: Prisma.SortOrder
   tipoAreaSnapshot?: Prisma.SortOrder
   envioResultadoId?: Prisma.SortOrder
+  canceladoEn?: Prisma.SortOrder
+  motivoCancelacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
 
 export type ObjetivoAuditoriaSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  cicloAuditoriaId?: Prisma.SortOrder
-  formularioCicloId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  anio?: Prisma.SortOrder
+  mes?: Prisma.SortOrder
+  periodo?: Prisma.SortOrder
+  versionFormularioId?: Prisma.SortOrder
   envioResultadoId?: Prisma.SortOrder
 }
 
@@ -577,88 +721,54 @@ export type ObjetivoAuditoriaUncheckedUpdateManyWithoutAreaNestedInput = {
   deleteMany?: Prisma.ObjetivoAuditoriaScalarWhereInput | Prisma.ObjetivoAuditoriaScalarWhereInput[]
 }
 
-export type ObjetivoAuditoriaCreateNestedManyWithoutCicloAuditoriaInput = {
-  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput> | Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput[]
-  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput[]
-  createMany?: Prisma.ObjetivoAuditoriaCreateManyCicloAuditoriaInputEnvelope
+export type ObjetivoAuditoriaCreateNestedManyWithoutVersionFormularioInput = {
+  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput> | Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput[]
+  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput[]
+  createMany?: Prisma.ObjetivoAuditoriaCreateManyVersionFormularioInputEnvelope
   connect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
 }
 
-export type ObjetivoAuditoriaUncheckedCreateNestedManyWithoutCicloAuditoriaInput = {
-  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput> | Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput[]
-  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput[]
-  createMany?: Prisma.ObjetivoAuditoriaCreateManyCicloAuditoriaInputEnvelope
+export type ObjetivoAuditoriaUncheckedCreateNestedManyWithoutVersionFormularioInput = {
+  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput> | Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput[]
+  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput[]
+  createMany?: Prisma.ObjetivoAuditoriaCreateManyVersionFormularioInputEnvelope
   connect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
 }
 
-export type ObjetivoAuditoriaUpdateManyWithoutCicloAuditoriaNestedInput = {
-  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput> | Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput[]
-  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput[]
-  upsert?: Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutCicloAuditoriaInput[]
-  createMany?: Prisma.ObjetivoAuditoriaCreateManyCicloAuditoriaInputEnvelope
+export type ObjetivoAuditoriaUpdateManyWithoutVersionFormularioNestedInput = {
+  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput> | Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput[]
+  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput[]
+  upsert?: Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutVersionFormularioInput[]
+  createMany?: Prisma.ObjetivoAuditoriaCreateManyVersionFormularioInputEnvelope
   set?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
   disconnect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
   delete?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
   connect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  update?: Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutCicloAuditoriaInput[]
-  updateMany?: Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutCicloAuditoriaInput[]
+  update?: Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutVersionFormularioInput[]
+  updateMany?: Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutVersionFormularioInput[]
   deleteMany?: Prisma.ObjetivoAuditoriaScalarWhereInput | Prisma.ObjetivoAuditoriaScalarWhereInput[]
 }
 
-export type ObjetivoAuditoriaUncheckedUpdateManyWithoutCicloAuditoriaNestedInput = {
-  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput> | Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput[]
-  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput[]
-  upsert?: Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutCicloAuditoriaInput[]
-  createMany?: Prisma.ObjetivoAuditoriaCreateManyCicloAuditoriaInputEnvelope
+export type ObjetivoAuditoriaUncheckedUpdateManyWithoutVersionFormularioNestedInput = {
+  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput> | Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput[]
+  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput[]
+  upsert?: Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutVersionFormularioInput[]
+  createMany?: Prisma.ObjetivoAuditoriaCreateManyVersionFormularioInputEnvelope
   set?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
   disconnect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
   delete?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
   connect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  update?: Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutCicloAuditoriaInput[]
-  updateMany?: Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutCicloAuditoriaInput | Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutCicloAuditoriaInput[]
+  update?: Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutVersionFormularioInput[]
+  updateMany?: Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutVersionFormularioInput | Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutVersionFormularioInput[]
   deleteMany?: Prisma.ObjetivoAuditoriaScalarWhereInput | Prisma.ObjetivoAuditoriaScalarWhereInput[]
 }
 
-export type ObjetivoAuditoriaCreateNestedManyWithoutFormularioCicloInput = {
-  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput> | Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput[]
-  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput[]
-  createMany?: Prisma.ObjetivoAuditoriaCreateManyFormularioCicloInputEnvelope
-  connect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-}
-
-export type ObjetivoAuditoriaUncheckedCreateNestedManyWithoutFormularioCicloInput = {
-  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput> | Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput[]
-  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput[]
-  createMany?: Prisma.ObjetivoAuditoriaCreateManyFormularioCicloInputEnvelope
-  connect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-}
-
-export type ObjetivoAuditoriaUpdateManyWithoutFormularioCicloNestedInput = {
-  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput> | Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput[]
-  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput[]
-  upsert?: Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutFormularioCicloInput[]
-  createMany?: Prisma.ObjetivoAuditoriaCreateManyFormularioCicloInputEnvelope
-  set?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  disconnect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  delete?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  connect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  update?: Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutFormularioCicloInput[]
-  updateMany?: Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutFormularioCicloInput[]
-  deleteMany?: Prisma.ObjetivoAuditoriaScalarWhereInput | Prisma.ObjetivoAuditoriaScalarWhereInput[]
-}
-
-export type ObjetivoAuditoriaUncheckedUpdateManyWithoutFormularioCicloNestedInput = {
-  create?: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput> | Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput[] | Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput[]
-  connectOrCreate?: Prisma.ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput[]
-  upsert?: Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaUpsertWithWhereUniqueWithoutFormularioCicloInput[]
-  createMany?: Prisma.ObjetivoAuditoriaCreateManyFormularioCicloInputEnvelope
-  set?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  disconnect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  delete?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  connect?: Prisma.ObjetivoAuditoriaWhereUniqueInput | Prisma.ObjetivoAuditoriaWhereUniqueInput[]
-  update?: Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaUpdateWithWhereUniqueWithoutFormularioCicloInput[]
-  updateMany?: Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutFormularioCicloInput | Prisma.ObjetivoAuditoriaUpdateManyWithWhereWithoutFormularioCicloInput[]
-  deleteMany?: Prisma.ObjetivoAuditoriaScalarWhereInput | Prisma.ObjetivoAuditoriaScalarWhereInput[]
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type ObjetivoAuditoriaCreateNestedOneWithoutAsignacionesAuditoriaInput = {
@@ -722,26 +832,38 @@ export type ObjetivoAuditoriaUncheckedUpdateOneWithoutEnvioResultadoNestedInput 
 }
 
 export type ObjetivoAuditoriaCreateWithoutAreaInput = {
+  anio: number
+  mes: number
+  periodo: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  cicloAuditoria: Prisma.CicloAuditoriaCreateNestedOneWithoutObjetivosAuditoriaInput
-  formularioCiclo: Prisma.FormularioCicloCreateNestedOneWithoutObjetivosAuditoriaInput
-  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
+  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
+  versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateWithoutAreaInput = {
   id?: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId?: number | null
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
@@ -779,145 +901,122 @@ export type ObjetivoAuditoriaScalarWhereInput = {
   OR?: Prisma.ObjetivoAuditoriaScalarWhereInput[]
   NOT?: Prisma.ObjetivoAuditoriaScalarWhereInput | Prisma.ObjetivoAuditoriaScalarWhereInput[]
   id?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
-  cicloAuditoriaId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
-  formularioCicloId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
   areaId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  anio?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  mes?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  periodo?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  versionFormularioId?: Prisma.IntFilter<"ObjetivoAuditoria"> | number
+  iniciaEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
+  terminaEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
   codigoAreaSnapshot?: Prisma.StringFilter<"ObjetivoAuditoria"> | string
   nombreAreaSnapshot?: Prisma.StringFilter<"ObjetivoAuditoria"> | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFilter<"ObjetivoAuditoria"> | $Enums.TipoArea
   envioResultadoId?: Prisma.IntNullableFilter<"ObjetivoAuditoria"> | number | null
+  canceladoEn?: Prisma.DateTimeNullableFilter<"ObjetivoAuditoria"> | Date | string | null
+  motivoCancelacion?: Prisma.StringNullableFilter<"ObjetivoAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"ObjetivoAuditoria"> | Date | string
 }
 
-export type ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaCreateWithoutVersionFormularioInput = {
+  anio: number
+  mes: number
+  periodo: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  formularioCiclo: Prisma.FormularioCicloCreateNestedOneWithoutObjetivosAuditoriaInput
-  area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
-  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
+  area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
+  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
 }
 
-export type ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput = {
   id?: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId?: number | null
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
   enviosAuditoria?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
 }
 
-export type ObjetivoAuditoriaCreateOrConnectWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaCreateOrConnectWithoutVersionFormularioInput = {
   where: Prisma.ObjetivoAuditoriaWhereUniqueInput
-  create: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput>
+  create: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput>
 }
 
-export type ObjetivoAuditoriaCreateManyCicloAuditoriaInputEnvelope = {
-  data: Prisma.ObjetivoAuditoriaCreateManyCicloAuditoriaInput | Prisma.ObjetivoAuditoriaCreateManyCicloAuditoriaInput[]
+export type ObjetivoAuditoriaCreateManyVersionFormularioInputEnvelope = {
+  data: Prisma.ObjetivoAuditoriaCreateManyVersionFormularioInput | Prisma.ObjetivoAuditoriaCreateManyVersionFormularioInput[]
   skipDuplicates?: boolean
 }
 
-export type ObjetivoAuditoriaUpsertWithWhereUniqueWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaUpsertWithWhereUniqueWithoutVersionFormularioInput = {
   where: Prisma.ObjetivoAuditoriaWhereUniqueInput
-  update: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateWithoutCicloAuditoriaInput, Prisma.ObjetivoAuditoriaUncheckedUpdateWithoutCicloAuditoriaInput>
-  create: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutCicloAuditoriaInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutCicloAuditoriaInput>
+  update: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateWithoutVersionFormularioInput, Prisma.ObjetivoAuditoriaUncheckedUpdateWithoutVersionFormularioInput>
+  create: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutVersionFormularioInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutVersionFormularioInput>
 }
 
-export type ObjetivoAuditoriaUpdateWithWhereUniqueWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaUpdateWithWhereUniqueWithoutVersionFormularioInput = {
   where: Prisma.ObjetivoAuditoriaWhereUniqueInput
-  data: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateWithoutCicloAuditoriaInput, Prisma.ObjetivoAuditoriaUncheckedUpdateWithoutCicloAuditoriaInput>
+  data: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateWithoutVersionFormularioInput, Prisma.ObjetivoAuditoriaUncheckedUpdateWithoutVersionFormularioInput>
 }
 
-export type ObjetivoAuditoriaUpdateManyWithWhereWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaUpdateManyWithWhereWithoutVersionFormularioInput = {
   where: Prisma.ObjetivoAuditoriaScalarWhereInput
-  data: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateManyMutationInput, Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutCicloAuditoriaInput>
-}
-
-export type ObjetivoAuditoriaCreateWithoutFormularioCicloInput = {
-  codigoAreaSnapshot: string
-  nombreAreaSnapshot: string
-  tipoAreaSnapshot: $Enums.TipoArea
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  cicloAuditoria: Prisma.CicloAuditoriaCreateNestedOneWithoutObjetivosAuditoriaInput
-  area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
-  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
-  asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
-  enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
-}
-
-export type ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput = {
-  id?: number
-  cicloAuditoriaId: number
-  areaId: number
-  codigoAreaSnapshot: string
-  nombreAreaSnapshot: string
-  tipoAreaSnapshot: $Enums.TipoArea
-  envioResultadoId?: number | null
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
-  enviosAuditoria?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
-}
-
-export type ObjetivoAuditoriaCreateOrConnectWithoutFormularioCicloInput = {
-  where: Prisma.ObjetivoAuditoriaWhereUniqueInput
-  create: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput>
-}
-
-export type ObjetivoAuditoriaCreateManyFormularioCicloInputEnvelope = {
-  data: Prisma.ObjetivoAuditoriaCreateManyFormularioCicloInput | Prisma.ObjetivoAuditoriaCreateManyFormularioCicloInput[]
-  skipDuplicates?: boolean
-}
-
-export type ObjetivoAuditoriaUpsertWithWhereUniqueWithoutFormularioCicloInput = {
-  where: Prisma.ObjetivoAuditoriaWhereUniqueInput
-  update: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateWithoutFormularioCicloInput, Prisma.ObjetivoAuditoriaUncheckedUpdateWithoutFormularioCicloInput>
-  create: Prisma.XOR<Prisma.ObjetivoAuditoriaCreateWithoutFormularioCicloInput, Prisma.ObjetivoAuditoriaUncheckedCreateWithoutFormularioCicloInput>
-}
-
-export type ObjetivoAuditoriaUpdateWithWhereUniqueWithoutFormularioCicloInput = {
-  where: Prisma.ObjetivoAuditoriaWhereUniqueInput
-  data: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateWithoutFormularioCicloInput, Prisma.ObjetivoAuditoriaUncheckedUpdateWithoutFormularioCicloInput>
-}
-
-export type ObjetivoAuditoriaUpdateManyWithWhereWithoutFormularioCicloInput = {
-  where: Prisma.ObjetivoAuditoriaScalarWhereInput
-  data: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateManyMutationInput, Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutFormularioCicloInput>
+  data: Prisma.XOR<Prisma.ObjetivoAuditoriaUpdateManyMutationInput, Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutVersionFormularioInput>
 }
 
 export type ObjetivoAuditoriaCreateWithoutAsignacionesAuditoriaInput = {
+  anio: number
+  mes: number
+  periodo: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  cicloAuditoria: Prisma.CicloAuditoriaCreateNestedOneWithoutObjetivosAuditoriaInput
-  formularioCiclo: Prisma.FormularioCicloCreateNestedOneWithoutObjetivosAuditoriaInput
+  enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
   envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
-  enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
+  versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateWithoutAsignacionesAuditoriaInput = {
   id?: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId?: number | null
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   enviosAuditoria?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
@@ -940,54 +1039,78 @@ export type ObjetivoAuditoriaUpdateToOneWithWhereWithoutAsignacionesAuditoriaInp
 }
 
 export type ObjetivoAuditoriaUpdateWithoutAsignacionesAuditoriaInput = {
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cicloAuditoria?: Prisma.CicloAuditoriaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  formularioCiclo?: Prisma.FormularioCicloUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
   envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
-  enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
+  versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateWithoutAsignacionesAuditoriaInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  versionFormularioId?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   enviosAuditoria?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
 }
 
 export type ObjetivoAuditoriaCreateWithoutEnviosAuditoriaInput = {
+  anio: number
+  mes: number
+  periodo: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  cicloAuditoria: Prisma.CicloAuditoriaCreateNestedOneWithoutObjetivosAuditoriaInput
-  formularioCiclo: Prisma.FormularioCicloCreateNestedOneWithoutObjetivosAuditoriaInput
+  asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
   envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
-  asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
+  versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateWithoutEnviosAuditoriaInput = {
   id?: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId?: number | null
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
@@ -999,26 +1122,38 @@ export type ObjetivoAuditoriaCreateOrConnectWithoutEnviosAuditoriaInput = {
 }
 
 export type ObjetivoAuditoriaCreateWithoutEnvioResultadoInput = {
+  anio: number
+  mes: number
+  periodo: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  cicloAuditoria: Prisma.CicloAuditoriaCreateNestedOneWithoutObjetivosAuditoriaInput
-  formularioCiclo: Prisma.FormularioCicloCreateNestedOneWithoutObjetivosAuditoriaInput
-  area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
+  area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
+  versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateWithoutEnvioResultadoInput = {
   id?: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput
@@ -1042,27 +1177,39 @@ export type ObjetivoAuditoriaUpdateToOneWithWhereWithoutEnviosAuditoriaInput = {
 }
 
 export type ObjetivoAuditoriaUpdateWithoutEnviosAuditoriaInput = {
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cicloAuditoria?: Prisma.CicloAuditoriaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  formularioCiclo?: Prisma.FormularioCicloUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
   envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
-  asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
+  versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateWithoutEnviosAuditoriaInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  versionFormularioId?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
@@ -1080,26 +1227,38 @@ export type ObjetivoAuditoriaUpdateToOneWithWhereWithoutEnvioResultadoInput = {
 }
 
 export type ObjetivoAuditoriaUpdateWithoutEnvioResultadoInput = {
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cicloAuditoria?: Prisma.CicloAuditoriaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  formularioCiclo?: Prisma.FormularioCicloUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
+  area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateWithoutEnvioResultadoInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  versionFormularioId?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
@@ -1108,37 +1267,55 @@ export type ObjetivoAuditoriaUncheckedUpdateWithoutEnvioResultadoInput = {
 
 export type ObjetivoAuditoriaCreateManyAreaInput = {
   id?: number
-  cicloAuditoriaId: number
-  formularioCicloId: number
+  anio: number
+  mes: number
+  periodo: number
+  versionFormularioId: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId?: number | null
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
 
 export type ObjetivoAuditoriaUpdateWithoutAreaInput = {
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cicloAuditoria?: Prisma.CicloAuditoriaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  formularioCiclo?: Prisma.FormularioCicloUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
+  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
+  versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateWithoutAreaInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  versionFormularioId?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
@@ -1147,114 +1324,93 @@ export type ObjetivoAuditoriaUncheckedUpdateWithoutAreaInput = {
 
 export type ObjetivoAuditoriaUncheckedUpdateManyWithoutAreaInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  versionFormularioId?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ObjetivoAuditoriaCreateManyCicloAuditoriaInput = {
+export type ObjetivoAuditoriaCreateManyVersionFormularioInput = {
   id?: number
-  formularioCicloId: number
   areaId: number
+  anio: number
+  mes: number
+  periodo: number
+  iniciaEn: Date | string
+  terminaEn: Date | string
   codigoAreaSnapshot: string
   nombreAreaSnapshot: string
   tipoAreaSnapshot: $Enums.TipoArea
   envioResultadoId?: number | null
+  canceladoEn?: Date | string | null
+  motivoCancelacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
 
-export type ObjetivoAuditoriaUpdateWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaUpdateWithoutVersionFormularioInput = {
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  formularioCiclo?: Prisma.FormularioCicloUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
+  area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
 }
 
-export type ObjetivoAuditoriaUncheckedUpdateWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaUncheckedUpdateWithoutVersionFormularioInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
   enviosAuditoria?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
 }
 
-export type ObjetivoAuditoriaUncheckedUpdateManyWithoutCicloAuditoriaInput = {
+export type ObjetivoAuditoriaUncheckedUpdateManyWithoutVersionFormularioInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  formularioCicloId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  periodo?: Prisma.IntFieldUpdateOperationsInput | number
+  iniciaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminaEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
   tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type ObjetivoAuditoriaCreateManyFormularioCicloInput = {
-  id?: number
-  cicloAuditoriaId: number
-  areaId: number
-  codigoAreaSnapshot: string
-  nombreAreaSnapshot: string
-  tipoAreaSnapshot: $Enums.TipoArea
-  envioResultadoId?: number | null
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-}
-
-export type ObjetivoAuditoriaUpdateWithoutFormularioCicloInput = {
-  codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
-  nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
-  tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cicloAuditoria?: Prisma.CicloAuditoriaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
-  asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
-  enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
-}
-
-export type ObjetivoAuditoriaUncheckedUpdateWithoutFormularioCicloInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  areaId?: Prisma.IntFieldUpdateOperationsInput | number
-  codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
-  nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
-  tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
-  enviosAuditoria?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput
-}
-
-export type ObjetivoAuditoriaUncheckedUpdateManyWithoutFormularioCicloInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  cicloAuditoriaId?: Prisma.IntFieldUpdateOperationsInput | number
-  areaId?: Prisma.IntFieldUpdateOperationsInput | number
-  codigoAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
-  nombreAreaSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
-  tipoAreaSnapshot?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  envioResultadoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  canceladoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  motivoCancelacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1301,21 +1457,26 @@ export type ObjetivoAuditoriaCountOutputTypeCountEnviosAuditoriaArgs<ExtArgs ext
 
 export type ObjetivoAuditoriaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  cicloAuditoriaId?: boolean
-  formularioCicloId?: boolean
   areaId?: boolean
+  anio?: boolean
+  mes?: boolean
+  periodo?: boolean
+  versionFormularioId?: boolean
+  iniciaEn?: boolean
+  terminaEn?: boolean
   codigoAreaSnapshot?: boolean
   nombreAreaSnapshot?: boolean
   tipoAreaSnapshot?: boolean
   envioResultadoId?: boolean
+  canceladoEn?: boolean
+  motivoCancelacion?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
-  cicloAuditoria?: boolean | Prisma.CicloAuditoriaDefaultArgs<ExtArgs>
-  formularioCiclo?: boolean | Prisma.FormularioCicloDefaultArgs<ExtArgs>
-  area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
-  envioResultado?: boolean | Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>
   asignacionesAuditoria?: boolean | Prisma.ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs>
   enviosAuditoria?: boolean | Prisma.ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs>
+  area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
+  envioResultado?: boolean | Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>
+  versionFormulario?: boolean | Prisma.VersionFormularioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.ObjetivoAuditoriaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["objetivoAuditoria"]>
 
@@ -1323,47 +1484,57 @@ export type ObjetivoAuditoriaSelect<ExtArgs extends runtime.Types.Extensions.Int
 
 export type ObjetivoAuditoriaSelectScalar = {
   id?: boolean
-  cicloAuditoriaId?: boolean
-  formularioCicloId?: boolean
   areaId?: boolean
+  anio?: boolean
+  mes?: boolean
+  periodo?: boolean
+  versionFormularioId?: boolean
+  iniciaEn?: boolean
+  terminaEn?: boolean
   codigoAreaSnapshot?: boolean
   nombreAreaSnapshot?: boolean
   tipoAreaSnapshot?: boolean
   envioResultadoId?: boolean
+  canceladoEn?: boolean
+  motivoCancelacion?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type ObjetivoAuditoriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cicloAuditoriaId" | "formularioCicloId" | "areaId" | "codigoAreaSnapshot" | "nombreAreaSnapshot" | "tipoAreaSnapshot" | "envioResultadoId" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["objetivoAuditoria"]>
+export type ObjetivoAuditoriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "areaId" | "anio" | "mes" | "periodo" | "versionFormularioId" | "iniciaEn" | "terminaEn" | "codigoAreaSnapshot" | "nombreAreaSnapshot" | "tipoAreaSnapshot" | "envioResultadoId" | "canceladoEn" | "motivoCancelacion" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["objetivoAuditoria"]>
 export type ObjetivoAuditoriaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cicloAuditoria?: boolean | Prisma.CicloAuditoriaDefaultArgs<ExtArgs>
-  formularioCiclo?: boolean | Prisma.FormularioCicloDefaultArgs<ExtArgs>
-  area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
-  envioResultado?: boolean | Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>
   asignacionesAuditoria?: boolean | Prisma.ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs>
   enviosAuditoria?: boolean | Prisma.ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs>
+  area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
+  envioResultado?: boolean | Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>
+  versionFormulario?: boolean | Prisma.VersionFormularioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.ObjetivoAuditoriaCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $ObjetivoAuditoriaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ObjetivoAuditoria"
   objects: {
-    cicloAuditoria: Prisma.$CicloAuditoriaPayload<ExtArgs>
-    formularioCiclo: Prisma.$FormularioCicloPayload<ExtArgs>
-    area: Prisma.$AreaPayload<ExtArgs>
-    envioResultado: Prisma.$EnvioAuditoriaPayload<ExtArgs> | null
     asignacionesAuditoria: Prisma.$AsignacionAuditoriaPayload<ExtArgs>[]
     enviosAuditoria: Prisma.$EnvioAuditoriaPayload<ExtArgs>[]
+    area: Prisma.$AreaPayload<ExtArgs>
+    envioResultado: Prisma.$EnvioAuditoriaPayload<ExtArgs> | null
+    versionFormulario: Prisma.$VersionFormularioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    cicloAuditoriaId: number
-    formularioCicloId: number
     areaId: number
+    anio: number
+    mes: number
+    periodo: number
+    versionFormularioId: number
+    iniciaEn: Date
+    terminaEn: Date
     codigoAreaSnapshot: string
     nombreAreaSnapshot: string
     tipoAreaSnapshot: $Enums.TipoArea
     envioResultadoId: number | null
+    canceladoEn: Date | null
+    motivoCancelacion: string | null
     creadoEn: Date
     actualizadoEn: Date
   }, ExtArgs["result"]["objetivoAuditoria"]>
@@ -1706,12 +1877,11 @@ readonly fields: ObjetivoAuditoriaFieldRefs;
  */
 export interface Prisma__ObjetivoAuditoriaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  cicloAuditoria<T extends Prisma.CicloAuditoriaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CicloAuditoriaDefaultArgs<ExtArgs>>): Prisma.Prisma__CicloAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$CicloAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  formularioCiclo<T extends Prisma.FormularioCicloDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FormularioCicloDefaultArgs<ExtArgs>>): Prisma.Prisma__FormularioCicloClient<runtime.Types.Result.GetResult<Prisma.$FormularioCicloPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  area<T extends Prisma.AreaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AreaDefaultArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  envioResultado<T extends Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>>): Prisma.Prisma__EnvioAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   asignacionesAuditoria<T extends Prisma.ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   enviosAuditoria<T extends Prisma.ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  area<T extends Prisma.AreaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AreaDefaultArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  envioResultado<T extends Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>>): Prisma.Prisma__EnvioAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  versionFormulario<T extends Prisma.VersionFormularioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VersionFormularioDefaultArgs<ExtArgs>>): Prisma.Prisma__VersionFormularioClient<runtime.Types.Result.GetResult<Prisma.$VersionFormularioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1742,13 +1912,19 @@ export interface Prisma__ObjetivoAuditoriaClient<T, Null = never, ExtArgs extend
  */
 export interface ObjetivoAuditoriaFieldRefs {
   readonly id: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
-  readonly cicloAuditoriaId: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
-  readonly formularioCicloId: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
   readonly areaId: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
+  readonly anio: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
+  readonly mes: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
+  readonly periodo: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
+  readonly versionFormularioId: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
+  readonly iniciaEn: Prisma.FieldRef<"ObjetivoAuditoria", 'DateTime'>
+  readonly terminaEn: Prisma.FieldRef<"ObjetivoAuditoria", 'DateTime'>
   readonly codigoAreaSnapshot: Prisma.FieldRef<"ObjetivoAuditoria", 'String'>
   readonly nombreAreaSnapshot: Prisma.FieldRef<"ObjetivoAuditoria", 'String'>
   readonly tipoAreaSnapshot: Prisma.FieldRef<"ObjetivoAuditoria", 'TipoArea'>
   readonly envioResultadoId: Prisma.FieldRef<"ObjetivoAuditoria", 'Int'>
+  readonly canceladoEn: Prisma.FieldRef<"ObjetivoAuditoria", 'DateTime'>
+  readonly motivoCancelacion: Prisma.FieldRef<"ObjetivoAuditoria", 'String'>
   readonly creadoEn: Prisma.FieldRef<"ObjetivoAuditoria", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"ObjetivoAuditoria", 'DateTime'>
 }
@@ -2099,25 +2275,6 @@ export type ObjetivoAuditoriaDeleteManyArgs<ExtArgs extends runtime.Types.Extens
 }
 
 /**
- * ObjetivoAuditoria.envioResultado
- */
-export type ObjetivoAuditoria$envioResultadoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the EnvioAuditoria
-   */
-  select?: Prisma.EnvioAuditoriaSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the EnvioAuditoria
-   */
-  omit?: Prisma.EnvioAuditoriaOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.EnvioAuditoriaInclude<ExtArgs> | null
-  where?: Prisma.EnvioAuditoriaWhereInput
-}
-
-/**
  * ObjetivoAuditoria.asignacionesAuditoria
  */
 export type ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2163,6 +2320,25 @@ export type ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs extends runtime.Types.
   take?: number
   skip?: number
   distinct?: Prisma.EnvioAuditoriaScalarFieldEnum | Prisma.EnvioAuditoriaScalarFieldEnum[]
+}
+
+/**
+ * ObjetivoAuditoria.envioResultado
+ */
+export type ObjetivoAuditoria$envioResultadoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EnvioAuditoria
+   */
+  select?: Prisma.EnvioAuditoriaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EnvioAuditoria
+   */
+  omit?: Prisma.EnvioAuditoriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EnvioAuditoriaInclude<ExtArgs> | null
+  where?: Prisma.EnvioAuditoriaWhereInput
 }
 
 /**

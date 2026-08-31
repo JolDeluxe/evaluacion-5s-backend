@@ -2,12 +2,15 @@ import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../../db';
 import { env } from '../../config/env';
+import { construirPeriodoCompat } from '../../utils/periodos';
 import { responder } from '../../utils/respuesta';
+import { assertPuedeVerEnvioResultado } from './servicio';
 
 const esquemaId = z.object({ id: z.coerce.number().int().positive() });
 
 export const obtenerDetalleEnvio = async (req: Request, res: Response) => {
   const { id } = esquemaId.parse(req.params);
+  await assertPuedeVerEnvioResultado(prisma, req.autenticacion, id);
 
   const envio = await prisma.envioAuditoria.findUniqueOrThrow({
     where: { id },
@@ -15,14 +18,9 @@ export const obtenerDetalleEnvio = async (req: Request, res: Response) => {
       objetivoAuditoria: {
         include: {
           area: true,
-          cicloAuditoria: true,
-          formularioCiclo: {
+          versionFormulario: {
             include: {
-              versionFormulario: {
-                include: {
-                  formulario: true,
-                },
-              },
+              formulario: true,
             },
           },
         },
@@ -47,19 +45,12 @@ export const obtenerDetalleEnvio = async (req: Request, res: Response) => {
     tipo: envio.objetivoAuditoria.area.tipo,
   };
 
-  const ciclo = {
-    id: envio.objetivoAuditoria.cicloAuditoria.id,
-    anio: envio.objetivoAuditoria.cicloAuditoria.anio,
-    mes: envio.objetivoAuditoria.cicloAuditoria.mes,
-    numeroCorte: envio.objetivoAuditoria.cicloAuditoria.numeroCorte,
-    iniciaEn: envio.objetivoAuditoria.cicloAuditoria.iniciaEn,
-    terminaEn: envio.objetivoAuditoria.cicloAuditoria.terminaEn,
-  };
+  const ciclo = construirPeriodoCompat(envio.objetivoAuditoria);
 
   const formulario = {
-    id: envio.objetivoAuditoria.formularioCiclo.versionFormulario.formulario.id,
-    nombre: envio.objetivoAuditoria.formularioCiclo.versionFormulario.formulario.nombre,
-    version: envio.objetivoAuditoria.formularioCiclo.versionFormulario.numeroVersion,
+    id: envio.objetivoAuditoria.versionFormulario.formulario.id,
+    nombre: envio.objetivoAuditoria.versionFormulario.formulario.nombre,
+    version: envio.objetivoAuditoria.versionFormulario.numeroVersion,
   };
 
   const respuestas = envio.respuestasAuditoria.map((resp) => {

@@ -6,7 +6,6 @@ import { env } from '../src/config/env';
 import { prisma } from '../src/db';
 import {
   AlcanceFormulario,
-  EstadoCicloAuditoria,
   OrigenEnvioAuditoria,
   RolUsuario,
   TipoArea,
@@ -430,9 +429,12 @@ function parseUnionImagen(
 }
 
 function obtenerUltimoDiaMes(anio: number, mes: number): number {
+  if (mes === 2) {
+    return 28;
+  }
+
   return new Date(anio, mes, 0).getDate();
 }
-
 function limitesPeriodo(
   anio: number,
   mes: number,
@@ -1354,9 +1356,9 @@ async function subirImagen(
   }
 }
 
-async function asegurarCiclo(
+function construirContextoPeriodo(
   registro: RegistroPrincipal,
-  creadoPorId: number,
+  versionFormularioId: number,
 ) {
   const limites = limitesPeriodo(
     registro.anio,
@@ -1364,72 +1366,16 @@ async function asegurarCiclo(
     registro.periodo,
   );
 
-  let ciclo = await prisma.cicloAuditoria.findFirst({
-    where: {
-      anio: registro.anio,
-      mes: registro.mes,
-      numeroCorte: registro.periodo,
-    },
-  });
-
-  if (!ciclo) {
-    ciclo = await prisma.cicloAuditoria.create({
-      data: {
-        anio: registro.anio,
-        mes: registro.mes,
-        numeroCorte: registro.periodo,
-        nombre: `HISTÓRICO ESTRUCTURADO ${registro.anio}-${String(
-          registro.mes,
-        ).padStart(2, '0')} P${registro.periodo}`,
-        estado: EstadoCicloAuditoria.ARCHIVADO,
-        iniciaEn: limites.iniciaEn,
-        terminaEn: limites.terminaEn,
-        publicadoEn: limites.iniciaEn,
-        cerradoEn: limites.terminaEn,
-        creadoPorId,
-      },
-    });
-  }
-
   return {
-    ciclo,
-    limites,
+    anio: registro.anio,
+    mes: registro.mes,
+    periodo: registro.periodo,
+    versionFormularioId,
+    iniciaEn: limites.iniciaEn,
+    terminaEn: limites.terminaEn,
+    fechaTecnica: limites.fechaTecnica,
   };
 }
-
-async function asegurarFormularioCiclo(
-  cicloId: number,
-  config: ConfigTipo,
-  versionFormularioId: number,
-) {
-  const existente = await prisma.formularioCiclo.findFirst({
-    where: {
-      cicloAuditoriaId: cicloId,
-      tipoArea: config.tipoArea,
-    },
-  });
-
-  if (existente) {
-    if (
-      existente.versionFormularioId !== versionFormularioId
-    ) {
-      throw new Error(
-        `Ciclo #${cicloId} ya apunta a otra versión ${config.tipoArea}.`,
-      );
-    }
-
-    return existente;
-  }
-
-  return prisma.formularioCiclo.create({
-    data: {
-      cicloAuditoriaId: cicloId,
-      tipoArea: config.tipoArea,
-      versionFormularioId,
-    },
-  });
-}
-
 function scoreSnapshot(
   registro: RegistroPrincipal,
   respuestas: RespuestaPreparada[],
@@ -1623,16 +1569,10 @@ async function main() {
   let fotosOmitidasPorFaltaDetalle = 0;
   let fallidos = 0;
 
-  const ciclosCache = new Map<
+  const periodosCache = new Map<
     string,
-    Awaited<ReturnType<typeof asegurarCiclo>>
+    ReturnType<typeof construirContextoPeriodo>
   >();
-
-  const formularioCicloCache = new Map<
-    string,
-    Awaited<ReturnType<typeof asegurarFormularioCiclo>>
-  >();
-
   const ordenados = [...principal.periodos].sort(
     (a, b) =>
       a.anio - b.anio ||
@@ -1734,44 +1674,23 @@ async function main() {
         }
       }
 
-      const cicloKey = [
+      const periodoKey = [
         registro.anio,
         registro.mes,
         registro.periodo,
+        version.version.id,
       ].join('|');
 
-      let contextoCiclo = ciclosCache.get(cicloKey);
+      let contextoPeriodo = periodosCache.get(periodoKey);
 
-      if (!contextoCiclo) {
-        contextoCiclo = await asegurarCiclo(
+      if (!contextoPeriodo) {
+        contextoPeriodo = construirContextoPeriodo(
           registro,
-          creador.id,
-        );
-
-        ciclosCache.set(cicloKey, contextoCiclo);
-      }
-
-      const formularioCicloKey = [
-        contextoCiclo.ciclo.id,
-        registro.tipo.tipoArea,
-      ].join('|');
-
-      let formularioCiclo =
-        formularioCicloCache.get(formularioCicloKey);
-
-      if (!formularioCiclo) {
-        formularioCiclo = await asegurarFormularioCiclo(
-          contextoCiclo.ciclo.id,
-          registro.tipo,
           version.version.id,
         );
 
-        formularioCicloCache.set(
-          formularioCicloKey,
-          formularioCiclo,
-        );
+        periodosCache.set(periodoKey, contextoPeriodo);
       }
-
       const score = scoreSnapshot(
         registro,
         preparado.respuestas,
@@ -1779,26 +1698,48 @@ async function main() {
 
       await prisma.$transaction(
         async (tx) => {
-          let objetivo = await tx.objetivoAuditoria.findFirst({
+          let objetivo = await tx.objetivoAuditoria.findUnique({
             where: {
-              cicloAuditoriaId: contextoCiclo!.ciclo.id,
-              areaId: area.id,
+              areaId_anio_mes_periodo: {
+                areaId: area.id,
+                anio: contextoPeriodo.anio,
+                mes: contextoPeriodo.mes,
+                periodo: contextoPeriodo.periodo,
+              },
             },
           });
+
+          if (objetivo) {
+            const fechasCoinciden =
+              Math.abs(objetivo.iniciaEn.getTime() - contextoPeriodo.iniciaEn.getTime()) <= 1000
+              && Math.abs(objetivo.terminaEn.getTime() - contextoPeriodo.terminaEn.getTime()) <= 1000;
+
+            if (
+              objetivo.versionFormularioId !== contextoPeriodo.versionFormularioId
+              || !fechasCoinciden
+            ) {
+              throw new Error(
+                `Objetivo #${objetivo.id} ya existe con otra versión o fechas para ${contextoPeriodo.anio}-${contextoPeriodo.mes} P${contextoPeriodo.periodo}.`,
+              );
+            }
+          }
 
           if (!objetivo) {
             objetivo = await tx.objetivoAuditoria.create({
               data: {
-                cicloAuditoriaId: contextoCiclo!.ciclo.id,
-                formularioCicloId: formularioCiclo!.id,
                 areaId: area.id,
+                anio: contextoPeriodo.anio,
+                mes: contextoPeriodo.mes,
+                periodo: contextoPeriodo.periodo,
+                versionFormularioId: contextoPeriodo.versionFormularioId,
+                iniciaEn: contextoPeriodo.iniciaEn,
+                terminaEn: contextoPeriodo.terminaEn,
                 codigoAreaSnapshot: area.codigo,
                 nombreAreaSnapshot: area.nombre,
                 tipoAreaSnapshot: registro.tipo.tipoArea,
               },
             });
           }
-
           if (objetivo.envioResultadoId !== null) {
             throw new Error(
               `Objetivo #${objetivo.id} ya tiene envioResultadoId=${objetivo.envioResultadoId}. Limpia la BD antes de esta importación.`,
@@ -1843,9 +1784,9 @@ async function main() {
                * Esto NO afirma que la auditoría se haya realizado
                * exactamente ese día ni que existiera QR.
                */
-              finalizadoEn: contextoCiclo!.limites.fechaTecnica,
-              verificadoEn: contextoCiclo!.limites.fechaTecnica,
-              recibidoEn: contextoCiclo!.limites.fechaTecnica,
+              finalizadoEn: contextoPeriodo.fechaTecnica,
+              verificadoEn: contextoPeriodo.fechaTecnica,
+              recibidoEn: contextoPeriodo.fechaTecnica,
             },
           });
 
@@ -1950,7 +1891,7 @@ async function main() {
                 detalle: preparado.detalle,
                 fechaRealDisponible: false,
                 fechaTecnicaUsada:
-                  contextoCiclo!.limites.fechaTecnica.toISOString(),
+                  contextoPeriodo.fechaTecnica.toISOString(),
                 auditorRealDisponible: false,
                 preguntasFaltantesConocidas: [
                   ...preguntasFaltantesConocidas(registro),

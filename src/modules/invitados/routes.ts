@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
+import { autenticarOpcional } from '../../middlewares/autenticacion';
 import { obtenerInvitacion } from './01_obtener';
 import { enviarAuditoriaInvitado } from './02_enviar';
 import { listarAreasPublicasInvitado } from './03_areas_publicas';
@@ -16,6 +17,6 @@ invitadosRouter.get('/areas-publicas', limiteInvitado, listarAreasPublicasInvita
 invitadosRouter.post('/iniciar', limiteInvitado, iniciarInvitadoPublico);
 invitadosRouter.post('/publico/evidencias/firmar', limiteInvitado, firmarEvidenciaInvitadoPublico);
 invitadosRouter.post('/publico/auditorias', limiteInvitado, enviarAuditoriaInvitadoPublico);
-invitadosRouter.get('/:token', limiteInvitado, obtenerInvitacion);
+invitadosRouter.get('/:token', limiteInvitado, autenticarOpcional, obtenerInvitacion);
 invitadosRouter.post('/:token/evidencias/firmar', limiteInvitado, firmarEvidenciaInvitado);
-invitadosRouter.post('/:token/auditorias', limiteInvitado, enviarAuditoriaInvitado);
+invitadosRouter.post('/:token/auditorias', limiteInvitado, autenticarOpcional, enviarAuditoriaInvitado);

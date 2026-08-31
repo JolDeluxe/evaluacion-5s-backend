@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { EstadoAsignacionAuditoria, OrigenEnvioAuditoria } from '../../generated/prisma/enums';
-import { prohibido, solicitudInvalida } from '../../utils/errores';
+import { conflicto, prohibido, solicitudInvalida } from '../../utils/errores';
 import { puedeEjecutarAuditoria } from '../../utils/permisos';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 import { responder, responderCreado } from '../../utils/respuesta';
@@ -33,14 +33,10 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
         objetivoAuditoria: {
           include: {
             area: true,
-            formularioCiclo: {
+            versionFormulario: {
               include: {
-                versionFormulario: {
-                  include: {
-                    secciones: {
-                      include: { preguntas: true },
-                    },
-                  },
+                secciones: {
+                  include: { preguntas: true },
                 },
               },
             },
@@ -49,16 +45,19 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
       },
     });
     if (asignacion.auditorId !== usuarioId) throw prohibido('La asignacion no pertenece al auditor autenticado');
+    if (asignacion.estado === EstadoAsignacionAuditoria.CANCELADA) {
+      throw solicitudInvalida('Esta auditoría ya no es requerida porque el área fue desactivada.');
+    }
     if (
-      asignacion.estado === EstadoAsignacionAuditoria.CANCELADA
-      || asignacion.estado === EstadoAsignacionAuditoria.COMPLETADA
+      asignacion.estado === EstadoAsignacionAuditoria.COMPLETADA
       || asignacion.estado === EstadoAsignacionAuditoria.VENCIDA
+      || asignacion.objetivoAuditoria.envioResultadoId
     ) {
-      throw solicitudInvalida('La asignacion ya no esta disponible para captura');
+      throw solicitudInvalida('Esta auditoria ya fue completada.');
     }
 
     const objetivo = asignacion.objetivoAuditoria;
-    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, verificadoEn);
+    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, verificadoEn, asignacion.reabiertaHasta);
 
     const perteneceAlArea = await tx.usuarioArea.findFirst({
       where: { usuarioId, areaId: objetivo.areaId },
@@ -67,7 +66,7 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     if (perteneceAlArea) throw prohibido('No puedes auditar tu propia area');
 
     validarCodigoArea(objetivo.area.codigoVerificacion, body.codigoVerificacion);
-    const preguntas = objetivo.formularioCiclo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
+    const preguntas = objetivo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
     validarRespuestas5S(preguntas, body.respuestas);
     const puntaje = calcularPuntaje5S(body.respuestas);
 
@@ -115,13 +114,22 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
       }
     }
 
+    const oficial = await tx.objetivoAuditoria.updateMany({
+      where: { id: objetivo.id, envioResultadoId: null },
+      data: { envioResultadoId: creado.id },
+    });
+    if (!oficial.count) throw conflicto('Esta auditoria ya fue completada.');
     await tx.asignacionAuditoria.update({
       where: { id: asignacion.id },
       data: { estado: EstadoAsignacionAuditoria.COMPLETADA, completadoEn: new Date() },
     });
-    await tx.objetivoAuditoria.updateMany({
-      where: { id: objetivo.id, envioResultadoId: null },
-      data: { envioResultadoId: creado.id },
+    await tx.enlaceInvitado.updateMany({
+      where: {
+        asignacionAuditoriaId: asignacion.id,
+        revocadoEn: null,
+        usadoEn: null,
+      },
+      data: { revocadoEn: new Date() },
     });
 
     await registrarAuditoria({ usuarioId, accion: 'ENVIAR_AUDITORIA', tipoEntidad: 'EnvioAuditoria', idEntidad: creado.id, datosNuevos: creado }, tx);

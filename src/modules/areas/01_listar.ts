@@ -21,32 +21,38 @@ export const listarAreas = async (req: Request, res: Response) => {
   const where: Record<string, unknown> = {
     ...(query.tipo ? { tipo: query.tipo } : {}),
     ...(query.activo === undefined ? {} : { activo: query.activo }),
-    ...(query.busqueda
-      ? {
-          OR: [
-            { codigo: { contains: query.busqueda } },
-            { nombre: { contains: query.busqueda } },
-          ],
-        }
-      : {}),
   };
 
+  if (query.busqueda) {
+    where.OR = [
+      { codigo: { contains: query.busqueda } },
+      { nombre: { contains: query.busqueda } },
+      {
+        usuariosArea: {
+          some: {
+            usuario: {
+              nombre: { contains: query.busqueda },
+            },
+          },
+        },
+      },
+    ];
+  }
+
   // Filtro de responsable:
-  // sinResponsable=true  → áreas cuyo usuariosArea no tiene ningún registro esResponsable=true
-  // sinResponsable=false → áreas que sí tienen al menos un responsable
+  // sinResponsable=true  → áreas sin ningún registro en usuariosArea
+  // sinResponsable=false → áreas que sí tienen al menos un registro en usuariosArea
   if (query.sinResponsable === true) {
-    where['usuariosArea'] = { none: { esResponsable: true } };
+    where.usuariosArea = { none: {} };
   } else if (query.sinResponsable === false) {
-    where['usuariosArea'] = { some: { esResponsable: true } };
+    where.usuariosArea = { some: {} };
   }
 
   const [datos, total] = await prisma.$transaction([
     prisma.area.findMany({
       where,
       include: {
-        areaPadre: { select: { id: true, codigo: true, nombre: true } },
         usuariosArea: {
-          orderBy: [{ esResponsable: 'desc' }, { creadoEn: 'asc' }],
           include: {
             usuario: {
               select: { id: true, nombre: true, nombreUsuario: true, rol: true },

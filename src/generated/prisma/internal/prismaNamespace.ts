@@ -406,9 +406,8 @@ export const ModelName = {
   VersionFormulario: 'VersionFormulario',
   SeccionFormulario: 'SeccionFormulario',
   PreguntaFormulario: 'PreguntaFormulario',
-  CicloAuditoria: 'CicloAuditoria',
-  FormularioCiclo: 'FormularioCiclo',
   ObjetivoAuditoria: 'ObjetivoAuditoria',
+  AsignacionMensual: 'AsignacionMensual',
   AsignacionAuditoria: 'AsignacionAuditoria',
   EnlaceInvitado: 'EnlaceInvitado',
   EnvioAuditoria: 'EnvioAuditoria',
@@ -433,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "usuario" | "sesion" | "tokenRestablecimientoContrasena" | "area" | "usuarioArea" | "formulario" | "versionFormulario" | "seccionFormulario" | "preguntaFormulario" | "cicloAuditoria" | "formularioCiclo" | "objetivoAuditoria" | "asignacionAuditoria" | "enlaceInvitado" | "envioAuditoria" | "respuestaAuditoria" | "fotoAuditoria" | "suscripcionPush" | "notificacion" | "entregaNotificacion" | "registroAuditoria"
+    modelProps: "usuario" | "sesion" | "tokenRestablecimientoContrasena" | "area" | "usuarioArea" | "formulario" | "versionFormulario" | "seccionFormulario" | "preguntaFormulario" | "objetivoAuditoria" | "asignacionMensual" | "asignacionAuditoria" | "enlaceInvitado" | "envioAuditoria" | "respuestaAuditoria" | "fotoAuditoria" | "suscripcionPush" | "notificacion" | "entregaNotificacion" | "registroAuditoria"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1031,138 +1030,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    CicloAuditoria: {
-      payload: Prisma.$CicloAuditoriaPayload<ExtArgs>
-      fields: Prisma.CicloAuditoriaFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.CicloAuditoriaFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.CicloAuditoriaFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload>
-        }
-        findFirst: {
-          args: Prisma.CicloAuditoriaFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.CicloAuditoriaFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload>
-        }
-        findMany: {
-          args: Prisma.CicloAuditoriaFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload>[]
-        }
-        create: {
-          args: Prisma.CicloAuditoriaCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload>
-        }
-        createMany: {
-          args: Prisma.CicloAuditoriaCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        delete: {
-          args: Prisma.CicloAuditoriaDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload>
-        }
-        update: {
-          args: Prisma.CicloAuditoriaUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload>
-        }
-        deleteMany: {
-          args: Prisma.CicloAuditoriaDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.CicloAuditoriaUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        upsert: {
-          args: Prisma.CicloAuditoriaUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CicloAuditoriaPayload>
-        }
-        aggregate: {
-          args: Prisma.CicloAuditoriaAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateCicloAuditoria>
-        }
-        groupBy: {
-          args: Prisma.CicloAuditoriaGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.CicloAuditoriaGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.CicloAuditoriaCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.CicloAuditoriaCountAggregateOutputType> | number
-        }
-      }
-    }
-    FormularioCiclo: {
-      payload: Prisma.$FormularioCicloPayload<ExtArgs>
-      fields: Prisma.FormularioCicloFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.FormularioCicloFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.FormularioCicloFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload>
-        }
-        findFirst: {
-          args: Prisma.FormularioCicloFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.FormularioCicloFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload>
-        }
-        findMany: {
-          args: Prisma.FormularioCicloFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload>[]
-        }
-        create: {
-          args: Prisma.FormularioCicloCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload>
-        }
-        createMany: {
-          args: Prisma.FormularioCicloCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        delete: {
-          args: Prisma.FormularioCicloDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload>
-        }
-        update: {
-          args: Prisma.FormularioCicloUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload>
-        }
-        deleteMany: {
-          args: Prisma.FormularioCicloDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.FormularioCicloUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        upsert: {
-          args: Prisma.FormularioCicloUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FormularioCicloPayload>
-        }
-        aggregate: {
-          args: Prisma.FormularioCicloAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateFormularioCiclo>
-        }
-        groupBy: {
-          args: Prisma.FormularioCicloGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.FormularioCicloGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.FormularioCicloCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.FormularioCicloCountAggregateOutputType> | number
-        }
-      }
-    }
     ObjetivoAuditoria: {
       payload: Prisma.$ObjetivoAuditoriaPayload<ExtArgs>
       fields: Prisma.ObjetivoAuditoriaFieldRefs
@@ -1226,6 +1093,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ObjetivoAuditoriaCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ObjetivoAuditoriaCountAggregateOutputType> | number
+        }
+      }
+    }
+    AsignacionMensual: {
+      payload: Prisma.$AsignacionMensualPayload<ExtArgs>
+      fields: Prisma.AsignacionMensualFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AsignacionMensualFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AsignacionMensualFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload>
+        }
+        findFirst: {
+          args: Prisma.AsignacionMensualFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AsignacionMensualFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload>
+        }
+        findMany: {
+          args: Prisma.AsignacionMensualFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload>[]
+        }
+        create: {
+          args: Prisma.AsignacionMensualCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload>
+        }
+        createMany: {
+          args: Prisma.AsignacionMensualCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AsignacionMensualDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload>
+        }
+        update: {
+          args: Prisma.AsignacionMensualUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload>
+        }
+        deleteMany: {
+          args: Prisma.AsignacionMensualDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AsignacionMensualUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AsignacionMensualUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AsignacionMensualPayload>
+        }
+        aggregate: {
+          args: Prisma.AsignacionMensualAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAsignacionMensual>
+        }
+        groupBy: {
+          args: Prisma.AsignacionMensualGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AsignacionMensualGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AsignacionMensualCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AsignacionMensualCountAggregateOutputType> | number
         }
       }
     }
@@ -1916,8 +1849,9 @@ export const AreaScalarFieldEnum = {
   codigo: 'codigo',
   nombre: 'nombre',
   tipo: 'tipo',
-  areaPadreId: 'areaPadreId',
   activo: 'activo',
+  auditableDesde: 'auditableDesde',
+  auditableHasta: 'auditableHasta',
   codigoVerificacion: 'codigoVerificacion',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
@@ -1930,7 +1864,6 @@ export const UsuarioAreaScalarFieldEnum = {
   id: 'id',
   usuarioId: 'usuarioId',
   areaId: 'areaId',
-  esResponsable: 'esResponsable',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -1972,8 +1905,6 @@ export const SeccionFormularioScalarFieldEnum = {
   claveEstable: 'claveEstable',
   nombre: 'nombre',
   objetivo: 'objetivo',
-  imagenPublicId: 'imagenPublicId',
-  imagenAlt: 'imagenAlt',
   orden: 'orden',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
@@ -1995,46 +1926,21 @@ export const PreguntaFormularioScalarFieldEnum = {
 export type PreguntaFormularioScalarFieldEnum = (typeof PreguntaFormularioScalarFieldEnum)[keyof typeof PreguntaFormularioScalarFieldEnum]
 
 
-export const CicloAuditoriaScalarFieldEnum = {
-  id: 'id',
-  anio: 'anio',
-  mes: 'mes',
-  numeroCorte: 'numeroCorte',
-  nombre: 'nombre',
-  estado: 'estado',
-  iniciaEn: 'iniciaEn',
-  terminaEn: 'terminaEn',
-  publicadoEn: 'publicadoEn',
-  cerradoEn: 'cerradoEn',
-  creadoPorId: 'creadoPorId',
-  creadoEn: 'creadoEn',
-  actualizadoEn: 'actualizadoEn'
-} as const
-
-export type CicloAuditoriaScalarFieldEnum = (typeof CicloAuditoriaScalarFieldEnum)[keyof typeof CicloAuditoriaScalarFieldEnum]
-
-
-export const FormularioCicloScalarFieldEnum = {
-  id: 'id',
-  cicloAuditoriaId: 'cicloAuditoriaId',
-  tipoArea: 'tipoArea',
-  versionFormularioId: 'versionFormularioId',
-  creadoEn: 'creadoEn',
-  actualizadoEn: 'actualizadoEn'
-} as const
-
-export type FormularioCicloScalarFieldEnum = (typeof FormularioCicloScalarFieldEnum)[keyof typeof FormularioCicloScalarFieldEnum]
-
-
 export const ObjetivoAuditoriaScalarFieldEnum = {
   id: 'id',
-  cicloAuditoriaId: 'cicloAuditoriaId',
-  formularioCicloId: 'formularioCicloId',
   areaId: 'areaId',
+  anio: 'anio',
+  mes: 'mes',
+  periodo: 'periodo',
+  versionFormularioId: 'versionFormularioId',
+  iniciaEn: 'iniciaEn',
+  terminaEn: 'terminaEn',
   codigoAreaSnapshot: 'codigoAreaSnapshot',
   nombreAreaSnapshot: 'nombreAreaSnapshot',
   tipoAreaSnapshot: 'tipoAreaSnapshot',
   envioResultadoId: 'envioResultadoId',
+  canceladoEn: 'canceladoEn',
+  motivoCancelacion: 'motivoCancelacion',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -2042,8 +1948,24 @@ export const ObjetivoAuditoriaScalarFieldEnum = {
 export type ObjetivoAuditoriaScalarFieldEnum = (typeof ObjetivoAuditoriaScalarFieldEnum)[keyof typeof ObjetivoAuditoriaScalarFieldEnum]
 
 
+export const AsignacionMensualScalarFieldEnum = {
+  id: 'id',
+  areaId: 'areaId',
+  anio: 'anio',
+  mes: 'mes',
+  auditorId: 'auditorId',
+  asignadoPorId: 'asignadoPorId',
+  asignadoEn: 'asignadoEn',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type AsignacionMensualScalarFieldEnum = (typeof AsignacionMensualScalarFieldEnum)[keyof typeof AsignacionMensualScalarFieldEnum]
+
+
 export const AsignacionAuditoriaScalarFieldEnum = {
   id: 'id',
+  asignacionMensualId: 'asignacionMensualId',
   objetivoAuditoriaId: 'objetivoAuditoriaId',
   auditorId: 'auditorId',
   asignadoPorId: 'asignadoPorId',
@@ -2054,6 +1976,11 @@ export const AsignacionAuditoriaScalarFieldEnum = {
   completadoEn: 'completadoEn',
   canceladoEn: 'canceladoEn',
   motivoCancelacion: 'motivoCancelacion',
+  motivoExcepcion: 'motivoExcepcion',
+  reabiertaHasta: 'reabiertaHasta',
+  reabiertaEn: 'reabiertaEn',
+  reabiertaPorId: 'reabiertaPorId',
+  motivoReapertura: 'motivoReapertura',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -2283,9 +2210,7 @@ export type FormularioOrderByRelevanceFieldEnum = (typeof FormularioOrderByRelev
 export const SeccionFormularioOrderByRelevanceFieldEnum = {
   claveEstable: 'claveEstable',
   nombre: 'nombre',
-  objetivo: 'objetivo',
-  imagenPublicId: 'imagenPublicId',
-  imagenAlt: 'imagenAlt'
+  objetivo: 'objetivo'
 } as const
 
 export type SeccionFormularioOrderByRelevanceFieldEnum = (typeof SeccionFormularioOrderByRelevanceFieldEnum)[keyof typeof SeccionFormularioOrderByRelevanceFieldEnum]
@@ -2299,23 +2224,19 @@ export const PreguntaFormularioOrderByRelevanceFieldEnum = {
 export type PreguntaFormularioOrderByRelevanceFieldEnum = (typeof PreguntaFormularioOrderByRelevanceFieldEnum)[keyof typeof PreguntaFormularioOrderByRelevanceFieldEnum]
 
 
-export const CicloAuditoriaOrderByRelevanceFieldEnum = {
-  nombre: 'nombre'
-} as const
-
-export type CicloAuditoriaOrderByRelevanceFieldEnum = (typeof CicloAuditoriaOrderByRelevanceFieldEnum)[keyof typeof CicloAuditoriaOrderByRelevanceFieldEnum]
-
-
 export const ObjetivoAuditoriaOrderByRelevanceFieldEnum = {
   codigoAreaSnapshot: 'codigoAreaSnapshot',
-  nombreAreaSnapshot: 'nombreAreaSnapshot'
+  nombreAreaSnapshot: 'nombreAreaSnapshot',
+  motivoCancelacion: 'motivoCancelacion'
 } as const
 
 export type ObjetivoAuditoriaOrderByRelevanceFieldEnum = (typeof ObjetivoAuditoriaOrderByRelevanceFieldEnum)[keyof typeof ObjetivoAuditoriaOrderByRelevanceFieldEnum]
 
 
 export const AsignacionAuditoriaOrderByRelevanceFieldEnum = {
-  motivoCancelacion: 'motivoCancelacion'
+  motivoCancelacion: 'motivoCancelacion',
+  motivoExcepcion: 'motivoExcepcion',
+  motivoReapertura: 'motivoReapertura'
 } as const
 
 export type AsignacionAuditoriaOrderByRelevanceFieldEnum = (typeof AsignacionAuditoriaOrderByRelevanceFieldEnum)[keyof typeof AsignacionAuditoriaOrderByRelevanceFieldEnum]
@@ -2467,13 +2388,6 @@ export type EnumTipoAreaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'AlcanceFormulario'
  */
 export type EnumAlcanceFormularioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlcanceFormulario'>
-    
-
-
-/**
- * Reference to a field of type 'EstadoCicloAuditoria'
- */
-export type EnumEstadoCicloAuditoriaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoCicloAuditoria'>
     
 
 
@@ -2699,9 +2613,8 @@ export type GlobalOmitConfig = {
   versionFormulario?: Prisma.VersionFormularioOmit
   seccionFormulario?: Prisma.SeccionFormularioOmit
   preguntaFormulario?: Prisma.PreguntaFormularioOmit
-  cicloAuditoria?: Prisma.CicloAuditoriaOmit
-  formularioCiclo?: Prisma.FormularioCicloOmit
   objetivoAuditoria?: Prisma.ObjetivoAuditoriaOmit
+  asignacionMensual?: Prisma.AsignacionMensualOmit
   asignacionAuditoria?: Prisma.AsignacionAuditoriaOmit
   enlaceInvitado?: Prisma.EnlaceInvitadoOmit
   envioAuditoria?: Prisma.EnvioAuditoriaOmit

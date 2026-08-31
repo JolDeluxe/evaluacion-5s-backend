@@ -4,13 +4,35 @@ import { responderCreado } from '../../utils/respuesta';
 import { registrarAuditoria } from '../registros_auditoria/helper';
 import { esquemaCrearFormulario } from './zod';
 
+const crearSlugBase = (nombre: string) => (
+  nombre
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 100)
+    || 'formulario'
+);
+
 export const crearFormulario = async (req: Request, res: Response) => {
   const body = esquemaCrearFormulario.parse(req.body);
   const formulario = await prisma.$transaction(async (tx) => {
+    const slugBase = body.slug ?? crearSlugBase(body.nombre);
+    const existentes = await tx.formulario.count({
+      where: {
+        OR: [
+          { slug: slugBase },
+          { slug: { startsWith: `${slugBase}-` } },
+        ],
+      },
+    });
+    const slug = existentes ? `${slugBase}-${existentes + 1}` : slugBase;
+
     const creado = await tx.formulario.create({
       data: {
         nombre: body.nombre.trim(),
-        slug: body.slug.trim(),
+        slug,
         descripcion: body.descripcion?.trim() || null,
         alcance: body.alcance,
         creadoPorId: req.autenticacion?.usuarioId ?? 1,

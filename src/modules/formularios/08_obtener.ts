@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../db';
 import { responder } from '../../utils/respuesta';
+import { includeRevisionFormularioConEstructura, mapearFormularioDetalle } from './helper';
 import { esquemaId } from './zod';
 
 export const obtenerFormulario = async (req: Request, res: Response) => {
@@ -10,15 +11,10 @@ export const obtenerFormulario = async (req: Request, res: Response) => {
     include: {
       versiones: {
         orderBy: { numeroVersion: 'desc' },
-        include: {
-          secciones: {
-            include: { preguntas: { orderBy: { orden: 'asc' } } },
-            orderBy: { orden: 'asc' },
-          },
-        },
+        include: includeRevisionFormularioConEstructura,
       },
     },
   });
 
-  responder(res, { formulario });
+  responder(res, { formulario: mapearFormularioDetalle(formulario) });
 };

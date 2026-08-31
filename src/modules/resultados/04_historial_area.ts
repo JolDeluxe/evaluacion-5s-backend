@@ -15,13 +15,12 @@ export const historialArea = async (req: Request, res: Response) => {
     where: { areaId: id },
     include: {
       envioResultado: true,
-      cicloAuditoria: true,
       enviosAuditoria: {
         where: { invalidadoEn: null },
         orderBy: [{ recibidoEn: 'asc' }, { id: 'asc' }],
       },
     },
-    orderBy: [{ cicloAuditoria: { anio: 'desc' } }, { cicloAuditoria: { mes: 'desc' } }],
+    orderBy: [{ anio: 'desc' }, { mes: 'desc' }, { periodo: 'desc' }],
   });
   const esAdmin = puedeAdministrar5S(req.autenticacion?.rol);
   responder(res, {

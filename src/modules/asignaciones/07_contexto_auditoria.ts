@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { prisma } from '../../db';
 import { noAutenticado, prohibido } from '../../utils/errores';
 import { puedeAdministrar5S, puedeEjecutarAuditoria } from '../../utils/permisos';
-import { construirDetalleAdminPeriodo, construirDetalleAuditorPeriodo } from '../../utils/periodos';
+import { construirDetalleAdminPeriodo, construirDetalleAuditorPeriodo, construirPeriodoCompat } from '../../utils/periodos';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 import { responder } from '../../utils/respuesta';
 import { esquemaId } from './zod';
@@ -10,21 +10,17 @@ import { esquemaId } from './zod';
 const includeContextoFormulario = {
   area: true,
   envioResultado: true,
-  cicloAuditoria: true,
-  formularioCiclo: {
+  versionFormulario: {
     include: {
-      versionFormulario: {
-        include: {
-          formulario: true,
-          secciones: {
-            orderBy: { orden: 'asc' as const },
-            include: { preguntas: { orderBy: { orden: 'asc' as const } } },
-          },
-        },
+      formulario: true,
+      secciones: {
+        orderBy: { orden: 'asc' as const },
+        include: { preguntas: { orderBy: { orden: 'asc' as const } } },
       },
     },
   },
 };
+
 
 export const obtenerContextoAuditoriaAsignacion = async (req: Request, res: Response) => {
   if (!req.autenticacion) throw noAutenticado();
@@ -47,18 +43,18 @@ export const obtenerContextoAuditoriaAsignacion = async (req: Request, res: Resp
     throw prohibido('La asignacion no pertenece al auditor autenticado');
   }
 
-  await validarObjetivoRealizableMasAntiguo(prisma, asignacion.objetivoAuditoriaId);
+  await validarObjetivoRealizableMasAntiguo(prisma, asignacion.objetivoAuditoriaId, new Date(), asignacion.reabiertaHasta);
 
-  const { versionFormulario } = asignacion.objetivoAuditoria.formularioCiclo;
+  const { versionFormulario } = asignacion.objetivoAuditoria;
   responder(res, {
     asignacion,
     objetivo: asignacion.objetivoAuditoria,
     area: asignacion.objetivoAuditoria.area,
-    ciclo: asignacion.objetivoAuditoria.cicloAuditoria,
+    ciclo: construirPeriodoCompat(asignacion.objetivoAuditoria),
     versionFormulario,
     codigoVerificacionRequerido: true,
     periodo: esAdmin
-      ? construirDetalleAdminPeriodo(asignacion.objetivoAuditoria)
+      ? construirDetalleAdminPeriodo(asignacion.objetivoAuditoria, new Date(), asignacion.reabiertaHasta)
       : construirDetalleAuditorPeriodo(asignacion.objetivoAuditoria),
   });
 };

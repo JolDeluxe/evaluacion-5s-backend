@@ -244,10 +244,10 @@ export type VersionFormularioWhereInput = {
   creadoPorId?: Prisma.IntFilter<"VersionFormulario"> | number
   creadoEn?: Prisma.DateTimeFilter<"VersionFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"VersionFormulario"> | Date | string
-  formulario?: Prisma.XOR<Prisma.FormularioScalarRelationFilter, Prisma.FormularioWhereInput>
-  creadoPor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaListRelationFilter
   secciones?: Prisma.SeccionFormularioListRelationFilter
-  formulariosCiclo?: Prisma.FormularioCicloListRelationFilter
+  creadoPor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  formulario?: Prisma.XOR<Prisma.FormularioScalarRelationFilter, Prisma.FormularioWhereInput>
 }
 
 export type VersionFormularioOrderByWithRelationInput = {
@@ -258,10 +258,10 @@ export type VersionFormularioOrderByWithRelationInput = {
   creadoPorId?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
-  formulario?: Prisma.FormularioOrderByWithRelationInput
-  creadoPor?: Prisma.UsuarioOrderByWithRelationInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaOrderByRelationAggregateInput
   secciones?: Prisma.SeccionFormularioOrderByRelationAggregateInput
-  formulariosCiclo?: Prisma.FormularioCicloOrderByRelationAggregateInput
+  creadoPor?: Prisma.UsuarioOrderByWithRelationInput
+  formulario?: Prisma.FormularioOrderByWithRelationInput
 }
 
 export type VersionFormularioWhereUniqueInput = Prisma.AtLeast<{
@@ -276,10 +276,10 @@ export type VersionFormularioWhereUniqueInput = Prisma.AtLeast<{
   creadoPorId?: Prisma.IntFilter<"VersionFormulario"> | number
   creadoEn?: Prisma.DateTimeFilter<"VersionFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"VersionFormulario"> | Date | string
-  formulario?: Prisma.XOR<Prisma.FormularioScalarRelationFilter, Prisma.FormularioWhereInput>
-  creadoPor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaListRelationFilter
   secciones?: Prisma.SeccionFormularioListRelationFilter
-  formulariosCiclo?: Prisma.FormularioCicloListRelationFilter
+  creadoPor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  formulario?: Prisma.XOR<Prisma.FormularioScalarRelationFilter, Prisma.FormularioWhereInput>
 }, "id" | "formularioId_numeroVersion">
 
 export type VersionFormularioOrderByWithAggregationInput = {
@@ -315,10 +315,10 @@ export type VersionFormularioCreateInput = {
   activa?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  formulario: Prisma.FormularioCreateNestedOneWithoutVersionesInput
-  creadoPor: Prisma.UsuarioCreateNestedOneWithoutVersionesCreadasInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutVersionFormularioInput
   secciones?: Prisma.SeccionFormularioCreateNestedManyWithoutVersionFormularioInput
-  formulariosCiclo?: Prisma.FormularioCicloCreateNestedManyWithoutVersionFormularioInput
+  creadoPor: Prisma.UsuarioCreateNestedOneWithoutVersionesCreadasInput
+  formulario: Prisma.FormularioCreateNestedOneWithoutVersionesInput
 }
 
 export type VersionFormularioUncheckedCreateInput = {
@@ -329,8 +329,8 @@ export type VersionFormularioUncheckedCreateInput = {
   creadoPorId: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutVersionFormularioInput
   secciones?: Prisma.SeccionFormularioUncheckedCreateNestedManyWithoutVersionFormularioInput
-  formulariosCiclo?: Prisma.FormularioCicloUncheckedCreateNestedManyWithoutVersionFormularioInput
 }
 
 export type VersionFormularioUpdateInput = {
@@ -338,10 +338,10 @@ export type VersionFormularioUpdateInput = {
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  formulario?: Prisma.FormularioUpdateOneRequiredWithoutVersionesNestedInput
-  creadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutVersionesCreadasNestedInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUpdateManyWithoutVersionFormularioNestedInput
   secciones?: Prisma.SeccionFormularioUpdateManyWithoutVersionFormularioNestedInput
-  formulariosCiclo?: Prisma.FormularioCicloUpdateManyWithoutVersionFormularioNestedInput
+  creadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutVersionesCreadasNestedInput
+  formulario?: Prisma.FormularioUpdateOneRequiredWithoutVersionesNestedInput
 }
 
 export type VersionFormularioUncheckedUpdateInput = {
@@ -352,8 +352,8 @@ export type VersionFormularioUncheckedUpdateInput = {
   creadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutVersionFormularioNestedInput
   secciones?: Prisma.SeccionFormularioUncheckedUpdateManyWithoutVersionFormularioNestedInput
-  formulariosCiclo?: Prisma.FormularioCicloUncheckedUpdateManyWithoutVersionFormularioNestedInput
 }
 
 export type VersionFormularioCreateManyInput = {
@@ -545,18 +545,18 @@ export type VersionFormularioUpdateOneRequiredWithoutSeccionesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VersionFormularioUpdateToOneWithWhereWithoutSeccionesInput, Prisma.VersionFormularioUpdateWithoutSeccionesInput>, Prisma.VersionFormularioUncheckedUpdateWithoutSeccionesInput>
 }
 
-export type VersionFormularioCreateNestedOneWithoutFormulariosCicloInput = {
-  create?: Prisma.XOR<Prisma.VersionFormularioCreateWithoutFormulariosCicloInput, Prisma.VersionFormularioUncheckedCreateWithoutFormulariosCicloInput>
-  connectOrCreate?: Prisma.VersionFormularioCreateOrConnectWithoutFormulariosCicloInput
+export type VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput = {
+  create?: Prisma.XOR<Prisma.VersionFormularioCreateWithoutObjetivosAuditoriaInput, Prisma.VersionFormularioUncheckedCreateWithoutObjetivosAuditoriaInput>
+  connectOrCreate?: Prisma.VersionFormularioCreateOrConnectWithoutObjetivosAuditoriaInput
   connect?: Prisma.VersionFormularioWhereUniqueInput
 }
 
-export type VersionFormularioUpdateOneRequiredWithoutFormulariosCicloNestedInput = {
-  create?: Prisma.XOR<Prisma.VersionFormularioCreateWithoutFormulariosCicloInput, Prisma.VersionFormularioUncheckedCreateWithoutFormulariosCicloInput>
-  connectOrCreate?: Prisma.VersionFormularioCreateOrConnectWithoutFormulariosCicloInput
-  upsert?: Prisma.VersionFormularioUpsertWithoutFormulariosCicloInput
+export type VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput = {
+  create?: Prisma.XOR<Prisma.VersionFormularioCreateWithoutObjetivosAuditoriaInput, Prisma.VersionFormularioUncheckedCreateWithoutObjetivosAuditoriaInput>
+  connectOrCreate?: Prisma.VersionFormularioCreateOrConnectWithoutObjetivosAuditoriaInput
+  upsert?: Prisma.VersionFormularioUpsertWithoutObjetivosAuditoriaInput
   connect?: Prisma.VersionFormularioWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.VersionFormularioUpdateToOneWithWhereWithoutFormulariosCicloInput, Prisma.VersionFormularioUpdateWithoutFormulariosCicloInput>, Prisma.VersionFormularioUncheckedUpdateWithoutFormulariosCicloInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VersionFormularioUpdateToOneWithWhereWithoutObjetivosAuditoriaInput, Prisma.VersionFormularioUpdateWithoutObjetivosAuditoriaInput>, Prisma.VersionFormularioUncheckedUpdateWithoutObjetivosAuditoriaInput>
 }
 
 export type VersionFormularioCreateWithoutCreadoPorInput = {
@@ -564,9 +564,9 @@ export type VersionFormularioCreateWithoutCreadoPorInput = {
   activa?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  formulario: Prisma.FormularioCreateNestedOneWithoutVersionesInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutVersionFormularioInput
   secciones?: Prisma.SeccionFormularioCreateNestedManyWithoutVersionFormularioInput
-  formulariosCiclo?: Prisma.FormularioCicloCreateNestedManyWithoutVersionFormularioInput
+  formulario: Prisma.FormularioCreateNestedOneWithoutVersionesInput
 }
 
 export type VersionFormularioUncheckedCreateWithoutCreadoPorInput = {
@@ -576,8 +576,8 @@ export type VersionFormularioUncheckedCreateWithoutCreadoPorInput = {
   activa?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutVersionFormularioInput
   secciones?: Prisma.SeccionFormularioUncheckedCreateNestedManyWithoutVersionFormularioInput
-  formulariosCiclo?: Prisma.FormularioCicloUncheckedCreateNestedManyWithoutVersionFormularioInput
 }
 
 export type VersionFormularioCreateOrConnectWithoutCreadoPorInput = {
@@ -624,9 +624,9 @@ export type VersionFormularioCreateWithoutFormularioInput = {
   activa?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  creadoPor: Prisma.UsuarioCreateNestedOneWithoutVersionesCreadasInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutVersionFormularioInput
   secciones?: Prisma.SeccionFormularioCreateNestedManyWithoutVersionFormularioInput
-  formulariosCiclo?: Prisma.FormularioCicloCreateNestedManyWithoutVersionFormularioInput
+  creadoPor: Prisma.UsuarioCreateNestedOneWithoutVersionesCreadasInput
 }
 
 export type VersionFormularioUncheckedCreateWithoutFormularioInput = {
@@ -636,8 +636,8 @@ export type VersionFormularioUncheckedCreateWithoutFormularioInput = {
   creadoPorId: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutVersionFormularioInput
   secciones?: Prisma.SeccionFormularioUncheckedCreateNestedManyWithoutVersionFormularioInput
-  formulariosCiclo?: Prisma.FormularioCicloUncheckedCreateNestedManyWithoutVersionFormularioInput
 }
 
 export type VersionFormularioCreateOrConnectWithoutFormularioInput = {
@@ -671,9 +671,9 @@ export type VersionFormularioCreateWithoutSeccionesInput = {
   activa?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  formulario: Prisma.FormularioCreateNestedOneWithoutVersionesInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutVersionFormularioInput
   creadoPor: Prisma.UsuarioCreateNestedOneWithoutVersionesCreadasInput
-  formulariosCiclo?: Prisma.FormularioCicloCreateNestedManyWithoutVersionFormularioInput
+  formulario: Prisma.FormularioCreateNestedOneWithoutVersionesInput
 }
 
 export type VersionFormularioUncheckedCreateWithoutSeccionesInput = {
@@ -684,7 +684,7 @@ export type VersionFormularioUncheckedCreateWithoutSeccionesInput = {
   creadoPorId: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  formulariosCiclo?: Prisma.FormularioCicloUncheckedCreateNestedManyWithoutVersionFormularioInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutVersionFormularioInput
 }
 
 export type VersionFormularioCreateOrConnectWithoutSeccionesInput = {
@@ -708,9 +708,9 @@ export type VersionFormularioUpdateWithoutSeccionesInput = {
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  formulario?: Prisma.FormularioUpdateOneRequiredWithoutVersionesNestedInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUpdateManyWithoutVersionFormularioNestedInput
   creadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutVersionesCreadasNestedInput
-  formulariosCiclo?: Prisma.FormularioCicloUpdateManyWithoutVersionFormularioNestedInput
+  formulario?: Prisma.FormularioUpdateOneRequiredWithoutVersionesNestedInput
 }
 
 export type VersionFormularioUncheckedUpdateWithoutSeccionesInput = {
@@ -721,20 +721,20 @@ export type VersionFormularioUncheckedUpdateWithoutSeccionesInput = {
   creadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  formulariosCiclo?: Prisma.FormularioCicloUncheckedUpdateManyWithoutVersionFormularioNestedInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutVersionFormularioNestedInput
 }
 
-export type VersionFormularioCreateWithoutFormulariosCicloInput = {
+export type VersionFormularioCreateWithoutObjetivosAuditoriaInput = {
   numeroVersion: number
   activa?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  formulario: Prisma.FormularioCreateNestedOneWithoutVersionesInput
-  creadoPor: Prisma.UsuarioCreateNestedOneWithoutVersionesCreadasInput
   secciones?: Prisma.SeccionFormularioCreateNestedManyWithoutVersionFormularioInput
+  creadoPor: Prisma.UsuarioCreateNestedOneWithoutVersionesCreadasInput
+  formulario: Prisma.FormularioCreateNestedOneWithoutVersionesInput
 }
 
-export type VersionFormularioUncheckedCreateWithoutFormulariosCicloInput = {
+export type VersionFormularioUncheckedCreateWithoutObjetivosAuditoriaInput = {
   id?: number
   formularioId: number
   numeroVersion: number
@@ -745,33 +745,33 @@ export type VersionFormularioUncheckedCreateWithoutFormulariosCicloInput = {
   secciones?: Prisma.SeccionFormularioUncheckedCreateNestedManyWithoutVersionFormularioInput
 }
 
-export type VersionFormularioCreateOrConnectWithoutFormulariosCicloInput = {
+export type VersionFormularioCreateOrConnectWithoutObjetivosAuditoriaInput = {
   where: Prisma.VersionFormularioWhereUniqueInput
-  create: Prisma.XOR<Prisma.VersionFormularioCreateWithoutFormulariosCicloInput, Prisma.VersionFormularioUncheckedCreateWithoutFormulariosCicloInput>
+  create: Prisma.XOR<Prisma.VersionFormularioCreateWithoutObjetivosAuditoriaInput, Prisma.VersionFormularioUncheckedCreateWithoutObjetivosAuditoriaInput>
 }
 
-export type VersionFormularioUpsertWithoutFormulariosCicloInput = {
-  update: Prisma.XOR<Prisma.VersionFormularioUpdateWithoutFormulariosCicloInput, Prisma.VersionFormularioUncheckedUpdateWithoutFormulariosCicloInput>
-  create: Prisma.XOR<Prisma.VersionFormularioCreateWithoutFormulariosCicloInput, Prisma.VersionFormularioUncheckedCreateWithoutFormulariosCicloInput>
+export type VersionFormularioUpsertWithoutObjetivosAuditoriaInput = {
+  update: Prisma.XOR<Prisma.VersionFormularioUpdateWithoutObjetivosAuditoriaInput, Prisma.VersionFormularioUncheckedUpdateWithoutObjetivosAuditoriaInput>
+  create: Prisma.XOR<Prisma.VersionFormularioCreateWithoutObjetivosAuditoriaInput, Prisma.VersionFormularioUncheckedCreateWithoutObjetivosAuditoriaInput>
   where?: Prisma.VersionFormularioWhereInput
 }
 
-export type VersionFormularioUpdateToOneWithWhereWithoutFormulariosCicloInput = {
+export type VersionFormularioUpdateToOneWithWhereWithoutObjetivosAuditoriaInput = {
   where?: Prisma.VersionFormularioWhereInput
-  data: Prisma.XOR<Prisma.VersionFormularioUpdateWithoutFormulariosCicloInput, Prisma.VersionFormularioUncheckedUpdateWithoutFormulariosCicloInput>
+  data: Prisma.XOR<Prisma.VersionFormularioUpdateWithoutObjetivosAuditoriaInput, Prisma.VersionFormularioUncheckedUpdateWithoutObjetivosAuditoriaInput>
 }
 
-export type VersionFormularioUpdateWithoutFormulariosCicloInput = {
+export type VersionFormularioUpdateWithoutObjetivosAuditoriaInput = {
   numeroVersion?: Prisma.IntFieldUpdateOperationsInput | number
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  formulario?: Prisma.FormularioUpdateOneRequiredWithoutVersionesNestedInput
-  creadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutVersionesCreadasNestedInput
   secciones?: Prisma.SeccionFormularioUpdateManyWithoutVersionFormularioNestedInput
+  creadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutVersionesCreadasNestedInput
+  formulario?: Prisma.FormularioUpdateOneRequiredWithoutVersionesNestedInput
 }
 
-export type VersionFormularioUncheckedUpdateWithoutFormulariosCicloInput = {
+export type VersionFormularioUncheckedUpdateWithoutObjetivosAuditoriaInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   formularioId?: Prisma.IntFieldUpdateOperationsInput | number
   numeroVersion?: Prisma.IntFieldUpdateOperationsInput | number
@@ -796,9 +796,9 @@ export type VersionFormularioUpdateWithoutCreadoPorInput = {
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  formulario?: Prisma.FormularioUpdateOneRequiredWithoutVersionesNestedInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUpdateManyWithoutVersionFormularioNestedInput
   secciones?: Prisma.SeccionFormularioUpdateManyWithoutVersionFormularioNestedInput
-  formulariosCiclo?: Prisma.FormularioCicloUpdateManyWithoutVersionFormularioNestedInput
+  formulario?: Prisma.FormularioUpdateOneRequiredWithoutVersionesNestedInput
 }
 
 export type VersionFormularioUncheckedUpdateWithoutCreadoPorInput = {
@@ -808,8 +808,8 @@ export type VersionFormularioUncheckedUpdateWithoutCreadoPorInput = {
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutVersionFormularioNestedInput
   secciones?: Prisma.SeccionFormularioUncheckedUpdateManyWithoutVersionFormularioNestedInput
-  formulariosCiclo?: Prisma.FormularioCicloUncheckedUpdateManyWithoutVersionFormularioNestedInput
 }
 
 export type VersionFormularioUncheckedUpdateManyWithoutCreadoPorInput = {
@@ -835,9 +835,9 @@ export type VersionFormularioUpdateWithoutFormularioInput = {
   activa?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  creadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutVersionesCreadasNestedInput
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUpdateManyWithoutVersionFormularioNestedInput
   secciones?: Prisma.SeccionFormularioUpdateManyWithoutVersionFormularioNestedInput
-  formulariosCiclo?: Prisma.FormularioCicloUpdateManyWithoutVersionFormularioNestedInput
+  creadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutVersionesCreadasNestedInput
 }
 
 export type VersionFormularioUncheckedUpdateWithoutFormularioInput = {
@@ -847,8 +847,8 @@ export type VersionFormularioUncheckedUpdateWithoutFormularioInput = {
   creadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutVersionFormularioNestedInput
   secciones?: Prisma.SeccionFormularioUncheckedUpdateManyWithoutVersionFormularioNestedInput
-  formulariosCiclo?: Prisma.FormularioCicloUncheckedUpdateManyWithoutVersionFormularioNestedInput
 }
 
 export type VersionFormularioUncheckedUpdateManyWithoutFormularioInput = {
@@ -866,13 +866,13 @@ export type VersionFormularioUncheckedUpdateManyWithoutFormularioInput = {
  */
 
 export type VersionFormularioCountOutputType = {
+  objetivosAuditoria: number
   secciones: number
-  formulariosCiclo: number
 }
 
 export type VersionFormularioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  objetivosAuditoria?: boolean | VersionFormularioCountOutputTypeCountObjetivosAuditoriaArgs
   secciones?: boolean | VersionFormularioCountOutputTypeCountSeccionesArgs
-  formulariosCiclo?: boolean | VersionFormularioCountOutputTypeCountFormulariosCicloArgs
 }
 
 /**
@@ -888,15 +888,15 @@ export type VersionFormularioCountOutputTypeDefaultArgs<ExtArgs extends runtime.
 /**
  * VersionFormularioCountOutputType without action
  */
-export type VersionFormularioCountOutputTypeCountSeccionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.SeccionFormularioWhereInput
+export type VersionFormularioCountOutputTypeCountObjetivosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ObjetivoAuditoriaWhereInput
 }
 
 /**
  * VersionFormularioCountOutputType without action
  */
-export type VersionFormularioCountOutputTypeCountFormulariosCicloArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FormularioCicloWhereInput
+export type VersionFormularioCountOutputTypeCountSeccionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SeccionFormularioWhereInput
 }
 
 
@@ -908,10 +908,10 @@ export type VersionFormularioSelect<ExtArgs extends runtime.Types.Extensions.Int
   creadoPorId?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
-  formulario?: boolean | Prisma.FormularioDefaultArgs<ExtArgs>
-  creadoPor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  objetivosAuditoria?: boolean | Prisma.VersionFormulario$objetivosAuditoriaArgs<ExtArgs>
   secciones?: boolean | Prisma.VersionFormulario$seccionesArgs<ExtArgs>
-  formulariosCiclo?: boolean | Prisma.VersionFormulario$formulariosCicloArgs<ExtArgs>
+  creadoPor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  formulario?: boolean | Prisma.FormularioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.VersionFormularioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["versionFormulario"]>
 
@@ -929,20 +929,20 @@ export type VersionFormularioSelectScalar = {
 
 export type VersionFormularioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "formularioId" | "numeroVersion" | "activa" | "creadoPorId" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["versionFormulario"]>
 export type VersionFormularioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  formulario?: boolean | Prisma.FormularioDefaultArgs<ExtArgs>
-  creadoPor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  objetivosAuditoria?: boolean | Prisma.VersionFormulario$objetivosAuditoriaArgs<ExtArgs>
   secciones?: boolean | Prisma.VersionFormulario$seccionesArgs<ExtArgs>
-  formulariosCiclo?: boolean | Prisma.VersionFormulario$formulariosCicloArgs<ExtArgs>
+  creadoPor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  formulario?: boolean | Prisma.FormularioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.VersionFormularioCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $VersionFormularioPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "VersionFormulario"
   objects: {
-    formulario: Prisma.$FormularioPayload<ExtArgs>
-    creadoPor: Prisma.$UsuarioPayload<ExtArgs>
+    objetivosAuditoria: Prisma.$ObjetivoAuditoriaPayload<ExtArgs>[]
     secciones: Prisma.$SeccionFormularioPayload<ExtArgs>[]
-    formulariosCiclo: Prisma.$FormularioCicloPayload<ExtArgs>[]
+    creadoPor: Prisma.$UsuarioPayload<ExtArgs>
+    formulario: Prisma.$FormularioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1292,10 +1292,10 @@ readonly fields: VersionFormularioFieldRefs;
  */
 export interface Prisma__VersionFormularioClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  formulario<T extends Prisma.FormularioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FormularioDefaultArgs<ExtArgs>>): Prisma.Prisma__FormularioClient<runtime.Types.Result.GetResult<Prisma.$FormularioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  creadoPor<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  objetivosAuditoria<T extends Prisma.VersionFormulario$objetivosAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VersionFormulario$objetivosAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ObjetivoAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   secciones<T extends Prisma.VersionFormulario$seccionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VersionFormulario$seccionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SeccionFormularioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  formulariosCiclo<T extends Prisma.VersionFormulario$formulariosCicloArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VersionFormulario$formulariosCicloArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FormularioCicloPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  creadoPor<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  formulario<T extends Prisma.FormularioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FormularioDefaultArgs<ExtArgs>>): Prisma.Prisma__FormularioClient<runtime.Types.Result.GetResult<Prisma.$FormularioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1680,6 +1680,30 @@ export type VersionFormularioDeleteManyArgs<ExtArgs extends runtime.Types.Extens
 }
 
 /**
+ * VersionFormulario.objetivosAuditoria
+ */
+export type VersionFormulario$objetivosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ObjetivoAuditoria
+   */
+  select?: Prisma.ObjetivoAuditoriaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ObjetivoAuditoria
+   */
+  omit?: Prisma.ObjetivoAuditoriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ObjetivoAuditoriaInclude<ExtArgs> | null
+  where?: Prisma.ObjetivoAuditoriaWhereInput
+  orderBy?: Prisma.ObjetivoAuditoriaOrderByWithRelationInput | Prisma.ObjetivoAuditoriaOrderByWithRelationInput[]
+  cursor?: Prisma.ObjetivoAuditoriaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ObjetivoAuditoriaScalarFieldEnum | Prisma.ObjetivoAuditoriaScalarFieldEnum[]
+}
+
+/**
  * VersionFormulario.secciones
  */
 export type VersionFormulario$seccionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1701,30 +1725,6 @@ export type VersionFormulario$seccionesArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.SeccionFormularioScalarFieldEnum | Prisma.SeccionFormularioScalarFieldEnum[]
-}
-
-/**
- * VersionFormulario.formulariosCiclo
- */
-export type VersionFormulario$formulariosCicloArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the FormularioCiclo
-   */
-  select?: Prisma.FormularioCicloSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the FormularioCiclo
-   */
-  omit?: Prisma.FormularioCicloOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FormularioCicloInclude<ExtArgs> | null
-  where?: Prisma.FormularioCicloWhereInput
-  orderBy?: Prisma.FormularioCicloOrderByWithRelationInput | Prisma.FormularioCicloOrderByWithRelationInput[]
-  cursor?: Prisma.FormularioCicloWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.FormularioCicloScalarFieldEnum | Prisma.FormularioCicloScalarFieldEnum[]
 }
 
 /**

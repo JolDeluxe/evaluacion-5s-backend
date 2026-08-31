@@ -10,9 +10,9 @@ export const listarAreasPublicasInvitado = async (_req: Request, res: Response) 
   const objetivos = await prisma.objetivoAuditoria.findMany({
     where: {
       area: { activo: true },
-      cicloAuditoria: { iniciaEn: { lte: ahora } },
+      iniciaEn: { lte: ahora },
     },
-    include: { area: true, cicloAuditoria: true, envioResultado: true },
+    include: { area: true, envioResultado: true },
   });
 
   const areasPorId = new Map<number, { id: number; codigo: string; nombre: string; tipo: string }>();

@@ -60,9 +60,8 @@ export const ModelName = {
   VersionFormulario: 'VersionFormulario',
   SeccionFormulario: 'SeccionFormulario',
   PreguntaFormulario: 'PreguntaFormulario',
-  CicloAuditoria: 'CicloAuditoria',
-  FormularioCiclo: 'FormularioCiclo',
   ObjetivoAuditoria: 'ObjetivoAuditoria',
+  AsignacionMensual: 'AsignacionMensual',
   AsignacionAuditoria: 'AsignacionAuditoria',
   EnlaceInvitado: 'EnlaceInvitado',
   EnvioAuditoria: 'EnvioAuditoria',
@@ -144,8 +143,9 @@ export const AreaScalarFieldEnum = {
   codigo: 'codigo',
   nombre: 'nombre',
   tipo: 'tipo',
-  areaPadreId: 'areaPadreId',
   activo: 'activo',
+  auditableDesde: 'auditableDesde',
+  auditableHasta: 'auditableHasta',
   codigoVerificacion: 'codigoVerificacion',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
@@ -158,7 +158,6 @@ export const UsuarioAreaScalarFieldEnum = {
   id: 'id',
   usuarioId: 'usuarioId',
   areaId: 'areaId',
-  esResponsable: 'esResponsable',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -200,8 +199,6 @@ export const SeccionFormularioScalarFieldEnum = {
   claveEstable: 'claveEstable',
   nombre: 'nombre',
   objetivo: 'objetivo',
-  imagenPublicId: 'imagenPublicId',
-  imagenAlt: 'imagenAlt',
   orden: 'orden',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
@@ -223,46 +220,21 @@ export const PreguntaFormularioScalarFieldEnum = {
 export type PreguntaFormularioScalarFieldEnum = (typeof PreguntaFormularioScalarFieldEnum)[keyof typeof PreguntaFormularioScalarFieldEnum]
 
 
-export const CicloAuditoriaScalarFieldEnum = {
-  id: 'id',
-  anio: 'anio',
-  mes: 'mes',
-  numeroCorte: 'numeroCorte',
-  nombre: 'nombre',
-  estado: 'estado',
-  iniciaEn: 'iniciaEn',
-  terminaEn: 'terminaEn',
-  publicadoEn: 'publicadoEn',
-  cerradoEn: 'cerradoEn',
-  creadoPorId: 'creadoPorId',
-  creadoEn: 'creadoEn',
-  actualizadoEn: 'actualizadoEn'
-} as const
-
-export type CicloAuditoriaScalarFieldEnum = (typeof CicloAuditoriaScalarFieldEnum)[keyof typeof CicloAuditoriaScalarFieldEnum]
-
-
-export const FormularioCicloScalarFieldEnum = {
-  id: 'id',
-  cicloAuditoriaId: 'cicloAuditoriaId',
-  tipoArea: 'tipoArea',
-  versionFormularioId: 'versionFormularioId',
-  creadoEn: 'creadoEn',
-  actualizadoEn: 'actualizadoEn'
-} as const
-
-export type FormularioCicloScalarFieldEnum = (typeof FormularioCicloScalarFieldEnum)[keyof typeof FormularioCicloScalarFieldEnum]
-
-
 export const ObjetivoAuditoriaScalarFieldEnum = {
   id: 'id',
-  cicloAuditoriaId: 'cicloAuditoriaId',
-  formularioCicloId: 'formularioCicloId',
   areaId: 'areaId',
+  anio: 'anio',
+  mes: 'mes',
+  periodo: 'periodo',
+  versionFormularioId: 'versionFormularioId',
+  iniciaEn: 'iniciaEn',
+  terminaEn: 'terminaEn',
   codigoAreaSnapshot: 'codigoAreaSnapshot',
   nombreAreaSnapshot: 'nombreAreaSnapshot',
   tipoAreaSnapshot: 'tipoAreaSnapshot',
   envioResultadoId: 'envioResultadoId',
+  canceladoEn: 'canceladoEn',
+  motivoCancelacion: 'motivoCancelacion',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -270,8 +242,24 @@ export const ObjetivoAuditoriaScalarFieldEnum = {
 export type ObjetivoAuditoriaScalarFieldEnum = (typeof ObjetivoAuditoriaScalarFieldEnum)[keyof typeof ObjetivoAuditoriaScalarFieldEnum]
 
 
+export const AsignacionMensualScalarFieldEnum = {
+  id: 'id',
+  areaId: 'areaId',
+  anio: 'anio',
+  mes: 'mes',
+  auditorId: 'auditorId',
+  asignadoPorId: 'asignadoPorId',
+  asignadoEn: 'asignadoEn',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type AsignacionMensualScalarFieldEnum = (typeof AsignacionMensualScalarFieldEnum)[keyof typeof AsignacionMensualScalarFieldEnum]
+
+
 export const AsignacionAuditoriaScalarFieldEnum = {
   id: 'id',
+  asignacionMensualId: 'asignacionMensualId',
   objetivoAuditoriaId: 'objetivoAuditoriaId',
   auditorId: 'auditorId',
   asignadoPorId: 'asignadoPorId',
@@ -282,6 +270,11 @@ export const AsignacionAuditoriaScalarFieldEnum = {
   completadoEn: 'completadoEn',
   canceladoEn: 'canceladoEn',
   motivoCancelacion: 'motivoCancelacion',
+  motivoExcepcion: 'motivoExcepcion',
+  reabiertaHasta: 'reabiertaHasta',
+  reabiertaEn: 'reabiertaEn',
+  reabiertaPorId: 'reabiertaPorId',
+  motivoReapertura: 'motivoReapertura',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
@@ -511,9 +504,7 @@ export type FormularioOrderByRelevanceFieldEnum = (typeof FormularioOrderByRelev
 export const SeccionFormularioOrderByRelevanceFieldEnum = {
   claveEstable: 'claveEstable',
   nombre: 'nombre',
-  objetivo: 'objetivo',
-  imagenPublicId: 'imagenPublicId',
-  imagenAlt: 'imagenAlt'
+  objetivo: 'objetivo'
 } as const
 
 export type SeccionFormularioOrderByRelevanceFieldEnum = (typeof SeccionFormularioOrderByRelevanceFieldEnum)[keyof typeof SeccionFormularioOrderByRelevanceFieldEnum]
@@ -527,23 +518,19 @@ export const PreguntaFormularioOrderByRelevanceFieldEnum = {
 export type PreguntaFormularioOrderByRelevanceFieldEnum = (typeof PreguntaFormularioOrderByRelevanceFieldEnum)[keyof typeof PreguntaFormularioOrderByRelevanceFieldEnum]
 
 
-export const CicloAuditoriaOrderByRelevanceFieldEnum = {
-  nombre: 'nombre'
-} as const
-
-export type CicloAuditoriaOrderByRelevanceFieldEnum = (typeof CicloAuditoriaOrderByRelevanceFieldEnum)[keyof typeof CicloAuditoriaOrderByRelevanceFieldEnum]
-
-
 export const ObjetivoAuditoriaOrderByRelevanceFieldEnum = {
   codigoAreaSnapshot: 'codigoAreaSnapshot',
-  nombreAreaSnapshot: 'nombreAreaSnapshot'
+  nombreAreaSnapshot: 'nombreAreaSnapshot',
+  motivoCancelacion: 'motivoCancelacion'
 } as const
 
 export type ObjetivoAuditoriaOrderByRelevanceFieldEnum = (typeof ObjetivoAuditoriaOrderByRelevanceFieldEnum)[keyof typeof ObjetivoAuditoriaOrderByRelevanceFieldEnum]
 
 
 export const AsignacionAuditoriaOrderByRelevanceFieldEnum = {
-  motivoCancelacion: 'motivoCancelacion'
+  motivoCancelacion: 'motivoCancelacion',
+  motivoExcepcion: 'motivoExcepcion',
+  motivoReapertura: 'motivoReapertura'
 } as const
 
 export type AsignacionAuditoriaOrderByRelevanceFieldEnum = (typeof AsignacionAuditoriaOrderByRelevanceFieldEnum)[keyof typeof AsignacionAuditoriaOrderByRelevanceFieldEnum]

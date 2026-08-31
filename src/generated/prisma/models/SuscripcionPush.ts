@@ -284,8 +284,8 @@ export type SuscripcionPushWhereInput = {
   revocadoEn?: Prisma.DateTimeNullableFilter<"SuscripcionPush"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"SuscripcionPush"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"SuscripcionPush"> | Date | string
-  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   entregasNotificacion?: Prisma.EntregaNotificacionListRelationFilter
+  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }
 
 export type SuscripcionPushOrderByWithRelationInput = {
@@ -302,8 +302,8 @@ export type SuscripcionPushOrderByWithRelationInput = {
   revocadoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
-  usuario?: Prisma.UsuarioOrderByWithRelationInput
   entregasNotificacion?: Prisma.EntregaNotificacionOrderByRelationAggregateInput
+  usuario?: Prisma.UsuarioOrderByWithRelationInput
   _relevance?: Prisma.SuscripcionPushOrderByRelevanceInput
 }
 
@@ -324,8 +324,8 @@ export type SuscripcionPushWhereUniqueInput = Prisma.AtLeast<{
   revocadoEn?: Prisma.DateTimeNullableFilter<"SuscripcionPush"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"SuscripcionPush"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"SuscripcionPush"> | Date | string
-  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   entregasNotificacion?: Prisma.EntregaNotificacionListRelationFilter
+  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }, "id" | "hashEndpoint">
 
 export type SuscripcionPushOrderByWithAggregationInput = {
@@ -380,8 +380,8 @@ export type SuscripcionPushCreateInput = {
   revocadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  usuario: Prisma.UsuarioCreateNestedOneWithoutSuscripcionesPushInput
   entregasNotificacion?: Prisma.EntregaNotificacionCreateNestedManyWithoutSuscripcionPushInput
+  usuario: Prisma.UsuarioCreateNestedOneWithoutSuscripcionesPushInput
 }
 
 export type SuscripcionPushUncheckedCreateInput = {
@@ -413,8 +413,8 @@ export type SuscripcionPushUpdateInput = {
   revocadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutSuscripcionesPushNestedInput
   entregasNotificacion?: Prisma.EntregaNotificacionUpdateManyWithoutSuscripcionPushNestedInput
+  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutSuscripcionesPushNestedInput
 }
 
 export type SuscripcionPushUncheckedUpdateInput = {
@@ -877,8 +877,8 @@ export type SuscripcionPushSelect<ExtArgs extends runtime.Types.Extensions.Inter
   revocadoEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   entregasNotificacion?: boolean | Prisma.SuscripcionPush$entregasNotificacionArgs<ExtArgs>
+  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.SuscripcionPushCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["suscripcionPush"]>
 
@@ -902,16 +902,16 @@ export type SuscripcionPushSelectScalar = {
 
 export type SuscripcionPushOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "usuarioId" | "endpoint" | "hashEndpoint" | "p256dh" | "auth" | "nombreDispositivo" | "agenteUsuario" | "expiraEn" | "ultimoUsoEn" | "revocadoEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["suscripcionPush"]>
 export type SuscripcionPushInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   entregasNotificacion?: boolean | Prisma.SuscripcionPush$entregasNotificacionArgs<ExtArgs>
+  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.SuscripcionPushCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $SuscripcionPushPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "SuscripcionPush"
   objects: {
-    usuario: Prisma.$UsuarioPayload<ExtArgs>
     entregasNotificacion: Prisma.$EntregaNotificacionPayload<ExtArgs>[]
+    usuario: Prisma.$UsuarioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1267,8 +1267,8 @@ readonly fields: SuscripcionPushFieldRefs;
  */
 export interface Prisma__SuscripcionPushClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  usuario<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   entregasNotificacion<T extends Prisma.SuscripcionPush$entregasNotificacionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SuscripcionPush$entregasNotificacionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntregaNotificacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  usuario<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

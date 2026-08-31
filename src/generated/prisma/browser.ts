@@ -63,20 +63,15 @@ export type SeccionFormulario = Prisma.SeccionFormularioModel
  */
 export type PreguntaFormulario = Prisma.PreguntaFormularioModel
 /**
- * Model CicloAuditoria
- * 
- */
-export type CicloAuditoria = Prisma.CicloAuditoriaModel
-/**
- * Model FormularioCiclo
- * 
- */
-export type FormularioCiclo = Prisma.FormularioCicloModel
-/**
  * Model ObjetivoAuditoria
  * 
  */
 export type ObjetivoAuditoria = Prisma.ObjetivoAuditoriaModel
+/**
+ * Model AsignacionMensual
+ * 
+ */
+export type AsignacionMensual = Prisma.AsignacionMensualModel
 /**
  * Model AsignacionAuditoria
  * 

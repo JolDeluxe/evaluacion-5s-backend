@@ -44,8 +44,6 @@ export type SeccionFormularioMinAggregateOutputType = {
   claveEstable: string | null
   nombre: string | null
   objetivo: string | null
-  imagenPublicId: string | null
-  imagenAlt: string | null
   orden: number | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -57,8 +55,6 @@ export type SeccionFormularioMaxAggregateOutputType = {
   claveEstable: string | null
   nombre: string | null
   objetivo: string | null
-  imagenPublicId: string | null
-  imagenAlt: string | null
   orden: number | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -70,8 +66,6 @@ export type SeccionFormularioCountAggregateOutputType = {
   claveEstable: number
   nombre: number
   objetivo: number
-  imagenPublicId: number
-  imagenAlt: number
   orden: number
   creadoEn: number
   actualizadoEn: number
@@ -97,8 +91,6 @@ export type SeccionFormularioMinAggregateInputType = {
   claveEstable?: true
   nombre?: true
   objetivo?: true
-  imagenPublicId?: true
-  imagenAlt?: true
   orden?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -110,8 +102,6 @@ export type SeccionFormularioMaxAggregateInputType = {
   claveEstable?: true
   nombre?: true
   objetivo?: true
-  imagenPublicId?: true
-  imagenAlt?: true
   orden?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -123,8 +113,6 @@ export type SeccionFormularioCountAggregateInputType = {
   claveEstable?: true
   nombre?: true
   objetivo?: true
-  imagenPublicId?: true
-  imagenAlt?: true
   orden?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -223,8 +211,6 @@ export type SeccionFormularioGroupByOutputType = {
   claveEstable: string
   nombre: string
   objetivo: string | null
-  imagenPublicId: string | null
-  imagenAlt: string | null
   orden: number
   creadoEn: Date
   actualizadoEn: Date
@@ -259,13 +245,11 @@ export type SeccionFormularioWhereInput = {
   claveEstable?: Prisma.StringFilter<"SeccionFormulario"> | string
   nombre?: Prisma.StringFilter<"SeccionFormulario"> | string
   objetivo?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
-  imagenPublicId?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
-  imagenAlt?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
   orden?: Prisma.IntFilter<"SeccionFormulario"> | number
   creadoEn?: Prisma.DateTimeFilter<"SeccionFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"SeccionFormulario"> | Date | string
-  versionFormulario?: Prisma.XOR<Prisma.VersionFormularioScalarRelationFilter, Prisma.VersionFormularioWhereInput>
   preguntas?: Prisma.PreguntaFormularioListRelationFilter
+  versionFormulario?: Prisma.XOR<Prisma.VersionFormularioScalarRelationFilter, Prisma.VersionFormularioWhereInput>
 }
 
 export type SeccionFormularioOrderByWithRelationInput = {
@@ -274,13 +258,11 @@ export type SeccionFormularioOrderByWithRelationInput = {
   claveEstable?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   objetivo?: Prisma.SortOrderInput | Prisma.SortOrder
-  imagenPublicId?: Prisma.SortOrderInput | Prisma.SortOrder
-  imagenAlt?: Prisma.SortOrderInput | Prisma.SortOrder
   orden?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
-  versionFormulario?: Prisma.VersionFormularioOrderByWithRelationInput
   preguntas?: Prisma.PreguntaFormularioOrderByRelationAggregateInput
+  versionFormulario?: Prisma.VersionFormularioOrderByWithRelationInput
   _relevance?: Prisma.SeccionFormularioOrderByRelevanceInput
 }
 
@@ -294,13 +276,11 @@ export type SeccionFormularioWhereUniqueInput = Prisma.AtLeast<{
   claveEstable?: Prisma.StringFilter<"SeccionFormulario"> | string
   nombre?: Prisma.StringFilter<"SeccionFormulario"> | string
   objetivo?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
-  imagenPublicId?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
-  imagenAlt?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
   orden?: Prisma.IntFilter<"SeccionFormulario"> | number
   creadoEn?: Prisma.DateTimeFilter<"SeccionFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"SeccionFormulario"> | Date | string
-  versionFormulario?: Prisma.XOR<Prisma.VersionFormularioScalarRelationFilter, Prisma.VersionFormularioWhereInput>
   preguntas?: Prisma.PreguntaFormularioListRelationFilter
+  versionFormulario?: Prisma.XOR<Prisma.VersionFormularioScalarRelationFilter, Prisma.VersionFormularioWhereInput>
 }, "id" | "versionFormularioId_claveEstable">
 
 export type SeccionFormularioOrderByWithAggregationInput = {
@@ -309,8 +289,6 @@ export type SeccionFormularioOrderByWithAggregationInput = {
   claveEstable?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   objetivo?: Prisma.SortOrderInput | Prisma.SortOrder
-  imagenPublicId?: Prisma.SortOrderInput | Prisma.SortOrder
-  imagenAlt?: Prisma.SortOrderInput | Prisma.SortOrder
   orden?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -330,8 +308,6 @@ export type SeccionFormularioScalarWhereWithAggregatesInput = {
   claveEstable?: Prisma.StringWithAggregatesFilter<"SeccionFormulario"> | string
   nombre?: Prisma.StringWithAggregatesFilter<"SeccionFormulario"> | string
   objetivo?: Prisma.StringNullableWithAggregatesFilter<"SeccionFormulario"> | string | null
-  imagenPublicId?: Prisma.StringNullableWithAggregatesFilter<"SeccionFormulario"> | string | null
-  imagenAlt?: Prisma.StringNullableWithAggregatesFilter<"SeccionFormulario"> | string | null
   orden?: Prisma.IntWithAggregatesFilter<"SeccionFormulario"> | number
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"SeccionFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"SeccionFormulario"> | Date | string
@@ -341,13 +317,11 @@ export type SeccionFormularioCreateInput = {
   claveEstable: string
   nombre: string
   objetivo?: string | null
-  imagenPublicId?: string | null
-  imagenAlt?: string | null
   orden: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutSeccionesInput
   preguntas?: Prisma.PreguntaFormularioCreateNestedManyWithoutSeccionFormularioInput
+  versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutSeccionesInput
 }
 
 export type SeccionFormularioUncheckedCreateInput = {
@@ -356,8 +330,6 @@ export type SeccionFormularioUncheckedCreateInput = {
   claveEstable: string
   nombre: string
   objetivo?: string | null
-  imagenPublicId?: string | null
-  imagenAlt?: string | null
   orden: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -368,13 +340,11 @@ export type SeccionFormularioUpdateInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutSeccionesNestedInput
   preguntas?: Prisma.PreguntaFormularioUpdateManyWithoutSeccionFormularioNestedInput
+  versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutSeccionesNestedInput
 }
 
 export type SeccionFormularioUncheckedUpdateInput = {
@@ -383,8 +353,6 @@ export type SeccionFormularioUncheckedUpdateInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -397,8 +365,6 @@ export type SeccionFormularioCreateManyInput = {
   claveEstable: string
   nombre: string
   objetivo?: string | null
-  imagenPublicId?: string | null
-  imagenAlt?: string | null
   orden: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -408,8 +374,6 @@ export type SeccionFormularioUpdateManyMutationInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -421,8 +385,6 @@ export type SeccionFormularioUncheckedUpdateManyInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -455,8 +417,6 @@ export type SeccionFormularioCountOrderByAggregateInput = {
   claveEstable?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   objetivo?: Prisma.SortOrder
-  imagenPublicId?: Prisma.SortOrder
-  imagenAlt?: Prisma.SortOrder
   orden?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -474,8 +434,6 @@ export type SeccionFormularioMaxOrderByAggregateInput = {
   claveEstable?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   objetivo?: Prisma.SortOrder
-  imagenPublicId?: Prisma.SortOrder
-  imagenAlt?: Prisma.SortOrder
   orden?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -487,8 +445,6 @@ export type SeccionFormularioMinOrderByAggregateInput = {
   claveEstable?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   objetivo?: Prisma.SortOrder
-  imagenPublicId?: Prisma.SortOrder
-  imagenAlt?: Prisma.SortOrder
   orden?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -565,8 +521,6 @@ export type SeccionFormularioCreateWithoutVersionFormularioInput = {
   claveEstable: string
   nombre: string
   objetivo?: string | null
-  imagenPublicId?: string | null
-  imagenAlt?: string | null
   orden: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -578,8 +532,6 @@ export type SeccionFormularioUncheckedCreateWithoutVersionFormularioInput = {
   claveEstable: string
   nombre: string
   objetivo?: string | null
-  imagenPublicId?: string | null
-  imagenAlt?: string | null
   orden: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -621,8 +573,6 @@ export type SeccionFormularioScalarWhereInput = {
   claveEstable?: Prisma.StringFilter<"SeccionFormulario"> | string
   nombre?: Prisma.StringFilter<"SeccionFormulario"> | string
   objetivo?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
-  imagenPublicId?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
-  imagenAlt?: Prisma.StringNullableFilter<"SeccionFormulario"> | string | null
   orden?: Prisma.IntFilter<"SeccionFormulario"> | number
   creadoEn?: Prisma.DateTimeFilter<"SeccionFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"SeccionFormulario"> | Date | string
@@ -632,8 +582,6 @@ export type SeccionFormularioCreateWithoutPreguntasInput = {
   claveEstable: string
   nombre: string
   objetivo?: string | null
-  imagenPublicId?: string | null
-  imagenAlt?: string | null
   orden: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -646,8 +594,6 @@ export type SeccionFormularioUncheckedCreateWithoutPreguntasInput = {
   claveEstable: string
   nombre: string
   objetivo?: string | null
-  imagenPublicId?: string | null
-  imagenAlt?: string | null
   orden: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -673,8 +619,6 @@ export type SeccionFormularioUpdateWithoutPreguntasInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -687,8 +631,6 @@ export type SeccionFormularioUncheckedUpdateWithoutPreguntasInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -699,8 +641,6 @@ export type SeccionFormularioCreateManyVersionFormularioInput = {
   claveEstable: string
   nombre: string
   objetivo?: string | null
-  imagenPublicId?: string | null
-  imagenAlt?: string | null
   orden: number
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -710,8 +650,6 @@ export type SeccionFormularioUpdateWithoutVersionFormularioInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -723,8 +661,6 @@ export type SeccionFormularioUncheckedUpdateWithoutVersionFormularioInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -736,8 +672,6 @@ export type SeccionFormularioUncheckedUpdateManyWithoutVersionFormularioInput = 
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   objetivo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  imagenAlt?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   orden?: Prisma.IntFieldUpdateOperationsInput | number
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -780,13 +714,11 @@ export type SeccionFormularioSelect<ExtArgs extends runtime.Types.Extensions.Int
   claveEstable?: boolean
   nombre?: boolean
   objetivo?: boolean
-  imagenPublicId?: boolean
-  imagenAlt?: boolean
   orden?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
-  versionFormulario?: boolean | Prisma.VersionFormularioDefaultArgs<ExtArgs>
   preguntas?: boolean | Prisma.SeccionFormulario$preguntasArgs<ExtArgs>
+  versionFormulario?: boolean | Prisma.VersionFormularioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.SeccionFormularioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["seccionFormulario"]>
 
@@ -798,25 +730,23 @@ export type SeccionFormularioSelectScalar = {
   claveEstable?: boolean
   nombre?: boolean
   objetivo?: boolean
-  imagenPublicId?: boolean
-  imagenAlt?: boolean
   orden?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type SeccionFormularioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "versionFormularioId" | "claveEstable" | "nombre" | "objetivo" | "imagenPublicId" | "imagenAlt" | "orden" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["seccionFormulario"]>
+export type SeccionFormularioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "versionFormularioId" | "claveEstable" | "nombre" | "objetivo" | "orden" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["seccionFormulario"]>
 export type SeccionFormularioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  versionFormulario?: boolean | Prisma.VersionFormularioDefaultArgs<ExtArgs>
   preguntas?: boolean | Prisma.SeccionFormulario$preguntasArgs<ExtArgs>
+  versionFormulario?: boolean | Prisma.VersionFormularioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.SeccionFormularioCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $SeccionFormularioPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "SeccionFormulario"
   objects: {
-    versionFormulario: Prisma.$VersionFormularioPayload<ExtArgs>
     preguntas: Prisma.$PreguntaFormularioPayload<ExtArgs>[]
+    versionFormulario: Prisma.$VersionFormularioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -824,8 +754,6 @@ export type $SeccionFormularioPayload<ExtArgs extends runtime.Types.Extensions.I
     claveEstable: string
     nombre: string
     objetivo: string | null
-    imagenPublicId: string | null
-    imagenAlt: string | null
     orden: number
     creadoEn: Date
     actualizadoEn: Date
@@ -1169,8 +1097,8 @@ readonly fields: SeccionFormularioFieldRefs;
  */
 export interface Prisma__SeccionFormularioClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  versionFormulario<T extends Prisma.VersionFormularioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VersionFormularioDefaultArgs<ExtArgs>>): Prisma.Prisma__VersionFormularioClient<runtime.Types.Result.GetResult<Prisma.$VersionFormularioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   preguntas<T extends Prisma.SeccionFormulario$preguntasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SeccionFormulario$preguntasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PreguntaFormularioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  versionFormulario<T extends Prisma.VersionFormularioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VersionFormularioDefaultArgs<ExtArgs>>): Prisma.Prisma__VersionFormularioClient<runtime.Types.Result.GetResult<Prisma.$VersionFormularioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1205,8 +1133,6 @@ export interface SeccionFormularioFieldRefs {
   readonly claveEstable: Prisma.FieldRef<"SeccionFormulario", 'String'>
   readonly nombre: Prisma.FieldRef<"SeccionFormulario", 'String'>
   readonly objetivo: Prisma.FieldRef<"SeccionFormulario", 'String'>
-  readonly imagenPublicId: Prisma.FieldRef<"SeccionFormulario", 'String'>
-  readonly imagenAlt: Prisma.FieldRef<"SeccionFormulario", 'String'>
   readonly orden: Prisma.FieldRef<"SeccionFormulario", 'Int'>
   readonly creadoEn: Prisma.FieldRef<"SeccionFormulario", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"SeccionFormulario", 'DateTime'>

@@ -2,7 +2,6 @@ import { prisma, type PrismaTransaction } from '../db';
 import { assertObjetivoRealizable, compararObjetivosPorPeriodo, objetivoEsRealizable } from './periodos';
 
 const includePeriodo = {
-  cicloAuditoria: true,
   envioResultado: true,
 } as const;
 
@@ -14,7 +13,7 @@ export const obtenerObjetivoRealizableMasAntiguo = async (
   const objetivos = await tx.objetivoAuditoria.findMany({
     where: {
       areaId,
-      cicloAuditoria: { iniciaEn: { lte: ahora } },
+      iniciaEn: { lte: ahora },
     },
     include: includePeriodo,
   });
@@ -27,13 +26,14 @@ export const obtenerObjetivoRealizableMasAntiguo = async (
 export const validarObjetivoRealizableMasAntiguo = async (
   tx: PrismaTransaction | typeof prisma,
   objetivoAuditoriaId: number,
-  ahora = new Date()
+  ahora = new Date(),
+  reabiertaHasta?: Date | null
 ) => {
   const objetivo = await tx.objetivoAuditoria.findUniqueOrThrow({
     where: { id: objetivoAuditoriaId },
     include: includePeriodo,
   });
   const objetivoMasAntiguo = await obtenerObjetivoRealizableMasAntiguo(tx, objetivo.areaId, ahora);
-  assertObjetivoRealizable(objetivo, objetivoMasAntiguo, ahora);
+  assertObjetivoRealizable(objetivo, objetivoMasAntiguo, ahora, reabiertaHasta);
   return objetivo;
 };

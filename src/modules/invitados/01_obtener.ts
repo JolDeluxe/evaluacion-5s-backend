@@ -1,9 +1,10 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../db';
+import { EstadoAsignacionAuditoria } from '../../generated/prisma/enums';
 import { hashSha256 } from '../../utils/crypto';
-import { noEncontrado } from '../../utils/errores';
+import { noEncontrado, solicitudInvalida } from '../../utils/errores';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
-import { construirDetalleAuditorPeriodo } from '../../utils/periodos';
+import { construirDetalleAuditorPeriodo, construirPeriodoCompat } from '../../utils/periodos';
 import { responder } from '../../utils/respuesta';
 import { esquemaToken } from '../auditorias/zod';
 
@@ -14,21 +15,17 @@ export const obtenerInvitacion = async (req: Request, res: Response) => {
     include: {
       asignacionAuditoria: {
         include: {
+          auditor: { select: { id: true, nombre: true, nombreUsuario: true } },
           objetivoAuditoria: {
             include: {
               area: true,
               envioResultado: true,
-              cicloAuditoria: true,
-              formularioCiclo: {
+              versionFormulario: {
                 include: {
-                  versionFormulario: {
-                    include: {
-                      formulario: true,
-                      secciones: {
-                        orderBy: { orden: 'asc' },
-                        include: { preguntas: { orderBy: { orden: 'asc' } } },
-                      },
-                    },
+                  formulario: true,
+                  secciones: {
+                    orderBy: { orden: 'asc' },
+                    include: { preguntas: { orderBy: { orden: 'asc' } } },
                   },
                 },
               },
@@ -39,6 +36,10 @@ export const obtenerInvitacion = async (req: Request, res: Response) => {
     },
   });
   if (!enlace || enlace.revocadoEn || enlace.expiraEn <= new Date()) throw noEncontrado('Enlace no valido');
+  if (enlace.usadoEn) throw solicitudInvalida('Esta invitacion ya fue utilizada.');
+  if (enlace.asignacionAuditoria.estado === EstadoAsignacionAuditoria.COMPLETADA || enlace.asignacionAuditoria.objetivoAuditoria.envioResultadoId) {
+    throw solicitudInvalida('Esta auditoria ya fue completada.');
+  }
 
   const objetivo = enlace.asignacionAuditoria.objetivoAuditoria;
   await validarObjetivoRealizableMasAntiguo(prisma, objetivo.id);
@@ -50,12 +51,13 @@ export const obtenerInvitacion = async (req: Request, res: Response) => {
       asignacion: {
         id: enlace.asignacionAuditoria.id,
         venceEn: enlace.asignacionAuditoria.venceEn,
+        auditor: enlace.asignacionAuditoria.auditor,
         objetivo,
       },
       objetivo,
       area: objetivo.area,
-      ciclo: objetivo.cicloAuditoria,
-      versionFormulario: objetivo.formularioCiclo.versionFormulario,
+      ciclo: construirPeriodoCompat(objetivo),
+      versionFormulario: objetivo.versionFormulario,
       periodo: construirDetalleAuditorPeriodo(objetivo),
     },
   });

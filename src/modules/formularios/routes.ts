@@ -8,7 +8,7 @@ import { guardarEstructuraFormulario } from './03_guardar_estructura';
 import { listarVersiones } from './07_versiones';
 import { obtenerFormulario } from './08_obtener';
 import { obtenerVersionFormulario } from './09_obtener_version';
-import { firmarImagenFormulario } from './11_firmar_imagen';
+import { firmarImagenFormulario, firmarImagenFormularioActual } from './11_firmar_imagen';
 import { actualizarFormulario } from './12_actualizar';
 
 export const formulariosRouter = Router();
@@ -18,6 +18,8 @@ formulariosRouter.use(autorizarRoles(...ROLES_ADMIN_NEGOCIO));
 formulariosRouter.get('/', listarFormularios);
 formulariosRouter.get('/versiones/:versionId', obtenerVersionFormulario);
 formulariosRouter.post('/versiones/:versionId/imagenes/firmar', firmarImagenFormulario);
+formulariosRouter.put('/:id/estructura', guardarEstructuraFormulario);
+formulariosRouter.post('/:id/imagenes/firmar', firmarImagenFormularioActual);
 formulariosRouter.get('/:id', obtenerFormulario);
 formulariosRouter.patch('/:id', actualizarFormulario);
 formulariosRouter.get('/:id/versiones', listarVersiones);

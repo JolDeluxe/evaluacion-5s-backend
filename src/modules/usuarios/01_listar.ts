@@ -10,24 +10,44 @@ const esquemaQuery = z.object({
   busqueda: z.string().trim().optional(),
   rol: z.enum(RolUsuario).optional(),
   activo: z.coerce.boolean().optional(),
+  responsabilidad: z.string().trim().optional(), // 'con' | 'sin'
 }).passthrough();
 
 export const listarUsuarios = async (req: Request, res: Response) => {
   const { pagina, limite, saltar } = obtenerPaginacion(req.query);
   const query = esquemaQuery.parse(req.query);
-  const where = {
+
+  const where: Record<string, unknown> = {
     ...(query.rol ? { rol: query.rol } : {}),
     ...(query.activo === undefined ? {} : { activo: query.activo }),
-    ...(query.busqueda
-      ? {
-          OR: [
-            { nombre: { contains: query.busqueda } },
-            { nombreUsuario: { contains: query.busqueda } },
-            { correo: { contains: query.busqueda } },
-          ],
-        }
-      : {}),
   };
+
+  if (query.busqueda) {
+    where.OR = [
+      { nombre: { contains: query.busqueda } },
+      { nombreUsuario: { contains: query.busqueda } },
+      { correo: { contains: query.busqueda } },
+      {
+        areasUsuario: {
+          some: {
+            area: {
+              nombre: { contains: query.busqueda },
+            },
+          },
+        },
+      },
+    ];
+  }
+
+  if (query.responsabilidad === 'con') {
+    where.areasUsuario = {
+      some: {},
+    };
+  } else if (query.responsabilidad === 'sin') {
+    where.areasUsuario = {
+      none: {},
+    };
+  }
 
   const [datos, total] = await prisma.$transaction([
     prisma.usuario.findMany({
@@ -35,9 +55,8 @@ export const listarUsuarios = async (req: Request, res: Response) => {
       select: {
         ...seleccionarUsuarioSeguro,
         areasUsuario: {
-          orderBy: [{ esResponsable: 'desc' }, { creadoEn: 'asc' }],
+          orderBy: { creadoEn: 'asc' },
           select: {
-            esResponsable: true,
             area: { select: { id: true, codigo: true, nombre: true, tipo: true } },
           },
         },

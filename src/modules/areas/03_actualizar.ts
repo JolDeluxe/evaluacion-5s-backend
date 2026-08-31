@@ -15,7 +15,6 @@ export const actualizarArea = async (req: Request, res: Response) => {
         ...(body.codigo ? { codigo: body.codigo.trim().toUpperCase() } : {}),
         ...(body.nombre ? { nombre: body.nombre.trim() } : {}),
         ...(body.tipo ? { tipo: body.tipo } : {}),
-        ...(body.areaPadreId !== undefined ? { areaPadreId: body.areaPadreId ?? null } : {}),
       },
     });
     await registrarAuditoria({ usuarioId: req.autenticacion?.usuarioId, accion: 'ACTUALIZAR_AREA', tipoEntidad: 'Area', idEntidad: id, datosAnteriores: anterior, datosNuevos: actualizado }, tx);

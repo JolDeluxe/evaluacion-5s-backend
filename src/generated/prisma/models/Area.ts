@@ -28,12 +28,10 @@ export type AggregateArea = {
 
 export type AreaAvgAggregateOutputType = {
   id: number | null
-  areaPadreId: number | null
 }
 
 export type AreaSumAggregateOutputType = {
   id: number | null
-  areaPadreId: number | null
 }
 
 export type AreaMinAggregateOutputType = {
@@ -41,8 +39,9 @@ export type AreaMinAggregateOutputType = {
   codigo: string | null
   nombre: string | null
   tipo: $Enums.TipoArea | null
-  areaPadreId: number | null
   activo: boolean | null
+  auditableDesde: Date | null
+  auditableHasta: Date | null
   codigoVerificacion: string | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -53,8 +52,9 @@ export type AreaMaxAggregateOutputType = {
   codigo: string | null
   nombre: string | null
   tipo: $Enums.TipoArea | null
-  areaPadreId: number | null
   activo: boolean | null
+  auditableDesde: Date | null
+  auditableHasta: Date | null
   codigoVerificacion: string | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -65,8 +65,9 @@ export type AreaCountAggregateOutputType = {
   codigo: number
   nombre: number
   tipo: number
-  areaPadreId: number
   activo: number
+  auditableDesde: number
+  auditableHasta: number
   codigoVerificacion: number
   creadoEn: number
   actualizadoEn: number
@@ -76,12 +77,10 @@ export type AreaCountAggregateOutputType = {
 
 export type AreaAvgAggregateInputType = {
   id?: true
-  areaPadreId?: true
 }
 
 export type AreaSumAggregateInputType = {
   id?: true
-  areaPadreId?: true
 }
 
 export type AreaMinAggregateInputType = {
@@ -89,8 +88,9 @@ export type AreaMinAggregateInputType = {
   codigo?: true
   nombre?: true
   tipo?: true
-  areaPadreId?: true
   activo?: true
+  auditableDesde?: true
+  auditableHasta?: true
   codigoVerificacion?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -101,8 +101,9 @@ export type AreaMaxAggregateInputType = {
   codigo?: true
   nombre?: true
   tipo?: true
-  areaPadreId?: true
   activo?: true
+  auditableDesde?: true
+  auditableHasta?: true
   codigoVerificacion?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -113,8 +114,9 @@ export type AreaCountAggregateInputType = {
   codigo?: true
   nombre?: true
   tipo?: true
-  areaPadreId?: true
   activo?: true
+  auditableDesde?: true
+  auditableHasta?: true
   codigoVerificacion?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -212,8 +214,9 @@ export type AreaGroupByOutputType = {
   codigo: string
   nombre: string
   tipo: $Enums.TipoArea
-  areaPadreId: number | null
   activo: boolean
+  auditableDesde: Date | null
+  auditableHasta: Date | null
   codigoVerificacion: string
   creadoEn: Date
   actualizadoEn: Date
@@ -247,15 +250,15 @@ export type AreaWhereInput = {
   codigo?: Prisma.StringFilter<"Area"> | string
   nombre?: Prisma.StringFilter<"Area"> | string
   tipo?: Prisma.EnumTipoAreaFilter<"Area"> | $Enums.TipoArea
-  areaPadreId?: Prisma.IntNullableFilter<"Area"> | number | null
   activo?: Prisma.BoolFilter<"Area"> | boolean
+  auditableDesde?: Prisma.DateTimeNullableFilter<"Area"> | Date | string | null
+  auditableHasta?: Prisma.DateTimeNullableFilter<"Area"> | Date | string | null
   codigoVerificacion?: Prisma.StringFilter<"Area"> | string
   creadoEn?: Prisma.DateTimeFilter<"Area"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Area"> | Date | string
-  areaPadre?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
-  areasHijas?: Prisma.AreaListRelationFilter
-  usuariosArea?: Prisma.UsuarioAreaListRelationFilter
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaListRelationFilter
+  asignacionesMensuales?: Prisma.AsignacionMensualListRelationFilter
+  usuariosArea?: Prisma.UsuarioAreaListRelationFilter
 }
 
 export type AreaOrderByWithRelationInput = {
@@ -263,15 +266,15 @@ export type AreaOrderByWithRelationInput = {
   codigo?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   tipo?: Prisma.SortOrder
-  areaPadreId?: Prisma.SortOrderInput | Prisma.SortOrder
   activo?: Prisma.SortOrder
+  auditableDesde?: Prisma.SortOrderInput | Prisma.SortOrder
+  auditableHasta?: Prisma.SortOrderInput | Prisma.SortOrder
   codigoVerificacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
-  areaPadre?: Prisma.AreaOrderByWithRelationInput
-  areasHijas?: Prisma.AreaOrderByRelationAggregateInput
-  usuariosArea?: Prisma.UsuarioAreaOrderByRelationAggregateInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaOrderByRelationAggregateInput
+  asignacionesMensuales?: Prisma.AsignacionMensualOrderByRelationAggregateInput
+  usuariosArea?: Prisma.UsuarioAreaOrderByRelationAggregateInput
   _relevance?: Prisma.AreaOrderByRelevanceInput
 }
 
@@ -284,14 +287,14 @@ export type AreaWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AreaWhereInput | Prisma.AreaWhereInput[]
   nombre?: Prisma.StringFilter<"Area"> | string
   tipo?: Prisma.EnumTipoAreaFilter<"Area"> | $Enums.TipoArea
-  areaPadreId?: Prisma.IntNullableFilter<"Area"> | number | null
   activo?: Prisma.BoolFilter<"Area"> | boolean
+  auditableDesde?: Prisma.DateTimeNullableFilter<"Area"> | Date | string | null
+  auditableHasta?: Prisma.DateTimeNullableFilter<"Area"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"Area"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Area"> | Date | string
-  areaPadre?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
-  areasHijas?: Prisma.AreaListRelationFilter
-  usuariosArea?: Prisma.UsuarioAreaListRelationFilter
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaListRelationFilter
+  asignacionesMensuales?: Prisma.AsignacionMensualListRelationFilter
+  usuariosArea?: Prisma.UsuarioAreaListRelationFilter
 }, "id" | "codigo" | "codigoVerificacion">
 
 export type AreaOrderByWithAggregationInput = {
@@ -299,8 +302,9 @@ export type AreaOrderByWithAggregationInput = {
   codigo?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   tipo?: Prisma.SortOrder
-  areaPadreId?: Prisma.SortOrderInput | Prisma.SortOrder
   activo?: Prisma.SortOrder
+  auditableDesde?: Prisma.SortOrderInput | Prisma.SortOrder
+  auditableHasta?: Prisma.SortOrderInput | Prisma.SortOrder
   codigoVerificacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -319,8 +323,9 @@ export type AreaScalarWhereWithAggregatesInput = {
   codigo?: Prisma.StringWithAggregatesFilter<"Area"> | string
   nombre?: Prisma.StringWithAggregatesFilter<"Area"> | string
   tipo?: Prisma.EnumTipoAreaWithAggregatesFilter<"Area"> | $Enums.TipoArea
-  areaPadreId?: Prisma.IntNullableWithAggregatesFilter<"Area"> | number | null
   activo?: Prisma.BoolWithAggregatesFilter<"Area"> | boolean
+  auditableDesde?: Prisma.DateTimeNullableWithAggregatesFilter<"Area"> | Date | string | null
+  auditableHasta?: Prisma.DateTimeNullableWithAggregatesFilter<"Area"> | Date | string | null
   codigoVerificacion?: Prisma.StringWithAggregatesFilter<"Area"> | string
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"Area"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"Area"> | Date | string
@@ -331,13 +336,14 @@ export type AreaCreateInput = {
   nombre: string
   tipo: $Enums.TipoArea
   activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
   codigoVerificacion: string
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  areaPadre?: Prisma.AreaCreateNestedOneWithoutAreasHijasInput
-  areasHijas?: Prisma.AreaCreateNestedManyWithoutAreaPadreInput
-  usuariosArea?: Prisma.UsuarioAreaCreateNestedManyWithoutAreaInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutAreaInput
+  asignacionesMensuales?: Prisma.AsignacionMensualCreateNestedManyWithoutAreaInput
+  usuariosArea?: Prisma.UsuarioAreaCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateInput = {
@@ -345,14 +351,15 @@ export type AreaUncheckedCreateInput = {
   codigo: string
   nombre: string
   tipo: $Enums.TipoArea
-  areaPadreId?: number | null
   activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
   codigoVerificacion: string
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  areasHijas?: Prisma.AreaUncheckedCreateNestedManyWithoutAreaPadreInput
-  usuariosArea?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutAreaInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutAreaInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAreaInput
+  usuariosArea?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUpdateInput = {
@@ -360,13 +367,14 @@ export type AreaUpdateInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areaPadre?: Prisma.AreaUpdateOneWithoutAreasHijasNestedInput
-  areasHijas?: Prisma.AreaUpdateManyWithoutAreaPadreNestedInput
-  usuariosArea?: Prisma.UsuarioAreaUpdateManyWithoutAreaNestedInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaUpdateManyWithoutAreaNestedInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUpdateManyWithoutAreaNestedInput
+  usuariosArea?: Prisma.UsuarioAreaUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateInput = {
@@ -374,14 +382,15 @@ export type AreaUncheckedUpdateInput = {
   codigo?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  areaPadreId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areasHijas?: Prisma.AreaUncheckedUpdateManyWithoutAreaPadreNestedInput
-  usuariosArea?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutAreaNestedInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutAreaNestedInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAreaNestedInput
+  usuariosArea?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateManyInput = {
@@ -389,8 +398,9 @@ export type AreaCreateManyInput = {
   codigo: string
   nombre: string
   tipo: $Enums.TipoArea
-  areaPadreId?: number | null
   activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
   codigoVerificacion: string
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -401,6 +411,8 @@ export type AreaUpdateManyMutationInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -411,26 +423,12 @@ export type AreaUncheckedUpdateManyInput = {
   codigo?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  areaPadreId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type AreaNullableScalarRelationFilter = {
-  is?: Prisma.AreaWhereInput | null
-  isNot?: Prisma.AreaWhereInput | null
-}
-
-export type AreaListRelationFilter = {
-  every?: Prisma.AreaWhereInput
-  some?: Prisma.AreaWhereInput
-  none?: Prisma.AreaWhereInput
-}
-
-export type AreaOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
 }
 
 export type AreaOrderByRelevanceInput = {
@@ -444,8 +442,9 @@ export type AreaCountOrderByAggregateInput = {
   codigo?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   tipo?: Prisma.SortOrder
-  areaPadreId?: Prisma.SortOrder
   activo?: Prisma.SortOrder
+  auditableDesde?: Prisma.SortOrder
+  auditableHasta?: Prisma.SortOrder
   codigoVerificacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -453,7 +452,6 @@ export type AreaCountOrderByAggregateInput = {
 
 export type AreaAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  areaPadreId?: Prisma.SortOrder
 }
 
 export type AreaMaxOrderByAggregateInput = {
@@ -461,8 +459,9 @@ export type AreaMaxOrderByAggregateInput = {
   codigo?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   tipo?: Prisma.SortOrder
-  areaPadreId?: Prisma.SortOrder
   activo?: Prisma.SortOrder
+  auditableDesde?: Prisma.SortOrder
+  auditableHasta?: Prisma.SortOrder
   codigoVerificacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -473,8 +472,9 @@ export type AreaMinOrderByAggregateInput = {
   codigo?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   tipo?: Prisma.SortOrder
-  areaPadreId?: Prisma.SortOrder
   activo?: Prisma.SortOrder
+  auditableDesde?: Prisma.SortOrder
+  auditableHasta?: Prisma.SortOrder
   codigoVerificacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -482,7 +482,6 @@ export type AreaMinOrderByAggregateInput = {
 
 export type AreaSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  areaPadreId?: Prisma.SortOrder
 }
 
 export type AreaScalarRelationFilter = {
@@ -490,74 +489,8 @@ export type AreaScalarRelationFilter = {
   isNot?: Prisma.AreaWhereInput
 }
 
-export type AreaCreateNestedOneWithoutAreasHijasInput = {
-  create?: Prisma.XOR<Prisma.AreaCreateWithoutAreasHijasInput, Prisma.AreaUncheckedCreateWithoutAreasHijasInput>
-  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutAreasHijasInput
-  connect?: Prisma.AreaWhereUniqueInput
-}
-
-export type AreaCreateNestedManyWithoutAreaPadreInput = {
-  create?: Prisma.XOR<Prisma.AreaCreateWithoutAreaPadreInput, Prisma.AreaUncheckedCreateWithoutAreaPadreInput> | Prisma.AreaCreateWithoutAreaPadreInput[] | Prisma.AreaUncheckedCreateWithoutAreaPadreInput[]
-  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutAreaPadreInput | Prisma.AreaCreateOrConnectWithoutAreaPadreInput[]
-  createMany?: Prisma.AreaCreateManyAreaPadreInputEnvelope
-  connect?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-}
-
-export type AreaUncheckedCreateNestedManyWithoutAreaPadreInput = {
-  create?: Prisma.XOR<Prisma.AreaCreateWithoutAreaPadreInput, Prisma.AreaUncheckedCreateWithoutAreaPadreInput> | Prisma.AreaCreateWithoutAreaPadreInput[] | Prisma.AreaUncheckedCreateWithoutAreaPadreInput[]
-  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutAreaPadreInput | Prisma.AreaCreateOrConnectWithoutAreaPadreInput[]
-  createMany?: Prisma.AreaCreateManyAreaPadreInputEnvelope
-  connect?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-}
-
 export type EnumTipoAreaFieldUpdateOperationsInput = {
   set?: $Enums.TipoArea
-}
-
-export type AreaUpdateOneWithoutAreasHijasNestedInput = {
-  create?: Prisma.XOR<Prisma.AreaCreateWithoutAreasHijasInput, Prisma.AreaUncheckedCreateWithoutAreasHijasInput>
-  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutAreasHijasInput
-  upsert?: Prisma.AreaUpsertWithoutAreasHijasInput
-  disconnect?: Prisma.AreaWhereInput | boolean
-  delete?: Prisma.AreaWhereInput | boolean
-  connect?: Prisma.AreaWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AreaUpdateToOneWithWhereWithoutAreasHijasInput, Prisma.AreaUpdateWithoutAreasHijasInput>, Prisma.AreaUncheckedUpdateWithoutAreasHijasInput>
-}
-
-export type AreaUpdateManyWithoutAreaPadreNestedInput = {
-  create?: Prisma.XOR<Prisma.AreaCreateWithoutAreaPadreInput, Prisma.AreaUncheckedCreateWithoutAreaPadreInput> | Prisma.AreaCreateWithoutAreaPadreInput[] | Prisma.AreaUncheckedCreateWithoutAreaPadreInput[]
-  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutAreaPadreInput | Prisma.AreaCreateOrConnectWithoutAreaPadreInput[]
-  upsert?: Prisma.AreaUpsertWithWhereUniqueWithoutAreaPadreInput | Prisma.AreaUpsertWithWhereUniqueWithoutAreaPadreInput[]
-  createMany?: Prisma.AreaCreateManyAreaPadreInputEnvelope
-  set?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-  disconnect?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-  delete?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-  connect?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-  update?: Prisma.AreaUpdateWithWhereUniqueWithoutAreaPadreInput | Prisma.AreaUpdateWithWhereUniqueWithoutAreaPadreInput[]
-  updateMany?: Prisma.AreaUpdateManyWithWhereWithoutAreaPadreInput | Prisma.AreaUpdateManyWithWhereWithoutAreaPadreInput[]
-  deleteMany?: Prisma.AreaScalarWhereInput | Prisma.AreaScalarWhereInput[]
-}
-
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
-export type AreaUncheckedUpdateManyWithoutAreaPadreNestedInput = {
-  create?: Prisma.XOR<Prisma.AreaCreateWithoutAreaPadreInput, Prisma.AreaUncheckedCreateWithoutAreaPadreInput> | Prisma.AreaCreateWithoutAreaPadreInput[] | Prisma.AreaUncheckedCreateWithoutAreaPadreInput[]
-  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutAreaPadreInput | Prisma.AreaCreateOrConnectWithoutAreaPadreInput[]
-  upsert?: Prisma.AreaUpsertWithWhereUniqueWithoutAreaPadreInput | Prisma.AreaUpsertWithWhereUniqueWithoutAreaPadreInput[]
-  createMany?: Prisma.AreaCreateManyAreaPadreInputEnvelope
-  set?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-  disconnect?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-  delete?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-  connect?: Prisma.AreaWhereUniqueInput | Prisma.AreaWhereUniqueInput[]
-  update?: Prisma.AreaUpdateWithWhereUniqueWithoutAreaPadreInput | Prisma.AreaUpdateWithWhereUniqueWithoutAreaPadreInput[]
-  updateMany?: Prisma.AreaUpdateManyWithWhereWithoutAreaPadreInput | Prisma.AreaUpdateManyWithWhereWithoutAreaPadreInput[]
-  deleteMany?: Prisma.AreaScalarWhereInput | Prisma.AreaScalarWhereInput[]
 }
 
 export type AreaCreateNestedOneWithoutUsuariosAreaInput = {
@@ -588,142 +521,18 @@ export type AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AreaUpdateToOneWithWhereWithoutObjetivosAuditoriaInput, Prisma.AreaUpdateWithoutObjetivosAuditoriaInput>, Prisma.AreaUncheckedUpdateWithoutObjetivosAuditoriaInput>
 }
 
-export type AreaCreateWithoutAreasHijasInput = {
-  codigo: string
-  nombre: string
-  tipo: $Enums.TipoArea
-  activo?: boolean
-  codigoVerificacion: string
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  areaPadre?: Prisma.AreaCreateNestedOneWithoutAreasHijasInput
-  usuariosArea?: Prisma.UsuarioAreaCreateNestedManyWithoutAreaInput
-  objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutAreaInput
+export type AreaCreateNestedOneWithoutAsignacionesMensualesInput = {
+  create?: Prisma.XOR<Prisma.AreaCreateWithoutAsignacionesMensualesInput, Prisma.AreaUncheckedCreateWithoutAsignacionesMensualesInput>
+  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutAsignacionesMensualesInput
+  connect?: Prisma.AreaWhereUniqueInput
 }
 
-export type AreaUncheckedCreateWithoutAreasHijasInput = {
-  id?: number
-  codigo: string
-  nombre: string
-  tipo: $Enums.TipoArea
-  areaPadreId?: number | null
-  activo?: boolean
-  codigoVerificacion: string
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  usuariosArea?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutAreaInput
-  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutAreaInput
-}
-
-export type AreaCreateOrConnectWithoutAreasHijasInput = {
-  where: Prisma.AreaWhereUniqueInput
-  create: Prisma.XOR<Prisma.AreaCreateWithoutAreasHijasInput, Prisma.AreaUncheckedCreateWithoutAreasHijasInput>
-}
-
-export type AreaCreateWithoutAreaPadreInput = {
-  codigo: string
-  nombre: string
-  tipo: $Enums.TipoArea
-  activo?: boolean
-  codigoVerificacion: string
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  areasHijas?: Prisma.AreaCreateNestedManyWithoutAreaPadreInput
-  usuariosArea?: Prisma.UsuarioAreaCreateNestedManyWithoutAreaInput
-  objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutAreaInput
-}
-
-export type AreaUncheckedCreateWithoutAreaPadreInput = {
-  id?: number
-  codigo: string
-  nombre: string
-  tipo: $Enums.TipoArea
-  activo?: boolean
-  codigoVerificacion: string
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  areasHijas?: Prisma.AreaUncheckedCreateNestedManyWithoutAreaPadreInput
-  usuariosArea?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutAreaInput
-  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutAreaInput
-}
-
-export type AreaCreateOrConnectWithoutAreaPadreInput = {
-  where: Prisma.AreaWhereUniqueInput
-  create: Prisma.XOR<Prisma.AreaCreateWithoutAreaPadreInput, Prisma.AreaUncheckedCreateWithoutAreaPadreInput>
-}
-
-export type AreaCreateManyAreaPadreInputEnvelope = {
-  data: Prisma.AreaCreateManyAreaPadreInput | Prisma.AreaCreateManyAreaPadreInput[]
-  skipDuplicates?: boolean
-}
-
-export type AreaUpsertWithoutAreasHijasInput = {
-  update: Prisma.XOR<Prisma.AreaUpdateWithoutAreasHijasInput, Prisma.AreaUncheckedUpdateWithoutAreasHijasInput>
-  create: Prisma.XOR<Prisma.AreaCreateWithoutAreasHijasInput, Prisma.AreaUncheckedCreateWithoutAreasHijasInput>
-  where?: Prisma.AreaWhereInput
-}
-
-export type AreaUpdateToOneWithWhereWithoutAreasHijasInput = {
-  where?: Prisma.AreaWhereInput
-  data: Prisma.XOR<Prisma.AreaUpdateWithoutAreasHijasInput, Prisma.AreaUncheckedUpdateWithoutAreasHijasInput>
-}
-
-export type AreaUpdateWithoutAreasHijasInput = {
-  codigo?: Prisma.StringFieldUpdateOperationsInput | string
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areaPadre?: Prisma.AreaUpdateOneWithoutAreasHijasNestedInput
-  usuariosArea?: Prisma.UsuarioAreaUpdateManyWithoutAreaNestedInput
-  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUpdateManyWithoutAreaNestedInput
-}
-
-export type AreaUncheckedUpdateWithoutAreasHijasInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  codigo?: Prisma.StringFieldUpdateOperationsInput | string
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  areaPadreId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuariosArea?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutAreaNestedInput
-  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutAreaNestedInput
-}
-
-export type AreaUpsertWithWhereUniqueWithoutAreaPadreInput = {
-  where: Prisma.AreaWhereUniqueInput
-  update: Prisma.XOR<Prisma.AreaUpdateWithoutAreaPadreInput, Prisma.AreaUncheckedUpdateWithoutAreaPadreInput>
-  create: Prisma.XOR<Prisma.AreaCreateWithoutAreaPadreInput, Prisma.AreaUncheckedCreateWithoutAreaPadreInput>
-}
-
-export type AreaUpdateWithWhereUniqueWithoutAreaPadreInput = {
-  where: Prisma.AreaWhereUniqueInput
-  data: Prisma.XOR<Prisma.AreaUpdateWithoutAreaPadreInput, Prisma.AreaUncheckedUpdateWithoutAreaPadreInput>
-}
-
-export type AreaUpdateManyWithWhereWithoutAreaPadreInput = {
-  where: Prisma.AreaScalarWhereInput
-  data: Prisma.XOR<Prisma.AreaUpdateManyMutationInput, Prisma.AreaUncheckedUpdateManyWithoutAreaPadreInput>
-}
-
-export type AreaScalarWhereInput = {
-  AND?: Prisma.AreaScalarWhereInput | Prisma.AreaScalarWhereInput[]
-  OR?: Prisma.AreaScalarWhereInput[]
-  NOT?: Prisma.AreaScalarWhereInput | Prisma.AreaScalarWhereInput[]
-  id?: Prisma.IntFilter<"Area"> | number
-  codigo?: Prisma.StringFilter<"Area"> | string
-  nombre?: Prisma.StringFilter<"Area"> | string
-  tipo?: Prisma.EnumTipoAreaFilter<"Area"> | $Enums.TipoArea
-  areaPadreId?: Prisma.IntNullableFilter<"Area"> | number | null
-  activo?: Prisma.BoolFilter<"Area"> | boolean
-  codigoVerificacion?: Prisma.StringFilter<"Area"> | string
-  creadoEn?: Prisma.DateTimeFilter<"Area"> | Date | string
-  actualizadoEn?: Prisma.DateTimeFilter<"Area"> | Date | string
+export type AreaUpdateOneRequiredWithoutAsignacionesMensualesNestedInput = {
+  create?: Prisma.XOR<Prisma.AreaCreateWithoutAsignacionesMensualesInput, Prisma.AreaUncheckedCreateWithoutAsignacionesMensualesInput>
+  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutAsignacionesMensualesInput
+  upsert?: Prisma.AreaUpsertWithoutAsignacionesMensualesInput
+  connect?: Prisma.AreaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AreaUpdateToOneWithWhereWithoutAsignacionesMensualesInput, Prisma.AreaUpdateWithoutAsignacionesMensualesInput>, Prisma.AreaUncheckedUpdateWithoutAsignacionesMensualesInput>
 }
 
 export type AreaCreateWithoutUsuariosAreaInput = {
@@ -731,12 +540,13 @@ export type AreaCreateWithoutUsuariosAreaInput = {
   nombre: string
   tipo: $Enums.TipoArea
   activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
   codigoVerificacion: string
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  areaPadre?: Prisma.AreaCreateNestedOneWithoutAreasHijasInput
-  areasHijas?: Prisma.AreaCreateNestedManyWithoutAreaPadreInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutAreaInput
+  asignacionesMensuales?: Prisma.AsignacionMensualCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateWithoutUsuariosAreaInput = {
@@ -744,13 +554,14 @@ export type AreaUncheckedCreateWithoutUsuariosAreaInput = {
   codigo: string
   nombre: string
   tipo: $Enums.TipoArea
-  areaPadreId?: number | null
   activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
   codigoVerificacion: string
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  areasHijas?: Prisma.AreaUncheckedCreateNestedManyWithoutAreaPadreInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutAreaInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaCreateOrConnectWithoutUsuariosAreaInput = {
@@ -774,12 +585,13 @@ export type AreaUpdateWithoutUsuariosAreaInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areaPadre?: Prisma.AreaUpdateOneWithoutAreasHijasNestedInput
-  areasHijas?: Prisma.AreaUpdateManyWithoutAreaPadreNestedInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaUpdateManyWithoutAreaNestedInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateWithoutUsuariosAreaInput = {
@@ -787,13 +599,14 @@ export type AreaUncheckedUpdateWithoutUsuariosAreaInput = {
   codigo?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  areaPadreId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areasHijas?: Prisma.AreaUncheckedUpdateManyWithoutAreaPadreNestedInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutAreaNestedInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateWithoutObjetivosAuditoriaInput = {
@@ -801,11 +614,12 @@ export type AreaCreateWithoutObjetivosAuditoriaInput = {
   nombre: string
   tipo: $Enums.TipoArea
   activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
   codigoVerificacion: string
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  areaPadre?: Prisma.AreaCreateNestedOneWithoutAreasHijasInput
-  areasHijas?: Prisma.AreaCreateNestedManyWithoutAreaPadreInput
+  asignacionesMensuales?: Prisma.AsignacionMensualCreateNestedManyWithoutAreaInput
   usuariosArea?: Prisma.UsuarioAreaCreateNestedManyWithoutAreaInput
 }
 
@@ -814,12 +628,13 @@ export type AreaUncheckedCreateWithoutObjetivosAuditoriaInput = {
   codigo: string
   nombre: string
   tipo: $Enums.TipoArea
-  areaPadreId?: number | null
   activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
   codigoVerificacion: string
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  areasHijas?: Prisma.AreaUncheckedCreateNestedManyWithoutAreaPadreInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAreaInput
   usuariosArea?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
@@ -844,11 +659,12 @@ export type AreaUpdateWithoutObjetivosAuditoriaInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areaPadre?: Prisma.AreaUpdateOneWithoutAreasHijasNestedInput
-  areasHijas?: Prisma.AreaUpdateManyWithoutAreaPadreNestedInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUpdateManyWithoutAreaNestedInput
   usuariosArea?: Prisma.UsuarioAreaUpdateManyWithoutAreaNestedInput
 }
 
@@ -857,62 +673,88 @@ export type AreaUncheckedUpdateWithoutObjetivosAuditoriaInput = {
   codigo?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  areaPadreId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areasHijas?: Prisma.AreaUncheckedUpdateManyWithoutAreaPadreNestedInput
+  asignacionesMensuales?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAreaNestedInput
   usuariosArea?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
-export type AreaCreateManyAreaPadreInput = {
+export type AreaCreateWithoutAsignacionesMensualesInput = {
+  codigo: string
+  nombre: string
+  tipo: $Enums.TipoArea
+  activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
+  codigoVerificacion: string
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaCreateNestedManyWithoutAreaInput
+  usuariosArea?: Prisma.UsuarioAreaCreateNestedManyWithoutAreaInput
+}
+
+export type AreaUncheckedCreateWithoutAsignacionesMensualesInput = {
   id?: number
   codigo: string
   nombre: string
   tipo: $Enums.TipoArea
   activo?: boolean
+  auditableDesde?: Date | string | null
+  auditableHasta?: Date | string | null
   codigoVerificacion: string
   creadoEn?: Date | string
   actualizadoEn?: Date | string
+  objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedCreateNestedManyWithoutAreaInput
+  usuariosArea?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
-export type AreaUpdateWithoutAreaPadreInput = {
+export type AreaCreateOrConnectWithoutAsignacionesMensualesInput = {
+  where: Prisma.AreaWhereUniqueInput
+  create: Prisma.XOR<Prisma.AreaCreateWithoutAsignacionesMensualesInput, Prisma.AreaUncheckedCreateWithoutAsignacionesMensualesInput>
+}
+
+export type AreaUpsertWithoutAsignacionesMensualesInput = {
+  update: Prisma.XOR<Prisma.AreaUpdateWithoutAsignacionesMensualesInput, Prisma.AreaUncheckedUpdateWithoutAsignacionesMensualesInput>
+  create: Prisma.XOR<Prisma.AreaCreateWithoutAsignacionesMensualesInput, Prisma.AreaUncheckedCreateWithoutAsignacionesMensualesInput>
+  where?: Prisma.AreaWhereInput
+}
+
+export type AreaUpdateToOneWithWhereWithoutAsignacionesMensualesInput = {
+  where?: Prisma.AreaWhereInput
+  data: Prisma.XOR<Prisma.AreaUpdateWithoutAsignacionesMensualesInput, Prisma.AreaUncheckedUpdateWithoutAsignacionesMensualesInput>
+}
+
+export type AreaUpdateWithoutAsignacionesMensualesInput = {
   codigo?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areasHijas?: Prisma.AreaUpdateManyWithoutAreaPadreNestedInput
-  usuariosArea?: Prisma.UsuarioAreaUpdateManyWithoutAreaNestedInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaUpdateManyWithoutAreaNestedInput
+  usuariosArea?: Prisma.UsuarioAreaUpdateManyWithoutAreaNestedInput
 }
 
-export type AreaUncheckedUpdateWithoutAreaPadreInput = {
+export type AreaUncheckedUpdateWithoutAsignacionesMensualesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   codigo?: Prisma.StringFieldUpdateOperationsInput | string
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  auditableDesde?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  auditableHasta?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  areasHijas?: Prisma.AreaUncheckedUpdateManyWithoutAreaPadreNestedInput
-  usuariosArea?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutAreaNestedInput
   objetivosAuditoria?: Prisma.ObjetivoAuditoriaUncheckedUpdateManyWithoutAreaNestedInput
-}
-
-export type AreaUncheckedUpdateManyWithoutAreaPadreInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  codigo?: Prisma.StringFieldUpdateOperationsInput | string
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  tipo?: Prisma.EnumTipoAreaFieldUpdateOperationsInput | $Enums.TipoArea
-  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  codigoVerificacion?: Prisma.StringFieldUpdateOperationsInput | string
-  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  usuariosArea?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 
@@ -921,15 +763,15 @@ export type AreaUncheckedUpdateManyWithoutAreaPadreInput = {
  */
 
 export type AreaCountOutputType = {
-  areasHijas: number
-  usuariosArea: number
   objetivosAuditoria: number
+  asignacionesMensuales: number
+  usuariosArea: number
 }
 
 export type AreaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  areasHijas?: boolean | AreaCountOutputTypeCountAreasHijasArgs
-  usuariosArea?: boolean | AreaCountOutputTypeCountUsuariosAreaArgs
   objetivosAuditoria?: boolean | AreaCountOutputTypeCountObjetivosAuditoriaArgs
+  asignacionesMensuales?: boolean | AreaCountOutputTypeCountAsignacionesMensualesArgs
+  usuariosArea?: boolean | AreaCountOutputTypeCountUsuariosAreaArgs
 }
 
 /**
@@ -945,8 +787,15 @@ export type AreaCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * AreaCountOutputType without action
  */
-export type AreaCountOutputTypeCountAreasHijasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AreaWhereInput
+export type AreaCountOutputTypeCountObjetivosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ObjetivoAuditoriaWhereInput
+}
+
+/**
+ * AreaCountOutputType without action
+ */
+export type AreaCountOutputTypeCountAsignacionesMensualesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AsignacionMensualWhereInput
 }
 
 /**
@@ -956,28 +805,21 @@ export type AreaCountOutputTypeCountUsuariosAreaArgs<ExtArgs extends runtime.Typ
   where?: Prisma.UsuarioAreaWhereInput
 }
 
-/**
- * AreaCountOutputType without action
- */
-export type AreaCountOutputTypeCountObjetivosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ObjetivoAuditoriaWhereInput
-}
-
 
 export type AreaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   codigo?: boolean
   nombre?: boolean
   tipo?: boolean
-  areaPadreId?: boolean
   activo?: boolean
+  auditableDesde?: boolean
+  auditableHasta?: boolean
   codigoVerificacion?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
-  areaPadre?: boolean | Prisma.Area$areaPadreArgs<ExtArgs>
-  areasHijas?: boolean | Prisma.Area$areasHijasArgs<ExtArgs>
-  usuariosArea?: boolean | Prisma.Area$usuariosAreaArgs<ExtArgs>
   objetivosAuditoria?: boolean | Prisma.Area$objetivosAuditoriaArgs<ExtArgs>
+  asignacionesMensuales?: boolean | Prisma.Area$asignacionesMensualesArgs<ExtArgs>
+  usuariosArea?: boolean | Prisma.Area$usuariosAreaArgs<ExtArgs>
   _count?: boolean | Prisma.AreaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["area"]>
 
@@ -988,37 +830,37 @@ export type AreaSelectScalar = {
   codigo?: boolean
   nombre?: boolean
   tipo?: boolean
-  areaPadreId?: boolean
   activo?: boolean
+  auditableDesde?: boolean
+  auditableHasta?: boolean
   codigoVerificacion?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type AreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "codigo" | "nombre" | "tipo" | "areaPadreId" | "activo" | "codigoVerificacion" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["area"]>
+export type AreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "codigo" | "nombre" | "tipo" | "activo" | "auditableDesde" | "auditableHasta" | "codigoVerificacion" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["area"]>
 export type AreaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  areaPadre?: boolean | Prisma.Area$areaPadreArgs<ExtArgs>
-  areasHijas?: boolean | Prisma.Area$areasHijasArgs<ExtArgs>
-  usuariosArea?: boolean | Prisma.Area$usuariosAreaArgs<ExtArgs>
   objetivosAuditoria?: boolean | Prisma.Area$objetivosAuditoriaArgs<ExtArgs>
+  asignacionesMensuales?: boolean | Prisma.Area$asignacionesMensualesArgs<ExtArgs>
+  usuariosArea?: boolean | Prisma.Area$usuariosAreaArgs<ExtArgs>
   _count?: boolean | Prisma.AreaCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $AreaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Area"
   objects: {
-    areaPadre: Prisma.$AreaPayload<ExtArgs> | null
-    areasHijas: Prisma.$AreaPayload<ExtArgs>[]
-    usuariosArea: Prisma.$UsuarioAreaPayload<ExtArgs>[]
     objetivosAuditoria: Prisma.$ObjetivoAuditoriaPayload<ExtArgs>[]
+    asignacionesMensuales: Prisma.$AsignacionMensualPayload<ExtArgs>[]
+    usuariosArea: Prisma.$UsuarioAreaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     codigo: string
     nombre: string
     tipo: $Enums.TipoArea
-    areaPadreId: number | null
     activo: boolean
+    auditableDesde: Date | null
+    auditableHasta: Date | null
     codigoVerificacion: string
     creadoEn: Date
     actualizadoEn: Date
@@ -1362,10 +1204,9 @@ readonly fields: AreaFieldRefs;
  */
 export interface Prisma__AreaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  areaPadre<T extends Prisma.Area$areaPadreArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$areaPadreArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  areasHijas<T extends Prisma.Area$areasHijasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$areasHijasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  usuariosArea<T extends Prisma.Area$usuariosAreaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$usuariosAreaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsuarioAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   objetivosAuditoria<T extends Prisma.Area$objetivosAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$objetivosAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ObjetivoAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  asignacionesMensuales<T extends Prisma.Area$asignacionesMensualesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$asignacionesMensualesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionMensualPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  usuariosArea<T extends Prisma.Area$usuariosAreaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$usuariosAreaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsuarioAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1399,8 +1240,9 @@ export interface AreaFieldRefs {
   readonly codigo: Prisma.FieldRef<"Area", 'String'>
   readonly nombre: Prisma.FieldRef<"Area", 'String'>
   readonly tipo: Prisma.FieldRef<"Area", 'TipoArea'>
-  readonly areaPadreId: Prisma.FieldRef<"Area", 'Int'>
   readonly activo: Prisma.FieldRef<"Area", 'Boolean'>
+  readonly auditableDesde: Prisma.FieldRef<"Area", 'DateTime'>
+  readonly auditableHasta: Prisma.FieldRef<"Area", 'DateTime'>
   readonly codigoVerificacion: Prisma.FieldRef<"Area", 'String'>
   readonly creadoEn: Prisma.FieldRef<"Area", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"Area", 'DateTime'>
@@ -1752,46 +1594,51 @@ export type AreaDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Area.areaPadre
+ * Area.objetivosAuditoria
  */
-export type Area$areaPadreArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Area$objetivosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Area
+   * Select specific fields to fetch from the ObjetivoAuditoria
    */
-  select?: Prisma.AreaSelect<ExtArgs> | null
+  select?: Prisma.ObjetivoAuditoriaSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Area
+   * Omit specific fields from the ObjetivoAuditoria
    */
-  omit?: Prisma.AreaOmit<ExtArgs> | null
+  omit?: Prisma.ObjetivoAuditoriaOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AreaInclude<ExtArgs> | null
-  where?: Prisma.AreaWhereInput
+  include?: Prisma.ObjetivoAuditoriaInclude<ExtArgs> | null
+  where?: Prisma.ObjetivoAuditoriaWhereInput
+  orderBy?: Prisma.ObjetivoAuditoriaOrderByWithRelationInput | Prisma.ObjetivoAuditoriaOrderByWithRelationInput[]
+  cursor?: Prisma.ObjetivoAuditoriaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ObjetivoAuditoriaScalarFieldEnum | Prisma.ObjetivoAuditoriaScalarFieldEnum[]
 }
 
 /**
- * Area.areasHijas
+ * Area.asignacionesMensuales
  */
-export type Area$areasHijasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Area$asignacionesMensualesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Area
+   * Select specific fields to fetch from the AsignacionMensual
    */
-  select?: Prisma.AreaSelect<ExtArgs> | null
+  select?: Prisma.AsignacionMensualSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Area
+   * Omit specific fields from the AsignacionMensual
    */
-  omit?: Prisma.AreaOmit<ExtArgs> | null
+  omit?: Prisma.AsignacionMensualOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AreaInclude<ExtArgs> | null
-  where?: Prisma.AreaWhereInput
-  orderBy?: Prisma.AreaOrderByWithRelationInput | Prisma.AreaOrderByWithRelationInput[]
-  cursor?: Prisma.AreaWhereUniqueInput
+  include?: Prisma.AsignacionMensualInclude<ExtArgs> | null
+  where?: Prisma.AsignacionMensualWhereInput
+  orderBy?: Prisma.AsignacionMensualOrderByWithRelationInput | Prisma.AsignacionMensualOrderByWithRelationInput[]
+  cursor?: Prisma.AsignacionMensualWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AreaScalarFieldEnum | Prisma.AreaScalarFieldEnum[]
+  distinct?: Prisma.AsignacionMensualScalarFieldEnum | Prisma.AsignacionMensualScalarFieldEnum[]
 }
 
 /**
@@ -1816,30 +1663,6 @@ export type Area$usuariosAreaArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.UsuarioAreaScalarFieldEnum | Prisma.UsuarioAreaScalarFieldEnum[]
-}
-
-/**
- * Area.objetivosAuditoria
- */
-export type Area$objetivosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ObjetivoAuditoria
-   */
-  select?: Prisma.ObjetivoAuditoriaSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ObjetivoAuditoria
-   */
-  omit?: Prisma.ObjetivoAuditoriaOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ObjetivoAuditoriaInclude<ExtArgs> | null
-  where?: Prisma.ObjetivoAuditoriaWhereInput
-  orderBy?: Prisma.ObjetivoAuditoriaOrderByWithRelationInput | Prisma.ObjetivoAuditoriaOrderByWithRelationInput[]
-  cursor?: Prisma.ObjetivoAuditoriaWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ObjetivoAuditoriaScalarFieldEnum | Prisma.ObjetivoAuditoriaScalarFieldEnum[]
 }
 
 /**

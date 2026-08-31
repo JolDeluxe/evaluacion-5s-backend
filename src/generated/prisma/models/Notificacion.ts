@@ -264,8 +264,8 @@ export type NotificacionWhereInput = {
   leidaEn?: Prisma.DateTimeNullableFilter<"Notificacion"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"Notificacion"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Notificacion"> | Date | string
-  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   entregasNotificacion?: Prisma.EntregaNotificacionListRelationFilter
+  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }
 
 export type NotificacionOrderByWithRelationInput = {
@@ -280,8 +280,8 @@ export type NotificacionOrderByWithRelationInput = {
   leidaEn?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
-  usuario?: Prisma.UsuarioOrderByWithRelationInput
   entregasNotificacion?: Prisma.EntregaNotificacionOrderByRelationAggregateInput
+  usuario?: Prisma.UsuarioOrderByWithRelationInput
   _relevance?: Prisma.NotificacionOrderByRelevanceInput
 }
 
@@ -300,8 +300,8 @@ export type NotificacionWhereUniqueInput = Prisma.AtLeast<{
   leidaEn?: Prisma.DateTimeNullableFilter<"Notificacion"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"Notificacion"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"Notificacion"> | Date | string
-  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   entregasNotificacion?: Prisma.EntregaNotificacionListRelationFilter
+  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }, "id" | "claveDedupe">
 
 export type NotificacionOrderByWithAggregationInput = {
@@ -350,8 +350,8 @@ export type NotificacionCreateInput = {
   leidaEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  usuario: Prisma.UsuarioCreateNestedOneWithoutNotificacionesInput
   entregasNotificacion?: Prisma.EntregaNotificacionCreateNestedManyWithoutNotificacionInput
+  usuario: Prisma.UsuarioCreateNestedOneWithoutNotificacionesInput
 }
 
 export type NotificacionUncheckedCreateInput = {
@@ -379,8 +379,8 @@ export type NotificacionUpdateInput = {
   leidaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutNotificacionesNestedInput
   entregasNotificacion?: Prisma.EntregaNotificacionUpdateManyWithoutNotificacionNestedInput
+  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutNotificacionesNestedInput
 }
 
 export type NotificacionUncheckedUpdateInput = {
@@ -805,8 +805,8 @@ export type NotificacionSelect<ExtArgs extends runtime.Types.Extensions.Internal
   leidaEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   entregasNotificacion?: boolean | Prisma.Notificacion$entregasNotificacionArgs<ExtArgs>
+  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.NotificacionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["notificacion"]>
 
@@ -828,16 +828,16 @@ export type NotificacionSelectScalar = {
 
 export type NotificacionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "usuarioId" | "claveDedupe" | "tipo" | "titulo" | "mensaje" | "ruta" | "datos" | "leidaEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["notificacion"]>
 export type NotificacionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   entregasNotificacion?: boolean | Prisma.Notificacion$entregasNotificacionArgs<ExtArgs>
+  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.NotificacionCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $NotificacionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Notificacion"
   objects: {
-    usuario: Prisma.$UsuarioPayload<ExtArgs>
     entregasNotificacion: Prisma.$EntregaNotificacionPayload<ExtArgs>[]
+    usuario: Prisma.$UsuarioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1191,8 +1191,8 @@ readonly fields: NotificacionFieldRefs;
  */
 export interface Prisma__NotificacionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  usuario<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   entregasNotificacion<T extends Prisma.Notificacion$entregasNotificacionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Notificacion$entregasNotificacionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EntregaNotificacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  usuario<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

@@ -28,7 +28,7 @@ const actualizarAsignacionesVencidas = async () => {
     where: { estado: { in: [EstadoAsignacionAuditoria.PENDIENTE, EstadoAsignacionAuditoria.EN_PROCESO] }, completadoEn: null },
     include: {
       objetivoAuditoria: {
-        include: { cicloAuditoria: true, envioResultado: true },
+        include: { envioResultado: true },
       },
     },
   });
@@ -36,7 +36,8 @@ const actualizarAsignacionesVencidas = async () => {
   for (const asignacion of asignaciones) {
     const objetivo = asignacion.objetivoAuditoria;
     if (tieneEnvioResultadoValido(objetivo)) continue;
-    if (ahora <= calcularCierreConGracia(objetivo.cicloAuditoria.terminaEn)) continue;
+    if (ahora <= calcularCierreConGracia(objetivo.terminaEn)) continue;
+    if (asignacion.reabiertaHasta && ahora <= asignacion.reabiertaHasta) continue;
     await prisma.asignacionAuditoria.update({
       where: { id: asignacion.id },
       data: { estado: EstadoAsignacionAuditoria.VENCIDA },
@@ -56,7 +57,7 @@ const generarNotificacionesPeriodos = async () => {
     include: {
       auditor: { select: { id: true, correo: true } },
       objetivoAuditoria: {
-        include: { cicloAuditoria: true, envioResultado: true },
+        include: { envioResultado: true },
       },
     },
   });
@@ -66,14 +67,14 @@ const generarNotificacionesPeriodos = async () => {
       const objetivo = asignacion.objetivoAuditoria;
       if (tieneEnvioResultadoValido(objetivo)) continue;
 
-      const cierreGracia = calcularCierreConGracia(objetivo.cicloAuditoria.terminaEn);
-      if (ahora > objetivo.cicloAuditoria.terminaEn && ahora <= cierreGracia) {
+      const cierreGracia = calcularCierreConGracia(objetivo.terminaEn);
+      if (ahora > objetivo.terminaEn && ahora <= cierreGracia) {
         await crearNotificacionUsuario(tx, {
           usuario: asignacion.auditor,
           claveDedupe: `recordatorio-periodo:${asignacion.id}:${fechaDedupe(ahora)}`,
           tipo: TipoNotificacion.RECORDATORIO,
           titulo: 'Auditoria pendiente',
-          mensaje: `Tienes pendiente la auditoria del periodo ${objetivo.cicloAuditoria.numeroCorte} de ${objetivo.nombreAreaSnapshot}.`,
+          mensaje: `Tienes pendiente la auditoria del periodo ${objetivo.periodo} de ${objetivo.nombreAreaSnapshot}.`,
           ruta: `/auditorias/asignaciones/${asignacion.id}`,
         });
       }
@@ -84,7 +85,7 @@ const generarNotificacionesPeriodos = async () => {
           claveDedupe: `auditoria-vencida:${asignacion.id}`,
           tipo: TipoNotificacion.AUDITORIA_VENCIDA,
           titulo: 'Auditoria cerrada',
-          mensaje: `El periodo ${objetivo.cicloAuditoria.numeroCorte} de ${objetivo.nombreAreaSnapshot} ya cerro.`,
+          mensaje: `El periodo ${objetivo.periodo} de ${objetivo.nombreAreaSnapshot} ya cerro.`,
           ruta: `/auditorias/asignaciones/${asignacion.id}`,
         });
       }

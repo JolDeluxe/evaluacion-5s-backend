@@ -4,6 +4,7 @@ import { prisma } from '../../db';
 import { AlcanceFormulario } from '../../generated/prisma/enums';
 import { obtenerPaginacion } from '../../utils/paginacion';
 import { responderLista } from '../../utils/respuesta';
+import { includeRevisionFormularioConEstructura, mapearFormularioDetalle } from './helper';
 
 const esquemaQuery = z.object({
   busqueda: z.string().trim().optional(),
@@ -25,8 +26,7 @@ export const listarFormularios = async (req: Request, res: Response) => {
       include: {
         versiones: {
           orderBy: { numeroVersion: 'desc' },
-          take: 3,
-          include: { secciones: { select: { id: true, nombre: true, orden: true } } },
+          include: includeRevisionFormularioConEstructura,
         },
       },
       skip: saltar,
@@ -35,5 +35,5 @@ export const listarFormularios = async (req: Request, res: Response) => {
     }),
     prisma.formulario.count({ where }),
   ]);
-  responderLista(res, datos, { pagina, limite, total });
+  responderLista(res, datos.map(mapearFormularioDetalle), { pagina, limite, total });
 };

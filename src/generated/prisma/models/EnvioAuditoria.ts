@@ -348,10 +348,10 @@ export type EnvioAuditoriaWhereInput = {
   motivoInvalidacion?: Prisma.StringNullableFilter<"EnvioAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
-  objetivoAuditoria?: Prisma.XOR<Prisma.ObjetivoAuditoriaScalarRelationFilter, Prisma.ObjetivoAuditoriaWhereInput>
   asignacionAuditoria?: Prisma.XOR<Prisma.AsignacionAuditoriaNullableScalarRelationFilter, Prisma.AsignacionAuditoriaWhereInput> | null
-  enviadoPorUsuario?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
   enlaceInvitado?: Prisma.XOR<Prisma.EnlaceInvitadoNullableScalarRelationFilter, Prisma.EnlaceInvitadoWhereInput> | null
+  enviadoPorUsuario?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
+  objetivoAuditoria?: Prisma.XOR<Prisma.ObjetivoAuditoriaScalarRelationFilter, Prisma.ObjetivoAuditoriaWhereInput>
   objetivoComoResultado?: Prisma.XOR<Prisma.ObjetivoAuditoriaNullableScalarRelationFilter, Prisma.ObjetivoAuditoriaWhereInput> | null
   respuestasAuditoria?: Prisma.RespuestaAuditoriaListRelationFilter
 }
@@ -375,10 +375,10 @@ export type EnvioAuditoriaOrderByWithRelationInput = {
   motivoInvalidacion?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
-  objetivoAuditoria?: Prisma.ObjetivoAuditoriaOrderByWithRelationInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaOrderByWithRelationInput
-  enviadoPorUsuario?: Prisma.UsuarioOrderByWithRelationInput
   enlaceInvitado?: Prisma.EnlaceInvitadoOrderByWithRelationInput
+  enviadoPorUsuario?: Prisma.UsuarioOrderByWithRelationInput
+  objetivoAuditoria?: Prisma.ObjetivoAuditoriaOrderByWithRelationInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaOrderByWithRelationInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaOrderByRelationAggregateInput
   _relevance?: Prisma.EnvioAuditoriaOrderByRelevanceInput
@@ -406,10 +406,10 @@ export type EnvioAuditoriaWhereUniqueInput = Prisma.AtLeast<{
   motivoInvalidacion?: Prisma.StringNullableFilter<"EnvioAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
-  objetivoAuditoria?: Prisma.XOR<Prisma.ObjetivoAuditoriaScalarRelationFilter, Prisma.ObjetivoAuditoriaWhereInput>
   asignacionAuditoria?: Prisma.XOR<Prisma.AsignacionAuditoriaNullableScalarRelationFilter, Prisma.AsignacionAuditoriaWhereInput> | null
-  enviadoPorUsuario?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
   enlaceInvitado?: Prisma.XOR<Prisma.EnlaceInvitadoNullableScalarRelationFilter, Prisma.EnlaceInvitadoWhereInput> | null
+  enviadoPorUsuario?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
+  objetivoAuditoria?: Prisma.XOR<Prisma.ObjetivoAuditoriaScalarRelationFilter, Prisma.ObjetivoAuditoriaWhereInput>
   objetivoComoResultado?: Prisma.XOR<Prisma.ObjetivoAuditoriaNullableScalarRelationFilter, Prisma.ObjetivoAuditoriaWhereInput> | null
   respuestasAuditoria?: Prisma.RespuestaAuditoriaListRelationFilter
 }, "id" | "identificadorCliente">
@@ -478,10 +478,10 @@ export type EnvioAuditoriaCreateInput = {
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
-  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
   enlaceInvitado?: Prisma.EnlaceInvitadoCreateNestedOneWithoutEnviosAuditoriaInput
+  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
+  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnvioResultadoInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaCreateNestedManyWithoutEnvioAuditoriaInput
 }
@@ -523,10 +523,10 @@ export type EnvioAuditoriaUpdateInput = {
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaUpdateOneWithoutEnviosAuditoriaNestedInput
-  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
   enlaceInvitado?: Prisma.EnlaceInvitadoUpdateOneWithoutEnviosAuditoriaNestedInput
+  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
+  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaUpdateOneWithoutEnvioResultadoNestedInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUpdateManyWithoutEnvioAuditoriaNestedInput
 }
@@ -765,12 +765,6 @@ export type EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   deleteMany?: Prisma.EnvioAuditoriaScalarWhereInput | Prisma.EnvioAuditoriaScalarWhereInput[]
 }
 
-export type EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput = {
-  create?: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput>
-  connectOrCreate?: Prisma.EnvioAuditoriaCreateOrConnectWithoutObjetivoComoResultadoInput
-  connect?: Prisma.EnvioAuditoriaWhereUniqueInput
-}
-
 export type EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput = {
   create?: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoAuditoriaInput> | Prisma.EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput[] | Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoAuditoriaInput[]
   connectOrCreate?: Prisma.EnvioAuditoriaCreateOrConnectWithoutObjetivoAuditoriaInput | Prisma.EnvioAuditoriaCreateOrConnectWithoutObjetivoAuditoriaInput[]
@@ -778,21 +772,17 @@ export type EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput = {
   connect?: Prisma.EnvioAuditoriaWhereUniqueInput | Prisma.EnvioAuditoriaWhereUniqueInput[]
 }
 
+export type EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput = {
+  create?: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput>
+  connectOrCreate?: Prisma.EnvioAuditoriaCreateOrConnectWithoutObjetivoComoResultadoInput
+  connect?: Prisma.EnvioAuditoriaWhereUniqueInput
+}
+
 export type EnvioAuditoriaUncheckedCreateNestedManyWithoutObjetivoAuditoriaInput = {
   create?: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoAuditoriaInput> | Prisma.EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput[] | Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoAuditoriaInput[]
   connectOrCreate?: Prisma.EnvioAuditoriaCreateOrConnectWithoutObjetivoAuditoriaInput | Prisma.EnvioAuditoriaCreateOrConnectWithoutObjetivoAuditoriaInput[]
   createMany?: Prisma.EnvioAuditoriaCreateManyObjetivoAuditoriaInputEnvelope
   connect?: Prisma.EnvioAuditoriaWhereUniqueInput | Prisma.EnvioAuditoriaWhereUniqueInput[]
-}
-
-export type EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput = {
-  create?: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput>
-  connectOrCreate?: Prisma.EnvioAuditoriaCreateOrConnectWithoutObjetivoComoResultadoInput
-  upsert?: Prisma.EnvioAuditoriaUpsertWithoutObjetivoComoResultadoInput
-  disconnect?: Prisma.EnvioAuditoriaWhereInput | boolean
-  delete?: Prisma.EnvioAuditoriaWhereInput | boolean
-  connect?: Prisma.EnvioAuditoriaWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.EnvioAuditoriaUpdateToOneWithWhereWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUpdateWithoutObjetivoComoResultadoInput>, Prisma.EnvioAuditoriaUncheckedUpdateWithoutObjetivoComoResultadoInput>
 }
 
 export type EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput = {
@@ -807,6 +797,16 @@ export type EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput = {
   update?: Prisma.EnvioAuditoriaUpdateWithWhereUniqueWithoutObjetivoAuditoriaInput | Prisma.EnvioAuditoriaUpdateWithWhereUniqueWithoutObjetivoAuditoriaInput[]
   updateMany?: Prisma.EnvioAuditoriaUpdateManyWithWhereWithoutObjetivoAuditoriaInput | Prisma.EnvioAuditoriaUpdateManyWithWhereWithoutObjetivoAuditoriaInput[]
   deleteMany?: Prisma.EnvioAuditoriaScalarWhereInput | Prisma.EnvioAuditoriaScalarWhereInput[]
+}
+
+export type EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput = {
+  create?: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput>
+  connectOrCreate?: Prisma.EnvioAuditoriaCreateOrConnectWithoutObjetivoComoResultadoInput
+  upsert?: Prisma.EnvioAuditoriaUpsertWithoutObjetivoComoResultadoInput
+  disconnect?: Prisma.EnvioAuditoriaWhereInput | boolean
+  delete?: Prisma.EnvioAuditoriaWhereInput | boolean
+  connect?: Prisma.EnvioAuditoriaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EnvioAuditoriaUpdateToOneWithWhereWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUpdateWithoutObjetivoComoResultadoInput>, Prisma.EnvioAuditoriaUncheckedUpdateWithoutObjetivoComoResultadoInput>
 }
 
 export type EnvioAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaNestedInput = {
@@ -947,9 +947,9 @@ export type EnvioAuditoriaCreateWithoutEnviadoPorUsuarioInput = {
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   enlaceInvitado?: Prisma.EnlaceInvitadoCreateNestedOneWithoutEnviosAuditoriaInput
+  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnvioResultadoInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaCreateNestedManyWithoutEnvioAuditoriaInput
 }
@@ -1026,54 +1026,6 @@ export type EnvioAuditoriaScalarWhereInput = {
   actualizadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
 }
 
-export type EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput = {
-  identificadorCliente: string
-  nombreAuditorSnapshot: string
-  origen: $Enums.OrigenEnvioAuditoria
-  puntajeObtenido: runtime.Decimal | runtime.DecimalJsLike | number | string
-  puntajePosible: runtime.Decimal | runtime.DecimalJsLike | number | string
-  porcentaje: runtime.Decimal | runtime.DecimalJsLike | number | string
-  finalizadoEn: Date | string
-  verificadoEn: Date | string
-  recibidoEn?: Date | string
-  invalidadoEn?: Date | string | null
-  motivoInvalidacion?: string | null
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
-  asignacionAuditoria?: Prisma.AsignacionAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
-  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
-  enlaceInvitado?: Prisma.EnlaceInvitadoCreateNestedOneWithoutEnviosAuditoriaInput
-  respuestasAuditoria?: Prisma.RespuestaAuditoriaCreateNestedManyWithoutEnvioAuditoriaInput
-}
-
-export type EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput = {
-  id?: number
-  identificadorCliente: string
-  objetivoAuditoriaId: number
-  asignacionAuditoriaId?: number | null
-  enviadoPorUsuarioId?: number | null
-  enlaceInvitadoId?: number | null
-  nombreAuditorSnapshot: string
-  origen: $Enums.OrigenEnvioAuditoria
-  puntajeObtenido: runtime.Decimal | runtime.DecimalJsLike | number | string
-  puntajePosible: runtime.Decimal | runtime.DecimalJsLike | number | string
-  porcentaje: runtime.Decimal | runtime.DecimalJsLike | number | string
-  finalizadoEn: Date | string
-  verificadoEn: Date | string
-  recibidoEn?: Date | string
-  invalidadoEn?: Date | string | null
-  motivoInvalidacion?: string | null
-  creadoEn?: Date | string
-  actualizadoEn?: Date | string
-  respuestasAuditoria?: Prisma.RespuestaAuditoriaUncheckedCreateNestedManyWithoutEnvioAuditoriaInput
-}
-
-export type EnvioAuditoriaCreateOrConnectWithoutObjetivoComoResultadoInput = {
-  where: Prisma.EnvioAuditoriaWhereUniqueInput
-  create: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput>
-}
-
 export type EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput = {
   identificadorCliente: string
   nombreAuditorSnapshot: string
@@ -1089,8 +1041,8 @@ export type EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput = {
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   asignacionAuditoria?: Prisma.AsignacionAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
-  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
   enlaceInvitado?: Prisma.EnlaceInvitadoCreateNestedOneWithoutEnviosAuditoriaInput
+  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnvioResultadoInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaCreateNestedManyWithoutEnvioAuditoriaInput
 }
@@ -1127,6 +1079,70 @@ export type EnvioAuditoriaCreateManyObjetivoAuditoriaInputEnvelope = {
   skipDuplicates?: boolean
 }
 
+export type EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput = {
+  identificadorCliente: string
+  nombreAuditorSnapshot: string
+  origen: $Enums.OrigenEnvioAuditoria
+  puntajeObtenido: runtime.Decimal | runtime.DecimalJsLike | number | string
+  puntajePosible: runtime.Decimal | runtime.DecimalJsLike | number | string
+  porcentaje: runtime.Decimal | runtime.DecimalJsLike | number | string
+  finalizadoEn: Date | string
+  verificadoEn: Date | string
+  recibidoEn?: Date | string
+  invalidadoEn?: Date | string | null
+  motivoInvalidacion?: string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionAuditoria?: Prisma.AsignacionAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
+  enlaceInvitado?: Prisma.EnlaceInvitadoCreateNestedOneWithoutEnviosAuditoriaInput
+  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
+  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
+  respuestasAuditoria?: Prisma.RespuestaAuditoriaCreateNestedManyWithoutEnvioAuditoriaInput
+}
+
+export type EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput = {
+  id?: number
+  identificadorCliente: string
+  objetivoAuditoriaId: number
+  asignacionAuditoriaId?: number | null
+  enviadoPorUsuarioId?: number | null
+  enlaceInvitadoId?: number | null
+  nombreAuditorSnapshot: string
+  origen: $Enums.OrigenEnvioAuditoria
+  puntajeObtenido: runtime.Decimal | runtime.DecimalJsLike | number | string
+  puntajePosible: runtime.Decimal | runtime.DecimalJsLike | number | string
+  porcentaje: runtime.Decimal | runtime.DecimalJsLike | number | string
+  finalizadoEn: Date | string
+  verificadoEn: Date | string
+  recibidoEn?: Date | string
+  invalidadoEn?: Date | string | null
+  motivoInvalidacion?: string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  respuestasAuditoria?: Prisma.RespuestaAuditoriaUncheckedCreateNestedManyWithoutEnvioAuditoriaInput
+}
+
+export type EnvioAuditoriaCreateOrConnectWithoutObjetivoComoResultadoInput = {
+  where: Prisma.EnvioAuditoriaWhereUniqueInput
+  create: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput>
+}
+
+export type EnvioAuditoriaUpsertWithWhereUniqueWithoutObjetivoAuditoriaInput = {
+  where: Prisma.EnvioAuditoriaWhereUniqueInput
+  update: Prisma.XOR<Prisma.EnvioAuditoriaUpdateWithoutObjetivoAuditoriaInput, Prisma.EnvioAuditoriaUncheckedUpdateWithoutObjetivoAuditoriaInput>
+  create: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoAuditoriaInput>
+}
+
+export type EnvioAuditoriaUpdateWithWhereUniqueWithoutObjetivoAuditoriaInput = {
+  where: Prisma.EnvioAuditoriaWhereUniqueInput
+  data: Prisma.XOR<Prisma.EnvioAuditoriaUpdateWithoutObjetivoAuditoriaInput, Prisma.EnvioAuditoriaUncheckedUpdateWithoutObjetivoAuditoriaInput>
+}
+
+export type EnvioAuditoriaUpdateManyWithWhereWithoutObjetivoAuditoriaInput = {
+  where: Prisma.EnvioAuditoriaScalarWhereInput
+  data: Prisma.XOR<Prisma.EnvioAuditoriaUpdateManyMutationInput, Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaInput>
+}
+
 export type EnvioAuditoriaUpsertWithoutObjetivoComoResultadoInput = {
   update: Prisma.XOR<Prisma.EnvioAuditoriaUpdateWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUncheckedUpdateWithoutObjetivoComoResultadoInput>
   create: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput>
@@ -1152,10 +1168,10 @@ export type EnvioAuditoriaUpdateWithoutObjetivoComoResultadoInput = {
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaUpdateOneWithoutEnviosAuditoriaNestedInput
-  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
   enlaceInvitado?: Prisma.EnlaceInvitadoUpdateOneWithoutEnviosAuditoriaNestedInput
+  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
+  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUpdateManyWithoutEnvioAuditoriaNestedInput
 }
 
@@ -1181,22 +1197,6 @@ export type EnvioAuditoriaUncheckedUpdateWithoutObjetivoComoResultadoInput = {
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUncheckedUpdateManyWithoutEnvioAuditoriaNestedInput
 }
 
-export type EnvioAuditoriaUpsertWithWhereUniqueWithoutObjetivoAuditoriaInput = {
-  where: Prisma.EnvioAuditoriaWhereUniqueInput
-  update: Prisma.XOR<Prisma.EnvioAuditoriaUpdateWithoutObjetivoAuditoriaInput, Prisma.EnvioAuditoriaUncheckedUpdateWithoutObjetivoAuditoriaInput>
-  create: Prisma.XOR<Prisma.EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput, Prisma.EnvioAuditoriaUncheckedCreateWithoutObjetivoAuditoriaInput>
-}
-
-export type EnvioAuditoriaUpdateWithWhereUniqueWithoutObjetivoAuditoriaInput = {
-  where: Prisma.EnvioAuditoriaWhereUniqueInput
-  data: Prisma.XOR<Prisma.EnvioAuditoriaUpdateWithoutObjetivoAuditoriaInput, Prisma.EnvioAuditoriaUncheckedUpdateWithoutObjetivoAuditoriaInput>
-}
-
-export type EnvioAuditoriaUpdateManyWithWhereWithoutObjetivoAuditoriaInput = {
-  where: Prisma.EnvioAuditoriaScalarWhereInput
-  data: Prisma.XOR<Prisma.EnvioAuditoriaUpdateManyMutationInput, Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaInput>
-}
-
 export type EnvioAuditoriaCreateWithoutAsignacionAuditoriaInput = {
   identificadorCliente: string
   nombreAuditorSnapshot: string
@@ -1211,9 +1211,9 @@ export type EnvioAuditoriaCreateWithoutAsignacionAuditoriaInput = {
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
-  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
   enlaceInvitado?: Prisma.EnlaceInvitadoCreateNestedOneWithoutEnviosAuditoriaInput
+  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
+  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnvioResultadoInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaCreateNestedManyWithoutEnvioAuditoriaInput
 }
@@ -1280,9 +1280,9 @@ export type EnvioAuditoriaCreateWithoutEnlaceInvitadoInput = {
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
+  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnvioResultadoInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaCreateNestedManyWithoutEnvioAuditoriaInput
 }
@@ -1349,10 +1349,10 @@ export type EnvioAuditoriaCreateWithoutRespuestasAuditoriaInput = {
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
-  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
   enlaceInvitado?: Prisma.EnlaceInvitadoCreateNestedOneWithoutEnviosAuditoriaInput
+  enviadoPorUsuario?: Prisma.UsuarioCreateNestedOneWithoutEnviosRealizadosInput
+  objetivoAuditoria: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnviosAuditoriaInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaCreateNestedOneWithoutEnvioResultadoInput
 }
 
@@ -1408,10 +1408,10 @@ export type EnvioAuditoriaUpdateWithoutRespuestasAuditoriaInput = {
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaUpdateOneWithoutEnviosAuditoriaNestedInput
-  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
   enlaceInvitado?: Prisma.EnlaceInvitadoUpdateOneWithoutEnviosAuditoriaNestedInput
+  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
+  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaUpdateOneWithoutEnvioResultadoNestedInput
 }
 
@@ -1471,9 +1471,9 @@ export type EnvioAuditoriaUpdateWithoutEnviadoPorUsuarioInput = {
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaUpdateOneWithoutEnviosAuditoriaNestedInput
   enlaceInvitado?: Prisma.EnlaceInvitadoUpdateOneWithoutEnviosAuditoriaNestedInput
+  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaUpdateOneWithoutEnvioResultadoNestedInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUpdateManyWithoutEnvioAuditoriaNestedInput
 }
@@ -1555,8 +1555,8 @@ export type EnvioAuditoriaUpdateWithoutObjetivoAuditoriaInput = {
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   asignacionAuditoria?: Prisma.AsignacionAuditoriaUpdateOneWithoutEnviosAuditoriaNestedInput
-  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
   enlaceInvitado?: Prisma.EnlaceInvitadoUpdateOneWithoutEnviosAuditoriaNestedInput
+  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaUpdateOneWithoutEnvioResultadoNestedInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUpdateManyWithoutEnvioAuditoriaNestedInput
 }
@@ -1637,9 +1637,9 @@ export type EnvioAuditoriaUpdateWithoutAsignacionAuditoriaInput = {
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
-  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
   enlaceInvitado?: Prisma.EnlaceInvitadoUpdateOneWithoutEnviosAuditoriaNestedInput
+  enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
+  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaUpdateOneWithoutEnvioResultadoNestedInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUpdateManyWithoutEnvioAuditoriaNestedInput
 }
@@ -1720,9 +1720,9 @@ export type EnvioAuditoriaUpdateWithoutEnlaceInvitadoInput = {
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   asignacionAuditoria?: Prisma.AsignacionAuditoriaUpdateOneWithoutEnviosAuditoriaNestedInput
   enviadoPorUsuario?: Prisma.UsuarioUpdateOneWithoutEnviosRealizadosNestedInput
+  objetivoAuditoria?: Prisma.ObjetivoAuditoriaUpdateOneRequiredWithoutEnviosAuditoriaNestedInput
   objetivoComoResultado?: Prisma.ObjetivoAuditoriaUpdateOneWithoutEnvioResultadoNestedInput
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUpdateManyWithoutEnvioAuditoriaNestedInput
 }
@@ -1819,10 +1819,10 @@ export type EnvioAuditoriaSelect<ExtArgs extends runtime.Types.Extensions.Intern
   motivoInvalidacion?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
-  objetivoAuditoria?: boolean | Prisma.ObjetivoAuditoriaDefaultArgs<ExtArgs>
   asignacionAuditoria?: boolean | Prisma.EnvioAuditoria$asignacionAuditoriaArgs<ExtArgs>
-  enviadoPorUsuario?: boolean | Prisma.EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs>
   enlaceInvitado?: boolean | Prisma.EnvioAuditoria$enlaceInvitadoArgs<ExtArgs>
+  enviadoPorUsuario?: boolean | Prisma.EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs>
+  objetivoAuditoria?: boolean | Prisma.ObjetivoAuditoriaDefaultArgs<ExtArgs>
   objetivoComoResultado?: boolean | Prisma.EnvioAuditoria$objetivoComoResultadoArgs<ExtArgs>
   respuestasAuditoria?: boolean | Prisma.EnvioAuditoria$respuestasAuditoriaArgs<ExtArgs>
   _count?: boolean | Prisma.EnvioAuditoriaCountOutputTypeDefaultArgs<ExtArgs>
@@ -1853,10 +1853,10 @@ export type EnvioAuditoriaSelectScalar = {
 
 export type EnvioAuditoriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identificadorCliente" | "objetivoAuditoriaId" | "asignacionAuditoriaId" | "enviadoPorUsuarioId" | "enlaceInvitadoId" | "nombreAuditorSnapshot" | "origen" | "puntajeObtenido" | "puntajePosible" | "porcentaje" | "finalizadoEn" | "verificadoEn" | "recibidoEn" | "invalidadoEn" | "motivoInvalidacion" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["envioAuditoria"]>
 export type EnvioAuditoriaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  objetivoAuditoria?: boolean | Prisma.ObjetivoAuditoriaDefaultArgs<ExtArgs>
   asignacionAuditoria?: boolean | Prisma.EnvioAuditoria$asignacionAuditoriaArgs<ExtArgs>
-  enviadoPorUsuario?: boolean | Prisma.EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs>
   enlaceInvitado?: boolean | Prisma.EnvioAuditoria$enlaceInvitadoArgs<ExtArgs>
+  enviadoPorUsuario?: boolean | Prisma.EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs>
+  objetivoAuditoria?: boolean | Prisma.ObjetivoAuditoriaDefaultArgs<ExtArgs>
   objetivoComoResultado?: boolean | Prisma.EnvioAuditoria$objetivoComoResultadoArgs<ExtArgs>
   respuestasAuditoria?: boolean | Prisma.EnvioAuditoria$respuestasAuditoriaArgs<ExtArgs>
   _count?: boolean | Prisma.EnvioAuditoriaCountOutputTypeDefaultArgs<ExtArgs>
@@ -1865,10 +1865,10 @@ export type EnvioAuditoriaInclude<ExtArgs extends runtime.Types.Extensions.Inter
 export type $EnvioAuditoriaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "EnvioAuditoria"
   objects: {
-    objetivoAuditoria: Prisma.$ObjetivoAuditoriaPayload<ExtArgs>
     asignacionAuditoria: Prisma.$AsignacionAuditoriaPayload<ExtArgs> | null
-    enviadoPorUsuario: Prisma.$UsuarioPayload<ExtArgs> | null
     enlaceInvitado: Prisma.$EnlaceInvitadoPayload<ExtArgs> | null
+    enviadoPorUsuario: Prisma.$UsuarioPayload<ExtArgs> | null
+    objetivoAuditoria: Prisma.$ObjetivoAuditoriaPayload<ExtArgs>
     objetivoComoResultado: Prisma.$ObjetivoAuditoriaPayload<ExtArgs> | null
     respuestasAuditoria: Prisma.$RespuestaAuditoriaPayload<ExtArgs>[]
   }
@@ -2231,10 +2231,10 @@ readonly fields: EnvioAuditoriaFieldRefs;
  */
 export interface Prisma__EnvioAuditoriaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  objetivoAuditoria<T extends Prisma.ObjetivoAuditoriaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoriaDefaultArgs<ExtArgs>>): Prisma.Prisma__ObjetivoAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$ObjetivoAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   asignacionAuditoria<T extends Prisma.EnvioAuditoria$asignacionAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EnvioAuditoria$asignacionAuditoriaArgs<ExtArgs>>): Prisma.Prisma__AsignacionAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$AsignacionAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  enviadoPorUsuario<T extends Prisma.EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   enlaceInvitado<T extends Prisma.EnvioAuditoria$enlaceInvitadoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EnvioAuditoria$enlaceInvitadoArgs<ExtArgs>>): Prisma.Prisma__EnlaceInvitadoClient<runtime.Types.Result.GetResult<Prisma.$EnlaceInvitadoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  enviadoPorUsuario<T extends Prisma.EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  objetivoAuditoria<T extends Prisma.ObjetivoAuditoriaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoriaDefaultArgs<ExtArgs>>): Prisma.Prisma__ObjetivoAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$ObjetivoAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   objetivoComoResultado<T extends Prisma.EnvioAuditoria$objetivoComoResultadoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EnvioAuditoria$objetivoComoResultadoArgs<ExtArgs>>): Prisma.Prisma__ObjetivoAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$ObjetivoAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   respuestasAuditoria<T extends Prisma.EnvioAuditoria$respuestasAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EnvioAuditoria$respuestasAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RespuestaAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2651,25 +2651,6 @@ export type EnvioAuditoria$asignacionAuditoriaArgs<ExtArgs extends runtime.Types
 }
 
 /**
- * EnvioAuditoria.enviadoPorUsuario
- */
-export type EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Usuario
-   */
-  select?: Prisma.UsuarioSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Usuario
-   */
-  omit?: Prisma.UsuarioOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UsuarioInclude<ExtArgs> | null
-  where?: Prisma.UsuarioWhereInput
-}
-
-/**
  * EnvioAuditoria.enlaceInvitado
  */
 export type EnvioAuditoria$enlaceInvitadoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2686,6 +2667,25 @@ export type EnvioAuditoria$enlaceInvitadoArgs<ExtArgs extends runtime.Types.Exte
    */
   include?: Prisma.EnlaceInvitadoInclude<ExtArgs> | null
   where?: Prisma.EnlaceInvitadoWhereInput
+}
+
+/**
+ * EnvioAuditoria.enviadoPorUsuario
+ */
+export type EnvioAuditoria$enviadoPorUsuarioArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Usuario
+   */
+  select?: Prisma.UsuarioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Usuario
+   */
+  omit?: Prisma.UsuarioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UsuarioInclude<ExtArgs> | null
+  where?: Prisma.UsuarioWhereInput
 }
 
 /**

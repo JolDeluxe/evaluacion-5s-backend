@@ -42,7 +42,6 @@ export type UsuarioAreaMinAggregateOutputType = {
   id: number | null
   usuarioId: number | null
   areaId: number | null
-  esResponsable: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -51,7 +50,6 @@ export type UsuarioAreaMaxAggregateOutputType = {
   id: number | null
   usuarioId: number | null
   areaId: number | null
-  esResponsable: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -60,7 +58,6 @@ export type UsuarioAreaCountAggregateOutputType = {
   id: number
   usuarioId: number
   areaId: number
-  esResponsable: number
   creadoEn: number
   actualizadoEn: number
   _all: number
@@ -83,7 +80,6 @@ export type UsuarioAreaMinAggregateInputType = {
   id?: true
   usuarioId?: true
   areaId?: true
-  esResponsable?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -92,7 +88,6 @@ export type UsuarioAreaMaxAggregateInputType = {
   id?: true
   usuarioId?: true
   areaId?: true
-  esResponsable?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -101,7 +96,6 @@ export type UsuarioAreaCountAggregateInputType = {
   id?: true
   usuarioId?: true
   areaId?: true
-  esResponsable?: true
   creadoEn?: true
   actualizadoEn?: true
   _all?: true
@@ -197,7 +191,6 @@ export type UsuarioAreaGroupByOutputType = {
   id: number
   usuarioId: number
   areaId: number
-  esResponsable: boolean
   creadoEn: Date
   actualizadoEn: Date
   _count: UsuarioAreaCountAggregateOutputType | null
@@ -229,22 +222,20 @@ export type UsuarioAreaWhereInput = {
   id?: Prisma.IntFilter<"UsuarioArea"> | number
   usuarioId?: Prisma.IntFilter<"UsuarioArea"> | number
   areaId?: Prisma.IntFilter<"UsuarioArea"> | number
-  esResponsable?: Prisma.BoolFilter<"UsuarioArea"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"UsuarioArea"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"UsuarioArea"> | Date | string
-  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
+  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }
 
 export type UsuarioAreaOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   usuarioId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
-  esResponsable?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
-  usuario?: Prisma.UsuarioOrderByWithRelationInput
   area?: Prisma.AreaOrderByWithRelationInput
+  usuario?: Prisma.UsuarioOrderByWithRelationInput
 }
 
 export type UsuarioAreaWhereUniqueInput = Prisma.AtLeast<{
@@ -255,18 +246,16 @@ export type UsuarioAreaWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UsuarioAreaWhereInput | Prisma.UsuarioAreaWhereInput[]
   usuarioId?: Prisma.IntFilter<"UsuarioArea"> | number
   areaId?: Prisma.IntFilter<"UsuarioArea"> | number
-  esResponsable?: Prisma.BoolFilter<"UsuarioArea"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"UsuarioArea"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"UsuarioArea"> | Date | string
-  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
+  usuario?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
 }, "id" | "usuarioId_areaId">
 
 export type UsuarioAreaOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   usuarioId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
-  esResponsable?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   _count?: Prisma.UsuarioAreaCountOrderByAggregateInput
@@ -283,41 +272,36 @@ export type UsuarioAreaScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"UsuarioArea"> | number
   usuarioId?: Prisma.IntWithAggregatesFilter<"UsuarioArea"> | number
   areaId?: Prisma.IntWithAggregatesFilter<"UsuarioArea"> | number
-  esResponsable?: Prisma.BoolWithAggregatesFilter<"UsuarioArea"> | boolean
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"UsuarioArea"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"UsuarioArea"> | Date | string
 }
 
 export type UsuarioAreaCreateInput = {
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
-  usuario: Prisma.UsuarioCreateNestedOneWithoutAreasUsuarioInput
   area: Prisma.AreaCreateNestedOneWithoutUsuariosAreaInput
+  usuario: Prisma.UsuarioCreateNestedOneWithoutAreasUsuarioInput
 }
 
 export type UsuarioAreaUncheckedCreateInput = {
   id?: number
   usuarioId: number
   areaId: number
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
 
 export type UsuarioAreaUpdateInput = {
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutAreasUsuarioNestedInput
   area?: Prisma.AreaUpdateOneRequiredWithoutUsuariosAreaNestedInput
+  usuario?: Prisma.UsuarioUpdateOneRequiredWithoutAreasUsuarioNestedInput
 }
 
 export type UsuarioAreaUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   usuarioId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -326,13 +310,11 @@ export type UsuarioAreaCreateManyInput = {
   id?: number
   usuarioId: number
   areaId: number
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
 
 export type UsuarioAreaUpdateManyMutationInput = {
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -341,7 +323,6 @@ export type UsuarioAreaUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   usuarioId?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -365,7 +346,6 @@ export type UsuarioAreaCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   usuarioId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
-  esResponsable?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -380,7 +360,6 @@ export type UsuarioAreaMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   usuarioId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
-  esResponsable?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -389,7 +368,6 @@ export type UsuarioAreaMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   usuarioId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
-  esResponsable?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -485,7 +463,6 @@ export type UsuarioAreaUncheckedUpdateManyWithoutAreaNestedInput = {
 }
 
 export type UsuarioAreaCreateWithoutUsuarioInput = {
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   area: Prisma.AreaCreateNestedOneWithoutUsuariosAreaInput
@@ -494,7 +471,6 @@ export type UsuarioAreaCreateWithoutUsuarioInput = {
 export type UsuarioAreaUncheckedCreateWithoutUsuarioInput = {
   id?: number
   areaId: number
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -532,13 +508,11 @@ export type UsuarioAreaScalarWhereInput = {
   id?: Prisma.IntFilter<"UsuarioArea"> | number
   usuarioId?: Prisma.IntFilter<"UsuarioArea"> | number
   areaId?: Prisma.IntFilter<"UsuarioArea"> | number
-  esResponsable?: Prisma.BoolFilter<"UsuarioArea"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"UsuarioArea"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"UsuarioArea"> | Date | string
 }
 
 export type UsuarioAreaCreateWithoutAreaInput = {
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   usuario: Prisma.UsuarioCreateNestedOneWithoutAreasUsuarioInput
@@ -547,7 +521,6 @@ export type UsuarioAreaCreateWithoutAreaInput = {
 export type UsuarioAreaUncheckedCreateWithoutAreaInput = {
   id?: number
   usuarioId: number
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -581,13 +554,11 @@ export type UsuarioAreaUpdateManyWithWhereWithoutAreaInput = {
 export type UsuarioAreaCreateManyUsuarioInput = {
   id?: number
   areaId: number
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
 
 export type UsuarioAreaUpdateWithoutUsuarioInput = {
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   area?: Prisma.AreaUpdateOneRequiredWithoutUsuariosAreaNestedInput
@@ -596,7 +567,6 @@ export type UsuarioAreaUpdateWithoutUsuarioInput = {
 export type UsuarioAreaUncheckedUpdateWithoutUsuarioInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -604,7 +574,6 @@ export type UsuarioAreaUncheckedUpdateWithoutUsuarioInput = {
 export type UsuarioAreaUncheckedUpdateManyWithoutUsuarioInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   areaId?: Prisma.IntFieldUpdateOperationsInput | number
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -612,13 +581,11 @@ export type UsuarioAreaUncheckedUpdateManyWithoutUsuarioInput = {
 export type UsuarioAreaCreateManyAreaInput = {
   id?: number
   usuarioId: number
-  esResponsable?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
 
 export type UsuarioAreaUpdateWithoutAreaInput = {
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   usuario?: Prisma.UsuarioUpdateOneRequiredWithoutAreasUsuarioNestedInput
@@ -627,7 +594,6 @@ export type UsuarioAreaUpdateWithoutAreaInput = {
 export type UsuarioAreaUncheckedUpdateWithoutAreaInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   usuarioId?: Prisma.IntFieldUpdateOperationsInput | number
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -635,7 +601,6 @@ export type UsuarioAreaUncheckedUpdateWithoutAreaInput = {
 export type UsuarioAreaUncheckedUpdateManyWithoutAreaInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   usuarioId?: Prisma.IntFieldUpdateOperationsInput | number
-  esResponsable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -646,11 +611,10 @@ export type UsuarioAreaSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   usuarioId?: boolean
   areaId?: boolean
-  esResponsable?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
+  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuarioArea"]>
 
 
@@ -659,28 +623,26 @@ export type UsuarioAreaSelectScalar = {
   id?: boolean
   usuarioId?: boolean
   areaId?: boolean
-  esResponsable?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type UsuarioAreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "usuarioId" | "areaId" | "esResponsable" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuarioArea"]>
+export type UsuarioAreaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "usuarioId" | "areaId" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuarioArea"]>
 export type UsuarioAreaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
+  usuario?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
 }
 
 export type $UsuarioAreaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "UsuarioArea"
   objects: {
-    usuario: Prisma.$UsuarioPayload<ExtArgs>
     area: Prisma.$AreaPayload<ExtArgs>
+    usuario: Prisma.$UsuarioPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     usuarioId: number
     areaId: number
-    esResponsable: boolean
     creadoEn: Date
     actualizadoEn: Date
   }, ExtArgs["result"]["usuarioArea"]>
@@ -1023,8 +985,8 @@ readonly fields: UsuarioAreaFieldRefs;
  */
 export interface Prisma__UsuarioAreaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  usuario<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   area<T extends Prisma.AreaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AreaDefaultArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  usuario<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1057,7 +1019,6 @@ export interface UsuarioAreaFieldRefs {
   readonly id: Prisma.FieldRef<"UsuarioArea", 'Int'>
   readonly usuarioId: Prisma.FieldRef<"UsuarioArea", 'Int'>
   readonly areaId: Prisma.FieldRef<"UsuarioArea", 'Int'>
-  readonly esResponsable: Prisma.FieldRef<"UsuarioArea", 'Boolean'>
   readonly creadoEn: Prisma.FieldRef<"UsuarioArea", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"UsuarioArea", 'DateTime'>
 }

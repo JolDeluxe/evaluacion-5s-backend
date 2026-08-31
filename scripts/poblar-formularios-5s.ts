@@ -79,8 +79,6 @@ const poblar = async () => {
               claveEstable: uuidEstable(`${data.slug}:seccion:${seccion.titulo}`),
               nombre: seccion.titulo,
               objetivo: seccion.objetivo,
-              imagenPublicId: seccion.imagen?.publicIdCloudinary ?? null,
-              imagenAlt: seccion.imagen?.alt ?? null,
               orden: (seccionIndex + 1) * 10,
               preguntas: {
                 create: seccion.preguntas.map((pregunta, preguntaIndex) => ({

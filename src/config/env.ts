@@ -10,6 +10,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().url(),
   FRONTEND_ORIGIN: z.string().url(),
+  FRONTEND_ORIGINS: z.string().optional(),
   COOKIE_SECRET: z.string().min(32),
   SESION_NOMBRE_COOKIE: z.string().min(1).default('sid_5s'),
   SESION_DIAS_INACTIVIDAD: z.coerce.number().int().positive().default(180),
@@ -107,4 +108,11 @@ if (issues.length) {
 }
 
 export const env = parsed.data;
+export const frontendOriginsPermitidos = Array.from(new Set([
+  parsed.data.FRONTEND_ORIGIN,
+  ...(parsed.data.FRONTEND_ORIGINS ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+]));
 export type Env = z.infer<typeof envSchema>;

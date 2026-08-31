@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { EstadoAsignacionAuditoria, OrigenEnvioAuditoria } from '../../generated/prisma/enums';
 import { hashSha256 } from '../../utils/crypto';
-import { noEncontrado, solicitudInvalida } from '../../utils/errores';
+import { conflicto, noEncontrado, solicitudInvalida } from '../../utils/errores';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 import { responder, responderCreado } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
@@ -28,14 +28,13 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
       include: {
         asignacionAuditoria: {
           include: {
+            auditor: { select: { id: true, nombre: true } },
             objetivoAuditoria: {
               include: {
                 area: true,
-                formularioCiclo: {
+                versionFormulario: {
                   include: {
-                    versionFormulario: {
-                      include: { secciones: { include: { preguntas: true } } },
-                    },
+                    secciones: { include: { preguntas: true } },
                   },
                 },
               },
@@ -46,24 +45,39 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
     });
     if (!enlace || enlace.revocadoEn || enlace.expiraEn <= new Date()) throw noEncontrado('Enlace no valido');
     if (enlace.usadoEn) {
-      throw solicitudInvalida('El acceso invitado ya fue utilizado');
+      throw solicitudInvalida('Esta invitacion ya fue utilizada.');
+    }
+    if (enlace.asignacionAuditoria.estado === EstadoAsignacionAuditoria.CANCELADA) {
+      throw solicitudInvalida('Esta auditoría ya no es requerida porque el área fue desactivada.');
+    }
+    if (
+      enlace.asignacionAuditoria.estado === EstadoAsignacionAuditoria.COMPLETADA
+      || enlace.asignacionAuditoria.estado === EstadoAsignacionAuditoria.VENCIDA
+      || enlace.asignacionAuditoria.objetivoAuditoria.envioResultadoId
+    ) {
+      throw solicitudInvalida('Esta auditoria ya fue completada.');
     }
 
     const objetivo = enlace.asignacionAuditoria.objetivoAuditoria;
-    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, verificadoEn);
+    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, verificadoEn, enlace.asignacionAuditoria.reabiertaHasta);
 
     validarCodigoArea(objetivo.area.codigoVerificacion, body.codigoVerificacion);
-    const preguntas = objetivo.formularioCiclo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
+    const preguntas = objetivo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
     validarRespuestas5S(preguntas, body.respuestas);
     const puntaje = calcularPuntaje5S(body.respuestas);
+    const usuarioSesion = req.autenticacion?.usuarioId
+      ? await tx.usuario.findUnique({ where: { id: req.autenticacion.usuarioId }, select: { id: true, nombre: true } })
+      : null;
+    const nombreAuditorSnapshot = usuarioSesion?.nombre?.trim() || body.nombreAuditorSnapshot.trim();
 
     const creado = await tx.envioAuditoria.create({
       data: {
         identificadorCliente: body.identificadorCliente,
         objetivoAuditoriaId: objetivo.id,
         asignacionAuditoriaId: enlace.asignacionAuditoriaId,
+        enviadoPorUsuarioId: usuarioSesion?.id ?? null,
         enlaceInvitadoId: enlace.id,
-        nombreAuditorSnapshot: body.nombreAuditorSnapshot,
+        nombreAuditorSnapshot,
         origen: OrigenEnvioAuditoria.INVITADO,
         puntajeObtenido: puntaje.puntajeObtenido,
         puntajePosible: puntaje.puntajePosible,
@@ -101,8 +115,18 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
     }
 
     await tx.enlaceInvitado.update({ where: { id: enlace.id }, data: { usadoEn: new Date() } });
+    await tx.enlaceInvitado.updateMany({
+      where: {
+        asignacionAuditoriaId: enlace.asignacionAuditoriaId,
+        id: { not: enlace.id },
+        revocadoEn: null,
+        usadoEn: null,
+      },
+      data: { revocadoEn: new Date() },
+    });
     await tx.asignacionAuditoria.update({ where: { id: enlace.asignacionAuditoriaId }, data: { estado: EstadoAsignacionAuditoria.COMPLETADA, completadoEn: new Date() } });
-    await tx.objetivoAuditoria.updateMany({ where: { id: objetivo.id, envioResultadoId: null }, data: { envioResultadoId: creado.id } });
+    const oficial = await tx.objetivoAuditoria.updateMany({ where: { id: objetivo.id, envioResultadoId: null }, data: { envioResultadoId: creado.id } });
+    if (!oficial.count) throw conflicto('Esta auditoria ya fue completada.');
     await registrarAuditoria({ accion: 'ENVIAR_AUDITORIA_INVITADO', tipoEntidad: 'EnvioAuditoria', idEntidad: creado.id, datosNuevos: creado }, tx);
     return tx.envioAuditoria.findUniqueOrThrow({
       where: { id: creado.id },

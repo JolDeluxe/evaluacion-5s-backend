@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { prisma } from '../../db';
 import { noEncontrado } from '../../utils/errores';
 import { obtenerObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
-import { construirDetalleAuditorPeriodo } from '../../utils/periodos';
+import { construirDetalleAuditorPeriodo, construirPeriodoCompat } from '../../utils/periodos';
 import { responder } from '../../utils/respuesta';
 import { asegurarInvitadoPublicoHabilitado, crearContextoInvitadoPublico } from './token_publico';
 import { esquemaIniciarInvitadoPublico } from './zod';
@@ -18,17 +18,12 @@ export const iniciarInvitadoPublico = async (req: Request, res: Response) => {
     include: {
       area: true,
       envioResultado: true,
-      cicloAuditoria: true,
-      formularioCiclo: {
+      versionFormulario: {
         include: {
-          versionFormulario: {
-            include: {
-              formulario: true,
-              secciones: {
-                orderBy: { orden: 'asc' },
-                include: { preguntas: { orderBy: { orden: 'asc' } } },
-              },
-            },
+          formulario: true,
+          secciones: {
+            orderBy: { orden: 'asc' },
+            include: { preguntas: { orderBy: { orden: 'asc' } } },
           },
         },
       },
@@ -45,8 +40,8 @@ export const iniciarInvitadoPublico = async (req: Request, res: Response) => {
     contextoInvitadoToken,
     objetivo,
     area: objetivo.area,
-    ciclo: objetivo.cicloAuditoria,
-    versionFormulario: objetivo.formularioCiclo.versionFormulario,
+    ciclo: construirPeriodoCompat(objetivo),
+    versionFormulario: objetivo.versionFormulario,
     periodo: construirDetalleAuditorPeriodo(objetivo),
     codigoVerificacionRequerido: true,
   });

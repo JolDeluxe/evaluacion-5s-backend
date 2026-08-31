@@ -4,10 +4,10 @@ export const promedio = (valores: number[]) => (
   valores.length ? valores.reduce((total, valor) => total + valor, 0) / valores.length : 0
 );
 
-export const construirWhereCiclo = (filtros: { anio?: number; mes?: number; numeroCorte?: number }) => ({
+export const construirWherePeriodo = (filtros: { anio?: number; mes?: number; numeroCorte?: number }) => ({
   ...(filtros.anio ? { anio: filtros.anio } : {}),
   ...(filtros.mes ? { mes: filtros.mes } : {}),
-  ...(filtros.numeroCorte ? { numeroCorte: filtros.numeroCorte } : {}),
+  ...(filtros.numeroCorte ? { periodo: filtros.numeroCorte } : {}),
 });
 
 export const construirWhereObjetivo = (tipoArea?: TipoArea) => ({

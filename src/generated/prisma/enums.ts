@@ -35,16 +35,6 @@ export const AlcanceFormulario = {
 export type AlcanceFormulario = (typeof AlcanceFormulario)[keyof typeof AlcanceFormulario]
 
 
-export const EstadoCicloAuditoria = {
-  BORRADOR: 'BORRADOR',
-  PUBLICADO: 'PUBLICADO',
-  CERRADO: 'CERRADO',
-  ARCHIVADO: 'ARCHIVADO'
-} as const
-
-export type EstadoCicloAuditoria = (typeof EstadoCicloAuditoria)[keyof typeof EstadoCicloAuditoria]
-
-
 export const EstadoAsignacionAuditoria = {
   PENDIENTE: 'PENDIENTE',
   EN_PROCESO: 'EN_PROCESO',

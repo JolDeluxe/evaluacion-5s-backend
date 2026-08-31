@@ -29,11 +29,9 @@ export const enviarAuditoriaInvitadoPublico = async (req: Request, res: Response
       where: { id: contexto.objetivoAuditoriaId },
       include: {
         area: true,
-        formularioCiclo: {
+        versionFormulario: {
           include: {
-            versionFormulario: {
-              include: { secciones: { include: { preguntas: true } } },
-            },
+            secciones: { include: { preguntas: true } },
           },
         },
       },
@@ -42,7 +40,7 @@ export const enviarAuditoriaInvitadoPublico = async (req: Request, res: Response
     if (objetivo.areaId !== contexto.areaId) throw solicitudInvalida('Contexto invitado inconsistente');
 
     validarCodigoArea(objetivo.area.codigoVerificacion, body.codigoVerificacion);
-    const preguntas = objetivo.formularioCiclo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
+    const preguntas = objetivo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
     validarRespuestas5S(preguntas, body.respuestas);
     const puntaje = calcularPuntaje5S(body.respuestas);
 

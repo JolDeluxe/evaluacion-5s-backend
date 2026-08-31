@@ -297,10 +297,6 @@ const validarEstructura = (version: VersionAdministrativa) => {
       diferencias.push(`Seccion ${numeroSeccion}.objetivo actual="${seccionActual.objetivo ?? ''}" esperado="${seccionEsperada.objetivo}"`);
     }
 
-    if (seccionActual.imagenPublicId !== null || seccionActual.imagenAlt !== null) {
-      diferencias.push(`Seccion ${numeroSeccion}.imagen actual debe ser null/null`);
-    }
-
     if (seccionActual.orden !== seccionEsperada.orden) {
       diferencias.push(`Seccion ${numeroSeccion}.orden actual=${seccionActual.orden} esperado=${seccionEsperada.orden}`);
     }
@@ -372,8 +368,6 @@ const crearFormularioAdministrativo = async () => {
                 claveEstable: seccion.claveEstable,
                 nombre: seccion.nombre,
                 objetivo: seccion.objetivo,
-                imagenPublicId: null,
-                imagenAlt: null,
                 orden: seccion.orden,
                 preguntas: {
                   create: seccion.preguntas.map((pregunta) => ({
