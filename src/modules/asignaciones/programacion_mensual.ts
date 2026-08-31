@@ -49,23 +49,72 @@ const alcancesPorTipo = (tipo: TipoArea) => (
     : [AlcanceFormulario.OPERATIVO, AlcanceFormulario.AMBOS]
 );
 
-const obtenerVersionFormularioParaTipo = async (tx: PrismaTransaction, tipoArea: TipoArea) => {
+export type VersionCandidata = {
+  id: number;
+  formularioId: number;
+  numeroVersion: number;
+  activa: boolean;
+  formulario?: { alcance: AlcanceFormulario };
+};
+
+export const resolverVersionFormularioParaCandidatos = <T extends VersionCandidata>(
+  candidatos: T[],
+  versionIdCongeladaEnMes: number | null | undefined,
+): T | null => {
+  if (!candidatos.length) return null;
+
+  if (versionIdCongeladaEnMes) {
+    const versionCongelada = candidatos.find((v) => v.id === versionIdCongeladaEnMes);
+    if (versionCongelada) return versionCongelada;
+  }
+
+  const activa = candidatos.find((v) => v.activa);
+  return activa ?? candidatos[0] ?? null;
+};
+
+const obtenerVersionFormularioParaTipo = async (tx: PrismaTransaction, tipoArea: TipoArea, anio?: number, mes?: number) => {
   const versiones = await tx.versionFormulario.findMany({
     where: {
-      activa: true,
       formulario: {
         activo: true,
         alcance: { in: alcancesPorTipo(tipoArea) },
       },
     },
     include: { formulario: true },
-    orderBy: { actualizadoEn: 'desc' },
+    orderBy: { numeroVersion: 'desc' },
   });
-  const exacta = versiones.find((version) => (
+
+  const exactas = versiones.filter((version) => (
     (tipoArea === TipoArea.ADMINISTRATIVA && version.formulario.alcance === AlcanceFormulario.ADMINISTRATIVO)
     || (tipoArea === TipoArea.OPERATIVA && version.formulario.alcance === AlcanceFormulario.OPERATIVO)
   ));
-  return exacta ?? versiones[0] ?? null;
+  const candidatos = exactas.length ? exactas : versiones;
+
+  let versionIdCongeladaEnMes: number | null | undefined = null;
+
+  if (anio !== undefined && mes !== undefined && candidatos.length > 0) {
+    const formularioId = candidatos[0].formularioId;
+    const enviosMes = await tx.envioAuditoria.findFirst({
+      where: {
+        objetivoAuditoria: {
+          anio,
+          mes,
+          versionFormulario: {
+            formularioId,
+          },
+        },
+      },
+      select: {
+        objetivoAuditoria: {
+          select: { versionFormularioId: true },
+        },
+      },
+    });
+
+    versionIdCongeladaEnMes = enviosMes?.objetivoAuditoria?.versionFormularioId;
+  }
+
+  return resolverVersionFormularioParaCandidatos(candidatos, versionIdCongeladaEnMes);
 };
 
 const serialFechaUtc = (fecha: Date) => (
@@ -91,7 +140,7 @@ export const asegurarProgramacionMensual = async (
 ) => {
   const versionesPorTipo = new Map<TipoArea, number>();
   for (const tipo of [TipoArea.ADMINISTRATIVA, TipoArea.OPERATIVA]) {
-    const version = await obtenerVersionFormularioParaTipo(tx, tipo);
+    const version = await obtenerVersionFormularioParaTipo(tx, tipo, anio, mes);
     if (!version) throw conflicto(`No existe formulario activo para areas ${tipo.toLowerCase()}`);
     versionesPorTipo.set(tipo, version.id);
   }

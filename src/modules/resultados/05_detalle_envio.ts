@@ -53,21 +53,50 @@ export const obtenerDetalleEnvio = async (req: Request, res: Response) => {
     version: envio.objetivoAuditoria.versionFormulario.numeroVersion,
   };
 
+  // Resolver la versión más reciente activa del formulario para texto canónico de preguntas por claveEstable
+  const versionUltimaActiva = await prisma.versionFormulario.findFirst({
+    where: {
+      formularioId: envio.objetivoAuditoria.versionFormulario.formularioId,
+      activa: true,
+    },
+    include: {
+      secciones: {
+        include: { preguntas: true },
+      },
+    },
+  });
+
+  const mapTextoPreguntaCanonico = new Map<string, string>();
+  const mapNombreSeccionCanonico = new Map<string, string>();
+  if (versionUltimaActiva) {
+    for (const sec of versionUltimaActiva.secciones) {
+      if (sec.claveEstable) mapNombreSeccionCanonico.set(sec.claveEstable, sec.nombre);
+      for (const preg of sec.preguntas) {
+        if (preg.claveEstable) mapTextoPreguntaCanonico.set(preg.claveEstable, preg.texto);
+      }
+    }
+  }
+
   const respuestas = envio.respuestasAuditoria.map((resp) => {
     const p = resp.preguntaFormulario;
     const s = p.seccionFormulario;
+    const textoCanonico = p.claveEstable ? mapTextoPreguntaCanonico.get(p.claveEstable) ?? p.texto : p.texto;
+    const nombreSeccionCanonico = s.claveEstable ? mapNombreSeccionCanonico.get(s.claveEstable) ?? s.nombre : s.nombre;
+
     return {
       id: resp.id,
       cumple: resp.cumple,
       hallazgo: resp.hallazgo,
       pregunta: {
         id: p.id,
-        texto: p.texto,
+        claveEstable: p.claveEstable,
+        texto: textoCanonico,
         orden: p.orden,
       },
       seccion: {
         id: s.id,
-        nombre: s.nombre,
+        claveEstable: s.claveEstable,
+        nombre: nombreSeccionCanonico,
         orden: s.orden,
       },
       fotos: resp.fotosAuditoria.map((foto) => ({

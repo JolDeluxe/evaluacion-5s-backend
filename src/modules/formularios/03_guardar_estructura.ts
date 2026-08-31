@@ -18,5 +18,8 @@ export const guardarEstructuraFormulario = async (req: Request, res: Response) =
   responder(res, {
     revision: mapearRevisionFormulario(resultado.revision, true),
     actualizada: resultado.creada,
+    tipoCambio: resultado.tipoCambio,
+    mensaje: resultado.mensaje,
+    aplicadoMesSiguiente: 'aplicadoMesSiguiente' in resultado ? resultado.aplicadoMesSiguiente : false,
   });
 };
