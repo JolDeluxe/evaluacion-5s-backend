@@ -20,14 +20,44 @@ const esquemaQuery = z
   })
   .passthrough();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const obtenerEstadoEjecucion = (asig: any, ahora = new Date()) => {
+const mismanoche = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+const mismoDia = (d1: Date, d2: Date) => (
+  d1.getFullYear() === d2.getFullYear()
+  && d1.getMonth() === d2.getMonth()
+  && d1.getDate() === d2.getDate()
+);
+
+export const obtenerEstadoEjecucion = (
+  asig: {
+    estado: EstadoAsignacionAuditoria;
+    reabiertaHasta?: Date | string | null;
+    completadoEn?: Date | string | null;
+    objetivoAuditoria: {
+      iniciaEn: Date | string;
+      terminaEn: Date | string;
+      envioResultado?: { verificadoEn?: Date | string | null } | null;
+    };
+  },
+  ahora = new Date(),
+) => {
   if (asig.estado === EstadoAsignacionAuditoria.CANCELADA) {
     return { status: 'CANCELADA', texto: 'Cancelada', color: 'gris', realizable: false };
   }
 
+  const iniciaEn = new Date(asig.objetivoAuditoria.iniciaEn);
   const terminaEn = new Date(asig.objetivoAuditoria.terminaEn);
   const cierreGracia = calcularCierreConGracia(terminaEn);
+  const reabiertaHasta = asig.reabiertaHasta ? new Date(asig.reabiertaHasta) : null;
+
+  if (ahora < mismanoche(iniciaEn) && !mismoDia(ahora, iniciaEn) && ahora < iniciaEn) {
+    return {
+      status: 'AUN_NO_INICIA',
+      texto: 'Aún no inicia',
+      badgeTexto: 'Aún no inicia',
+      color: 'gris',
+      realizable: false,
+    };
+  }
 
   if (asig.estado === EstadoAsignacionAuditoria.COMPLETADA) {
     const completadoEn = asig.completadoEn
@@ -44,67 +74,79 @@ const obtenerEstadoEjecucion = (asig: any, ahora = new Date()) => {
     };
   }
 
-  // Check reabierta
-  if (asig.reabiertaHasta && ahora <= new Date(asig.reabiertaHasta)) {
-    const diffTime = new Date(asig.reabiertaHasta).getTime() - ahora.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return {
-      status: 'REABIERTA',
-      texto: `Reabierta · Vence en ${diffDays} día${diffDays === 1 ? '' : 's'}`,
-      color: 'ambar',
-      realizable: true,
-      diasRestantes: diffDays,
-    };
-  }
-
-  // Pending
-  if (ahora <= terminaEn) {
-    const diffTime = terminaEn.getTime() - ahora.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays <= 1) {
+  // 1. REABIERTA ADMINISTRATIVA
+  if (reabiertaHasta && ahora <= mismanoche(reabiertaHasta)) {
+    const esUltimoDiaReapertura = mismoDia(ahora, reabiertaHasta);
+    if (esUltimoDiaReapertura) {
       return {
-        status: 'PENDIENTE',
-        texto: diffDays === 0 ? 'Vence hoy' : 'Vence mañana',
+        status: 'REABIERTA',
+        texto: 'ÚLTIMO DÍA PARA REALIZAR',
+        badgeTexto: 'ÚLTIMO DÍA',
         color: 'rojo',
         realizable: true,
-        diasRestantes: diffDays,
+        reabiertaHasta,
       };
     }
-    if (diffDays <= 4) {
+
+    return {
+      status: 'REABIERTA',
+      texto: 'REABIERTA · VENCIDA',
+      badgeTexto: 'REABIERTA · VENCIDA',
+      color: 'rojo',
+      realizable: true,
+      reabiertaHasta,
+    };
+  }
+
+  // 2. PERIODO NORMAL
+  if (ahora <= mismanoche(terminaEn)) {
+    const esUltimoDiaNormal = mismoDia(ahora, terminaEn);
+    if (esUltimoDiaNormal) {
       return {
         status: 'PENDIENTE',
-        texto: `Vence pronto · ${diffDays} días restantes`,
-        color: 'ambar',
+        texto: 'ÚLTIMO DÍA PARA REALIZAR',
+        badgeTexto: 'ÚLTIMO DÍA',
+        color: 'rojo',
         realizable: true,
-        diasRestantes: diffDays,
       };
     }
+
     return {
       status: 'PENDIENTE',
-      texto: `En tiempo · ${diffDays} días restantes`,
+      texto: 'Disponible',
+      badgeTexto: 'Disponible',
       color: 'verde',
       realizable: true,
-      diasRestantes: diffDays,
     };
   }
 
-  // Grace period
-  if (ahora <= cierreGracia) {
-    const diffTime = cierreGracia.getTime() - ahora.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // 3. VENCIDA PERO AÚN EJECUTABLE (VENTANA TARDÍA)
+  if (ahora <= mismanoche(cierreGracia)) {
+    const esUltimoDiaGracia = mismoDia(ahora, cierreGracia);
+    if (esUltimoDiaGracia) {
+      return {
+        status: 'VENCIDA',
+        texto: 'ÚLTIMO DÍA PARA REALIZAR',
+        badgeTexto: 'ÚLTIMO DÍA',
+        color: 'rojo',
+        realizable: true,
+      };
+    }
+
     return {
-      status: 'EN_GRACIA',
-      texto: `Periodo vencido · disponible gracia (${diffDays}d)`,
-      color: 'ambar',
+      status: 'VENCIDA',
+      texto: 'ATRASADA',
+      badgeTexto: 'ATRASADA',
+      color: 'rojo',
       realizable: true,
-      diasRestantes: diffDays,
     };
   }
 
-  // Closed
+  // 4. CERRADA DEFINITIVAMENTE
   return {
     status: 'CERRADA',
     texto: '🔒 Periodo cerrado',
+    badgeTexto: 'CERRADA',
     color: 'gris',
     realizable: false,
   };
@@ -127,7 +169,7 @@ export const listarAsignaciones = async (
     const where: Prisma.AsignacionAuditoriaWhereInput = {
       auditorId,
       objetivoAuditoria: {
-        iniciaEn: { lte: ahora },
+        ...(query.tipoBandeja === 'EJECUTABLES' ? { iniciaEn: { lte: ahora } } : {}),
         ...(query.anio ? { anio: query.anio } : {}),
         ...(query.mes ? { mes: query.mes } : {}),
       }
@@ -189,32 +231,24 @@ export const listarAsignaciones = async (
     });
 
     if (query.tipoBandeja === 'EJECUTABLES') {
-      const periodoActivo = rawMapped
-        .map((asig) => asig.objetivoAuditoria)
-        .filter((objetivo) => objetivo.iniciaEn <= ahora)
-        .sort((a, b) => b.iniciaEn.getTime() - a.iniciaEn.getTime())[0] ?? null;
-
-      if (!periodoActivo) {
-        return responderLista(res, [], { pagina: 1, limite: 100, total: 0 });
-      }
-
       const ejecutables = rawMapped.filter((asig) => {
         if (asig.estado === EstadoAsignacionAuditoria.CANCELADA) return false;
-        const objetivo = asig.objetivoAuditoria;
-        const esDelPeriodoActivo = objetivo.anio === periodoActivo.anio
-          && objetivo.mes === periodoActivo.mes
-          && objetivo.periodo === periodoActivo.periodo;
-        const esEjecutable = asig.infoPeriodo.realizable;
-        return esDelPeriodoActivo || esEjecutable;
+        if (asig.objetivoAuditoria.iniciaEn > ahora) return false;
+        return asig.infoPeriodo.realizable;
       });
 
       return responderLista(res, ejecutables, { pagina: 1, limite: 100, total: ejecutables.length });
     } else {
-      const historial = rawMapped.filter((asig) =>
-        asig.estado === EstadoAsignacionAuditoria.COMPLETADA ||
-        asig.estado === EstadoAsignacionAuditoria.VENCIDA ||
-        !asig.infoPeriodo.realizable
-      );
+      const historial = rawMapped.filter((asig) => {
+        if (asig.estado === EstadoAsignacionAuditoria.CANCELADA) return false;
+        // When filtering by a specific month, include all assignments (realized, pending, future, expired)
+        if (query.anio && query.mes) return true;
+        return (
+          asig.estado === EstadoAsignacionAuditoria.COMPLETADA ||
+          asig.estado === EstadoAsignacionAuditoria.VENCIDA ||
+          !asig.infoPeriodo.realizable
+        );
+      });
 
       // Sort alphabetically by area name (A→Z)
       historial.sort((a, b) => {

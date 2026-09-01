@@ -22,6 +22,7 @@ export const esquemaPreguntaFormulario = z.object({
   claveEstable: z.string().uuid().optional(),
   texto: z.string().trim().min(1).max(5000),
   orden: z.number().int().nonnegative(),
+  requiereHallazgo: z.boolean().default(true),
 });
 
 export const esquemaSeccionFormulario = z.object({

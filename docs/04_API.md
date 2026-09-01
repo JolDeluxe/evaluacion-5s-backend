@@ -61,17 +61,20 @@ Los invitados usan enlace temporal delegado desde una asignacion. No existe rol
 - `POST /api/v1/formularios/versiones/:versionId/imagenes/firmar`
 
 Las versiones usan `SeccionFormulario` y `PreguntaFormulario`. Al crear una nueva
-version se desactiva la version anterior; una version usada por ciclos queda
+version se desactiva la version anterior; una version usada por objetivos queda
 como fotografia historica.
 
-### Ciclos y Asignaciones
+### Asignaciones
 
+- `GET /api/v1/asignaciones/mensual`
+- `GET /api/v1/asignaciones/mensual/carga`
+- `POST /api/v1/asignaciones/mensual/autoasignar`
+- `PUT /api/v1/asignaciones/mensual/:areaId`
 - `GET /api/v1/asignaciones`
 - `GET /api/v1/asignaciones/:id/auditoria`
-- `POST /api/v1/asignaciones`
-- `POST /api/v1/asignaciones/:id/publicar`
-- `POST /api/v1/asignaciones/:id/reasignar`
 - `POST /api/v1/asignaciones/:id/enlaces-invitado`
+- `DELETE /api/v1/asignaciones/:id/enlaces-invitado/activo`
+- `POST /api/v1/asignaciones/:id/reabrir`
 
 ### Auditorias
 

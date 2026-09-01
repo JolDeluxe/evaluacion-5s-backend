@@ -1,6 +1,7 @@
 import type { PrismaTransaction } from '../../db';
+import type { RolUsuario } from '../../generated/prisma/enums';
 import { prohibido, solicitudInvalida } from '../../utils/errores';
-import { puedeEjecutarAuditoria } from '../../utils/permisos';
+import { puedeAdministrar5S, puedeEjecutarAuditoria } from '../../utils/permisos';
 
 export const validarAuditorAsignable = async (
   tx: PrismaTransaction,
@@ -37,3 +38,11 @@ export const validarAuditorAsignable = async (
 
   return { auditor, objetivo };
 };
+
+export const puedeUsarAsignacionEjecutable = (
+  autenticacion: { usuarioId: number; rol: RolUsuario } | undefined,
+  auditorId: number,
+) => Boolean(
+  autenticacion
+    && (puedeAdministrar5S(autenticacion.rol) || autenticacion.usuarioId === auditorId),
+);

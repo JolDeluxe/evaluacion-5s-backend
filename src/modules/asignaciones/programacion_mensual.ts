@@ -220,7 +220,6 @@ const mapearUsuario = (usuario: { id: number; nombre: string; nombreUsuario: str
 
 const construirPeriodoFila = (
   objetivo: PeriodoObjetivo | undefined,
-  auditorMensualId: number | null,
 ) => {
   if (!objetivo) return { programada: false };
   const asignacion = asignacionVigente(objetivo.asignacionesAuditoria);
@@ -233,13 +232,11 @@ const construirPeriodoFila = (
     objetivoAuditoriaId: objetivo.id,
     asignacionId: asignacion?.id ?? null,
     auditorEfectivo: auditor,
-    usaAuditorMensual: Boolean(auditor && auditorMensualId && auditor.id === auditorMensualId),
     estadoAsignacion: asignacion?.estado ?? null,
     estadoAuditoria: detalle.situacion,
     realizada,
     vencida,
     bloqueada: realizada || vencida,
-    motivoExcepcion: asignacion?.motivoExcepcion ?? null,
     reabiertaHasta: asignacion?.reabiertaHasta ?? null,
     cierreGracia: detalle.cierreGracia,
   };
@@ -259,15 +256,9 @@ const construirFilasMensuales = (objetivos: PeriodoObjetivo[], asignacionesMensu
     const p2Objetivo = objetivosArea.find((objetivo) => objetivo.periodo === CORTE_P2);
     const areaBase = (p1Objetivo ?? p2Objetivo)?.area;
     const asignacionMensual = areaBase ? mensualPorArea.get(areaBase.id) : null;
-    const p1Asignacion = p1Objetivo ? asignacionVigente(p1Objetivo.asignacionesAuditoria) : null;
-    const p2Asignacion = p2Objetivo ? asignacionVigente(p2Objetivo.asignacionesAuditoria) : null;
-    const auditorMensual = asignacionMensual?.auditor ?? p1Asignacion?.asignacionMensual?.auditor ?? p2Asignacion?.asignacionMensual?.auditor ?? p1Asignacion?.auditor ?? p2Asignacion?.auditor ?? null;
-    const auditorMensualId = auditorMensual?.id ?? null;
-    const p1 = construirPeriodoFila(p1Objetivo, auditorMensualId);
-    const p2 = construirPeriodoFila(p2Objetivo, auditorMensualId);
-    const periodosProgramados = [p1, p2].filter((periodo) => periodo.programada);
-    const todosAsignados = periodosProgramados.length > 0 && periodosProgramados.every((periodo) => Boolean(periodo.auditorEfectivo));
-    const tieneExcepcion = periodosProgramados.some((periodo) => periodo.auditorEfectivo && !periodo.usaAuditorMensual);
+    const auditorMensual = asignacionMensual?.auditor ?? null;
+    const p1 = construirPeriodoFila(p1Objetivo);
+    const p2 = construirPeriodoFila(p2Objetivo);
 
     return {
       area: {
@@ -278,8 +269,7 @@ const construirFilasMensuales = (objetivos: PeriodoObjetivo[], asignacionesMensu
         responsablesIds: areaBase?.usuariosArea.map((usuarioArea) => usuarioArea.usuarioId) ?? [],
       },
       auditorMensual: auditorMensual ? mapearUsuario(auditorMensual) : null,
-      estado: todosAsignados ? 'ASIGNADO' as const : 'SIN_AUDITOR' as const,
-      tieneExcepcion,
+      estado: asignacionMensual ? 'ASIGNADO' as const : 'SIN_AUDITOR' as const,
       periodos: { p1, p2 },
     };
   }).sort((a, b) => a.area.nombre.localeCompare(b.area.nombre, 'es'));
@@ -291,9 +281,9 @@ const filtrarFilas = (
 ) => {
   const busqueda = filtros.busqueda?.trim().toLowerCase();
   return filas.filter((fila) => {
-    const auditores = [fila.auditorMensual, fila.periodos.p1.auditorEfectivo, fila.periodos.p2.auditorEfectivo].filter(Boolean);
+    const auditores = [fila.auditorMensual].filter(Boolean);
     if (filtros.estado && fila.estado !== filtros.estado) return false;
-    if (filtros.auditorId && !auditores.some((auditor) => auditor?.id === filtros.auditorId)) return false;
+    if (filtros.auditorId && fila.auditorMensual?.id !== filtros.auditorId) return false;
     if (!busqueda) return true;
     return [
       fila.area.codigo,
@@ -373,8 +363,8 @@ const aplicarAsignacionPeriodo = async (
   const estaRealizada = detalle.realizada || asignacion?.estado === EstadoAsignacionAuditoria.COMPLETADA || Boolean(asignacion?.completadoEn);
   const estaVencida = asignacion?.estado === EstadoAsignacionAuditoria.VENCIDA || detalle.situacion === 'NO_REALIZADA';
 
-  if ((estaRealizada || estaVencida) && asignacion?.auditorId !== auditorId) {
-    throw conflicto(`El periodo ${objetivo.periodo} no permite cambiar auditor`);
+  if (estaRealizada || estaVencida) {
+    return { actualizada: false, protegida: true, asignacion };
   }
 
   await validarAuditorAsignable(tx, auditorId, objetivo.id);
@@ -400,14 +390,15 @@ const aplicarAsignacionPeriodo = async (
       idEntidad: creada.id,
       datosNuevos: creada,
     }, tx);
-    return creada;
+    return { actualizada: true, protegida: false, asignacion: creada };
   }
 
   if (asignacion.auditorId === auditorId) {
-    return tx.asignacionAuditoria.update({
+    const actualizada = await tx.asignacionAuditoria.update({
       where: { id: asignacion.id },
       data: { asignacionMensualId, motivoExcepcion: null, venceEn },
     });
+    return { actualizada: true, protegida: false, asignacion: actualizada };
   }
 
   await tx.asignacionAuditoria.update({
@@ -430,7 +421,7 @@ const aplicarAsignacionPeriodo = async (
     datosAnteriores: asignacion,
     datosNuevos: creada,
   }, tx);
-  return creada;
+  return { actualizada: true, protegida: false, asignacion: creada };
 };
 
 export const guardarAsignacionMensual = async (
@@ -446,6 +437,8 @@ export const guardarAsignacionMensual = async (
 ) => {
   const objetivos = await obtenerObjetivosAreaMes(tx, params.areaId, params.anio, params.mes);
   if (!objetivos.length) throw conflicto('El area no esta programada para este mes');
+  await validarAuditorMensualArea(tx, params.areaId, params.auditorMensualId);
+
   if (params.soloSiSinAuditor && objetivos.some((objetivo) => asignacionVigente(objetivo.asignacionesAuditoria))) {
     return { actualizadas: 0, omitida: true };
   }
@@ -468,29 +461,30 @@ export const guardarAsignacionMensual = async (
   });
 
   let actualizadas = 0;
+  let protegidas = 0;
   for (const objetivo of objetivos) {
-    await aplicarAsignacionPeriodo(
+    const resultado = await aplicarAsignacionPeriodo(
       tx,
       objetivo,
       params.auditorMensualId,
       asignacionMensual.id,
       params.asignadoPorId,
     );
-    actualizadas += 1;
+    if (resultado.protegida) protegidas += 1;
+    if (resultado.actualizada) actualizadas += 1;
   }
 
-  return { actualizadas, omitida: false };
+  return { actualizadas, protegidas, omitida: false };
 };
 
 const mesAnterior = (anio: number, mes: number) => (
   mes === 1 ? { anio: anio - 1, mes: 12 } : { anio, mes: mes - 1 }
 );
 
-export const autoasignarPendientes = async (
+export const calcularPropuestaAutoasignacion = async (
   tx: PrismaTransaction,
   anio: number,
   mes: number,
-  asignadoPorId: number,
 ) => {
   const [vistaActual, vistaAnterior] = await Promise.all([
     obtenerVistaMensual(tx, anio, mes),
@@ -499,15 +493,23 @@ export const autoasignarPendientes = async (
   const auditores = await obtenerAuditoresDisponibles(tx);
   const cargas = new Map(vistaActual.auditores.map((auditor) => [auditor.id, auditor.areasAsignadas]));
   const anteriorPorArea = new Map(vistaAnterior.filas.map((fila) => [fila.area.id, fila.auditorMensual?.id ?? null]));
-  let asignadas = 0;
-  let sinCandidato = 0;
-  let omitidasPorConcurrencia = 0;
+
+  const propuestas: Array<{
+    area: { id: number; codigo: string; nombre: string; tipo: string; responsablesIds: number[] };
+    auditor: { id: number; nombre: string; nombreUsuario: string } | null;
+  }> = [];
+
+  const sinCandidato: Array<{ id: number; codigo: string; nombre: string; tipo: string }> = [];
 
   for (const fila of vistaActual.filas.filter((actual) => actual.estado === 'SIN_AUDITOR')) {
     const responsables = new Set(fila.area.responsablesIds);
     const elegibles = auditores.filter((auditor) => !responsables.has(auditor.id));
     if (!elegibles.length) {
-      sinCandidato += 1;
+      sinCandidato.push(fila.area);
+      propuestas.push({
+        area: fila.area,
+        auditor: null,
+      });
       continue;
     }
     const auditorAnteriorId = anteriorPorArea.get(fila.area.id);
@@ -518,11 +520,41 @@ export const autoasignarPendientes = async (
       || a.nombre.localeCompare(b.nombre, 'es')
       || a.id - b.id
     ))[0];
+
+    propuestas.push({
+      area: fila.area,
+      auditor: mapearUsuario(elegido),
+    });
+    cargas.set(elegido.id, (cargas.get(elegido.id) ?? 0) + 1);
+  }
+
+  return {
+    anio,
+    mes,
+    propuestas,
+    sinCandidato,
+    auditoresDisponibles: auditores.map(mapearUsuario),
+  };
+};
+
+export const autoasignarPendientes = async (
+  tx: PrismaTransaction,
+  anio: number,
+  mes: number,
+  asignadoPorId: number,
+) => {
+  const propuesta = await calcularPropuestaAutoasignacion(tx, anio, mes);
+  let asignadas = 0;
+  const sinCandidato = propuesta.sinCandidato.length;
+  let omitidasPorConcurrencia = 0;
+
+  for (const item of propuesta.propuestas) {
+    if (!item.auditor) continue;
     const resultado = await guardarAsignacionMensual(tx, {
-      areaId: fila.area.id,
+      areaId: item.area.id,
       anio,
       mes,
-      auditorMensualId: elegido.id,
+      auditorMensualId: item.auditor.id,
       asignadoPorId,
       soloSiSinAuditor: true,
     });
@@ -531,10 +563,30 @@ export const autoasignarPendientes = async (
       continue;
     }
     asignadas += 1;
-    cargas.set(elegido.id, (cargas.get(elegido.id) ?? 0) + 1);
   }
 
   return { asignadas, sinCandidato, omitidasPorConcurrencia };
+};
+
+export const confirmarPropuestaAutoasignacion = async (
+  tx: PrismaTransaction,
+  anio: number,
+  mes: number,
+  asignaciones: Array<{ areaId: number; auditorId: number }>,
+  asignadoPorId: number,
+) => {
+  let guardadas = 0;
+  for (const item of asignaciones) {
+    await guardarAsignacionMensual(tx, {
+      areaId: item.areaId,
+      anio,
+      mes,
+      auditorMensualId: item.auditorId,
+      asignadoPorId,
+    });
+    guardadas += 1;
+  }
+  return { guardadas };
 };
 
 export const auditableDesdeParaInicio = (inicio: 'ESTE_MES' | 'PROXIMO_MES', ahora = new Date()) => {

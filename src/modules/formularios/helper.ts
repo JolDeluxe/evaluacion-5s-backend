@@ -35,6 +35,109 @@ const textoONull = (valor?: string | null) => {
   return limpio ? limpio : null;
 };
 
+export function calcularDiferenciasEstructura(
+  versionAnterior: RevisionConEstructura,
+  versionNueva: RevisionConEstructura,
+) {
+  const preguntasAnteriores = new Map<string, { texto: string; orden: number; requiereHallazgo: boolean }>();
+  for (const sec of versionAnterior.secciones) {
+    for (const preg of sec.preguntas) {
+      if (preg.claveEstable) {
+        preguntasAnteriores.set(preg.claveEstable, {
+          texto: preg.texto,
+          orden: preg.orden,
+          requiereHallazgo: preg.requiereHallazgo ?? true,
+        });
+      }
+    }
+  }
+
+  const preguntasNuevas = new Map<string, { texto: string; orden: number; requiereHallazgo: boolean }>();
+  for (const sec of versionNueva.secciones) {
+    for (const preg of sec.preguntas) {
+      if (preg.claveEstable) {
+        preguntasNuevas.set(preg.claveEstable, {
+          texto: preg.texto,
+          orden: preg.orden,
+          requiereHallazgo: preg.requiereHallazgo ?? true,
+        });
+      }
+    }
+  }
+
+  let agregadas = 0;
+  let retiradas = 0;
+  let configuracionesModificadas = 0;
+  let textosEditados = 0;
+
+  for (const [clave, pregN] of preguntasNuevas) {
+    const pregA = preguntasAnteriores.get(clave);
+    if (!pregA) {
+      agregadas++;
+    } else {
+      if (pregA.requiereHallazgo !== pregN.requiereHallazgo) {
+        configuracionesModificadas++;
+      }
+      if (pregA.texto.trim() !== pregN.texto.trim()) {
+        textosEditados++;
+      }
+    }
+  }
+
+  for (const [clave] of preguntasAnteriores) {
+    if (!preguntasNuevas.has(clave)) {
+      retiradas++;
+    }
+  }
+
+  const seccionesAnteriores = new Set(versionAnterior.secciones.map((s) => s.claveEstable).filter(Boolean));
+  const seccionesNuevas = new Set(versionNueva.secciones.map((s) => s.claveEstable).filter(Boolean));
+
+  let seccionesAgregadas = 0;
+  let seccionesRetiradas = 0;
+
+  for (const clave of seccionesNuevas) {
+    if (!seccionesAnteriores.has(clave)) seccionesAgregadas++;
+  }
+  for (const clave of seccionesAnteriores) {
+    if (!seccionesNuevas.has(clave)) seccionesRetiradas++;
+  }
+
+  return {
+    agregadas,
+    retiradas,
+    configuracionesModificadas,
+    textosEditados,
+    seccionesAgregadas,
+    seccionesRetiradas,
+  };
+}
+
+export function generarTextoDiferencias(diff: ReturnType<typeof calcularDiferenciasEstructura>) {
+  const partes: string[] = [];
+
+  if (diff.configuracionesModificadas > 0) {
+    partes.push(`${diff.configuracionesModificadas} configuración${diff.configuracionesModificadas > 1 ? 'es' : ''} de pregunta${diff.configuracionesModificadas > 1 ? 's' : ''} modificada${diff.configuracionesModificadas > 1 ? 's' : ''}`);
+  }
+  if (diff.agregadas > 0) {
+    partes.push(`${diff.agregadas} pregunta${diff.agregadas > 1 ? 's' : ''} agregada${diff.agregadas > 1 ? 's' : ''}`);
+  }
+  if (diff.retiradas > 0) {
+    partes.push(`${diff.retiradas} pregunta${diff.retiradas > 1 ? 's' : ''} retirada${diff.retiradas > 1 ? 's' : ''}`);
+  }
+  if (diff.seccionesAgregadas > 0) {
+    partes.push(`${diff.seccionesAgregadas} sección${diff.seccionesAgregadas > 1 ? 'es' : ''} agregada${diff.seccionesAgregadas > 1 ? 's' : ''}`);
+  }
+  if (diff.seccionesRetiradas > 0) {
+    partes.push(`${diff.seccionesRetiradas} sección${diff.seccionesRetiradas > 1 ? 'es' : ''} retirada${diff.seccionesRetiradas > 1 ? 's' : ''}`);
+  }
+  if (diff.textosEditados > 0 && partes.length === 0) {
+    partes.push(`${diff.textosEditados} redacción${diff.textosEditados > 1 ? 'es' : ''} corregida${diff.textosEditados > 1 ? 's' : ''}`);
+  }
+
+  return partes.length > 0 ? partes.join(' · ') : 'Ajuste menor de estructura';
+}
+
 const contarPreguntas = (revision: Pick<RevisionConEstructura, 'secciones'>) => (
   revision.secciones.reduce((total, seccion) => total + seccion.preguntas.length, 0)
 );
@@ -61,17 +164,17 @@ export const mapearRevisionFormulario = (
       claveEstable: pregunta.claveEstable,
       texto: pregunta.texto,
       orden: pregunta.orden,
+      requiereHallazgo: pregunta.requiereHallazgo ?? true,
     })),
   })),
 });
 
 export const mapearFormularioDetalle = (formulario: FormularioConRevisiones) => {
-  const revisiones = [...formulario.versiones].sort((a, b) => (
-    Number(b.activa) - Number(a.activa)
-    || b.actualizadoEn.getTime() - a.actualizadoEn.getTime()
-    || b.id - a.id
-  ));
-  const actual = revisiones.find((revision) => revision.activa) ?? revisiones[0] ?? null;
+  const revisionesDesc = [...formulario.versiones].sort((a, b) => b.numeroVersion - a.numeroVersion);
+  const actual = revisionesDesc.find((revision) => revision.activa) ?? revisionesDesc[0] ?? null;
+
+  // Mapa para calcular diferencias respecto a la versión anterior (numeroVersion - 1)
+  const mapaPorNumero = new Map(revisionesDesc.map((rev) => [rev.numeroVersion, rev]));
 
   return {
     id: formulario.id,
@@ -82,15 +185,22 @@ export const mapearFormularioDetalle = (formulario: FormularioConRevisiones) => 
     creadoEn: formulario.creadoEn,
     actualizadoEn: formulario.actualizadoEn,
     actual: actual ? mapearRevisionFormulario(actual, true) : null,
-    historial: revisiones.map((revision) => {
+    historial: revisionesDesc.map((revision) => {
       const resumen = mapearRevisionFormulario(revision, actual?.id === revision.id);
+      const versionAnterior = mapaPorNumero.get(revision.numeroVersion - 1);
+      const diferencias = versionAnterior ? calcularDiferenciasEstructura(versionAnterior, revision) : null;
+
       return {
         id: resumen.id,
+        numeroVersion: revision.numeroVersion,
+        activa: revision.activa,
         actual: resumen.actual,
         creadoEn: resumen.creadoEn,
         actualizadoEn: resumen.actualizadoEn,
         totalSecciones: resumen.totalSecciones,
         totalPreguntas: resumen.totalPreguntas,
+        resumenDiferencias: diferencias ? generarTextoDiferencias(diferencias) : (revision.numeroVersion === 1 ? 'Versión inicial' : null),
+        diferencias,
       };
     }),
   };
@@ -112,6 +222,7 @@ const normalizarEstructuraBase = (secciones: EstructuraFormularioEntrada['seccio
           claveEstable: pregunta.claveEstable,
           texto: pregunta.texto.trim(),
           orden: pregunta.orden,
+          requiereHallazgo: pregunta.requiereHallazgo ?? true,
         })),
     }))
 );
@@ -126,17 +237,19 @@ const normalizarRevisionBase = (revision: RevisionConEstructura) => (
       claveEstable: pregunta.claveEstable,
       texto: pregunta.texto,
       orden: pregunta.orden,
+      requiereHallazgo: pregunta.requiereHallazgo ?? true,
     })),
   })))
 );
 
-// Estructuras son idénticas si coinciden secciones, preguntas, orden y textos
+// Estructuras son idénticas si coinciden secciones, preguntas, orden, requiereHallazgo y textos
 export const estructurasFormularioIguales = (
   revision: RevisionConEstructura,
   secciones: EstructuraFormularioEntrada['secciones'],
 ) => JSON.stringify(normalizarRevisionBase(revision)) === JSON.stringify(normalizarEstructuraBase(secciones));
 
-// Cambio estructural: difiere cantidad de preguntas/secciones, orden, o clavesEstables de las preguntas/secciones
+// Cambio estructural: difiere cantidad de secciones/preguntas, la identidad claveEstable de secciones, o la pertenencia de una pregunta (claveEstable) a una sección distinta.
+// NO es estructural (es INMEDIATO): cambio de texto, requiereHallazgo, orden de preguntas dentro de la misma sección, orden visual de secciones, o título/objetivo de sección.
 export const esCambioEstructural = (
   revision: RevisionConEstructura,
   seccionesEntrada: EstructuraFormularioEntrada['secciones'],
@@ -144,22 +257,39 @@ export const esCambioEstructural = (
   const actualNorm = normalizarRevisionBase(revision);
   const entradaNorm = normalizarEstructuraBase(seccionesEntrada);
 
+  // 1. Difiere número de secciones
   if (actualNorm.length !== entradaNorm.length) return true;
 
-  for (let i = 0; i < actualNorm.length; i++) {
-    const secA = actualNorm[i];
-    const secE = entradaNorm[i];
-    if (secA.orden !== secE.orden) return true;
-    if (secA.claveEstable && secE.claveEstable && secA.claveEstable !== secE.claveEstable) return true;
-    if (secA.preguntas.length !== secE.preguntas.length) return true;
-
-    for (let j = 0; j < secA.preguntas.length; j++) {
-      const pA = secA.preguntas[j];
-      const pE = secE.preguntas[j];
-      if (pA.orden !== pE.orden) return true;
-      if (pA.claveEstable && pE.claveEstable && pA.claveEstable !== pE.claveEstable) return true;
+  // 2. Mapa de claveEstable de pregunta -> claveEstable de sección en la versión actual
+  const mapaPreguntaASeccionActual = new Map<string, string>();
+  let totalPreguntasActual = 0;
+  for (const sec of actualNorm) {
+    if (sec.claveEstable) {
+      for (const preg of sec.preguntas) {
+        if (preg.claveEstable) {
+          mapaPreguntaASeccionActual.set(preg.claveEstable, sec.claveEstable);
+          totalPreguntasActual++;
+        }
+      }
     }
   }
+
+  let totalPreguntasEntrada = 0;
+  for (const sec of entradaNorm) {
+    for (const preg of sec.preguntas) {
+      if (preg.claveEstable) {
+        totalPreguntasEntrada++;
+        const seccionActualKey = mapaPreguntaASeccionActual.get(preg.claveEstable);
+        // Pregunta nueva no existente previamente en el snapshot actual
+        if (!seccionActualKey) return true;
+        // Pregunta movida a otra sección diferente (cambia pertenencia de grupo)
+        if (seccionActualKey !== sec.claveEstable) return true;
+      }
+    }
+  }
+
+  // Si la cantidad total de preguntas cambió (p.ej. se eliminó alguna pregunta)
+  if (totalPreguntasActual !== totalPreguntasEntrada) return true;
 
   return false;
 };
@@ -188,7 +318,7 @@ export const crearRevisionFormularioInterna = async (
 
   // 1. REGLA 1: CORRECCIÓN EDITORIAL (sin cambio estructural)
   if (revisionActual && !esCambioEstructural(revisionActual, secciones)) {
-    // Actualizar in-place textos de secciones y preguntas en TODAS las versiones del mismo formulario que compartan la misma claveEstable
+    // Actualizar in-place textos, orden y requiereHallazgo de secciones y preguntas en TODAS las versiones del mismo formulario que compartan la misma claveEstable
     for (const secEntrada of secciones) {
       if (secEntrada.claveEstable) {
         await tx.seccionFormulario.updateMany({
@@ -199,6 +329,7 @@ export const crearRevisionFormularioInterna = async (
           data: {
             nombre: secEntrada.nombre.trim(),
             objetivo: textoONull(secEntrada.objetivo),
+            orden: secEntrada.orden,
           },
         });
       }
@@ -214,6 +345,8 @@ export const crearRevisionFormularioInterna = async (
             },
             data: {
               texto: pregEntrada.texto.trim(),
+              orden: pregEntrada.orden,
+              requiereHallazgo: pregEntrada.requiereHallazgo !== false,
             },
           });
         }
@@ -243,6 +376,41 @@ export const crearRevisionFormularioInterna = async (
   }
 
   // 2. REGLA 3, 4, 5: CAMBIO ESTRUCTURAL Y CONGELAMIENTO MENSUAL
+  // Siempre aplicamos in-place las propiedades inmediatas (texto, requiereHallazgo, orden) sobre las versiones existentes que compartan claveEstable
+  for (const secEntrada of secciones) {
+    if (secEntrada.claveEstable) {
+      await tx.seccionFormulario.updateMany({
+        where: {
+          claveEstable: secEntrada.claveEstable,
+          versionFormulario: { formularioId },
+        },
+        data: {
+          nombre: secEntrada.nombre.trim(),
+          objetivo: textoONull(secEntrada.objetivo),
+          orden: secEntrada.orden,
+        },
+      });
+    }
+
+    for (const pregEntrada of secEntrada.preguntas) {
+      if (pregEntrada.claveEstable) {
+        await tx.preguntaFormulario.updateMany({
+          where: {
+            claveEstable: pregEntrada.claveEstable,
+            seccionFormulario: {
+              versionFormulario: { formularioId },
+            },
+          },
+          data: {
+            texto: pregEntrada.texto.trim(),
+            orden: pregEntrada.orden,
+            requiereHallazgo: pregEntrada.requiereHallazgo !== false,
+          },
+        });
+      }
+    }
+  }
+
   const ahora = new Date();
   const anioActual = ahora.getFullYear();
   const mesActual = ahora.getMonth() + 1;
@@ -279,14 +447,13 @@ export const crearRevisionFormularioInterna = async (
           claveEstable: seccion.claveEstable ?? generarUuid(),
           nombre: seccion.nombre.trim(),
           objetivo: textoONull(seccion.objetivo),
-          imagenPublicId: textoONull(seccion.imagenPublicId),
-          imagenAlt: textoONull(seccion.imagenAlt),
           orden: seccion.orden,
           preguntas: {
             create: seccion.preguntas.map((pregunta) => ({
               claveEstable: pregunta.claveEstable ?? generarUuid(),
               texto: pregunta.texto.trim(),
               orden: pregunta.orden,
+              requiereHallazgo: pregunta.requiereHallazgo ?? true,
             })),
           },
         })),
@@ -337,8 +504,8 @@ export const crearRevisionFormularioInterna = async (
   }, tx);
 
   const mensaje = mesCongelado
-    ? `Cambio estructural guardado. Los cambios aplicarán a partir del próximo mes (${mesDestino}/${anioDestino}) porque el mes actual ya tiene auditorías respondidas.`
-    : 'Cambio estructural guardado y aplicado al periodo actual.';
+    ? 'Los ajustes de presentación se aplicaron de inmediato. Los cambios que afectan la evaluación se aplicarán a partir del próximo mes.'
+    : 'Cambios guardados y aplicados al periodo actual.';
 
   return {
     revision: creada,

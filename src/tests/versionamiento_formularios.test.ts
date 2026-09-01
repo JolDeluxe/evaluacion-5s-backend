@@ -150,4 +150,183 @@ describe('Reglas de Negocio - Versionamiento y Congelamiento de Formularios', ()
       expect(versionAgosto?.id).toBe(102);
     });
   });
+
+  describe('Clasificación de Cambios (Inmediatos vs Estructurales)', () => {
+    test('Caso 1: solo texto cambia -> esCambioEstructural es false (inmediato)', () => {
+      const payload = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI',
+          objetivo: 'Clasificar elementos',
+          orden: 0,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-1', texto: '¿El área está limpia?', orden: 0, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-2', texto: '¿Están identificados los materiales?', orden: 1, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-3', texto: '¿Se eliminaron objetos innecesarios?', orden: 2, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-4', texto: '¿Existe pasillo despejado?', orden: 3, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-5', texto: '¿El suelo carece de manchas de aceite?', orden: 4, requiereHallazgo: true },
+          ],
+        },
+      ];
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payload as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(false);
+    });
+
+    test('Caso 2: requiereHallazgo true -> false -> esCambioEstructural es false (inmediato)', () => {
+      const payload = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI',
+          objetivo: 'Clasificar elementos',
+          orden: 0,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-1', texto: '¿El aria esta linpia?', orden: 0, requiereHallazgo: false },
+            { claveEstable: 'PREG-UUID-2', texto: '¿Están identificados los materiales?', orden: 1, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-3', texto: '¿Se eliminaron objetos innecesarios?', orden: 2, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-4', texto: '¿Existe pasillo despejado?', orden: 3, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-5', texto: '¿El suelo carece de manchas de aceite?', orden: 4, requiereHallazgo: true },
+          ],
+        },
+      ];
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payload as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(false);
+    });
+
+    test('Caso 3: orden preguntas dentro de misma sección -> esCambioEstructural es false (inmediato)', () => {
+      const payload = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI',
+          objetivo: 'Clasificar elementos',
+          orden: 0,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-5', texto: '¿El suelo carece de manchas de aceite?', orden: 0, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-1', texto: '¿El aria esta linpia?', orden: 1, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-2', texto: '¿Están identificados los materiales?', orden: 2, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-3', texto: '¿Se eliminaron objetos innecesarios?', orden: 3, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-4', texto: '¿Existe pasillo despejado?', orden: 4, requiereHallazgo: true },
+          ],
+        },
+      ];
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payload as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(false);
+    });
+
+    test('Caso 4 & 5: orden de secciones / título/objetivo sección -> esCambioEstructural es false (inmediato)', () => {
+      const payload = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI REFORMULADO',
+          objetivo: 'Nuevo objetivo visual',
+          orden: 1,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-1', texto: '¿El aria esta linpia?', orden: 0, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-2', texto: '¿Están identificados los materiales?', orden: 1, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-3', texto: '¿Se eliminaron objetos innecesarios?', orden: 2, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-4', texto: '¿Existe pasillo despejado?', orden: 3, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-5', texto: '¿El suelo carece de manchas de aceite?', orden: 4, requiereHallazgo: true },
+          ],
+        },
+      ];
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payload as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(false);
+    });
+
+    test('Caso 6: agregar pregunta -> esCambioEstructural es true', () => {
+      const payload = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI',
+          objetivo: 'Clasificar elementos',
+          orden: 0,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-1', texto: '¿El aria esta linpia?', orden: 0, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-2', texto: '¿Están identificados los materiales?', orden: 1, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-3', texto: '¿Se eliminaron objetos innecesarios?', orden: 2, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-4', texto: '¿Existe pasillo despejado?', orden: 3, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-5', texto: '¿El suelo carece de manchas de aceite?', orden: 4, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-6', texto: '¿Pregunta 6 nueva?', orden: 5, requiereHallazgo: true },
+          ],
+        },
+      ];
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payload as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(true);
+    });
+
+    test('Caso 7: eliminar pregunta -> esCambioEstructural es true', () => {
+      const payload = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI',
+          objetivo: 'Clasificar elementos',
+          orden: 0,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-1', texto: '¿El aria esta linpia?', orden: 0, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-2', texto: '¿Están identificados los materiales?', orden: 1, requiereHallazgo: true },
+          ],
+        },
+      ];
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payload as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(true);
+    });
+
+    test('Caso 8: mover pregunta a otra sección -> esCambioEstructural es true', () => {
+      const payload = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI',
+          objetivo: 'Clasificar elementos',
+          orden: 0,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-1', texto: '¿El aria esta linpia?', orden: 0, requiereHallazgo: true },
+          ],
+        },
+        {
+          claveEstable: 'SEC-UUID-2',
+          nombre: '2S - SEITON',
+          objetivo: 'Orden',
+          orden: 1,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-2', texto: '¿Están identificados los materiales?', orden: 0, requiereHallazgo: true }, // Movida de SEC-1 a SEC-2
+            { claveEstable: 'PREG-UUID-3', texto: '¿Se eliminaron objetos innecesarios?', orden: 1, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-4', texto: '¿Existe pasillo despejado?', orden: 2, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-5', texto: '¿El suelo carece de manchas de aceite?', orden: 3, requiereHallazgo: true },
+          ],
+        },
+      ];
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payload as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(true);
+    });
+
+    test('Caso 13: guardado mixto (texto + orden + hallazgo + nueva pregunta) -> esCambioEstructural es true', () => {
+      const payloadMixto = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI',
+          objetivo: 'Clasificar elementos',
+          orden: 0,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-5', texto: '¿Texto corregido del suelo?', orden: 0, requiereHallazgo: false }, // Texto + Orden + requiereHallazgo
+            { claveEstable: 'PREG-UUID-1', texto: '¿El aria esta linpia?', orden: 1, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-NUEVA', texto: 'Pregunta nueva agregada', orden: 2, requiereHallazgo: true }, // Estructural
+          ],
+        },
+      ];
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payloadMixto as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(true);
+    });
+
+    test('Caso 14: mismo payload sin diferencias -> esCambioEstructural es false y estructurasFormularioIguales es true', () => {
+      const payloadIdentico = [
+        {
+          claveEstable: 'SEC-UUID-1',
+          nombre: '1S - SEIRI',
+          objetivo: 'Clasificar elementos',
+          orden: 0,
+          preguntas: [
+            { claveEstable: 'PREG-UUID-1', texto: '¿El aria esta linpia?', orden: 0, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-2', texto: '¿Están identificados los materiales?', orden: 1, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-3', texto: '¿Se eliminaron objetos innecesarios?', orden: 2, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-4', texto: '¿Existe pasillo despejado?', orden: 3, requiereHallazgo: true },
+            { claveEstable: 'PREG-UUID-5', texto: '¿El suelo carece de manchas de aceite?', orden: 4, requiereHallazgo: true },
+          ],
+        },
+      ];
+
+      expect(estructurasFormularioIguales(revisionBase as unknown as Parameters<typeof estructurasFormularioIguales>[0], payloadIdentico as unknown as Parameters<typeof estructurasFormularioIguales>[1])).toBe(true);
+      expect(esCambioEstructural(revisionBase as unknown as Parameters<typeof esCambioEstructural>[0], payloadIdentico as unknown as Parameters<typeof esCambioEstructural>[1])).toBe(false);
+    });
+  });
 });

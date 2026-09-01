@@ -171,6 +171,7 @@ model PreguntaFormulario {
   claveEstable        String               @db.Char(36)
   texto               String               @db.Text
   orden               Int
+  requiereHallazgo    Boolean              @default(true)
   creadoEn            DateTime             @default(now())
   actualizadoEn       DateTime             @updatedAt
   seccionFormulario   SeccionFormulario    @relation(fields: [seccionFormularioId], references: [id])

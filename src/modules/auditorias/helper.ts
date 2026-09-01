@@ -38,10 +38,10 @@ export const validarUsuarioPuedeAuditar = (rol: string, esMismaArea: boolean) =>
 };
 
 export const validarRespuestas5S = (
-  preguntasEsperadas: { id: number }[],
+  preguntasEsperadas: { id: number; requiereHallazgo?: boolean }[],
   respuestas: RespuestaEntrada5S[]
 ) => {
-  const idsEsperados = new Set(preguntasEsperadas.map((pregunta) => pregunta.id));
+  const preguntasMap = new Map(preguntasEsperadas.map((pregunta) => [pregunta.id, pregunta]));
   const idsRecibidos = new Set<number>();
 
   if (respuestas.length !== preguntasEsperadas.length) {
@@ -54,7 +54,8 @@ export const validarRespuestas5S = (
     }
     idsRecibidos.add(respuesta.preguntaFormularioId);
 
-    if (!idsEsperados.has(respuesta.preguntaFormularioId)) {
+    const pregEsperada = preguntasMap.get(respuesta.preguntaFormularioId);
+    if (!pregEsperada) {
       throw solicitudInvalida('Una respuesta no pertenece a la version del formulario de este objetivo');
     }
 
@@ -62,12 +63,13 @@ export const validarRespuestas5S = (
       throw solicitudInvalida('cumple debe ser booleano');
     }
 
-    if (!respuesta.cumple && !respuesta.hallazgo?.trim()) {
+    const exigeHallazgo = pregEsperada.requiereHallazgo !== false;
+    if (!respuesta.cumple && exigeHallazgo && !respuesta.hallazgo?.trim()) {
       throw solicitudInvalida('El hallazgo es obligatorio cuando la respuesta es NO');
     }
   }
 
-  if (idsRecibidos.size !== idsEsperados.size) {
+  if (idsRecibidos.size !== preguntasMap.size) {
     throw solicitudInvalida('Faltan respuestas del formulario');
   }
 };

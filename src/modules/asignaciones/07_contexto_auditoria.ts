@@ -5,6 +5,7 @@ import { puedeAdministrar5S, puedeEjecutarAuditoria } from '../../utils/permisos
 import { construirDetalleAdminPeriodo, construirDetalleAuditorPeriodo, construirPeriodoCompat } from '../../utils/periodos';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 import { responder } from '../../utils/respuesta';
+import { puedeUsarAsignacionEjecutable } from './helper';
 import { esquemaId } from './zod';
 
 const includeContextoFormulario = {
@@ -39,7 +40,7 @@ export const obtenerContextoAuditoriaAsignacion = async (req: Request, res: Resp
   }
 
   const esAdmin = puedeAdministrar5S(req.autenticacion.rol);
-  if (!esAdmin && asignacion.auditorId !== req.autenticacion.usuarioId) {
+  if (!puedeUsarAsignacionEjecutable(req.autenticacion, asignacion.auditorId)) {
     throw prohibido('La asignacion no pertenece al auditor autenticado');
   }
 

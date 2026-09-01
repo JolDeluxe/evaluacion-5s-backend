@@ -44,6 +44,7 @@ export type PreguntaFormularioMinAggregateOutputType = {
   claveEstable: string | null
   texto: string | null
   orden: number | null
+  requiereHallazgo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -54,6 +55,7 @@ export type PreguntaFormularioMaxAggregateOutputType = {
   claveEstable: string | null
   texto: string | null
   orden: number | null
+  requiereHallazgo: boolean | null
   creadoEn: Date | null
   actualizadoEn: Date | null
 }
@@ -64,6 +66,7 @@ export type PreguntaFormularioCountAggregateOutputType = {
   claveEstable: number
   texto: number
   orden: number
+  requiereHallazgo: number
   creadoEn: number
   actualizadoEn: number
   _all: number
@@ -88,6 +91,7 @@ export type PreguntaFormularioMinAggregateInputType = {
   claveEstable?: true
   texto?: true
   orden?: true
+  requiereHallazgo?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -98,6 +102,7 @@ export type PreguntaFormularioMaxAggregateInputType = {
   claveEstable?: true
   texto?: true
   orden?: true
+  requiereHallazgo?: true
   creadoEn?: true
   actualizadoEn?: true
 }
@@ -108,6 +113,7 @@ export type PreguntaFormularioCountAggregateInputType = {
   claveEstable?: true
   texto?: true
   orden?: true
+  requiereHallazgo?: true
   creadoEn?: true
   actualizadoEn?: true
   _all?: true
@@ -205,6 +211,7 @@ export type PreguntaFormularioGroupByOutputType = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo: boolean
   creadoEn: Date
   actualizadoEn: Date
   _count: PreguntaFormularioCountAggregateOutputType | null
@@ -238,6 +245,7 @@ export type PreguntaFormularioWhereInput = {
   claveEstable?: Prisma.StringFilter<"PreguntaFormulario"> | string
   texto?: Prisma.StringFilter<"PreguntaFormulario"> | string
   orden?: Prisma.IntFilter<"PreguntaFormulario"> | number
+  requiereHallazgo?: Prisma.BoolFilter<"PreguntaFormulario"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"PreguntaFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"PreguntaFormulario"> | Date | string
   seccionFormulario?: Prisma.XOR<Prisma.SeccionFormularioScalarRelationFilter, Prisma.SeccionFormularioWhereInput>
@@ -250,6 +258,7 @@ export type PreguntaFormularioOrderByWithRelationInput = {
   claveEstable?: Prisma.SortOrder
   texto?: Prisma.SortOrder
   orden?: Prisma.SortOrder
+  requiereHallazgo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   seccionFormulario?: Prisma.SeccionFormularioOrderByWithRelationInput
@@ -267,6 +276,7 @@ export type PreguntaFormularioWhereUniqueInput = Prisma.AtLeast<{
   claveEstable?: Prisma.StringFilter<"PreguntaFormulario"> | string
   texto?: Prisma.StringFilter<"PreguntaFormulario"> | string
   orden?: Prisma.IntFilter<"PreguntaFormulario"> | number
+  requiereHallazgo?: Prisma.BoolFilter<"PreguntaFormulario"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"PreguntaFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"PreguntaFormulario"> | Date | string
   seccionFormulario?: Prisma.XOR<Prisma.SeccionFormularioScalarRelationFilter, Prisma.SeccionFormularioWhereInput>
@@ -279,6 +289,7 @@ export type PreguntaFormularioOrderByWithAggregationInput = {
   claveEstable?: Prisma.SortOrder
   texto?: Prisma.SortOrder
   orden?: Prisma.SortOrder
+  requiereHallazgo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   _count?: Prisma.PreguntaFormularioCountOrderByAggregateInput
@@ -297,6 +308,7 @@ export type PreguntaFormularioScalarWhereWithAggregatesInput = {
   claveEstable?: Prisma.StringWithAggregatesFilter<"PreguntaFormulario"> | string
   texto?: Prisma.StringWithAggregatesFilter<"PreguntaFormulario"> | string
   orden?: Prisma.IntWithAggregatesFilter<"PreguntaFormulario"> | number
+  requiereHallazgo?: Prisma.BoolWithAggregatesFilter<"PreguntaFormulario"> | boolean
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"PreguntaFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"PreguntaFormulario"> | Date | string
 }
@@ -305,6 +317,7 @@ export type PreguntaFormularioCreateInput = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   seccionFormulario: Prisma.SeccionFormularioCreateNestedOneWithoutPreguntasInput
@@ -317,6 +330,7 @@ export type PreguntaFormularioUncheckedCreateInput = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUncheckedCreateNestedManyWithoutPreguntaFormularioInput
@@ -326,6 +340,7 @@ export type PreguntaFormularioUpdateInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   seccionFormulario?: Prisma.SeccionFormularioUpdateOneRequiredWithoutPreguntasNestedInput
@@ -338,6 +353,7 @@ export type PreguntaFormularioUncheckedUpdateInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUncheckedUpdateManyWithoutPreguntaFormularioNestedInput
@@ -349,6 +365,7 @@ export type PreguntaFormularioCreateManyInput = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -357,6 +374,7 @@ export type PreguntaFormularioUpdateManyMutationInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -367,6 +385,7 @@ export type PreguntaFormularioUncheckedUpdateManyInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -398,6 +417,7 @@ export type PreguntaFormularioCountOrderByAggregateInput = {
   claveEstable?: Prisma.SortOrder
   texto?: Prisma.SortOrder
   orden?: Prisma.SortOrder
+  requiereHallazgo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -414,6 +434,7 @@ export type PreguntaFormularioMaxOrderByAggregateInput = {
   claveEstable?: Prisma.SortOrder
   texto?: Prisma.SortOrder
   orden?: Prisma.SortOrder
+  requiereHallazgo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -424,6 +445,7 @@ export type PreguntaFormularioMinOrderByAggregateInput = {
   claveEstable?: Prisma.SortOrder
   texto?: Prisma.SortOrder
   orden?: Prisma.SortOrder
+  requiereHallazgo?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
 }
@@ -499,6 +521,7 @@ export type PreguntaFormularioCreateWithoutSeccionFormularioInput = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   respuestasAuditoria?: Prisma.RespuestaAuditoriaCreateNestedManyWithoutPreguntaFormularioInput
@@ -509,6 +532,7 @@ export type PreguntaFormularioUncheckedCreateWithoutSeccionFormularioInput = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUncheckedCreateNestedManyWithoutPreguntaFormularioInput
@@ -549,6 +573,7 @@ export type PreguntaFormularioScalarWhereInput = {
   claveEstable?: Prisma.StringFilter<"PreguntaFormulario"> | string
   texto?: Prisma.StringFilter<"PreguntaFormulario"> | string
   orden?: Prisma.IntFilter<"PreguntaFormulario"> | number
+  requiereHallazgo?: Prisma.BoolFilter<"PreguntaFormulario"> | boolean
   creadoEn?: Prisma.DateTimeFilter<"PreguntaFormulario"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"PreguntaFormulario"> | Date | string
 }
@@ -557,6 +582,7 @@ export type PreguntaFormularioCreateWithoutRespuestasAuditoriaInput = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
   seccionFormulario: Prisma.SeccionFormularioCreateNestedOneWithoutPreguntasInput
@@ -568,6 +594,7 @@ export type PreguntaFormularioUncheckedCreateWithoutRespuestasAuditoriaInput = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -592,6 +619,7 @@ export type PreguntaFormularioUpdateWithoutRespuestasAuditoriaInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   seccionFormulario?: Prisma.SeccionFormularioUpdateOneRequiredWithoutPreguntasNestedInput
@@ -603,6 +631,7 @@ export type PreguntaFormularioUncheckedUpdateWithoutRespuestasAuditoriaInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -612,6 +641,7 @@ export type PreguntaFormularioCreateManySeccionFormularioInput = {
   claveEstable: string
   texto: string
   orden: number
+  requiereHallazgo?: boolean
   creadoEn?: Date | string
   actualizadoEn?: Date | string
 }
@@ -620,6 +650,7 @@ export type PreguntaFormularioUpdateWithoutSeccionFormularioInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUpdateManyWithoutPreguntaFormularioNestedInput
@@ -630,6 +661,7 @@ export type PreguntaFormularioUncheckedUpdateWithoutSeccionFormularioInput = {
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   respuestasAuditoria?: Prisma.RespuestaAuditoriaUncheckedUpdateManyWithoutPreguntaFormularioNestedInput
@@ -640,6 +672,7 @@ export type PreguntaFormularioUncheckedUpdateManyWithoutSeccionFormularioInput =
   claveEstable?: Prisma.StringFieldUpdateOperationsInput | string
   texto?: Prisma.StringFieldUpdateOperationsInput | string
   orden?: Prisma.IntFieldUpdateOperationsInput | number
+  requiereHallazgo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -681,6 +714,7 @@ export type PreguntaFormularioSelect<ExtArgs extends runtime.Types.Extensions.In
   claveEstable?: boolean
   texto?: boolean
   orden?: boolean
+  requiereHallazgo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   seccionFormulario?: boolean | Prisma.SeccionFormularioDefaultArgs<ExtArgs>
@@ -696,11 +730,12 @@ export type PreguntaFormularioSelectScalar = {
   claveEstable?: boolean
   texto?: boolean
   orden?: boolean
+  requiereHallazgo?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type PreguntaFormularioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "seccionFormularioId" | "claveEstable" | "texto" | "orden" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["preguntaFormulario"]>
+export type PreguntaFormularioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "seccionFormularioId" | "claveEstable" | "texto" | "orden" | "requiereHallazgo" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["preguntaFormulario"]>
 export type PreguntaFormularioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   seccionFormulario?: boolean | Prisma.SeccionFormularioDefaultArgs<ExtArgs>
   respuestasAuditoria?: boolean | Prisma.PreguntaFormulario$respuestasAuditoriaArgs<ExtArgs>
@@ -719,6 +754,7 @@ export type $PreguntaFormularioPayload<ExtArgs extends runtime.Types.Extensions.
     claveEstable: string
     texto: string
     orden: number
+    requiereHallazgo: boolean
     creadoEn: Date
     actualizadoEn: Date
   }, ExtArgs["result"]["preguntaFormulario"]>
@@ -1097,6 +1133,7 @@ export interface PreguntaFormularioFieldRefs {
   readonly claveEstable: Prisma.FieldRef<"PreguntaFormulario", 'String'>
   readonly texto: Prisma.FieldRef<"PreguntaFormulario", 'String'>
   readonly orden: Prisma.FieldRef<"PreguntaFormulario", 'Int'>
+  readonly requiereHallazgo: Prisma.FieldRef<"PreguntaFormulario", 'Boolean'>
   readonly creadoEn: Prisma.FieldRef<"PreguntaFormulario", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"PreguntaFormulario", 'DateTime'>
 }

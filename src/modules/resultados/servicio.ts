@@ -308,23 +308,12 @@ const construirEstadoMes = (
     };
   }
 
-  if (ahora <= cierre.terminaEn) {
-    return {
-      estado: 'EN_CURSO',
-      etiqueta: 'En curso',
-      consolidado: false,
-      mostrarResultado: false,
-      mensajeResultado: 'Pendiente de consolidación',
-      ...cierre,
-    };
-  }
-
   return {
-    estado: 'EN_GRACIA',
-    etiqueta: 'En periodo de gracia',
+    estado: 'EN_CURSO',
+    etiqueta: 'En curso',
     consolidado: false,
-    mostrarResultado: false,
-    mensajeResultado: 'Resultado mensual disponible al cierre del periodo',
+    mostrarResultado: true,
+    mensajeResultado: 'Resultados parciales en tiempo real',
     ...cierre,
   };
 };
@@ -527,40 +516,88 @@ export const obtenerResultadosAreas = async (
   };
 };
 
+const obtenerConjuntoElegibleRanking = (
+  areas: Awaited<ReturnType<typeof obtenerResultadosAreas>>['areas'],
+  tipo: TipoArea,
+) => {
+  const deTipo = areas.filter((a) => a.area.tipo === tipo);
+
+  // Prioridad 1: Áreas con 2 periodos completados
+  const con2 = deTipo.filter(
+    (area) => area.periodos.length >= 2 && area.periodos.every((p) => p.completado),
+  );
+
+  if (con2.length > 0) {
+    return {
+      elegibles: con2.map((area) => ({
+        area,
+        resultado: area.resultadoMensual as number,
+        esProvisional: false,
+      })),
+      rankingProvisional: false,
+      periodosRequeridos: 2,
+    };
+  }
+
+  // Prioridad 2: Áreas con al menos 1 periodo completado (resultado parcial provisional)
+  const con1 = deTipo
+    .map((area) => {
+      const periodoCompletado = area.periodos.find((p) => p.completado && p.porcentaje !== null);
+      if (!periodoCompletado) return null;
+      return {
+        area,
+        resultado: Number(periodoCompletado.porcentaje),
+        esProvisional: true,
+      };
+    })
+    .filter(
+      (item): item is { area: typeof deTipo[number]; resultado: number; esProvisional: boolean } =>
+        item !== null,
+    );
+
+  if (con1.length > 0) {
+    return {
+      elegibles: con1,
+      rankingProvisional: true,
+      periodosRequeridos: 1,
+    };
+  }
+
+  return {
+    elegibles: [],
+    rankingProvisional: false,
+    periodosRequeridos: 0,
+  };
+};
+
 const construirGanadoresPorTipo = (areas: Awaited<ReturnType<typeof obtenerResultadosAreas>>['areas']) => {
   const porTipo = (tipo: TipoArea) => {
-    // Requisito obligatorio: Periodo 1 = realizado Y Periodo 2 = realizado
-    const elegibles = areas.filter((area) => (
-      area.area.tipo === tipo &&
-      area.resultadoMensual !== null &&
-      area.periodos.length >= 2 &&
-      area.periodos.every((p) => p.completado)
-    ));
+    const { elegibles, rankingProvisional, periodosRequeridos } = obtenerConjuntoElegibleRanking(areas, tipo);
 
     if (!elegibles.length) {
-      return { resultado: null, areas: [] };
+      return { resultado: null, areas: [], rankingProvisional: false, periodosRequeridos: 0 };
     }
 
-    const calculados = elegibles.map((area) => {
+    const calculados = elegibles.map(({ area, resultado }) => {
       const p1 = area.periodos.find((p) => p.periodo === 1)?.porcentaje ?? 0;
       const p2 = area.periodos.find((p) => p.periodo === 2)?.porcentaje ?? 0;
       return {
         id: area.area.id,
         nombre: area.area.nombre,
-        resultadoMensual: area.resultadoMensual as number,
+        resultado,
         mejora: p2 - p1,
       };
     });
 
     let maxResultado = -Infinity;
     for (const c of calculados) {
-      if (c.resultadoMensual > maxResultado) {
-        maxResultado = c.resultadoMensual;
+      if (c.resultado > maxResultado) {
+        maxResultado = c.resultado;
       }
     }
 
     const mejoresPorResultado = calculados.filter(
-      (c) => Math.abs(c.resultadoMensual - maxResultado) < 1e-9,
+      (c) => Math.abs(c.resultado - maxResultado) < 1e-9,
     );
 
     let maxMejora = -Infinity;
@@ -579,6 +616,8 @@ const construirGanadoresPorTipo = (areas: Awaited<ReturnType<typeof obtenerResul
     return {
       resultado: maxResultado,
       areas: coGanadores.map((g) => ({ id: g.id, nombre: g.nombre })),
+      rankingProvisional,
+      periodosRequeridos,
     };
   };
 
@@ -590,35 +629,30 @@ const construirGanadoresPorTipo = (areas: Awaited<ReturnType<typeof obtenerResul
 
 const construirPeoresPorTipo = (areas: Awaited<ReturnType<typeof obtenerResultadosAreas>>['areas']) => {
   const porTipo = (tipo: TipoArea) => {
-    // Requisito obligatorio: Periodo 1 = realizado Y Periodo 2 = realizado
-    const elegibles = areas.filter((area) => (
-      area.area.tipo === tipo &&
-      area.resultadoMensual !== null &&
-      area.periodos.length >= 2 &&
-      area.periodos.every((p) => p.completado)
-    ));
+    const { elegibles, rankingProvisional, periodosRequeridos } = obtenerConjuntoElegibleRanking(areas, tipo);
 
     if (!elegibles.length) {
-      return { resultado: null, areas: [] };
+      return { resultado: null, areas: [], rankingProvisional: false, periodosRequeridos: 0 };
     }
 
     let minResultado = Infinity;
-    for (const area of elegibles) {
-      const res = area.resultadoMensual as number;
-      if (res < minResultado) {
-        minResultado = res;
+    for (const item of elegibles) {
+      if (item.resultado < minResultado) {
+        minResultado = item.resultado;
       }
     }
 
     const peoresPorResultado = elegibles.filter(
-      (area) => Math.abs((area.resultadoMensual as number) - minResultado) < 1e-9,
+      (item) => Math.abs(item.resultado - minResultado) < 1e-9,
     );
 
-    peoresPorResultado.sort((a, b) => a.area.nombre.localeCompare(b.area.nombre, 'es'));
+    peoresPorResultado.sort((a, b) => a.area.area.nombre.localeCompare(b.area.area.nombre, 'es'));
 
     return {
       resultado: minResultado,
-      areas: peoresPorResultado.map((p) => ({ id: p.area.id, nombre: p.area.nombre })),
+      areas: peoresPorResultado.map((p) => ({ id: p.area.area.id, nombre: p.area.area.nombre })),
+      rankingProvisional,
+      periodosRequeridos,
     };
   };
 

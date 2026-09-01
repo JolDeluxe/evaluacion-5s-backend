@@ -1919,6 +1919,7 @@ export const PreguntaFormularioScalarFieldEnum = {
   claveEstable: 'claveEstable',
   texto: 'texto',
   orden: 'orden',
+  requiereHallazgo: 'requiereHallazgo',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
 } as const
