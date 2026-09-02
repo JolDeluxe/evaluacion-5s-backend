@@ -5,6 +5,7 @@ import { responder } from '../../utils/respuesta';
 import { registrarAuditoria } from '../registros_auditoria/helper';
 import { assertNoQuitaUltimoSuperAdmin, assertPuedeGestionarRolUsuario, seleccionarUsuarioSeguro } from './helper';
 import { esquemaActualizarUsuario, esquemaId } from './zod';
+import { liberarAsignacionesDeAuditorNoEjecutable, obtenerImpactoAuditorNoEjecutable, puedeUsuarioAuditar } from '../asignaciones/servicio_reasignacion';
 
 export const actualizarUsuario = async (req: Request, res: Response) => {
   const { id } = esquemaId.parse(req.params);
@@ -27,6 +28,13 @@ export const actualizarUsuario = async (req: Request, res: Response) => {
       },
       select: seleccionarUsuarioSeguro,
     });
+    const pierdeCapacidad = puedeUsuarioAuditar(anterior) && !puedeUsuarioAuditar(actualizado);
+    const impacto = pierdeCapacidad
+      ? await obtenerImpactoAuditorNoEjecutable(tx, id)
+      : { completadas: 0, vencidas: 0, reasignables: 0 };
+    if (pierdeCapacidad) {
+      await liberarAsignacionesDeAuditorNoEjecutable(tx, id, 'AUDITOR_SIN_ROL_EJECUTABLE');
+    }
     await registrarAuditoria({
       usuarioId: req.autenticacion?.usuarioId,
       accion: anterior.rol !== actualizado.rol ? 'CAMBIAR_ROL_USUARIO' : 'ACTUALIZAR_USUARIO',
@@ -35,7 +43,7 @@ export const actualizarUsuario = async (req: Request, res: Response) => {
       datosAnteriores: anterior,
       datosNuevos: actualizado,
     }, tx);
-    return actualizado;
+    return { usuario: actualizado, impacto };
   });
-  responder(res, { usuario });
+  responder(res, usuario);
 };

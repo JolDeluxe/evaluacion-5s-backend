@@ -9,12 +9,16 @@ import {
 } from './programacion_mensual';
 import { esquemaAutoasignarMensual, esquemaConfirmarAutoasignacion } from './zod';
 
+const esMesActual = (anio: number, mes: number, ahora = new Date()) => (
+  anio === ahora.getFullYear() && mes === ahora.getMonth() + 1
+);
+
 export const generarPropuestaAutoasignacion = async (req: Request, res: Response) => {
   const body = esquemaAutoasignarMensual.parse(req.body);
   const usuarioId = req.autenticacion?.usuarioId ?? 1;
 
   const resultado = await transaccionSerializable(async (tx) => {
-    await asegurarProgramacionMensual(tx, body.anio, body.mes, usuarioId);
+    if (esMesActual(body.anio, body.mes)) await asegurarProgramacionMensual(tx, body.anio, body.mes, usuarioId);
     return calcularPropuestaAutoasignacion(tx, body.anio, body.mes);
   });
 
@@ -26,9 +30,10 @@ export const confirmarAutoasignacion = async (req: Request, res: Response) => {
   const usuarioId = req.autenticacion?.usuarioId ?? 1;
 
   const resultado = await transaccionSerializable(async (tx) => {
-    await asegurarProgramacionMensual(tx, body.anio, body.mes, usuarioId);
-    await confirmarEnTransaccion(tx, body.anio, body.mes, body.asignaciones, usuarioId);
-    return obtenerVistaMensual(tx, body.anio, body.mes);
+    if (esMesActual(body.anio, body.mes)) await asegurarProgramacionMensual(tx, body.anio, body.mes, usuarioId);
+    const confirmacion = await confirmarEnTransaccion(tx, body.anio, body.mes, body.asignaciones, usuarioId);
+    const vista = await obtenerVistaMensual(tx, body.anio, body.mes);
+    return { confirmacion, vista };
   });
 
   responder(res, resultado);

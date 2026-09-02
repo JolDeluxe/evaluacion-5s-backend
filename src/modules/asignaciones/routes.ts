@@ -11,12 +11,14 @@ import { autoasignarMensual } from './10_autoasignar_mensual';
 import { obtenerCargaMensual } from './11_carga_mensual';
 import { reabrirAsignacion } from './12_reabrir';
 import { confirmarAutoasignacion, generarPropuestaAutoasignacion } from './13_autoasignar_propuesta';
+import { obtenerPendientesAsignacion } from './14_pendientes_asignacion';
 
 export const asignacionesRouter = Router();
 
 asignacionesRouter.use(autenticar);
 asignacionesRouter.get('/mensual', autorizarRoles(...ROLES_ADMIN_NEGOCIO), obtenerAsignacionesMensuales);
 asignacionesRouter.get('/mensual/carga', autorizarRoles(...ROLES_ADMIN_NEGOCIO), obtenerCargaMensual);
+asignacionesRouter.get('/pendientes', autorizarRoles(...ROLES_ADMIN_NEGOCIO), obtenerPendientesAsignacion);
 asignacionesRouter.post('/mensual/autoasignar', autorizarRoles(...ROLES_ADMIN_NEGOCIO), autoasignarMensual);
 asignacionesRouter.post('/mensual/autoasignar/propuesta', autorizarRoles(...ROLES_ADMIN_NEGOCIO), generarPropuestaAutoasignacion);
 asignacionesRouter.post('/mensual/autoasignar/confirmar', autorizarRoles(...ROLES_ADMIN_NEGOCIO), confirmarAutoasignacion);

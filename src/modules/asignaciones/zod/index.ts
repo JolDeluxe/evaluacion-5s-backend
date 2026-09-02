@@ -25,6 +25,18 @@ export const esquemaConfirmarAutoasignacion = esquemaMes.extend({
     areaId: z.number().int().positive(),
     auditorId: z.number().int().positive(),
   })).min(1),
+}).superRefine((body, context) => {
+  const areas = new Set<number>();
+  for (const [index, asignacion] of body.asignaciones.entries()) {
+    if (areas.has(asignacion.areaId)) {
+      context.addIssue({
+        code: 'custom',
+        path: ['asignaciones', index, 'areaId'],
+        message: 'Cada area solo puede confirmarse una vez',
+      });
+    }
+    areas.add(asignacion.areaId);
+  }
 });
 
 export const esquemaReabrirAsignacion = z.object({

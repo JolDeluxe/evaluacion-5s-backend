@@ -22,17 +22,12 @@ export function areaEsAuditableEnPeriodo(
 ): boolean {
   const serialPeriodo = serialFechaPeriodo(anio, mes, diaTermino);
 
+  const inicioPeriodo = serialFechaPeriodo(anio, mes, 1);
   if (area.auditableHasta) {
-    const serialInicioPeriodo = serialFechaPeriodo(anio, mes, 1);
-    if (serialFechaUtc(area.auditableHasta) >= serialInicioPeriodo) {
-      return true;
-    }
+    if (serialFechaUtc(area.auditableHasta) >= inicioPeriodo) return true;
+    if (!area.auditableDesde) return false;
   }
-
-  if (area.auditableDesde && serialFechaUtc(area.auditableDesde) > serialPeriodo) {
-    return false;
-  }
-
+  if (area.auditableDesde && serialFechaUtc(area.auditableDesde) > serialPeriodo) return false;
   return area.activo;
 }
 
@@ -119,7 +114,8 @@ export async function procesarDesactivacionArea(
   const areaActualizada = await tx.area.update({
     where: { id: areaId },
     data: {
-      activo: false,
+      // Una baja futura conserva la actividad hasta que termine el mes vigente.
+      activo: efectivaDesde === 'PROXIMO_MES',
       auditableHasta,
     },
   });

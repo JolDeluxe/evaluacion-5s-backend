@@ -1,11 +1,71 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from 'bun:test';
 import { EstadoAsignacionAuditoria } from '../generated/prisma/enums';
 import { reabrirAsignacionEnTransaccion } from '../modules/asignaciones/12_reabrir';
 import { validarAuditorMensualArea } from '../modules/asignaciones/programacion_mensual';
 import { validarRespuestas5S } from '../modules/auditorias/helper';
 import type { PrismaTransaction } from '../db';
+import { clasificarAsignacionParaReasignacion, obtenerAuditorAnterior, obtenerPendientesGlobalesDeAsignacion } from '../modules/asignaciones/servicio_reasignacion';
+import { areaEsAuditableEnPeriodo } from '../modules/areas/servicio_vigencia_area';
+import { esquemaConfirmarAutoasignacion } from '../modules/asignaciones/zod';
 
 describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
+
+  test('clasifica completadas, vencidas, en gracia y reabiertas sin mezclar el historial', () => {
+    const ahora = new Date();
+    const objetivo = (terminaEn: Date, envioResultado: Record<string, unknown> | null = null) => ({
+      id: 1, areaId: 1, anio: ahora.getFullYear(), mes: ahora.getMonth() + 1, periodo: 1,
+      iniciaEn: new Date(ahora.getTime() - 86_400_000), terminaEn, envioResultado, enviosAuditoria: [],
+    });
+    const base = { estado: EstadoAsignacionAuditoria.PENDIENTE, completadoEn: null, reabiertaHasta: null };
+    expect(clasificarAsignacionParaReasignacion(objetivo(new Date(ahora.getTime() + 86_400_000)) as any, base).categoria).toBe('REASIGNABLE');
+    expect(clasificarAsignacionParaReasignacion(objetivo(new Date(ahora.getTime() - 86_400_000)) as any, base).categoria).toBe('REASIGNABLE');
+    expect(clasificarAsignacionParaReasignacion(objetivo(new Date(ahora.getTime() - 40 * 86_400_000)) as any, base).categoria).toBe('VENCIDA');
+    expect(clasificarAsignacionParaReasignacion(objetivo(new Date(ahora.getTime() - 40 * 86_400_000)) as any, { ...base, reabiertaHasta: new Date(ahora.getTime() + 86_400_000) }).categoria).toBe('REASIGNABLE');
+    expect(clasificarAsignacionParaReasignacion(objetivo(new Date(ahora.getTime() - 86_400_000), { id: 3, verificadoEn: ahora, invalidadoEn: null, porcentaje: 100 }) as any, base).categoria).toBe('COMPLETADA');
+  });
+
+  test('consulta global encuentra solo objetivos existentes, realizables y sin auditor válido', async () => {
+    const ahora = new Date();
+    const area = { id: 1, codigo: 'A1', nombre: 'Contabilidad', tipo: 'ADMINISTRATIVA', activo: true, auditableDesde: null, auditableHasta: null };
+    const objetivo = (id: number, terminaEn: Date, asignacionesAuditoria: any[] = [], envioResultado: Record<string, unknown> | null = null) => ({
+      id, areaId: 1, anio: ahora.getFullYear(), mes: ahora.getMonth() + 1, periodo: id,
+      iniciaEn: new Date(ahora.getTime() - 86_400_000), terminaEn, area, envioResultado, enviosAuditoria: [], asignacionesAuditoria,
+    });
+    const auditorInactivo = { id: 10, nombre: 'Daniel', nombreUsuario: 'daniel', activo: false, rol: 'AUDITOR' };
+    const auditorActivo = { id: 11, nombre: 'Patricia', nombreUsuario: 'patricia', activo: true, rol: 'AUDITOR' };
+    const asignacion = (id: number, auditor: any, estado: EstadoAsignacionAuditoria = EstadoAsignacionAuditoria.PENDIENTE, reabiertaHasta: Date | null = null) => ({ id, auditor, estado, completadoEn: null, reabiertaHasta, actualizadoEn: new Date(), motivoCancelacion: null });
+    const resultados = await obtenerPendientesGlobalesDeAsignacion({
+      objetivoAuditoria: {
+        findMany: async () => [
+          objetivo(1, new Date(ahora.getTime() + 86_400_000)),
+          objetivo(2, new Date(ahora.getTime() - 86_400_000), [asignacion(2, auditorInactivo)]),
+          objetivo(3, new Date(ahora.getTime() - 40 * 86_400_000), [asignacion(3, auditorInactivo, EstadoAsignacionAuditoria.VENCIDA, new Date(ahora.getTime() + 86_400_000))]),
+          objetivo(4, new Date(ahora.getTime() - 40 * 86_400_000)),
+          objetivo(5, new Date(ahora.getTime() + 86_400_000), [asignacion(5, auditorActivo)]),
+          objetivo(6, new Date(ahora.getTime() + 86_400_000), [], { id: 9, verificadoEn: ahora, invalidadoEn: null, porcentaje: 100 }),
+        ],
+      },
+    } as unknown as PrismaTransaction);
+    expect(resultados.map((item) => item.objetivoAuditoriaId)).toEqual([1, 2, 3]);
+  });
+
+  test('elige el auditor cancelado más reciente y rechaza duplicados al confirmar', () => {
+    const anterior = obtenerAuditorAnterior([
+      { estado: EstadoAsignacionAuditoria.CANCELADA, actualizadoEn: new Date(2026, 0, 1), id: 1 },
+      { estado: EstadoAsignacionAuditoria.CANCELADA, actualizadoEn: new Date(2026, 1, 1), id: 2 },
+    ]);
+    expect(anterior?.id).toBe(2);
+    expect(() => esquemaConfirmarAutoasignacion.parse({ anio: 2026, mes: 9, asignaciones: [{ areaId: 1, auditorId: 2 }, { areaId: 1, auditorId: 3 }] })).toThrow();
+  });
+
+  test('la vigencia respeta bajas este mes, próximo mes y el cruce de año', () => {
+    const activa = { activo: true, auditableDesde: null, auditableHasta: new Date(2026, 8, 30) };
+    expect(areaEsAuditableEnPeriodo(activa, 2026, 9, 30)).toBe(true);
+    expect(areaEsAuditableEnPeriodo(activa, 2026, 10, 15)).toBe(false);
+    expect(areaEsAuditableEnPeriodo({ ...activa, activo: false }, 2026, 9, 15)).toBe(true);
+    expect(areaEsAuditableEnPeriodo({ ...activa, auditableHasta: new Date(2026, 11, 31) }, 2027, 1, 15)).toBe(false);
+  });
 
   test('1. P1 vencida + P2 realizada (Juan) -> reabrir P1 con Pedro asigna Pedro a P1 y respeta Juan en P2', async () => {
     const asignacionP1 = {

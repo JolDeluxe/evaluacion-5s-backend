@@ -3,6 +3,7 @@ import { prisma } from '../../db';
 import { responder } from '../../utils/respuesta';
 import { conflicto } from '../../utils/errores';
 import { registrarAuditoria } from '../registros_auditoria/helper';
+import { liberarAsignacionesDeAuditorNoEjecutable, obtenerImpactoAuditorNoEjecutable, puedeUsuarioAuditar } from '../asignaciones/servicio_reasignacion';
 import { assertPuedeGestionarRolUsuario, seleccionarUsuarioSeguro } from './helper';
 import { esquemaId } from './zod';
 
@@ -30,39 +31,12 @@ export const desactivarUsuario = async (req: Request, res: Response) => {
       'desactivar',
     );
 
-    // 1. Validar que no tenga asignaciones de auditoría activas (PENDIENTES o EN_PROCESO)
-    const asignacionesActivas = await tx.asignacionAuditoria.count({
-      where: {
-        auditorId: id,
-        estado: { in: ['PENDIENTE', 'EN_PROCESO'] },
-      },
-    });
-
-    if (asignacionesActivas > 0) {
-      throw conflicto(
-        `No se puede desactivar el usuario porque tiene ${asignacionesActivas} asignaciones de auditoría activas (pendientes o en proceso).`,
-      );
-    }
-
-    // 2. Validar que no sea el único responsable de algún área activa
-    const areasActivasBajoResponsabilidad = anterior.areasUsuario.filter(
-      (ua) => ua.area.activo,
-    );
-
-    for (const relacion of areasActivasBajoResponsabilidad) {
-      // Contar cuántos otros responsables activos tiene esta área
+    for (const relacion of anterior.areasUsuario.filter((ua) => ua.area.activo)) {
       const otrosResponsablesActivos = await tx.usuarioArea.count({
-        where: {
-          areaId: relacion.areaId,
-          usuarioId: { not: id },
-          usuario: { activo: true },
-        },
+        where: { areaId: relacion.areaId, usuarioId: { not: id }, usuario: { activo: true } },
       });
-
       if (otrosResponsablesActivos === 0) {
-        throw conflicto(
-          `No puedes desactivar este usuario porque es el único responsable activo del área activa: "${relacion.area.nombre}". Asigna otro responsable primero.`,
-        );
+        throw conflicto(`No puedes desactivar este usuario porque es el único responsable activo del área activa: "${relacion.area.nombre}". Asigna otro responsable primero.`);
       }
     }
 
@@ -71,6 +45,13 @@ export const desactivarUsuario = async (req: Request, res: Response) => {
       data: { activo: false },
       select: seleccionarUsuarioSeguro,
     });
+
+    const impacto = puedeUsuarioAuditar(anterior)
+      ? await obtenerImpactoAuditorNoEjecutable(tx, id)
+      : { completadas: 0, vencidas: 0, reasignables: 0 };
+    if (puedeUsuarioAuditar(anterior)) {
+      await liberarAsignacionesDeAuditorNoEjecutable(tx, id, 'AUDITOR_INACTIVO');
+    }
 
     await tx.sesion.updateMany({
       where: { usuarioId: id, revocadoEn: null },
@@ -98,8 +79,8 @@ export const desactivarUsuario = async (req: Request, res: Response) => {
       tx,
     );
 
-    return actualizado;
+    return { usuario: actualizado, impacto };
   });
 
-  responder(res, { usuario });
+  responder(res, usuario);
 };
