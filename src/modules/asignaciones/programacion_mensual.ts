@@ -6,7 +6,7 @@ import {
   TipoArea,
 } from '../../generated/prisma/enums';
 import { conflicto, solicitudInvalida } from '../../utils/errores';
-import { calcularCierreConGracia, construirDetalleAdminPeriodo } from '../../utils/periodos';
+import { calcularCierreConGracia, construirDetalleAdminPeriodo, sumarDiasHabiles } from '../../utils/periodos';
 import { areaEsAuditableEnPeriodo } from '../areas/servicio_vigencia_area';
 import { registrarAuditoria } from '../registros_auditoria/helper';
 import { validarAuditorAsignable } from './helper';
@@ -372,11 +372,12 @@ const aplicarAsignacionPeriodo = async (
   soloPendientes = false,
 ) => {
   const asignacion = asignacionVigente(objetivo.asignacionesAuditoria);
-  const detalle = construirDetalleAdminPeriodo(objetivo, new Date(), asignacion?.reabiertaHasta ?? null);
+  const ahora = new Date();
+  const detalle = construirDetalleAdminPeriodo(objetivo, ahora, asignacion?.reabiertaHasta ?? null);
   const estaRealizada = detalle.realizada || asignacion?.estado === EstadoAsignacionAuditoria.COMPLETADA || Boolean(asignacion?.completadoEn);
-  const estaVencida = asignacion?.estado === EstadoAsignacionAuditoria.VENCIDA || detalle.situacion === 'NO_REALIZADA';
+  const estaVencida = asignacion?.estado === EstadoAsignacionAuditoria.VENCIDA || detalle.situacion === 'NO_REALIZADA' || ahora > calcularCierreConGracia(objetivo.terminaEn);
 
-  if (estaRealizada || estaVencida) {
+  if (estaRealizada) {
     if (asignacion?.asignacionMensualId === asignacionMensualId && asignacion.auditorId !== auditorId) {
       await tx.asignacionAuditoria.update({
         where: { id: asignacion.id },
@@ -391,14 +392,20 @@ const aplicarAsignacionPeriodo = async (
   }
 
   await validarAuditorAsignable(tx, auditorId, objetivo.id);
-  const venceEn = calcularCierreConGracia(objetivo.terminaEn);
+  const reabiertaHasta = estaVencida ? sumarDiasHabiles(ahora, 5) : null;
+  const venceEn = reabiertaHasta ?? calcularCierreConGracia(objetivo.terminaEn);
+
   const datosAsignacion = {
     asignacionMensualId,
     auditorId,
     asignadoPorId,
     estado: EstadoAsignacionAuditoria.PENDIENTE,
-    asignadoEn: new Date(),
+    asignadoEn: ahora,
     venceEn,
+    reabiertaHasta,
+    reabiertaEn: estaVencida ? ahora : null,
+    reabiertaPorId: estaVencida ? asignadoPorId : null,
+    motivoReapertura: estaVencida ? 'Asignación mensual automática de periodo vencido' : null,
     motivoExcepcion: null,
   };
 
@@ -417,9 +424,24 @@ const aplicarAsignacionPeriodo = async (
   }
 
   if (asignacion.auditorId === auditorId) {
+    // Si ya era del mismo auditor y está vencida pero no reabierta, habilitarla
+    const debeReabrirExistente = estaVencida && (!asignacion.reabiertaHasta || new Date(asignacion.reabiertaHasta) <= ahora);
+    const nuevaReaperturaHasta = debeReabrirExistente ? sumarDiasHabiles(ahora, 5) : asignacion.reabiertaHasta;
+
     const actualizada = await tx.asignacionAuditoria.update({
       where: { id: asignacion.id },
-      data: { asignacionMensualId, motivoExcepcion: null, venceEn },
+      data: {
+        asignacionMensualId,
+        motivoExcepcion: null,
+        venceEn: nuevaReaperturaHasta ?? venceEn,
+        ...(debeReabrirExistente ? {
+          estado: EstadoAsignacionAuditoria.PENDIENTE,
+          reabiertaHasta: nuevaReaperturaHasta,
+          reabiertaEn: ahora,
+          reabiertaPorId: asignadoPorId,
+          motivoReapertura: 'Reapertura automática por confirmación de auditor mensual',
+        } : {}),
+      },
     });
     return { actualizada: true, protegida: false, asignacion: actualizada };
   }
@@ -428,13 +450,13 @@ const aplicarAsignacionPeriodo = async (
     where: { id: asignacion.id },
     data: {
       estado: EstadoAsignacionAuditoria.CANCELADA,
-      canceladoEn: new Date(),
+      canceladoEn: ahora,
       motivoCancelacion: 'Cambio de asignacion mensual',
     },
   });
   await tx.enlaceInvitado.updateMany({
     where: { asignacionAuditoriaId: asignacion.id, revocadoEn: null },
-    data: { revocadoEn: new Date() },
+    data: { revocadoEn: ahora },
   });
 
   const creada = await tx.asignacionAuditoria.create({

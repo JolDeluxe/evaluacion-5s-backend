@@ -196,12 +196,20 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
           Object.assign(asignacionP1Actualizada, args.data);
           return { ...asignacionP1, ...args.data };
         },
+        create: async (args: { data: Record<string, unknown> }) => {
+          Object.assign(asignacionP1Actualizada, args.data);
+          return { id: 999, ...args.data };
+        },
       },
       objetivoAuditoria: {
         findMany: async () => [objetivoP1Vencido, objetivoP2],
       },
       usuarioArea: {
         findFirst: async () => null, // No es responsable de su propia área
+      },
+      usuario: {
+        findUnique: async () => ({ id: 20, activo: true, rol: 'AUDITOR' }),
+        findUniqueOrThrow: async () => ({ id: 20, activo: true, rol: 'AUDITOR' }),
       },
       asignacionMensual: {
         upsert: async (args: { create: Record<string, unknown> }) => {
