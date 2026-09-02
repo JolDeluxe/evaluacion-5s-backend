@@ -62,7 +62,7 @@ export const listarAreas = async (req: Request, res: Response) => {
       },
       skip: saltar,
       take: limite,
-      orderBy: [{ tipo: 'asc' }, { nombre: 'asc' }],
+      orderBy: [{ nombre: 'asc' }],
     }),
     prisma.area.count({ where }),
   ]);
