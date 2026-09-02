@@ -26,6 +26,10 @@ export const inicioMesSiguiente = (fecha = new Date()) => (
   new Date(fecha.getFullYear(), fecha.getMonth() + 1, 1, 0, 0, 0, 0)
 );
 
+export const puedeAsegurarProgramacionMensual = (anio: number, mes: number, ahora = new Date()) => (
+  anio > ahora.getFullYear() || (anio === ahora.getFullYear() && mes >= ahora.getMonth() + 1)
+);
+
 export const periodoMensual = (anio: number, mes: number, numeroCorte: number) => {
   if (numeroCorte === CORTE_P1) {
     return {
@@ -251,9 +255,18 @@ const construirFilasMensuales = (objetivos: PeriodoObjetivo[], asignacionesMensu
     const asignacionMensual = areaBase ? mensualPorArea.get(areaBase.id) : null;
     const p1 = construirPeriodoFila(p1Objetivo);
     const p2 = construirPeriodoFila(p2Objetivo);
-    const auditorMensual = asignacionMensual?.auditor ?? null;
-    const requiereAuditor = !auditorMensual && (p1.requiereAuditor || p2.requiereAuditor);
-    const estado = auditorMensual ? ('ASIGNADO' as const) : ('SIN_AUDITOR' as const);
+    const requiereAuditor = p1.requiereAuditor || p2.requiereAuditor;
+    const auditoresEfectivos = [p1, p2]
+      .filter((periodo) => periodo.programada)
+      .map((periodo) => periodo.auditorEfectivo)
+      .filter(Boolean);
+    const auditorInferido = auditoresEfectivos.length > 0
+      && auditoresEfectivos.length === [p1, p2].filter((periodo) => periodo.programada).length
+      && auditoresEfectivos.every((auditor) => auditor?.id === auditoresEfectivos[0]?.id)
+      ? auditoresEfectivos[0]
+      : null;
+    const auditorMensual = requiereAuditor ? null : asignacionMensual?.auditor ?? auditorInferido;
+    const estado = requiereAuditor ? ('SIN_AUDITOR' as const) : ('ASIGNADO' as const);
 
     return {
       area: {
@@ -364,6 +377,12 @@ const aplicarAsignacionPeriodo = async (
   const estaVencida = asignacion?.estado === EstadoAsignacionAuditoria.VENCIDA || detalle.situacion === 'NO_REALIZADA';
 
   if (estaRealizada || estaVencida) {
+    if (asignacion?.asignacionMensualId === asignacionMensualId && asignacion.auditorId !== auditorId) {
+      await tx.asignacionAuditoria.update({
+        where: { id: asignacion.id },
+        data: { asignacionMensualId: null },
+      });
+    }
     return { actualizada: false, protegida: true, asignacion };
   }
 
@@ -412,6 +431,10 @@ const aplicarAsignacionPeriodo = async (
       canceladoEn: new Date(),
       motivoCancelacion: 'Cambio de asignacion mensual',
     },
+  });
+  await tx.enlaceInvitado.updateMany({
+    where: { asignacionAuditoriaId: asignacion.id, revocadoEn: null },
+    data: { revocadoEn: new Date() },
   });
 
   const creada = await tx.asignacionAuditoria.create({
@@ -544,9 +567,11 @@ export const calcularPropuestaAutoasignacion = async (
   return {
     anio,
     mes,
+    resumen: vistaActual.resumen,
+    areasPendientes: vistaActual.filas.filter((fila) => fila.requiereAuditor).length,
     propuestas,
     sinCandidato,
-    auditoresDisponibles: auditores.map(mapearUsuario),
+    auditoresDisponibles: vistaActual.auditores,
   };
 };
 

@@ -4,11 +4,16 @@ import { EstadoAsignacionAuditoria, RolUsuario, TipoArea, AlcanceFormulario } fr
 import {
   asegurarProgramacionMensual,
   autoasignarPendientes,
+  calcularPropuestaAutoasignacion,
+  confirmarPropuestaAutoasignacion,
   guardarAsignacionMensual,
   obtenerVistaMensual,
+  puedeAsegurarProgramacionMensual,
 } from '../modules/asignaciones/programacion_mensual';
 import { puedeUsarAsignacionEjecutable } from '../modules/asignaciones/helper';
 import { reabrirAsignacionEnTransaccion } from '../modules/asignaciones/12_reabrir';
+import { objetivoEsRealizable } from '../utils/periodos';
+import { liberarAsignacionesDeAuditorNoEjecutable, puedeUsuarioAuditar } from '../modules/asignaciones/servicio_reasignacion';
 
 const date = (anio: number, mes: number, dia: number) => new Date(anio, mes - 1, dia, 12, 0, 0, 0);
 
@@ -152,9 +157,30 @@ class FakeTx {
       }
       return asignacion;
     },
+    deleteMany: async ({ where }: any) => {
+      const ids = new Set(where.id.in);
+      const anteriores = this.asignacionesMensuales.length;
+      this.asignacionesMensuales = this.asignacionesMensuales.filter((item) => (
+        !ids.has(item.id) || item.auditorId !== where.auditorId
+      ));
+      return { count: anteriores - this.asignacionesMensuales.length };
+    },
   };
 
   asignacionAuditoria = {
+    findMany: async ({ where }: any) => this.asignacionesAuditoria
+      .filter((asignacion) => (
+        asignacion.auditorId === where.auditorId
+        && asignacion.estado !== where.estado.not
+        && (!where.objetivoAuditoria?.areaId
+          || this.objetivos.find((objetivo) => objetivo.id === asignacion.objetivoAuditoriaId)?.areaId === where.objetivoAuditoria.areaId)
+      ))
+      .map((asignacion) => ({
+        ...asignacion,
+        objetivoAuditoria: this.decorateObjetivo(
+          this.objetivos.find((objetivo) => objetivo.id === asignacion.objetivoAuditoriaId),
+        ),
+      })),
     create: async ({ data }: any) => {
       const asignacion = {
         id: this.nextAsignacionId++,
@@ -188,6 +214,15 @@ class FakeTx {
         auditor: this.usuarios.find((usuario) => usuario.id === asignacion.auditorId),
       };
     },
+    updateMany: async ({ where, data }: any) => {
+      let count = 0;
+      for (const asignacion of this.asignacionesAuditoria) {
+        if (where.asignacionMensualId?.in && !where.asignacionMensualId.in.includes(asignacion.asignacionMensualId)) continue;
+        Object.assign(asignacion, data, { actualizadoEn: new Date() });
+        count += 1;
+      }
+      return { count };
+    },
     findUniqueOrThrow: async ({ where }: any) => {
       const asignacion = this.asignacionesAuditoria.find((actual) => actual.id === where.id);
       if (!asignacion) throw new Error('Asignacion no encontrada');
@@ -198,6 +233,10 @@ class FakeTx {
         ),
       };
     },
+  };
+
+  enlaceInvitado = {
+    updateMany: async () => ({ count: 0 }),
   };
 
   registroAuditoria = {
@@ -301,6 +340,74 @@ describe('Asignacion mensual simplificada', () => {
     expect(tx.objetivosDeAreaMes(1, 2026, 9).map((objetivo) => tx.asignacionVigente(objetivo.id)?.auditorId)).toEqual([10, 11]);
   });
 
+  test('baja a mitad de mes conserva P1 completada y permite sustituir solo P2', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    await prepararMes(tx);
+    await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 9, auditorMensualId: 10, asignadoPorId: 1 });
+    const [p1, p2] = tx.objetivosDeAreaMes(1, 2026, 9);
+    const asignacionP1 = tx.asignacionVigente(p1.id);
+    Object.assign(asignacionP1, {
+      estado: EstadoAsignacionAuditoria.COMPLETADA,
+      completadoEn: date(2026, 9, 10),
+    });
+
+    const liberacion = await liberarAsignacionesDeAuditorNoEjecutable(tx as any, 10, 'AUDITOR_INACTIVO');
+
+    expect(liberacion.liberadas).toBe(1);
+    expect(tx.asignacionVigente(p1.id)?.auditorId).toBe(10);
+    expect(tx.asignacionVigente(p2.id)).toBeNull();
+    expect(tx.asignacionesMensuales).toHaveLength(0);
+
+    await guardarAsignacionMensual(tx as any, {
+      areaId: 1,
+      anio: 2026,
+      mes: 9,
+      auditorMensualId: 11,
+      asignadoPorId: 1,
+    });
+
+    expect(tx.asignacionVigente(p1.id)?.auditorId).toBe(10);
+    expect(tx.asignacionVigente(p1.id)?.asignacionMensualId).toBeNull();
+    expect(tx.asignacionVigente(p2.id)?.auditorId).toBe(11);
+    expect(tx.asignacionVigente(p2.id)?.asignacionMensualId).toBe(tx.asignacionesMensuales[0].id);
+  });
+
+  test('la carga cuenta una sola unidad por area mensual y no una por periodo', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    await prepararMes(tx);
+    await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 9, auditorMensualId: 10, asignadoPorId: 1 });
+
+    const vista = await obtenerVistaMensual(tx as any, 2026, 9);
+    expect(vista.auditores.find((auditor) => auditor.id === 10)?.areasAsignadas).toBe(1);
+    expect(vista.filas[0].periodos.p1.auditorEfectivo?.id).toBe(10);
+    expect(vista.filas[0].periodos.p2.auditorEfectivo?.id).toBe(10);
+  });
+
+  test('al relacionar al auditor con un area solo se liberan sus pendientes de esa area', async () => {
+    const tx = new FakeTx();
+    await prepararMes(tx);
+    await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 9, auditorMensualId: 10, asignadoPorId: 1 });
+    await guardarAsignacionMensual(tx as any, { areaId: 2, anio: 2026, mes: 9, auditorMensualId: 10, asignadoPorId: 1 });
+    const [p1Area1, p2Area1] = tx.objetivosDeAreaMes(1, 2026, 9);
+    Object.assign(tx.asignacionVigente(p1Area1.id), {
+      estado: EstadoAsignacionAuditoria.COMPLETADA,
+      completadoEn: date(2026, 9, 10),
+    });
+
+    await liberarAsignacionesDeAuditorNoEjecutable(tx as any, 10, 'AUDITOR_EN_SU_PROPIA_AREA', 1);
+
+    expect(tx.asignacionVigente(p1Area1.id)?.auditorId).toBe(10);
+    expect(tx.asignacionVigente(p2Area1.id)).toBeNull();
+    expect(tx.objetivosDeAreaMes(2, 2026, 9).map((objetivo) => tx.asignacionVigente(objetivo.id)?.auditorId)).toEqual([10, 10]);
+  });
+
+  test('AUDITOR a ADMINISTRADOR conserva capacidad y a SUPER_ADMIN la pierde', () => {
+    expect(puedeUsuarioAuditar({ activo: true, rol: RolUsuario.AUDITOR })).toBe(true);
+    expect(puedeUsuarioAuditar({ activo: true, rol: RolUsuario.ADMINISTRADOR })).toBe(true);
+    expect(puedeUsuarioAuditar({ activo: true, rol: RolUsuario.SUPER_ADMIN })).toBe(false);
+    expect(puedeUsuarioAuditar({ activo: false, rol: RolUsuario.AUDITOR })).toBe(false);
+  });
+
   test('un periodo con EnvioAuditoria no cambia retroactivamente', async () => {
     const tx = new FakeTx({ soloArea1: true });
     await prepararMes(tx);
@@ -333,6 +440,104 @@ describe('Asignacion mensual simplificada', () => {
     await autoasignarPendientes(tx as any, 2026, 9, 1);
 
     expect(tx.asignacionesMensuales[0].auditorId).toBe(11);
+  });
+
+  test('solo permite asegurar programacion automatica del mes actual o futuro', () => {
+    const ahora = date(2026, 9, 2);
+
+    expect(puedeAsegurarProgramacionMensual(2026, 8, ahora)).toBe(false);
+    expect(puedeAsegurarProgramacionMensual(2026, 9, ahora)).toBe(true);
+    expect(puedeAsegurarProgramacionMensual(2026, 10, ahora)).toBe(true);
+    expect(puedeAsegurarProgramacionMensual(2027, 1, ahora)).toBe(true);
+  });
+
+  test('un mes futuro preparado genera propuesta y confirma el mismo auditor para P1 y P2', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    await prepararMes(tx, 2026, 10);
+
+    const propuesta = await calcularPropuestaAutoasignacion(tx as any, 2026, 10);
+
+    expect(propuesta.resumen).toEqual({ areas: 1, asignadas: 0, sinAuditor: 1 });
+    expect(propuesta.areasPendientes).toBe(1);
+    expect(propuesta.propuestas).toHaveLength(1);
+    expect(propuesta.propuestas[0].auditor).not.toBeNull();
+
+    await confirmarPropuestaAutoasignacion(tx as any, 2026, 10, [{
+      areaId: 1,
+      auditorId: propuesta.propuestas[0].auditor!.id,
+    }], 1);
+
+    const auditorIds = tx.objetivosDeAreaMes(1, 2026, 10)
+      .map((objetivo) => tx.asignacionVigente(objetivo.id)?.auditorId);
+    expect(auditorIds).toEqual([propuesta.propuestas[0].auditor!.id, propuesta.propuestas[0].auditor!.id]);
+    expect((await obtenerVistaMensual(tx as any, 2026, 10)).resumen).toEqual({ areas: 1, asignadas: 1, sinAuditor: 0 });
+  });
+
+  test('un mes futuro parcialmente asignado propone el faltante sin reemplazar el periodo valido', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    await prepararMes(tx, 2026, 10);
+    const [p1, p2] = tx.objetivosDeAreaMes(1, 2026, 10);
+    await tx.asignacionAuditoria.create({
+      data: {
+        objetivoAuditoriaId: p1.id,
+        auditorId: 10,
+        asignadoPorId: 1,
+        venceEn: date(2026, 10, 15),
+      },
+    });
+
+    const propuesta = await calcularPropuestaAutoasignacion(tx as any, 2026, 10);
+    expect(propuesta.propuestas).toHaveLength(1);
+
+    const auditorPropuestoId = propuesta.propuestas[0].auditor!.id;
+    await confirmarPropuestaAutoasignacion(tx as any, 2026, 10, [{ areaId: 1, auditorId: auditorPropuestoId }], 1);
+
+    expect(tx.asignacionVigente(p1.id)?.auditorId).toBe(10);
+    expect(tx.asignacionVigente(p2.id)?.auditorId).toBe(auditorPropuestoId);
+  });
+
+  test('P1 y P2 ya asignados se reconocen aunque falte AsignacionMensual', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    await prepararMes(tx, 2026, 10);
+    for (const objetivo of tx.objetivosDeAreaMes(1, 2026, 10)) {
+      await tx.asignacionAuditoria.create({
+        data: {
+          objetivoAuditoriaId: objetivo.id,
+          auditorId: 10,
+          asignadoPorId: 1,
+          venceEn: objetivo.terminaEn,
+        },
+      });
+    }
+
+    const vista = await obtenerVistaMensual(tx as any, 2026, 10);
+    const propuesta = await calcularPropuestaAutoasignacion(tx as any, 2026, 10);
+
+    expect(vista.resumen).toEqual({ areas: 1, asignadas: 1, sinAuditor: 0 });
+    expect(vista.filas[0].auditorMensual?.id).toBe(10);
+    expect(propuesta.areasPendientes).toBe(0);
+    expect(propuesta.propuestas).toHaveLength(0);
+  });
+
+  test('un mes futuro asignado no puede ejecutarse antes de su fecha de inicio', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    await prepararMes(tx, 2026, 10);
+    const p1 = tx.objetivosDeAreaMes(1, 2026, 10)[0];
+
+    expect(objetivoEsRealizable({ ...p1, envioResultado: null }, date(2026, 9, 2))).toBe(false);
+    expect(objetivoEsRealizable({ ...p1, envioResultado: null }, date(2026, 10, 1))).toBe(true);
+  });
+
+  test('areas pendientes sin auditor elegible se reportan como sin candidato', async () => {
+    const tx = new FakeTx({ responsablesArea1: [1, 10, 11], soloArea1: true });
+    await prepararMes(tx, 2026, 10);
+
+    const propuesta = await calcularPropuestaAutoasignacion(tx as any, 2026, 10);
+
+    expect(propuesta.areasPendientes).toBe(1);
+    expect(propuesta.propuestas).toHaveLength(1);
+    expect(propuesta.propuestas[0].auditor).toBeNull();
+    expect(propuesta.sinCandidato).toHaveLength(1);
   });
 
   test('area sin AsignacionMensual queda SIN_AUDITOR aunque tenga asignacion historica', async () => {

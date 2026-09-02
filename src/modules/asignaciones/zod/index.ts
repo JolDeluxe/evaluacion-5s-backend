@@ -43,6 +43,7 @@ export const esquemaReabrirAsignacion = z.object({
   motivo: z.string().trim().min(1).max(2000),
   reabiertaHasta: z.coerce.date().optional(),
   auditorMensualId: z.coerce.number().int().positive().optional(),
+  objetivoAuditoriaId: z.coerce.number().int().positive().optional(),
 });
 
 export const esquemaCrearEnlace = z.object({

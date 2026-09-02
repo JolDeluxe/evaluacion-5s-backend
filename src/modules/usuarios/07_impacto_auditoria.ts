@@ -2,10 +2,10 @@ import type { Request, Response } from 'express';
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { esquemaId } from './zod';
-import { obtenerImpactoAuditorNoEjecutable } from '../asignaciones/servicio_reasignacion';
+import { obtenerImpactoCambioUsuario } from './servicio_impacto_usuario';
 
 export const obtenerImpactoAuditoriaUsuario = async (req: Request, res: Response) => {
   const { id } = esquemaId.parse(req.params);
-  const impacto = await transaccionSerializable((tx) => obtenerImpactoAuditorNoEjecutable(tx, id));
+  const impacto = await transaccionSerializable((tx) => obtenerImpactoCambioUsuario(tx, id));
   responder(res, impacto);
 };

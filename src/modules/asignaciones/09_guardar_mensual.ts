@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
-import { asegurarProgramacionMensual, guardarAsignacionMensual, obtenerVistaMensual } from './programacion_mensual';
+import { asegurarProgramacionMensual, guardarAsignacionMensual, obtenerVistaMensual, puedeAsegurarProgramacionMensual } from './programacion_mensual';
 import { esquemaAreaId, esquemaGuardarAsignacionMensual } from './zod';
 
 export const guardarAsignacionMensualArea = async (req: Request, res: Response) => {
@@ -10,7 +10,9 @@ export const guardarAsignacionMensualArea = async (req: Request, res: Response) 
   const usuarioId = req.autenticacion?.usuarioId ?? 1;
 
   const resultado = await transaccionSerializable(async (tx) => {
-    await asegurarProgramacionMensual(tx, body.anio, body.mes, usuarioId);
+    if (puedeAsegurarProgramacionMensual(body.anio, body.mes)) {
+      await asegurarProgramacionMensual(tx, body.anio, body.mes, usuarioId);
+    }
     const guardado = await guardarAsignacionMensual(tx, {
       areaId,
       anio: body.anio,

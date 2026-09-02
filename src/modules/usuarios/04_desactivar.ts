@@ -1,27 +1,24 @@
 import type { Request, Response } from 'express';
-import { prisma } from '../../db';
 import { responder } from '../../utils/respuesta';
-import { conflicto } from '../../utils/errores';
+import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
-import { liberarAsignacionesDeAuditorNoEjecutable, obtenerImpactoAuditorNoEjecutable, puedeUsuarioAuditar } from '../asignaciones/servicio_reasignacion';
 import { assertPuedeGestionarRolUsuario, seleccionarUsuarioSeguro } from './helper';
-import { esquemaId } from './zod';
+import {
+  aplicarResolucionesAuditoriasUsuario,
+  aplicarResolucionesResponsabilidadUsuario,
+  validarCruceResponsablesAuditores,
+} from './servicio_impacto_usuario';
+import { esquemaId, esquemaResolverBajaUsuario } from './zod';
 
 export const desactivarUsuario = async (req: Request, res: Response) => {
   const { id } = esquemaId.parse(req.params);
+  const decisiones = esquemaResolverBajaUsuario.parse(req.body);
+  const actorId = req.autenticacion?.usuarioId ?? 1;
 
-  const usuario = await prisma.$transaction(async (tx) => {
+  const usuario = await transaccionSerializable(async (tx) => {
     const anterior = await tx.usuario.findUniqueOrThrow({
       where: { id },
-      select: {
-        ...seleccionarUsuarioSeguro,
-        areasUsuario: {
-          select: {
-            areaId: true,
-            area: { select: { nombre: true, activo: true } },
-          },
-        },
-      },
+      select: seleccionarUsuarioSeguro,
     });
 
     await assertPuedeGestionarRolUsuario(
@@ -31,27 +28,27 @@ export const desactivarUsuario = async (req: Request, res: Response) => {
       'desactivar',
     );
 
-    for (const relacion of anterior.areasUsuario.filter((ua) => ua.area.activo)) {
-      const otrosResponsablesActivos = await tx.usuarioArea.count({
-        where: { areaId: relacion.areaId, usuarioId: { not: id }, usuario: { activo: true } },
-      });
-      if (otrosResponsablesActivos === 0) {
-        throw conflicto(`No puedes desactivar este usuario porque es el único responsable activo del área activa: "${relacion.area.nombre}". Asigna otro responsable primero.`);
-      }
-    }
+    validarCruceResponsablesAuditores(decisiones.responsabilidades, decisiones.auditorias);
+    const auditorias = await aplicarResolucionesAuditoriasUsuario(
+      tx,
+      id,
+      decisiones,
+      actorId,
+      'AUDITOR_INACTIVO',
+    );
+    const responsabilidades = await aplicarResolucionesResponsabilidadUsuario(
+      tx,
+      id,
+      decisiones.responsabilidades,
+      auditorias.impacto,
+      actorId,
+    );
 
     const actualizado = await tx.usuario.update({
       where: { id },
       data: { activo: false },
       select: seleccionarUsuarioSeguro,
     });
-
-    const impacto = puedeUsuarioAuditar(anterior)
-      ? await obtenerImpactoAuditorNoEjecutable(tx, id)
-      : { completadas: 0, vencidas: 0, reasignables: 0 };
-    if (puedeUsuarioAuditar(anterior)) {
-      await liberarAsignacionesDeAuditorNoEjecutable(tx, id, 'AUDITOR_INACTIVO');
-    }
 
     await tx.sesion.updateMany({
       where: { usuarioId: id, revocadoEn: null },
@@ -60,7 +57,7 @@ export const desactivarUsuario = async (req: Request, res: Response) => {
 
     await registrarAuditoria(
       {
-        usuarioId: req.autenticacion?.usuarioId,
+        usuarioId: actorId,
         accion: 'DESACTIVAR_USUARIO',
         tipoEntidad: 'Usuario',
         idEntidad: id,
@@ -79,7 +76,16 @@ export const desactivarUsuario = async (req: Request, res: Response) => {
       tx,
     );
 
-    return { usuario: actualizado, impacto };
+    return {
+      usuario: actualizado,
+      impacto: {
+        completadas: auditorias.impacto.historico.completadas,
+        vencidas: auditorias.impacto.historico.vencidas,
+        reasignadas: auditorias.reasignadas,
+        pendientes: auditorias.pendientes,
+        responsabilidades,
+      },
+    };
   });
 
   responder(res, usuario);

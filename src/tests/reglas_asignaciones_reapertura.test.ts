@@ -8,6 +8,11 @@ import type { PrismaTransaction } from '../db';
 import { clasificarAsignacionParaReasignacion, obtenerAuditorAnterior, obtenerPendientesGlobalesDeAsignacion } from '../modules/asignaciones/servicio_reasignacion';
 import { areaEsAuditableEnPeriodo } from '../modules/areas/servicio_vigencia_area';
 import { esquemaConfirmarAutoasignacion } from '../modules/asignaciones/zod';
+import {
+  aplicarResolucionesResponsabilidadUsuario,
+  validarCruceResponsablesAuditores,
+  validarSnapshotAsignaciones,
+} from '../modules/usuarios/servicio_impacto_usuario';
 
 describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
 
@@ -65,6 +70,82 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
     expect(areaEsAuditableEnPeriodo(activa, 2026, 10, 15)).toBe(false);
     expect(areaEsAuditableEnPeriodo({ ...activa, activo: false }, 2026, 9, 15)).toBe(true);
     expect(areaEsAuditableEnPeriodo({ ...activa, auditableHasta: new Date(2026, 11, 31) }, 2027, 1, 15)).toBe(false);
+  });
+
+  test('la resolución de baja impide elegir a la misma persona como responsable y auditor del área', () => {
+    expect(() => validarCruceResponsablesAuditores(
+      [{ relacionId: 1, areaId: 5, accion: 'REEMPLAZAR', nuevoResponsableId: 20 }],
+      [{ clave: '5:2026:9', asignacionIds: [1], accion: 'REASIGNAR', nuevoAuditorId: 20 }],
+    )).toThrow('responsable y auditor');
+
+    expect(() => validarCruceResponsablesAuditores(
+      [{ relacionId: 1, areaId: 5, accion: 'SIN_REEMPLAZO', nuevoResponsableId: null }],
+      [{ clave: '5:2026:9', asignacionIds: [1], accion: 'REASIGNAR', nuevoAuditorId: 20 }],
+    )).not.toThrow();
+  });
+
+  test('la confirmación detecta asignaciones cambiadas por otro administrador', () => {
+    expect(() => validarSnapshotAsignaciones([10, 11], [10, 11])).not.toThrow();
+    expect(() => validarSnapshotAsignaciones([10, 12], [10, 11])).toThrow('No se sobrescribió ningún cambio');
+  });
+
+  test('la baja permite retirar al único responsable sin reemplazo', async () => {
+    const eliminadas: number[] = [];
+    const tx = {
+      usuarioArea: {
+        delete: async ({ where }: any) => {
+          eliminadas.push(where.id);
+          return { id: where.id };
+        },
+        upsert: async () => ({}),
+      },
+      registroAuditoria: { create: async () => ({}) },
+    } as unknown as PrismaTransaction;
+    const impacto = {
+      responsabilidades: [{ relacionId: 7, area: { id: 5 }, candidatos: [] }],
+    } as any;
+
+    const resultado = await aplicarResolucionesResponsabilidadUsuario(
+      tx,
+      10,
+      [{ relacionId: 7, areaId: 5, accion: 'SIN_REEMPLAZO', nuevoResponsableId: null }],
+      impacto,
+      1,
+    );
+
+    expect(eliminadas).toEqual([7]);
+    expect(resultado).toEqual({ reemplazadas: 0, sinReemplazo: 1 });
+  });
+
+  test('la baja puede reemplazar una responsabilidad y elimina la relación anterior', async () => {
+    const operaciones: string[] = [];
+    const tx = {
+      usuarioArea: {
+        upsert: async ({ create }: any) => {
+          operaciones.push(`crear:${create.usuarioId}:${create.areaId}`);
+          return create;
+        },
+        delete: async ({ where }: any) => {
+          operaciones.push(`eliminar:${where.id}`);
+          return { id: where.id };
+        },
+      },
+      registroAuditoria: { create: async () => ({}) },
+    } as unknown as PrismaTransaction;
+    const impacto = {
+      responsabilidades: [{ relacionId: 7, area: { id: 5 }, candidatos: [{ id: 20 }] }],
+    } as any;
+
+    const resultado = await aplicarResolucionesResponsabilidadUsuario(
+      tx,
+      10,
+      [{ relacionId: 7, areaId: 5, accion: 'REEMPLAZAR', nuevoResponsableId: 20 }],
+      impacto,
+      1,
+    );
+
+    expect(operaciones).toEqual(['crear:20:5', 'eliminar:7']);
+    expect(resultado).toEqual({ reemplazadas: 1, sinReemplazo: 0 });
   });
 
   test('1. P1 vencida + P2 realizada (Juan) -> reabrir P1 con Pedro asigna Pedro a P1 y respeta Juan en P2', async () => {
@@ -127,6 +208,7 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
           Object.assign(asignacionMensualActualizada, args.create);
           return { id: 50, ...args.create };
         },
+        findUniqueOrThrow: async () => ({ id: 50 }),
       },
       registroAuditoria: {
         create: async () => ({}),
@@ -146,6 +228,81 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
 
     // P2 realizada se mantiene con Juan (10) e inmutable
     expect(objetivoP2.asignacionesAuditoria[0].auditorId).toBe(10);
+  });
+
+  test('reabrir P1 vencido SIN AsignacionAuditoria previa crea la primera asignación con el auditor mensual', async () => {
+    const objetivoP1SinAsig = {
+      id: 300,
+      areaId: 10,
+      anio: 2026,
+      mes: 8,
+      periodo: 1,
+      iniciaEn: new Date(2026, 7, 1),
+      terminaEn: new Date(2026, 7, 15),
+      envioResultado: null,
+      enviosAuditoria: [],
+      asignacionesAuditoria: [],
+    };
+
+    let asignacionCreada: any = null;
+
+    const mockTx = {
+      asignacionAuditoria: {
+        findUnique: async () => null,
+        create: async (args: any) => {
+          asignacionCreada = args.data;
+          return { id: 888, ...args.data, auditor: { id: 11, nombre: 'Fernando Castro' } };
+        },
+        update: async () => ({}),
+      },
+      objetivoAuditoria: {
+        findUniqueOrThrow: async () => objetivoP1SinAsig,
+      },
+      asignacionMensual: {
+        findUnique: async () => ({ id: 2, auditorId: 11, auditor: { id: 11, nombre: 'Fernando Castro' } }),
+      },
+      registroAuditoria: { create: async () => ({}) },
+    } as unknown as PrismaTransaction;
+
+    const res = await reabrirAsignacionEnTransaccion(
+      mockTx,
+      null,
+      { motivo: 'Apertura extemporánea', objetivoAuditoriaId: 300 },
+      1,
+    );
+
+    expect(res.id).toBe(888);
+    expect(asignacionCreada.auditorId).toBe(11);
+    expect(asignacionCreada.objetivoAuditoriaId).toBe(300);
+    expect(asignacionCreada.estado).toBe(EstadoAsignacionAuditoria.PENDIENTE);
+  });
+
+  test('reabrir P1 vencido sin AsignacionMensual lanza error claro exigiendo asignar auditor mensual', async () => {
+    const objetivoP1SinAsig = {
+      id: 301,
+      areaId: 10,
+      anio: 2026,
+      mes: 8,
+      periodo: 1,
+      iniciaEn: new Date(2026, 7, 1),
+      terminaEn: new Date(2026, 7, 15),
+      envioResultado: null,
+      enviosAuditoria: [],
+      asignacionesAuditoria: [],
+    };
+
+    const mockTx = {
+      asignacionAuditoria: { findUnique: async () => null },
+      objetivoAuditoria: { findUniqueOrThrow: async () => objetivoP1SinAsig },
+      asignacionMensual: { findUnique: async () => null },
+    } as unknown as PrismaTransaction;
+
+    expect(reabrirAsignacionEnTransaccion(
+      mockTx,
+      null,
+      { motivo: 'Intentar sin mensual', objetivoAuditoriaId: 301 },
+      1,
+    )).rejects.toThrow('primero necesitas asignar un auditor mensual');
   });
 
   test('2. P1 vencida + P2 pendiente (Juan) -> reabrir P1 con Pedro actualiza P1 y P2 a Pedro', async () => {
@@ -215,6 +372,10 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
       },
       asignacionMensual: {
         upsert: async (args: { create: Record<string, unknown> }) => ({ id: 50, ...args.create }),
+        findUniqueOrThrow: async () => ({ id: 50 }),
+      },
+      enlaceInvitado: {
+        updateMany: async () => ({ count: 0 }),
       },
       registroAuditoria: {
         create: async () => ({}),

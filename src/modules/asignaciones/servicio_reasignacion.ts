@@ -39,10 +39,15 @@ export const obtenerImpactoAuditorNoEjecutable = async (tx: PrismaTransaction, u
 export const liberarAsignacionesDeAuditorNoEjecutable = async (
   tx: PrismaTransaction,
   usuarioId: number,
-  motivo: 'AUDITOR_INACTIVO' | 'AUDITOR_SIN_ROL_EJECUTABLE',
+  motivo: 'AUDITOR_INACTIVO' | 'AUDITOR_SIN_ROL_EJECUTABLE' | 'AUDITOR_EN_SU_PROPIA_AREA',
+  areaId?: number,
 ) => {
   const asignaciones = await tx.asignacionAuditoria.findMany({
-    where: { auditorId: usuarioId, estado: { not: EstadoAsignacionAuditoria.CANCELADA } },
+    where: {
+      auditorId: usuarioId,
+      estado: { not: EstadoAsignacionAuditoria.CANCELADA },
+      ...(areaId ? { objetivoAuditoria: { areaId } } : {}),
+    },
     include: { objetivoAuditoria: { include: { envioResultado: true, enviosAuditoria: true } } },
   });
   let liberadas = 0;
@@ -58,20 +63,25 @@ export const liberarAsignacionesDeAuditorNoEjecutable = async (
         asignacionMensualId: null,
       },
     });
+    await tx.enlaceInvitado.updateMany({
+      where: { asignacionAuditoriaId: asignacion.id, revocadoEn: null },
+      data: { revocadoEn: new Date() },
+    });
     if (asignacion.asignacionMensualId) mensualesAfectadas.add(asignacion.asignacionMensualId);
     liberadas += 1;
   }
 
-  // Desvincula el historial de la referencia mensual que será reutilizada al reasignar,
-  // sin borrar la fila mensual ni falsificar el auditor de una auditoría completada.
+  // La decisión mensual deja de existir cuando su auditor ya no es válido. El auditor
+  // histórico permanece en cada AsignacionAuditoria protegida.
   if (mensualesAfectadas.size) {
     await tx.asignacionAuditoria.updateMany({
       where: {
         asignacionMensualId: { in: [...mensualesAfectadas] },
-        auditorId: usuarioId,
-        estado: { not: EstadoAsignacionAuditoria.CANCELADA },
       },
       data: { asignacionMensualId: null },
+    });
+    await tx.asignacionMensual.deleteMany({
+      where: { id: { in: [...mensualesAfectadas] }, auditorId: usuarioId },
     });
   }
   return { liberadas };
