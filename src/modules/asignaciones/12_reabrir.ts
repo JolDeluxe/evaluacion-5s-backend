@@ -6,6 +6,7 @@ import { calcularCierreConGracia, sumarDiasHabiles, tieneEnvioResultadoValido } 
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
+import { bloquearObjetivoAuditoria } from './helper';
 import { esquemaReabrirAsignacion } from './zod';
 
 const asignacionActiva = <T extends { estado: EstadoAsignacionAuditoria }>(asignaciones: T[]) => (
@@ -28,7 +29,7 @@ export const reabrirAsignacion = async (req: Request, res: Response) => {
 export const reabrirAsignacionEnTransaccion = async (
   tx: PrismaTransaction,
   id: number | null,
-  body: { motivo: string; reabiertaHasta?: Date; auditorMensualId?: number; objetivoAuditoriaId?: number },
+  body: { motivo: string; reabiertaHasta?: Date; auditorMensualId?: number; expectedAuditorId?: number | null; objetivoAuditoriaId?: number },
   usuarioId: number,
 ) => {
   let objetivoAuditoriaId = body.objetivoAuditoriaId ?? null;
@@ -108,32 +109,64 @@ export const reabrirAsignacionEnTransaccion = async (
     }).catch(() => null);
   };
 
-  // Obtener AsignacionMensual para el área/año/mes
-  let asignacionMensual = await buscarMensual();
+  const asignacionMensual = await buscarMensual();
+  let auditorDefinitivoId = asignacionMensual?.auditorId ?? null;
 
-  // Si se proporciona auditorMensualId en el payload, actualizar AsignacionMensual
-  if (body.auditorMensualId) {
-    const { guardarAsignacionMensual } = await import('./programacion_mensual');
-    await guardarAsignacionMensual(tx, {
-      areaId: objetivo.areaId,
-      anio: objetivo.anio,
-      mes: objetivo.mes,
-      auditorMensualId: body.auditorMensualId,
-      asignadoPorId: usuarioId,
-    });
-    asignacionMensual = await buscarMensual();
+  if (body.expectedAuditorId !== undefined) {
+    if (auditorDefinitivoId !== body.expectedAuditorId) {
+      throw conflicto('La asignación mensual del área fue modificada por otro administrador. Actualiza la información antes de reabrir.');
+    }
   }
 
-  const auditorDefinitivoId = asignacionMensual?.auditorId ?? body.auditorMensualId ?? asignacionExistente?.auditorId ?? null;
+  // CASO ESPECIAL: Si no existe auditor mensual asignado para el área/año/mes
+  if (!auditorDefinitivoId) {
+    if (body.auditorMensualId) {
+      const { guardarAsignacionMensual } = await import('./programacion_mensual');
+      await guardarAsignacionMensual(tx, {
+        areaId: objetivo.areaId,
+        anio: objetivo.anio,
+        mes: objetivo.mes,
+        auditorMensualId: body.auditorMensualId,
+        expectedAuditorId: null,
+        asignadoPorId: usuarioId,
+      });
+      const asignacionMensualNueva = await buscarMensual();
+      auditorDefinitivoId = asignacionMensualNueva?.auditorId ?? null;
+    }
+  }
+
   if (!auditorDefinitivoId) {
     throw conflicto('Este periodo puede reabrirse, pero primero necesitas asignar un auditor mensual al área.');
   }
+
+  if (asignacionMensual && body.auditorMensualId && body.auditorMensualId !== auditorDefinitivoId) {
+    throw conflicto('La asignación mensual del área fue modificada por otro administrador. Actualiza la información antes de reabrir.');
+  }
+
+  await bloquearObjetivoAuditoria(tx, objetivo.id);
 
   const reabiertaHasta = body.reabiertaHasta ?? sumarDiasHabiles(ahora, 5);
   if (reabiertaHasta <= ahora) throw conflicto('La fecha de reapertura debe ser futura');
 
   // Cancelar cualquier asignación activa previa para este objetivo específico
-  const asignacionVigenteAnt = asignacionActiva(objetivo.asignacionesAuditoria);
+  const asignacionesAuditoriaActuales = await tx.asignacionAuditoria.findMany({
+    where: { objetivoAuditoriaId: objetivo.id },
+    include: { auditor: true },
+    orderBy: { creadoEn: 'desc' },
+  });
+  const asignacionVigenteAnt = asignacionActiva(asignacionesAuditoriaActuales);
+
+  // Si ya existía una asignación reabierta vigente para el mismo auditor, no duplicar ni re-extender concurrentemente
+  if (
+    asignacionVigenteAnt
+    && asignacionVigenteAnt.auditorId === auditorDefinitivoId
+    && asignacionVigenteAnt.estado === EstadoAsignacionAuditoria.PENDIENTE
+    && asignacionVigenteAnt.reabiertaHasta
+    && new Date(asignacionVigenteAnt.reabiertaHasta) > ahora
+  ) {
+    return asignacionVigenteAnt;
+  }
+
   if (asignacionVigenteAnt && asignacionVigenteAnt.estado !== EstadoAsignacionAuditoria.COMPLETADA) {
     await tx.asignacionAuditoria.update({
       where: { id: asignacionVigenteAnt.id },

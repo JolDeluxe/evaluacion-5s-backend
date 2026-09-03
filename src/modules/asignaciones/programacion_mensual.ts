@@ -6,10 +6,10 @@ import {
   TipoArea,
 } from '../../generated/prisma/enums';
 import { conflicto, solicitudInvalida } from '../../utils/errores';
-import { calcularCierreConGracia, construirDetalleAdminPeriodo, sumarDiasHabiles } from '../../utils/periodos';
+import { calcularCierreConGracia, construirDetalleAdminPeriodo } from '../../utils/periodos';
 import { areaEsAuditableEnPeriodo } from '../areas/servicio_vigencia_area';
 import { registrarAuditoria } from '../registros_auditoria/helper';
-import { validarAuditorAsignable } from './helper';
+import { bloquearObjetivoAuditoria, validarAuditorAsignable } from './helper';
 import { obtenerAuditorAnterior, puedeUsuarioAuditar } from './servicio_reasignacion';
 export const CORTE_P1 = 1;
 export const CORTE_P2 = 2;
@@ -371,7 +371,15 @@ const aplicarAsignacionPeriodo = async (
   asignadoPorId: number,
   soloPendientes = false,
 ) => {
-  const asignacion = asignacionVigente(objetivo.asignacionesAuditoria);
+  await bloquearObjetivoAuditoria(tx, objetivo.id);
+
+  const asignacionesAuditoriaActuales = await tx.asignacionAuditoria.findMany({
+    where: { objetivoAuditoriaId: objetivo.id },
+    include: { auditor: { select: { activo: true, rol: true } } },
+    orderBy: { creadoEn: 'desc' },
+  });
+
+  const asignacion = asignacionVigente(asignacionesAuditoriaActuales);
   const ahora = new Date();
   const detalle = construirDetalleAdminPeriodo(objetivo, ahora, asignacion?.reabiertaHasta ?? null);
   const estaRealizada = detalle.realizada || asignacion?.estado === EstadoAsignacionAuditoria.COMPLETADA || Boolean(asignacion?.completadoEn);
@@ -391,8 +399,32 @@ const aplicarAsignacionPeriodo = async (
     return { actualizada: false, protegida: false, omitida: true, asignacion };
   }
 
+  // REGLA CLAVE: Los periodos vencidos NO se reabren automáticamente al cambiar el auditor mensual.
+  // Si el periodo está vencido y no se ha reabierto manualmente antes:
+  if (estaVencida) {
+    // Si existía una asignación previa activa (ej: Joel), cancelarla para que Joel pierda la responsabilidad activa
+    if (asignacion && asignacion.estado !== EstadoAsignacionAuditoria.CANCELADA) {
+      await tx.asignacionAuditoria.update({
+        where: { id: asignacion.id },
+        data: {
+          estado: EstadoAsignacionAuditoria.CANCELADA,
+          canceladoEn: ahora,
+          motivoCancelacion: 'Cambio de asignacion mensual',
+        },
+      });
+      await tx.enlaceInvitado.updateMany({
+        where: { asignacionAuditoriaId: asignacion.id, revocadoEn: null },
+        data: { revocadoEn: ahora },
+      });
+    }
+    // El periodo permanece VENCIDO/NO REALIZADO sin crear una nueva AsignacionAuditoria ejecutable para Daniela.
+    return { actualizada: false, protegida: false, asignacion: null };
+  }
+
   await validarAuditorAsignable(tx, auditorId, objetivo.id);
-  const reabiertaHasta = estaVencida ? sumarDiasHabiles(ahora, 5) : null;
+
+  // Mantener reabiertaHasta solo si ya existía una reapertura manual previa aún vigente
+  const reabiertaHasta = asignacion?.reabiertaHasta && new Date(asignacion.reabiertaHasta) > ahora ? asignacion.reabiertaHasta : null;
   const venceEn = reabiertaHasta ?? calcularCierreConGracia(objetivo.terminaEn);
 
   const datosAsignacion = {
@@ -403,9 +435,9 @@ const aplicarAsignacionPeriodo = async (
     asignadoEn: ahora,
     venceEn,
     reabiertaHasta,
-    reabiertaEn: estaVencida ? ahora : null,
-    reabiertaPorId: estaVencida ? asignadoPorId : null,
-    motivoReapertura: estaVencida ? 'Asignación mensual automática de periodo vencido' : null,
+    reabiertaEn: asignacion?.reabiertaEn ?? null,
+    reabiertaPorId: asignacion?.reabiertaPorId ?? null,
+    motivoReapertura: asignacion?.motivoReapertura ?? null,
     motivoExcepcion: null,
   };
 
@@ -424,23 +456,12 @@ const aplicarAsignacionPeriodo = async (
   }
 
   if (asignacion.auditorId === auditorId) {
-    // Si ya era del mismo auditor y está vencida pero no reabierta, habilitarla
-    const debeReabrirExistente = estaVencida && (!asignacion.reabiertaHasta || new Date(asignacion.reabiertaHasta) <= ahora);
-    const nuevaReaperturaHasta = debeReabrirExistente ? sumarDiasHabiles(ahora, 5) : asignacion.reabiertaHasta;
-
     const actualizada = await tx.asignacionAuditoria.update({
       where: { id: asignacion.id },
       data: {
         asignacionMensualId,
         motivoExcepcion: null,
-        venceEn: nuevaReaperturaHasta ?? venceEn,
-        ...(debeReabrirExistente ? {
-          estado: EstadoAsignacionAuditoria.PENDIENTE,
-          reabiertaHasta: nuevaReaperturaHasta,
-          reabiertaEn: ahora,
-          reabiertaPorId: asignadoPorId,
-          motivoReapertura: 'Reapertura automática por confirmación de auditor mensual',
-        } : {}),
+        venceEn,
       },
     });
     return { actualizada: true, protegida: false, asignacion: actualizada };
@@ -481,6 +502,7 @@ export const guardarAsignacionMensual = async (
     mes: number;
     auditorMensualId: number;
     asignadoPorId: number;
+    expectedAuditorId?: number | null;
     soloSiSinAuditor?: boolean;
     soloPendientes?: boolean;
   },
@@ -488,6 +510,19 @@ export const guardarAsignacionMensual = async (
   const objetivos = await obtenerObjetivosAreaMes(tx, params.areaId, params.anio, params.mes);
   if (!objetivos.length) throw conflicto('El area no esta programada para este mes');
   await validarAuditorMensualArea(tx, params.areaId, params.auditorMensualId);
+
+  const asignacionMensualExistente = await tx.asignacionMensual.findUnique({
+    where: { areaId_anio_mes: { areaId: params.areaId, anio: params.anio, mes: params.mes } },
+    include: { auditor: { select: { nombre: true } } },
+  });
+
+  const auditorActualEnBD = asignacionMensualExistente?.auditorId ?? null;
+
+  if (params.expectedAuditorId !== undefined) {
+    if (auditorActualEnBD !== params.expectedAuditorId) {
+      throw conflicto('La asignación mensual de esta área fue modificada por otro administrador. Actualiza la información antes de guardar.');
+    }
+  }
 
   const tienePendiente = objetivos.some((objetivo) => {
     const asignacion = asignacionVigente(objetivo.asignacionesAuditoria);
@@ -499,6 +534,9 @@ export const guardarAsignacionMensual = async (
   if (params.soloSiSinAuditor && !tienePendiente) {
     return { actualizadas: 0, omitida: true };
   }
+
+  const auditorAnteriorId = asignacionMensualExistente?.auditorId ?? null;
+  const auditorAnteriorNombre = asignacionMensualExistente?.auditor?.nombre ?? null;
 
   const asignacionMensual = await tx.asignacionMensual.upsert({
     where: { areaId_anio_mes: { areaId: params.areaId, anio: params.anio, mes: params.mes } },
@@ -516,6 +554,33 @@ export const guardarAsignacionMensual = async (
       asignadoEn: new Date(),
     },
   });
+
+  if (auditorAnteriorId !== params.auditorMensualId) {
+    const auditorNuevo = await tx.usuario.findUnique({
+      where: { id: params.auditorMensualId },
+      select: { id: true, nombre: true },
+    });
+    await registrarAuditoria({
+      usuarioId: params.asignadoPorId,
+      accion: auditorAnteriorId ? 'CAMBIAR_AUDITOR_MENSUAL' : 'CREAR_ASIGNACION_MENSUAL',
+      tipoEntidad: 'AsignacionMensual',
+      idEntidad: asignacionMensual.id,
+      datosAnteriores: {
+        areaId: params.areaId,
+        anio: params.anio,
+        mes: params.mes,
+        auditorId: auditorAnteriorId,
+        auditorNombre: auditorAnteriorNombre,
+      },
+      datosNuevos: {
+        areaId: params.areaId,
+        anio: params.anio,
+        mes: params.mes,
+        auditorId: params.auditorMensualId,
+        auditorNombre: auditorNuevo?.nombre ?? null,
+      },
+    }, tx);
+  }
 
   let actualizadas = 0;
   let protegidas = 0;

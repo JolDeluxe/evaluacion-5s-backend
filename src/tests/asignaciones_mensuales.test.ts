@@ -80,15 +80,22 @@ class FakeTx {
     findFirst: async () => null,
   };
 
+  $executeRaw = async () => 1;
+
   usuario = {
     findMany: async ({ where }: any) => this.usuarios
       .filter((usuario) => usuario.activo === where.activo && where.rol.in.includes(usuario.rol))
       .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')),
+    findUnique: async ({ where }: any) => this.usuarios.find((u) => u.id === where.id) ?? null,
     findUniqueOrThrow: async ({ where }: any) => {
       const usuario = this.usuarios.find((actual) => actual.id === where.id);
       if (!usuario) throw new Error('Usuario no encontrado');
       return usuario;
     },
+  };
+
+  enlaceInvitado = {
+    updateMany: async () => ({ count: 0 }),
   };
 
   usuarioArea = {
@@ -139,6 +146,20 @@ class FakeTx {
         ...asignacion,
         auditor: this.usuarios.find((usuario) => usuario.id === asignacion.auditorId),
       })),
+    findUnique: async ({ where }: any) => {
+      if (where?.areaId_anio_mes) {
+        const key = where.areaId_anio_mes;
+        const asignacion = this.asignacionesMensuales.find((actual) => (
+          actual.areaId === key.areaId && actual.anio === key.anio && actual.mes === key.mes
+        ));
+        if (!asignacion) return null;
+        return {
+          ...asignacion,
+          auditor: this.usuarios.find((u) => u.id === asignacion.auditorId),
+        };
+      }
+      return null;
+    },
     upsert: async ({ where, update, create }: any) => {
       const key = where.areaId_anio_mes;
       let asignacion = this.asignacionesMensuales.find((actual) => (
@@ -168,17 +189,22 @@ class FakeTx {
   };
 
   asignacionAuditoria = {
-    findMany: async ({ where }: any) => this.asignacionesAuditoria
-      .filter((asignacion) => (
-        asignacion.auditorId === where.auditorId
-        && asignacion.estado !== where.estado.not
-        && (!where.objetivoAuditoria?.areaId
-          || this.objetivos.find((objetivo) => objetivo.id === asignacion.objetivoAuditoriaId)?.areaId === where.objetivoAuditoria.areaId)
-      ))
+    findMany: async ({ where = {} }: any) => this.asignacionesAuditoria
+      .filter((asignacion) => {
+        if (where.objetivoAuditoriaId && asignacion.objetivoAuditoriaId !== where.objetivoAuditoriaId) return false;
+        if (where.auditorId && asignacion.auditorId !== where.auditorId) return false;
+        if (where.estado?.not && asignacion.estado === where.estado.not) return false;
+        if (where.objetivoAuditoria?.areaId) {
+          const obj = this.objetivos.find((o) => o.id === asignacion.objetivoAuditoriaId);
+          if (obj?.areaId !== where.objetivoAuditoria.areaId) return false;
+        }
+        return true;
+      })
       .map((asignacion) => ({
         ...asignacion,
+        auditor: this.usuarios.find((u) => u.id === asignacion.auditorId),
         objetivoAuditoria: this.decorateObjetivo(
-          this.objetivos.find((objetivo) => objetivo.id === asignacion.objetivoAuditoriaId),
+          this.objetivos.find((o) => o.id === asignacion.objetivoAuditoriaId),
         ),
       })),
     create: async ({ data }: any) => {
@@ -235,9 +261,7 @@ class FakeTx {
     },
   };
 
-  enlaceInvitado = {
-    updateMany: async () => ({ count: 0 }),
-  };
+
 
   registroAuditoria = {
     create: async ({ data }: any) => {
@@ -563,6 +587,8 @@ describe('Asignacion mensual simplificada', () => {
     const tx = new FakeTx({ soloArea1: true });
     await prepararMes(tx, 2026, 1);
     const p2 = tx.objetivosDeAreaMes(1, 2026, 1)[1];
+    await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 1, auditorMensualId: 10, asignadoPorId: 1 });
+
     const asignacion = await tx.asignacionAuditoria.create({
       data: {
         objetivoAuditoriaId: p2.id,
@@ -580,6 +606,32 @@ describe('Asignacion mensual simplificada', () => {
 
     expect(reabierta.auditorId).toBe(10);
     expect(reabierta.estado).toBe(EstadoAsignacionAuditoria.PENDIENTE);
+  });
+
+  test('reabrir P1 vencida de Joel sin AsignacionMensual responde con CONFLICTO y NO crea asignación ni se le asigna a Joel', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    await prepararMes(tx, 2026, 8);
+    const p1 = tx.objetivos.find((o) => o.periodo === 1);
+
+    // Existe asignación histórica/vencida de Joel (10) pero NO existe AsignacionMensual
+    const asignacionJoel = await tx.asignacionAuditoria.create({
+      data: {
+        objetivoAuditoriaId: p1.id,
+        auditorId: 10,
+        asignadoPorId: 1,
+        estado: EstadoAsignacionAuditoria.VENCIDA,
+        venceEn: new Date(2026, 7, 15),
+      },
+    });
+
+    // Intentar reabrir sin que exista AsignacionMensual
+    expect(reabrirAsignacionEnTransaccion(tx as any, asignacionJoel.id, {
+      motivo: 'Intento de reapertura sin auditor mensual',
+    }, 1)).rejects.toThrow('primero necesitas asignar un auditor mensual al área');
+
+    // Confirmar que NO se creó ninguna asignación ejecutable activa para Joel
+    const asignacionesVigentes = tx.asignacionesAuditoria.filter((a) => a.objetivoAuditoriaId === p1.id && a.estado === 'PENDIENTE');
+    expect(asignacionesVigentes.length).toBe(0);
   });
 
   test('octubre es independiente de septiembre', async () => {
@@ -602,7 +654,7 @@ describe('Asignacion mensual simplificada', () => {
 
   describe('Sincronización Automática de Asignación Mensual', () => {
 
-    test('1. P1 vencida sin AsignacionAuditoria + P2 pendiente + nuevo auditor Fernando -> P1 Fernando reabierta, P2 Fernando pendiente', async () => {
+    test('1. P1 vencida sin AsignacionAuditoria + P2 pendiente + nuevo auditor Fernando -> P1 NO se reabre automáticamente; P2 Fernando pendiente', async () => {
       const tx = new FakeTx({ soloArea1: true });
       await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
 
@@ -622,8 +674,8 @@ describe('Asignacion mensual simplificada', () => {
       const asigP1 = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p1.id && a.estado !== 'CANCELADA');
       const asigP2 = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p2.id && a.estado !== 'CANCELADA');
 
-      expect(asigP1.auditorId).toBe(11);
-      expect(asigP1.reabiertaHasta).toBeDefined();
+      // P1 vencida NO debe recibir una AsignacionAuditoria ejecutable reabierta automáticamente
+      expect(asigP1).toBeUndefined();
       expect(asigP2.auditorId).toBe(11);
       expect(asigP2.estado).toBe('PENDIENTE');
     });
@@ -631,9 +683,10 @@ describe('Asignacion mensual simplificada', () => {
     test('2. P1 Joel COMPLETADA + P2 Joel pendiente + mensual cambia a Andrea -> P1 Joel intacta, P2 Andrea', async () => {
       const tx = new FakeTx({ soloArea1: true });
       await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
+      const p1 = tx.objetivos.find((o) => o.periodo === 1);
+      p1.terminaEn = date(2099, 1, 1);
       await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 10, asignadoPorId: 1 });
 
-      const p1 = tx.objetivos.find((o) => o.periodo === 1);
       const asigP1 = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p1.id);
       asigP1.estado = 'COMPLETADA';
       asigP1.completadoEn = new Date();
@@ -648,12 +701,13 @@ describe('Asignacion mensual simplificada', () => {
       expect(asigP2.auditorId).toBe(11);
     });
 
-    test('3. P1 Joel vencida + P2 Joel pendiente + mensual cambia a Fernando -> Joel conservado, P1 Fernando reabierta, P2 Fernando', async () => {
+    test('3. P1 Joel vencida + P2 Joel pendiente + mensual cambia a Fernando -> Joel cancelado, P1 permanece cerrada (NO reabierta), P2 Fernando', async () => {
       const tx = new FakeTx({ soloArea1: true });
       await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
+      const p1 = tx.objetivos.find((o) => o.periodo === 1);
+      p1.terminaEn = date(2099, 1, 1);
       await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 10, asignadoPorId: 1 });
 
-      const p1 = tx.objetivos.find((o) => o.periodo === 1);
       p1.terminaEn = new Date(2026, 7, 10);
       const asigP1Joel = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p1.id);
       asigP1Joel.estado = 'VENCIDA';
@@ -662,8 +716,62 @@ describe('Asignacion mensual simplificada', () => {
 
       expect(asigP1Joel.estado).toBe('CANCELADA');
       const asigP1Fernando = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p1.id && a.estado === 'PENDIENTE');
-      expect(asigP1Fernando.auditorId).toBe(11);
-      expect(asigP1Fernando.reabiertaHasta).toBeDefined();
+      // P1 NO se reabre en automático
+      expect(asigP1Fernando).toBeUndefined();
+
+      // Si el administrador reabre explícitamente P1 después:
+      const reabierta = await reabrirAsignacionEnTransaccion(tx as any, null, {
+        motivo: 'Reapertura explícita del administrador',
+        objetivoAuditoriaId: p1.id,
+      }, 1);
+
+      expect(reabierta.auditorId).toBe(11);
+      expect(reabierta.estado).toBe('PENDIENTE');
+      expect(reabierta.reabiertaHasta).toBeDefined();
+    });
+
+    test('4. OCC: Guardar con expectedAuditorId desactualizado responde con conflicto (409)', async () => {
+      const tx = new FakeTx({ soloArea1: true });
+      await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
+      await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 10, asignadoPorId: 1 });
+
+      // Admin B cambia a Andrea (11)
+      await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 11, asignadoPorId: 1 });
+
+      // Admin A intenta guardar con expectedAuditorId = 10 (Joel)
+      expect(guardarAsignacionMensual(tx as any, {
+        areaId: 1,
+        anio: 2026,
+        mes: 8,
+        auditorMensualId: 12,
+        expectedAuditorId: 10,
+        asignadoPorId: 1,
+      })).rejects.toThrow('modificada por otro administrador');
+    });
+
+    test('5. OCC cuando el área estaba SIN AUDITOR: expectedAuditorId = null detecta asignación intermedia de otro admin (409)', async () => {
+      const tx = new FakeTx({ soloArea1: true });
+      await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
+
+      // Admin B asigna a Pedro (11) partiendo de Sin Auditor
+      await guardarAsignacionMensual(tx as any, {
+        areaId: 1,
+        anio: 2026,
+        mes: 8,
+        auditorMensualId: 11,
+        expectedAuditorId: null,
+        asignadoPorId: 1,
+      });
+
+      // Admin A intenta guardar asignando a Juan (10) enviando su snapshot viejo (expectedAuditorId = null)
+      expect(guardarAsignacionMensual(tx as any, {
+        areaId: 1,
+        anio: 2026,
+        mes: 8,
+        auditorMensualId: 10,
+        expectedAuditorId: null,
+        asignadoPorId: 1,
+      })).rejects.toThrow('modificada por otro administrador');
     });
 
     test('6. Guardar el mismo auditor dos veces -> no duplicados', async () => {
@@ -693,39 +801,143 @@ describe('Asignacion mensual simplificada', () => {
       expect(tx.asignacionesMensuales).toEqual(asignacionesMensualesIniciales);
     });
 
-    test('8. Guardar el mismo auditor mensual reconcilia periodos legacy faltantes sin duplicados', async () => {
+    test('CASO A: P1 vencida Joel + P2 pendiente Joel + Sin AsignacionMensual -> Reabrir seleccionando Daniela crea AsignacionMensual Daniela, reabre P1 Daniela y pasa P2 Daniela', async () => {
+      const tx = new FakeTx({ soloArea1: true });
+      await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
+      const p1 = tx.objetivos.find((o) => o.periodo === 1);
+      const p2 = tx.objetivos.find((o) => o.periodo === 2);
+
+      // Asignación inicial P1 vencida de Joel (10) y P2 pendiente de Joel (10) sin AsignacionMensual
+      p1.terminaEn = new Date(2026, 7, 10);
+      const asigP1Joel = await tx.asignacionAuditoria.create({
+        data: { objetivoAuditoriaId: p1.id, auditorId: 10, asignadoPorId: 1, estado: 'VENCIDA', venceEn: new Date(2026, 7, 10) },
+      });
+      await tx.asignacionAuditoria.create({
+        data: { objetivoAuditoriaId: p2.id, auditorId: 10, asignadoPorId: 1, estado: 'PENDIENTE', venceEn: new Date(2026, 7, 25) },
+      });
+
+      // Admin pulsa Reabrir P1 seleccionando Daniela (11)
+      const reabierta = await reabrirAsignacionEnTransaccion(tx as any, asigP1Joel.id, {
+        motivo: 'Asignar y reabrir P1',
+        auditorMensualId: 11,
+        expectedAuditorId: null,
+      }, 1);
+
+      // AsignacionMensual debe ser Daniela (11)
+      const mensual = tx.asignacionesMensuales.find((m) => m.areaId === 1 && m.anio === 2026 && m.mes === 8);
+      expect(mensual.auditorId).toBe(11);
+
+      // P1 reabierta para Daniela (11)
+      expect(reabierta.auditorId).toBe(11);
+      expect(reabierta.estado).toBe('PENDIENTE');
+
+      // P2 pendiente pasa a Daniela (11)
+      const asigP2Daniela = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p2.id && a.estado === 'PENDIENTE');
+      expect(asigP2Daniela.auditorId).toBe(11);
+
+      // P1 Joel permanece histórico
+      expect(asigP1Joel.estado).toBe('CANCELADA');
+    });
+
+    test('CASO B: Reabrir sin auditor con expectedAuditorId = null detecta asignación intermedia de otro admin (409)', async () => {
+      const tx = new FakeTx({ soloArea1: true });
+      await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
+      const p1 = tx.objetivos.find((o) => o.periodo === 1);
+      p1.terminaEn = new Date(2026, 7, 10);
+      const asigP1Joel = await tx.asignacionAuditoria.create({
+        data: { objetivoAuditoriaId: p1.id, auditorId: 10, asignadoPorId: 1, estado: 'VENCIDA', venceEn: new Date(2026, 7, 10) },
+      });
+
+      // Admin B asigna a Pedro (11) como auditor mensual en segundo plano
+      await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 11, asignadoPorId: 1 });
+
+      // Admin A con snapshot viejo (expectedAuditorId = null) intenta asignar Juan (10) y reabrir
+      expect(reabrirAsignacionEnTransaccion(tx as any, asigP1Joel.id, {
+        motivo: 'Intento desactualizado',
+        auditorMensualId: 10,
+        expectedAuditorId: null,
+      }, 1)).rejects.toThrow('modificada por otro administrador');
+
+      // Pedro se mantiene como auditor mensual
+      const mensual = tx.asignacionesMensuales.find((m) => m.areaId === 1 && m.anio === 2026 && m.mes === 8);
+      expect(mensual.auditorId).toBe(11);
+    });
+
+    test('CASO C: Auditor seleccionado inválido produce rollback completo (no mensual, no reapertura)', async () => {
+      const tx = new FakeTx({ soloArea1: true });
+      tx.usuarioArea.findFirst = async () => ({ id: 99 } as any); // El auditor es responsable de su propia área
+
+      const p1 = { id: 100, areaId: 1, anio: 2026, mes: 8, periodo: 1, iniciaEn: new Date(2026, 7, 1), terminaEn: new Date(2026, 7, 10), envioResultado: null, enviosAuditoria: [], asignacionesAuditoria: [] };
+      tx.objetivos.push(p1 as any);
+      const asigP1 = await tx.asignacionAuditoria.create({
+        data: { objetivoAuditoriaId: p1.id, auditorId: 10, asignadoPorId: 1, estado: 'VENCIDA', venceEn: new Date(2026, 7, 10) },
+      });
+
+      const inicialesMensuales = tx.asignacionesMensuales.length;
+
+      // Intentar reabrir asignando a auditor que pertenece a la misma área
+      await expect(reabrirAsignacionEnTransaccion(tx as any, asigP1.id, {
+        motivo: 'Auditor invalido pertenencia area',
+        auditorMensualId: 10,
+        expectedAuditorId: null,
+      }, 1)).rejects.toThrow('no puede');
+
+      // No se creó AsignacionMensual
+      expect(tx.asignacionesMensuales.length).toBe(inicialesMensuales);
+    });
+
+    test('CASO D: Daniela ya es auditor mensual -> Reabrir P1 no requiere selector y reabre para Daniela', async () => {
+      const tx = new FakeTx({ soloArea1: true });
+      await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
+      await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 11, asignadoPorId: 1 });
+      const p1 = tx.objetivos.find((o) => o.periodo === 1);
+      p1.terminaEn = new Date(2026, 7, 10);
+      const asigP1 = await tx.asignacionAuditoria.create({
+        data: { objetivoAuditoriaId: p1.id, auditorId: 10, asignadoPorId: 1, estado: 'VENCIDA', venceEn: new Date(2026, 7, 10) },
+      });
+
+      const reabierta = await reabrirAsignacionEnTransaccion(tx as any, asigP1.id, {
+        motivo: 'Reapertura normal',
+        expectedAuditorId: 11,
+      }, 1);
+
+      expect(reabierta.auditorId).toBe(11);
+      expect(reabierta.estado).toBe('PENDIENTE');
+    });
+
+    test('SEGUNDO ESCENARIO: Joel activo -> cambio mensual a Daniela mantiene P1 cerrada y cancela P2 Joel; reapertura posterior asigna Daniela', async () => {
       const tx = new FakeTx({ soloArea1: true });
       await asegurarProgramacionMensual(tx as any, 2026, 8, 1);
 
-      // Simular dato legacy: AsignacionMensual existe pero P1 venció sin AsignacionAuditoria
-      tx.asignacionesMensuales.push({
-        id: 99,
-        areaId: 1,
-        anio: 2026,
-        mes: 8,
-        auditorId: 11,
-        asignadoPorId: 1,
-        asignadoEn: new Date(),
-      });
       const p1 = tx.objetivos.find((o) => o.periodo === 1);
+      const p2 = tx.objetivos.find((o) => o.periodo === 2);
+      p1.terminaEn = new Date(2099, 1, 1);
+      await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 10, asignadoPorId: 1 });
+
       p1.terminaEn = new Date(2026, 7, 10);
+      const asigP1Joel = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p1.id);
+      asigP1Joel.estado = 'VENCIDA';
 
-      // GET de lectura NO modifica nada
-      await obtenerVistaMensual(tx as any, 2026, 8);
-      expect(tx.asignacionesAuditoria.length).toBe(0);
+      // Cambiar normalmente auditor mensual Joel (10) -> Daniela (11)
+      await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 11, expectedAuditorId: 10, asignadoPorId: 1 });
 
-      // Al guardar explícitamente el mismo auditor mensual se reconcilia P1
-      await guardarAsignacionMensual(tx as any, {
-        areaId: 1,
-        anio: 2026,
-        mes: 8,
-        auditorMensualId: 11,
-        asignadoPorId: 1,
-      });
+      // P1 Joel cancelada/cerrada (no reabierta automáticamente). No existe P1 para Daniela todavía.
+      expect(asigP1Joel.estado).toBe('CANCELADA');
+      const p1DanielaAuto = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p1.id && a.estado === 'PENDIENTE');
+      expect(p1DanielaAuto).toBeUndefined();
 
-      const asigP1 = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p1.id);
-      expect(asigP1.auditorId).toBe(11);
-      expect(asigP1.reabiertaHasta).toBeDefined();
+      // P2 Joel cancelada. P2 Daniela pendiente.
+      const p2Daniela = tx.asignacionesAuditoria.find((a) => a.objetivoAuditoriaId === p2.id && a.estado === 'PENDIENTE');
+      expect(p2Daniela.auditorId).toBe(11);
+
+      // Reabrir explícitamente P1 posteriormente: toma a Daniela (11) desde AsignacionMensual
+      const reabiertaP1 = await reabrirAsignacionEnTransaccion(tx as any, asigP1Joel.id, {
+        motivo: 'Reapertura posterior por admin',
+        expectedAuditorId: 11,
+      }, 1);
+
+      expect(reabiertaP1.auditorId).toBe(11);
+      expect(reabiertaP1.estado).toBe('PENDIENTE');
     });
   });
 });

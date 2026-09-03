@@ -16,6 +16,7 @@ export const esquemaQueryMensual = esquemaMes.extend({
 
 export const esquemaGuardarAsignacionMensual = esquemaMes.extend({
   auditorMensualId: z.number().int().positive(),
+  expectedAuditorId: z.number().int().positive().nullable().optional(),
 });
 
 export const esquemaAutoasignarMensual = esquemaMes;
@@ -43,6 +44,7 @@ export const esquemaReabrirAsignacion = z.object({
   motivo: z.string().trim().min(1).max(2000),
   reabiertaHasta: z.coerce.date().optional(),
   auditorMensualId: z.coerce.number().int().positive().optional(),
+  expectedAuditorId: z.number().int().positive().nullable().optional(),
   objetivoAuditoriaId: z.coerce.number().int().positive().optional(),
 });
 

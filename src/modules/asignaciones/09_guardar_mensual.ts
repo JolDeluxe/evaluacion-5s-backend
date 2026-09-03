@@ -18,6 +18,7 @@ export const guardarAsignacionMensualArea = async (req: Request, res: Response) 
       anio: body.anio,
       mes: body.mes,
       auditorMensualId: body.auditorMensualId,
+      expectedAuditorId: body.expectedAuditorId,
       asignadoPorId: usuarioId,
     });
     const vista = await obtenerVistaMensual(tx, body.anio, body.mes);

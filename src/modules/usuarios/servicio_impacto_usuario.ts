@@ -2,7 +2,7 @@ import type { PrismaTransaction } from '../../db';
 import { EstadoAsignacionAuditoria } from '../../generated/prisma/enums';
 import { conflicto, solicitudInvalida } from '../../utils/errores';
 import { calcularCierreConGracia } from '../../utils/periodos';
-import { validarAuditorAsignable } from '../asignaciones/helper';
+import { bloquearObjetivoAuditoria, validarAuditorAsignable } from '../asignaciones/helper';
 import { obtenerVistaMensual } from '../asignaciones/programacion_mensual';
 import { clasificarAsignacionParaReasignacion } from '../asignaciones/servicio_reasignacion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
@@ -338,6 +338,7 @@ export const aplicarResolucionesAuditoriasUsuario = async (
         pendientes += 1;
         continue;
       }
+      await bloquearObjetivoAuditoria(tx, asignacion.objetivoAuditoriaId);
       const creada = await tx.asignacionAuditoria.create({
         data: {
           asignacionMensualId,

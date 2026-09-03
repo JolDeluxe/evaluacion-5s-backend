@@ -46,3 +46,8 @@ export const puedeUsarAsignacionEjecutable = (
   autenticacion
     && (puedeAdministrar5S(autenticacion.rol) || autenticacion.usuarioId === auditorId),
 );
+
+export const bloquearObjetivoAuditoria = async (tx: PrismaTransaction, objetivoId: number) => {
+  const runner = tx as unknown as { $executeRaw: (query: TemplateStringsArray, ...values: unknown[]) => Promise<unknown> };
+  await runner.$executeRaw`SELECT id FROM objetivos_auditoria WHERE id = ${objetivoId} FOR UPDATE`;
+};
