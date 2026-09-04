@@ -1,9 +1,9 @@
 import type { PrismaTransaction } from '../../db';
 import { EstadoAsignacionAuditoria, RolUsuario } from '../../generated/prisma/enums';
 import { puedeAdministrar5S } from '../../utils/permisos';
-import { derivarSituacionObjetivo, objetivoEsRealizable, SituacionObjetivo } from '../../utils/periodos';
+import { derivarSituacionObjetivo, objetivoEsRealizable, SituacionObjetivo, calcularCierreConGracia } from '../../utils/periodos';
 import { obtenerEjecutablesUsuario } from '../asignaciones/01_listar';
-import { asegurarProgramacionMensual, obtenerVistaMensual, puedeAsegurarProgramacionMensual } from '../asignaciones/programacion_mensual';
+import { asegurarProgramacionMensual, obtenerVistaMensual, puedeAsegurarProgramacionMensual, periodoMensual } from '../asignaciones/programacion_mensual';
 import { obtenerResultadosAreas } from '../resultados/servicio';
 
 const MESES = [
@@ -260,12 +260,15 @@ export const obtenerDashboardInicio = async (
       };
     });
 
+    const periodosResumen = construirPeriodosResumen(vistaMensual.filas, true, autenticacion.usuarioId, anioActual, mesActual, ahora);
+
     return {
       rol: autenticacion.rol,
       mesControl: `${anioActual}-${String(mesActual).padStart(2, '0')}`,
       etiquetaMesControl: `${MESES[mesActual - 1]} ${anioActual}`,
       etiquetaMesAnterior: `${MESES[mesPrev.mes - 1]} ${mesPrev.anio}`,
       mostrarMesAnterior,
+      periodosResumen,
       resumen: {
         asignadas,
         pendientes,
@@ -299,10 +302,13 @@ export const obtenerDashboardInicio = async (
     }
   }
 
+  const periodosResumen = construirPeriodosResumen(vistaMensual.filas, false, autenticacion.usuarioId, anioActual, mesActual, ahora);
+
   return {
     rol: autenticacion.rol,
     mesControl: `${anioActual}-${String(mesActual).padStart(2, '0')}`,
     etiquetaMesControl: `${MESES[mesActual - 1]} ${anioActual}`,
+    periodosResumen,
     resumen: {
       asignadas: auditorAsignadas,
       pendientes: auditorPendientes,
@@ -312,4 +318,90 @@ export const obtenerDashboardInicio = async (
     departamentosCargo,
     misPendientesResumen,
   };
+};
+
+const MESES_NOMBRES_MIN = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+];
+
+const construirPeriodosResumen = (
+  filas: Awaited<ReturnType<typeof obtenerVistaMensual>>['filas'],
+  esAdmin: boolean,
+  usuarioId: number,
+  anio: number,
+  mes: number,
+  ahora = new Date(),
+) => {
+  return ([1, 2] as const).map((periodoNum) => {
+    const pMeta = periodoMensual(anio, mes, periodoNum);
+    const pKey = periodoNum === 1 ? 'p1' : 'p2';
+    const cierreGracia = calcularCierreConGracia(pMeta.terminaEn);
+
+    let estadoTemporal: 'AUN_NO_INICIA' | 'EN_CURSO' | 'ATRASADO' | 'FINALIZADO' = 'AUN_NO_INICIA';
+    if (ahora < pMeta.iniciaEn) {
+      estadoTemporal = 'AUN_NO_INICIA';
+    } else if (ahora <= pMeta.terminaEn) {
+      estadoTemporal = 'EN_CURSO';
+    } else if (ahora <= cierreGracia) {
+      estadoTemporal = 'ATRASADO';
+    } else {
+      estadoTemporal = 'FINALIZADO';
+    }
+
+    const mesNombreMin = MESES_NOMBRES_MIN[mes - 1];
+    const diaInicio = pMeta.iniciaEn.getDate();
+    const diaFin = pMeta.terminaEn.getDate();
+    const rangoFechas = `${diaInicio} – ${diaFin} ${mesNombreMin}`;
+
+    let totalAuditorias = 0;
+    let realizadas = 0;
+    let pendientes = 0;
+    let atrasadas = 0;
+    let noRealizadas = 0;
+    let areasSinAuditor = 0;
+
+    for (const fila of filas) {
+      const pData = fila.periodos[pKey];
+      if (!pData || !pData.programada) continue;
+
+      if (!esAdmin) {
+        if (pData.auditorEfectivo?.id !== usuarioId) continue;
+      }
+
+      totalAuditorias += 1;
+
+      if (esAdmin && pData.requiereAuditor) {
+        areasSinAuditor += 1;
+      }
+
+      if (pData.realizada) {
+        realizadas += 1;
+      } else if (estadoTemporal === 'FINALIZADO' || pData.estadoAuditoria === 'NO_REALIZADA' || (pData.vencida && ahora > cierreGracia)) {
+        noRealizadas += 1;
+      } else if (estadoTemporal === 'ATRASADO' || pData.estadoAuditoria === 'ATRASADA_EN_GRACIA' || (pData.vencida && ahora <= cierreGracia)) {
+        atrasadas += 1;
+      } else if (estadoTemporal === 'EN_CURSO') {
+        pendientes += 1;
+      } else if (estadoTemporal === 'AUN_NO_INICIA') {
+        pendientes = 0;
+      }
+    }
+
+    return {
+      periodo: periodoNum,
+      etiqueta: periodoNum === 1 ? 'Primer periodo' : 'Segundo periodo',
+      rangoFechas,
+      iniciaEn: pMeta.iniciaEn,
+      terminaEn: pMeta.terminaEn,
+      cierreGracia,
+      estadoTemporal,
+      totalAuditorias,
+      realizadas,
+      pendientes,
+      atrasadas,
+      noRealizadas,
+      areasSinAuditor,
+    };
+  });
 };
