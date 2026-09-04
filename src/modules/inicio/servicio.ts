@@ -338,7 +338,7 @@ const construirPeriodosResumen = (
     const pKey = periodoNum === 1 ? 'p1' : 'p2';
     const cierreGracia = calcularCierreConGracia(pMeta.terminaEn);
 
-    let estadoTemporal: 'AUN_NO_INICIA' | 'EN_CURSO' | 'ATRASADO' | 'FINALIZADO' = 'AUN_NO_INICIA';
+    let estadoTemporal: 'AUN_NO_INICIA' | 'EN_CURSO' | 'ATRASADO' | 'FINALIZADO';
     if (ahora < pMeta.iniciaEn) {
       estadoTemporal = 'AUN_NO_INICIA';
     } else if (ahora <= pMeta.terminaEn) {
