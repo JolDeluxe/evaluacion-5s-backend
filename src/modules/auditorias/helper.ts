@@ -23,7 +23,7 @@ export type FotoEntrada5S = {
   subidaEn?: Date | null;
 };
 
-export const normalizarCodigoVerificacion = (codigo: string) => codigo.trim().toUpperCase();
+export const normalizarCodigoVerificacion = (codigo: string) => (codigo ?? '').trim().toUpperCase().replace(/[\s-]/g, '');
 
 export const validarCodigoArea = (esperado: string, recibido: string) => {
   if (normalizarCodigoVerificacion(esperado) !== normalizarCodigoVerificacion(recibido)) {

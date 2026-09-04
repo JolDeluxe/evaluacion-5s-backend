@@ -23,6 +23,7 @@ import { resultadosRouter } from './modules/resultados/routes';
 import { registrosAuditoriaRouter } from './modules/registros_auditoria/routes';
 import { sistemaRouter } from './modules/sistema/routes';
 import { inicioRouter } from './modules/inicio/routes';
+import { qrRouter } from './modules/qr/routes';
 
 const esDesarrollo = env.NODE_ENV === 'development';
 
@@ -173,6 +174,7 @@ app.use('/api/v1/resultados', resultadosRouter);
 app.use('/api/v1/registros-auditoria', registrosAuditoriaRouter);
 app.use('/api/v1/sistema', sistemaRouter);
 app.use('/api/v1/inicio', inicioRouter);
+app.use('/api/v1/qr', qrRouter);
 
 app.use(noEncontradoHandler);
 app.use(manejoErrores);

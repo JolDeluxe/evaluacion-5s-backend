@@ -8,7 +8,6 @@ import { obtenerPaginacion } from '../../utils/paginacion';
 import { puedeAdministrar5S } from '../../utils/permisos';
 import { responderLista } from '../../utils/respuesta';
 import { calcularCierreConGracia, obtenerPeriodoInmediatamenteAnterior, obtenerAsignacionesBloqueadorasPeriodoAnterior, construirPayloadBloqueoPeriodoAnterior } from '../../utils/periodos';
-import { obtenerObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 
 const esquemaQuery = z
   .object({
