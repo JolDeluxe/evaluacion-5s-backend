@@ -50,7 +50,7 @@ const assertPuedeGestionarInvitacion = async (
     throw solicitudInvalida('Esta auditoria ya no esta disponible para compartir');
   }
 
-  await validarObjetivoRealizableMasAntiguo(tx, asignacion.objetivoAuditoriaId, new Date(), asignacion.reabiertaHasta);
+  await validarObjetivoRealizableMasAntiguo(tx, asignacion.objetivoAuditoriaId, usuarioId, new Date(), asignacion.reabiertaHasta);
   return asignacion;
 };
 

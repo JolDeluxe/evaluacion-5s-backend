@@ -59,7 +59,7 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
     }
 
     const objetivo = enlace.asignacionAuditoria.objetivoAuditoria;
-    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, verificadoEn, enlace.asignacionAuditoria.reabiertaHasta);
+    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, enlace.asignacionAuditoria.auditorId, verificadoEn, enlace.asignacionAuditoria.reabiertaHasta);
 
     validarCodigoArea(objetivo.area.codigoVerificacion, body.codigoVerificacion);
     const preguntas = objetivo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);

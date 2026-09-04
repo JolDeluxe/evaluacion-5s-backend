@@ -24,7 +24,7 @@ export const enviarAuditoriaInvitadoPublico = async (req: Request, res: Response
 
   const envio = await transaccionSerializable(async (tx) => {
     const verificadoEn = new Date();
-    await validarObjetivoRealizableMasAntiguo(tx, contexto.objetivoAuditoriaId, verificadoEn);
+    await validarObjetivoRealizableMasAntiguo(tx, contexto.objetivoAuditoriaId, null, verificadoEn);
     const objetivo = await tx.objetivoAuditoria.findUniqueOrThrow({
       where: { id: contexto.objetivoAuditoriaId },
       include: {

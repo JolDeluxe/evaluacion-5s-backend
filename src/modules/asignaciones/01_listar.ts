@@ -1,13 +1,14 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
-
+import type { PrismaTransaction } from '../../db';
 import { prisma } from '../../db';
 import { Prisma } from '../../generated/prisma/client';
 import { EstadoAsignacionAuditoria } from '../../generated/prisma/enums';
 import { obtenerPaginacion } from '../../utils/paginacion';
 import { puedeAdministrar5S } from '../../utils/permisos';
 import { responderLista } from '../../utils/respuesta';
-import { calcularCierreConGracia } from '../../utils/periodos';
+import { calcularCierreConGracia, obtenerPeriodoInmediatamenteAnterior, obtenerAsignacionesBloqueadorasPeriodoAnterior, construirPayloadBloqueoPeriodoAnterior } from '../../utils/periodos';
+import { obtenerObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 
 const esquemaQuery = z
   .object({
@@ -26,6 +27,84 @@ const mismoDia = (d1: Date, d2: Date) => (
   && d1.getMonth() === d2.getMonth()
   && d1.getDate() === d2.getDate()
 );
+
+export const obtenerEjecutablesUsuario = async (
+  tx: PrismaTransaction,
+  usuarioId: number,
+  ahora = new Date(),
+) => {
+  const rawAsignaciones = await tx.asignacionAuditoria.findMany({
+    where: {
+      auditorId: usuarioId,
+      estado: { not: EstadoAsignacionAuditoria.CANCELADA },
+      objetivoAuditoria: {
+        iniciaEn: { lte: ahora },
+      },
+    },
+    include: {
+      auditor: {
+        select: {
+          id: true,
+          nombre: true,
+          nombreUsuario: true,
+        },
+      },
+      objetivoAuditoria: {
+        include: {
+          area: {
+            select: {
+              id: true,
+              codigo: true,
+              nombre: true,
+              tipo: true,
+            },
+          },
+          envioResultado: true,
+          enviosAuditoria: true,
+        },
+      },
+    },
+    orderBy: [
+      { venceEn: 'asc' },
+      { id: 'asc' },
+    ],
+  });
+
+  const rawMapped = await Promise.all(
+    rawAsignaciones.map(async (asig) => {
+      const infoPeriodo = obtenerEstadoEjecucion(asig, ahora);
+      const prev = obtenerPeriodoInmediatamenteAnterior(
+        asig.objetivoAuditoria.anio,
+        asig.objetivoAuditoria.mes,
+        asig.objetivoAuditoria.periodo,
+      );
+      const bloqueadoras = await obtenerAsignacionesBloqueadorasPeriodoAnterior(
+        tx,
+        usuarioId,
+        asig.objetivoAuditoria.anio,
+        asig.objetivoAuditoria.mes,
+        asig.objetivoAuditoria.periodo,
+        ahora,
+      );
+
+      const bloqueoPeriodoAnterior = bloqueadoras.length > 0
+        ? construirPayloadBloqueoPeriodoAnterior(prev, bloqueadoras, ahora)
+        : null;
+
+      return {
+        ...asig,
+        infoPeriodo,
+        bloqueoPeriodoAnterior,
+      };
+    })
+  );
+
+  return rawMapped.filter((asig) => {
+    if (asig.estado === EstadoAsignacionAuditoria.CANCELADA) return false;
+    if (asig.objetivoAuditoria.iniciaEn > ahora) return false;
+    return asig.infoPeriodo.realizable && asig.estado !== EstadoAsignacionAuditoria.COMPLETADA;
+  });
+};
 
 export const obtenerEstadoEjecucion = (
   asig: {

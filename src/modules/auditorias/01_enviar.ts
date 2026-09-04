@@ -57,7 +57,7 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     }
 
     const objetivo = asignacion.objetivoAuditoria;
-    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, verificadoEn, asignacion.reabiertaHasta);
+    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, usuarioId, verificadoEn, asignacion.reabiertaHasta);
 
     const perteneceAlArea = await tx.usuarioArea.findFirst({
       where: { usuarioId, areaId: objetivo.areaId },

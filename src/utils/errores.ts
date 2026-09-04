@@ -1,11 +1,13 @@
 export class ErrorApi extends Error {
   readonly estado: number;
   readonly codigo: string;
+  readonly datos: Record<string, unknown> | null;
 
-  constructor(estado: number, codigo: string, mensaje: string) {
+  constructor(estado: number, codigo: string, mensaje: string, datos: Record<string, unknown> | null = null) {
     super(mensaje);
     this.estado = estado;
     this.codigo = codigo;
+    this.datos = datos;
   }
 }
 
@@ -13,5 +15,5 @@ export const solicitudInvalida = (mensaje: string) => new ErrorApi(400, 'SOLICIT
 export const noAutenticado = (mensaje = 'Sesion no valida') => new ErrorApi(401, 'NO_AUTENTICADO', mensaje);
 export const prohibido = (mensaje = 'No tienes permiso para realizar esta accion') => new ErrorApi(403, 'PROHIBIDO', mensaje);
 export const noEncontrado = (mensaje = 'Recurso no encontrado') => new ErrorApi(404, 'NO_ENCONTRADO', mensaje);
-export const conflicto = (mensaje: string) => new ErrorApi(409, 'CONFLICTO', mensaje);
+export const conflicto = (mensaje: string, codigo = 'CONFLICTO', datos: Record<string, unknown> | null = null) => new ErrorApi(409, codigo, mensaje, datos);
 export const servicioNoDisponible = (mensaje: string) => new ErrorApi(503, 'SERVICIO_NO_DISPONIBLE', mensaje);

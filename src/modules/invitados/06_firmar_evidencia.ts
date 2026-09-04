@@ -15,10 +15,10 @@ export const firmarEvidenciaInvitado = async (req: Request, res: Response) => {
   const { token } = esquemaToken.parse(req.params);
   const enlace = await prisma.enlaceInvitado.findUnique({
     where: { hashToken: hashSha256(token) },
-    include: { asignacionAuditoria: { select: { objetivoAuditoriaId: true } } },
+    include: { asignacionAuditoria: { select: { auditorId: true, objetivoAuditoriaId: true } } },
   });
   if (!enlace || enlace.revocadoEn || enlace.expiraEn <= new Date()) throw noEncontrado('Enlace no valido');
-  await validarObjetivoRealizableMasAntiguo(prisma, enlace.asignacionAuditoria.objetivoAuditoriaId);
+  await validarObjetivoRealizableMasAntiguo(prisma, enlace.asignacionAuditoria.objetivoAuditoriaId, enlace.asignacionAuditoria.auditorId);
 
   const body = esquemaFirmar.parse(req.body);
   const timestamp = Math.round(Date.now() / 1000);

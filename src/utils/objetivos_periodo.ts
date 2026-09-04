@@ -1,11 +1,14 @@
 import { prisma, type PrismaTransaction } from '../db';
 import { EstadoAsignacionAuditoria } from '../generated/prisma/enums';
-import { assertObjetivoRealizable, compararObjetivosPorPeriodo, objetivoEsRealizable } from './periodos';
+import { assertObjetivoRealizable, assertObjetivoRealizableParaAuditor, compararObjetivosPorPeriodo, objetivoEsRealizable } from './periodos';
 
 const includePeriodo = {
   envioResultado: true,
+  area: { select: { id: true, nombre: true, codigo: true } },
   asignacionesAuditoria: {
     where: { estado: { not: EstadoAsignacionAuditoria.CANCELADA } },
+    include: { auditor: { select: { id: true, nombre: true } } },
+    orderBy: { creadoEn: 'desc' as const },
   },
 } as const;
 
@@ -34,14 +37,18 @@ export const obtenerObjetivoRealizableMasAntiguo = async (
 export const validarObjetivoRealizableMasAntiguo = async (
   tx: PrismaTransaction | typeof prisma,
   objetivoAuditoriaId: number,
+  auditorId?: number | null,
   ahora = new Date(),
   reabiertaHasta?: Date | null,
 ) => {
+  if (auditorId) {
+    return assertObjetivoRealizableParaAuditor(tx, objetivoAuditoriaId, auditorId, ahora, reabiertaHasta);
+  }
   const objetivo = await tx.objetivoAuditoria.findUniqueOrThrow({
     where: { id: objetivoAuditoriaId },
     include: includePeriodo,
   });
-  const objetivoMasAntiguo = await obtenerObjetivoRealizableMasAntiguo(tx, objetivo.areaId, ahora);
-  assertObjetivoRealizable(objetivo, objetivoMasAntiguo, ahora, reabiertaHasta);
+  assertObjetivoRealizable(objetivo, null, ahora, reabiertaHasta);
   return objetivo;
 };
+

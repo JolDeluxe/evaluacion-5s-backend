@@ -1,4 +1,7 @@
 import type { EnvioAuditoria, ObjetivoAuditoria } from '../generated/prisma/client';
+import type { PrismaTransaction } from '../db';
+import { prisma } from '../db';
+import { EstadoAsignacionAuditoria } from '../generated/prisma/enums';
 import { conflicto } from './errores';
 
 export const DIAS_HABILES_GRACIA = 5;
@@ -96,12 +99,156 @@ export const compararObjetivosPorPeriodo = (a: ObjetivoConPeriodo, b: ObjetivoCo
   return a.periodo - b.periodo;
 };
 
-export const assertObjetivoRealizable = (objetivo: ObjetivoConPeriodo, objetivoMasAntiguo: ObjetivoConPeriodo | null, ahora = new Date(), reabiertaHasta?: Date | null) => {
+export const MESES_NOMBRES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+];
+
+export const obtenerPeriodoInmediatamenteAnterior = (anio: number, mes: number, periodo: number) => {
+  if (periodo === 2) {
+    return { anio, mes, periodo: 1 };
+  }
+  const prevMes = mes === 1 ? 12 : mes - 1;
+  const prevAnio = mes === 1 ? anio - 1 : anio;
+  return { anio: prevAnio, mes: prevMes, periodo: 2 };
+};
+
+export const obtenerAsignacionesBloqueadorasPeriodoAnterior = async (
+  tx: PrismaTransaction | typeof prisma,
+  auditorId: number,
+  anioActual: number,
+  mesActual: number,
+  periodoActual: number,
+  ahora = new Date(),
+) => {
+  const prev = obtenerPeriodoInmediatamenteAnterior(anioActual, mesActual, periodoActual);
+
+  const asignacionesPrevias = await tx.asignacionAuditoria.findMany({
+    where: {
+      auditorId,
+      estado: {
+        notIn: [EstadoAsignacionAuditoria.CANCELADA, EstadoAsignacionAuditoria.COMPLETADA],
+      },
+      reabiertaHasta: null,
+      objetivoAuditoria: {
+        anio: prev.anio,
+        mes: prev.mes,
+        periodo: prev.periodo,
+        envioResultadoId: null,
+      },
+    },
+    include: {
+      objetivoAuditoria: {
+        include: {
+          area: { select: { id: true, nombre: true, codigo: true } },
+          envioResultado: true,
+          enviosAuditoria: true,
+        },
+      },
+    },
+    orderBy: [
+      { venceEn: 'asc' },
+      { id: 'asc' },
+    ],
+  });
+
+  return asignacionesPrevias.filter((asig) => {
+    const obj = asig.objetivoAuditoria;
+    if (tieneEnvioResultadoValido(obj)) return false;
+    const cierreGracia = calcularCierreConGracia(obj.terminaEn);
+    return ahora <= cierreGracia;
+  });
+};
+
+export const construirPayloadBloqueoPeriodoAnterior = (
+  prev: { anio: number; mes: number; periodo: number },
+  bloqueadoras: Awaited<ReturnType<typeof obtenerAsignacionesBloqueadorasPeriodoAnterior>>,
+  ahora = new Date(),
+) => {
+  const mesStr = `${prev.anio}-${String(prev.mes).padStart(2, '0')}`;
+  const etiquetaStr = `${MESES_NOMBRES[prev.mes - 1]} ${prev.anio}`;
+
+  const pendientes = bloqueadoras.map((asig) => {
+    const esAtrasada = ahora > asig.objetivoAuditoria.terminaEn;
+    return {
+      asignacionId: asig.id,
+      areaNombre: asig.objetivoAuditoria.area?.nombre ?? '',
+      estado: esAtrasada ? 'ATRASADA' : 'PENDIENTE',
+    };
+  });
+
+  return {
+    periodoAnterior: {
+      mes: mesStr,
+      etiqueta: etiquetaStr,
+      periodo: prev.periodo,
+    },
+    totalPendientes: bloqueadoras.length,
+    pendientes,
+    asignacionId: bloqueadoras[0]?.id ?? null,
+    mesEtiqueta: etiquetaStr,
+    periodo: prev.periodo,
+    estado: pendientes[0]?.estado ?? 'PENDIENTE',
+    areaNombre: bloqueadoras[0]?.objetivoAuditoria.area?.nombre ?? '',
+  };
+};
+
+export const assertObjetivoRealizableParaAuditor = async (
+  tx: PrismaTransaction | typeof prisma,
+  objetivoAuditoriaId: number,
+  auditorId: number,
+  ahora = new Date(),
+  reabiertaHasta?: Date | null,
+) => {
+  const objetivo = await tx.objetivoAuditoria.findUniqueOrThrow({
+    where: { id: objetivoAuditoriaId },
+    include: {
+      envioResultado: true,
+      enviosAuditoria: true,
+      area: { select: { id: true, nombre: true, codigo: true } },
+    },
+  });
+
   if (!objetivoEsRealizable(objetivo, ahora, reabiertaHasta)) {
     const detalle = derivarSituacionObjetivo(objetivo, ahora);
     throw conflicto(`El periodo no esta disponible para captura: ${detalle.situacion}`);
   }
-  if (objetivoMasAntiguo && objetivoMasAntiguo.id !== objetivo.id) throw conflicto('Existe un periodo anterior de esta area que debe resolverse primero');
+
+  const prev = obtenerPeriodoInmediatamenteAnterior(objetivo.anio, objetivo.mes, objetivo.periodo);
+  const bloqueadoras = await obtenerAsignacionesBloqueadorasPeriodoAnterior(
+    tx,
+    auditorId,
+    objetivo.anio,
+    objetivo.mes,
+    objetivo.periodo,
+    ahora,
+  );
+
+  if (bloqueadoras.length > 0) {
+    const payload = construirPayloadBloqueoPeriodoAnterior(prev, bloqueadoras, ahora);
+    throw conflicto(
+      'Debes terminar tus auditorías pendientes del periodo anterior antes de iniciar las del periodo actual.',
+      'AUDITORIAS_PERIODO_ANTERIOR_PENDIENTES',
+      payload,
+    );
+  }
+
+  return objetivo;
+};
+
+export const assertObjetivoRealizable = (
+  objetivo: ObjetivoConPeriodo & { area?: { id: number; nombre: string; codigo: string } },
+  objetivoMasAntiguo: (ObjetivoConPeriodo & {
+    area?: { id: number; nombre: string; codigo: string };
+    asignacionesAuditoria?: { id: number; reabiertaHasta?: Date | null; auditor?: { id: number; nombre: string } | null }[];
+  }) | null,
+  ahora = new Date(),
+  reabiertaHasta?: Date | null,
+) => {
+  if (!objetivoEsRealizable(objetivo, ahora, reabiertaHasta)) {
+    const detalle = derivarSituacionObjetivo(objetivo, ahora);
+    throw conflicto(`El periodo no esta disponible para captura: ${detalle.situacion}`);
+  }
 };
 
 export const construirDetalleAdminPeriodo = (objetivo: ObjetivoConPeriodo, ahora = new Date(), reabiertaHasta?: Date | null) => {

@@ -42,7 +42,7 @@ export const obtenerInvitacion = async (req: Request, res: Response) => {
   }
 
   const objetivo = enlace.asignacionAuditoria.objetivoAuditoria;
-  await validarObjetivoRealizableMasAntiguo(prisma, objetivo.id);
+  await validarObjetivoRealizableMasAntiguo(prisma, objetivo.id, enlace.asignacionAuditoria.auditorId);
 
   responder(res, {
     invitacion: {

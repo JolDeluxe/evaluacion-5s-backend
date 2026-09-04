@@ -26,7 +26,17 @@ export const manejoErrores = (err: unknown, req: Request, res: Response, _next: 
       req.log.error({ err, ...payload }, 'Error de API');
     }
 
-    res.status(err.estado).json({ error: { codigo: err.codigo, mensaje: err.message } });
+    res.status(err.estado).json({
+      error: {
+        codigo: err.codigo,
+        mensaje: err.message,
+        ...(err.datos
+          ? typeof err.datos === 'object' && ('periodoAnterior' in err.datos || 'totalPendientes' in err.datos)
+            ? err.datos
+            : { periodoAnterior: err.datos }
+          : {}),
+      },
+    });
     return;
   }
 

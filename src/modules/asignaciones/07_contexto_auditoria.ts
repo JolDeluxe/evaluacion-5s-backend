@@ -44,7 +44,7 @@ export const obtenerContextoAuditoriaAsignacion = async (req: Request, res: Resp
     throw prohibido('La asignacion no pertenece al auditor autenticado');
   }
 
-  await validarObjetivoRealizableMasAntiguo(prisma, asignacion.objetivoAuditoriaId, new Date(), asignacion.reabiertaHasta);
+  await validarObjetivoRealizableMasAntiguo(prisma, asignacion.objetivoAuditoriaId, asignacion.auditorId, new Date(), asignacion.reabiertaHasta);
 
   const { versionFormulario } = asignacion.objetivoAuditoria;
   responder(res, {
