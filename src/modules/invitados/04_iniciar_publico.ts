@@ -36,12 +36,37 @@ export const iniciarInvitadoPublico = async (req: Request, res: Response) => {
     nombreInvitado: body.nombre.trim(),
   });
 
+  let versionFormulario = objetivo.versionFormulario;
+  if (!objetivo.envioResultadoId) {
+    const versionActiva = await prisma.versionFormulario.findFirst({
+      where: { formularioId: versionFormulario.formularioId, activa: true },
+      include: {
+        formulario: true,
+        secciones: {
+          orderBy: { orden: 'asc' },
+          include: { preguntas: { orderBy: { orden: 'asc' } } },
+        },
+      },
+    });
+    if (versionActiva) {
+      versionFormulario = versionActiva;
+      if (objetivo.versionFormularioId !== versionActiva.id) {
+        await prisma.objetivoAuditoria.update({
+          where: { id: objetivo.id },
+          data: { versionFormularioId: versionActiva.id },
+        });
+        objetivo.versionFormularioId = versionActiva.id;
+        objetivo.versionFormulario = versionActiva;
+      }
+    }
+  }
+
   responder(res, {
     contextoInvitadoToken,
     objetivo,
     area: objetivo.area,
     ciclo: construirPeriodoCompat(objetivo),
-    versionFormulario: objetivo.versionFormulario,
+    versionFormulario,
     periodo: construirDetalleAuditorPeriodo(objetivo),
     codigoVerificacionRequerido: true,
   });

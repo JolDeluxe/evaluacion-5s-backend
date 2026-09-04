@@ -65,8 +65,25 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     });
     if (perteneceAlArea) throw prohibido('No puedes auditar tu propia area');
 
+    let versionFormulario = objetivo.versionFormulario;
+    if (!objetivo.envioResultadoId) {
+      const versionActiva = await tx.versionFormulario.findFirst({
+        where: { formularioId: versionFormulario.formularioId, activa: true },
+        include: { secciones: { include: { preguntas: true } } },
+      });
+      if (versionActiva) {
+        versionFormulario = versionActiva as typeof objetivo.versionFormulario;
+        if (objetivo.versionFormularioId !== versionActiva.id) {
+          await tx.objetivoAuditoria.update({
+            where: { id: objetivo.id },
+            data: { versionFormularioId: versionActiva.id },
+          });
+        }
+      }
+    }
+
     validarCodigoArea(objetivo.area.codigoVerificacion, body.codigoVerificacion);
-    const preguntas = objetivo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
+    const preguntas = versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
     validarRespuestas5S(preguntas, body.respuestas);
     const puntaje = calcularPuntaje5S(body.respuestas);
 

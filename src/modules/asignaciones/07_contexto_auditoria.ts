@@ -46,7 +46,38 @@ export const obtenerContextoAuditoriaAsignacion = async (req: Request, res: Resp
 
   await validarObjetivoRealizableMasAntiguo(prisma, asignacion.objetivoAuditoriaId, asignacion.auditorId, new Date(), asignacion.reabiertaHasta);
 
-  const { versionFormulario } = asignacion.objetivoAuditoria;
+  let versionFormulario = asignacion.objetivoAuditoria.versionFormulario;
+
+  // Si la auditoría está pendiente (no enviada), debemos usar la versión activa más reciente del formulario
+  if (!asignacion.objetivoAuditoria.envioResultadoId) {
+    const versionActiva = await prisma.versionFormulario.findFirst({
+      where: {
+        formularioId: versionFormulario.formularioId,
+        activa: true,
+      },
+      include: {
+        formulario: true,
+        secciones: {
+          orderBy: { orden: 'asc' as const },
+          include: { preguntas: { orderBy: { orden: 'asc' as const } } },
+        },
+      },
+    });
+
+    if (versionActiva) {
+      versionFormulario = versionActiva;
+      if (asignacion.objetivoAuditoria.versionFormularioId !== versionActiva.id) {
+        // Actualizamos el objetivo para vincularlo a la versión activa actual
+        await prisma.objetivoAuditoria.update({
+          where: { id: asignacion.objetivoAuditoria.id },
+          data: { versionFormularioId: versionActiva.id },
+        });
+        asignacion.objetivoAuditoria.versionFormularioId = versionActiva.id;
+        asignacion.objetivoAuditoria.versionFormulario = versionActiva;
+      }
+    }
+  }
+
   responder(res, {
     asignacion,
     objetivo: asignacion.objetivoAuditoria,
