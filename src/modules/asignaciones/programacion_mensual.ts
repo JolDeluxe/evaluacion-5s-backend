@@ -425,7 +425,7 @@ const aplicarAsignacionPeriodo = async (
 
   // Mantener reabiertaHasta solo si ya existía una reapertura manual previa aún vigente
   const reabiertaHasta = asignacion?.reabiertaHasta && new Date(asignacion.reabiertaHasta) > ahora ? asignacion.reabiertaHasta : null;
-  const venceEn = reabiertaHasta ?? calcularCierreConGracia(objetivo.terminaEn);
+  const venceEn = reabiertaHasta ?? objetivo.terminaEn;
 
   const datosAsignacion = {
     asignacionMensualId,

@@ -347,7 +347,7 @@ export const aplicarResolucionesAuditoriasUsuario = async (
           asignadoPorId: actorId,
           estado: EstadoAsignacionAuditoria.PENDIENTE,
           asignadoEn: new Date(),
-          venceEn: calcularCierreConGracia(asignacion.objetivoAuditoria.terminaEn),
+          venceEn: asignacion.reabiertaHasta ?? asignacion.objetivoAuditoria.terminaEn,
           reabiertaHasta: asignacion.reabiertaHasta,
           reabiertaEn: asignacion.reabiertaEn,
           reabiertaPorId: asignacion.reabiertaPorId,

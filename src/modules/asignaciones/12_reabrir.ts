@@ -145,8 +145,9 @@ export const reabrirAsignacionEnTransaccion = async (
 
   await bloquearObjetivoAuditoria(tx, objetivo.id);
 
-  const reabiertaHasta = body.reabiertaHasta ?? sumarDiasHabiles(ahora, 5);
-  if (reabiertaHasta <= ahora) throw conflicto('La fecha de reapertura debe ser futura');
+  const finDeHoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 23, 59, 59, 999);
+  const reabiertaHasta = body.reabiertaHasta ?? finDeHoy;
+  if (reabiertaHasta < ahora) throw conflicto('La fecha de reapertura debe ser futura');
 
   // Cancelar cualquier asignación activa previa para este objetivo específico
   const asignacionesAuditoriaActuales = await tx.asignacionAuditoria.findMany({
@@ -191,7 +192,7 @@ export const reabrirAsignacionEnTransaccion = async (
         reabiertaEn: ahora,
         reabiertaPorId: usuarioId,
         motivoReapertura: body.motivo,
-        venceEn: objetivo.terminaEn,
+        venceEn: reabiertaHasta,
       },
       include: { objetivoAuditoria: true, auditor: true },
     });

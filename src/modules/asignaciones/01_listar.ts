@@ -90,8 +90,13 @@ export const obtenerEjecutablesUsuario = async (
         ? construirPayloadBloqueoPeriodoAnterior(prev, bloqueadoras, ahora)
         : null;
 
+      const venceEnEfectiva = asig.reabiertaHasta
+        ? new Date(asig.reabiertaHasta)
+        : new Date(asig.objetivoAuditoria.terminaEn);
+
       return {
         ...asig,
+        venceEn: venceEnEfectiva,
         infoPeriodo,
         bloqueoPeriodoAnterior,
       };
@@ -154,22 +159,10 @@ export const obtenerEstadoEjecucion = (
 
   // 1. REABIERTA ADMINISTRATIVA
   if (reabiertaHasta && ahora <= mismanoche(reabiertaHasta)) {
-    const esUltimoDiaReapertura = mismoDia(ahora, reabiertaHasta);
-    if (esUltimoDiaReapertura) {
-      return {
-        status: 'REABIERTA',
-        texto: 'ÚLTIMO DÍA PARA REALIZAR',
-        badgeTexto: 'ÚLTIMO DÍA',
-        color: 'rojo',
-        realizable: true,
-        reabiertaHasta,
-      };
-    }
-
     return {
       status: 'REABIERTA',
-      texto: 'REABIERTA · VENCIDA',
-      badgeTexto: 'REABIERTA · VENCIDA',
+      texto: 'REABIERTA',
+      badgeTexto: 'REABIERTA',
       color: 'rojo',
       realizable: true,
       reabiertaHasta,
@@ -300,9 +293,13 @@ export const listarAsignaciones = async (
 
     // Map each assignment to calculate execution status on the backend
     const rawMapped = rawAsignaciones.map((asig) => {
+      const venceEnEfectiva = asig.reabiertaHasta
+        ? new Date(asig.reabiertaHasta)
+        : new Date(asig.objetivoAuditoria.terminaEn);
       const infoPeriodo = obtenerEstadoEjecucion(asig, ahora);
       return {
         ...asig,
+        venceEn: venceEnEfectiva,
         infoPeriodo,
         invitacionActiva: asig.enlacesInvitado[0] ?? null,
       };
