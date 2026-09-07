@@ -217,7 +217,7 @@ const construirPeriodoFila = (
   const detalle = construirDetalleAdminPeriodo(objetivo, new Date(), asignacion?.reabiertaHasta ?? null);
   const auditor = asignacion?.auditor ? mapearUsuario(asignacion.auditor) : null;
   const realizada = detalle.realizada || asignacion?.estado === EstadoAsignacionAuditoria.COMPLETADA;
-  const vencida = asignacion?.estado === EstadoAsignacionAuditoria.VENCIDA || detalle.situacion === 'NO_REALIZADA';
+  const vencida = !detalle.reabierta && (asignacion?.estado === EstadoAsignacionAuditoria.VENCIDA || detalle.situacion === 'NO_REALIZADA');
   const auditorNoEjecutable = Boolean(asignacion?.auditor && !puedeUsuarioAuditar(asignacion.auditor));
   const requiereAuditor = !realizada && !vencida && (!asignacion || auditorNoEjecutable);
   const asignacionAnterior = obtenerAuditorAnterior(objetivo.asignacionesAuditoria);
