@@ -515,14 +515,14 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
     expect(estadoAgo16.color).toBe('rojo');
     expect(estadoAgo16.realizable).toBe(true);
 
-    // d. Reabierta hasta 7 sep -> REABIERTA · VENCIDA
+    // d. Reabierta hasta 7 sep -> REABIERTA
     const asigReabierta = {
       ...baseAsig,
       reabiertaHasta: new Date(2026, 8, 7),
     };
     const sep1 = new Date(2026, 8, 1, 10, 0, 0);
     const estadoReabierta = obtenerEstadoEjecucion(asigReabierta, sep1);
-    expect(estadoReabierta.texto).toBe('REABIERTA · VENCIDA');
+    expect(estadoReabierta.texto).toBe('REABIERTA');
     expect(estadoReabierta.realizable).toBe(true);
 
     // f. Hoy es antes de iniciaEn (ej: 1 sep para un periodo que inicia 16 sep) -> Aún no inicia

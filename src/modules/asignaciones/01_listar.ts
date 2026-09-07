@@ -193,17 +193,6 @@ export const obtenerEstadoEjecucion = (
 
   // 3. VENCIDA PERO AÚN EJECUTABLE (VENTANA TARDÍA)
   if (ahora <= mismanoche(cierreGracia)) {
-    const esUltimoDiaGracia = mismoDia(ahora, cierreGracia);
-    if (esUltimoDiaGracia) {
-      return {
-        status: 'VENCIDA',
-        texto: 'ÚLTIMO DÍA PARA REALIZAR',
-        badgeTexto: 'ÚLTIMO DÍA',
-        color: 'rojo',
-        realizable: true,
-      };
-    }
-
     return {
       status: 'VENCIDA',
       texto: 'ATRASADA',
