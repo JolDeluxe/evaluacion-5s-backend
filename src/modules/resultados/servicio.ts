@@ -297,7 +297,10 @@ const construirEstadoMes = (
     };
   }
 
-  if (todosCompletos || ahora > cierre.cierreGracia) {
+  const primerObj = objetivos[0];
+  const esMesPasado = primerObj ? (primerObj.anio < ahora.getFullYear() || (primerObj.anio === ahora.getFullYear() && primerObj.mes < ahora.getMonth() + 1)) : false;
+
+  if (todosCompletos || ahora > cierre.cierreGracia || esMesPasado) {
     return {
       estado: 'CONSOLIDADO',
       etiqueta: 'Consolidado',
@@ -516,50 +519,25 @@ export const obtenerResultadosAreas = async (
   };
 };
 
-const obtenerConjuntoElegibleRanking = (
+export const obtenerConjuntoElegibleRanking = (
   areas: Awaited<ReturnType<typeof obtenerResultadosAreas>>['areas'],
   tipo: TipoArea,
 ) => {
   const deTipo = areas.filter((a) => a.area.tipo === tipo);
 
-  // Prioridad 1: Áreas con 2 periodos completados
-  const con2 = deTipo.filter(
-    (area) => area.periodos.length >= 2 && area.periodos.every((p) => p.completado),
+  const conMensual = deTipo.filter(
+    (area) => area.resultadoMensual !== null && area.resultadoMensual !== undefined,
   );
 
-  if (con2.length > 0) {
+  if (conMensual.length > 0) {
     return {
-      elegibles: con2.map((area) => ({
+      elegibles: conMensual.map((area) => ({
         area,
         resultado: area.resultadoMensual as number,
         esProvisional: false,
       })),
       rankingProvisional: false,
       periodosRequeridos: 2,
-    };
-  }
-
-  // Prioridad 2: Áreas con al menos 1 periodo completado (resultado parcial provisional)
-  const con1 = deTipo
-    .map((area) => {
-      const periodoCompletado = area.periodos.find((p) => p.completado && p.porcentaje !== null);
-      if (!periodoCompletado) return null;
-      return {
-        area,
-        resultado: Number(periodoCompletado.porcentaje),
-        esProvisional: true,
-      };
-    })
-    .filter(
-      (item): item is { area: typeof deTipo[number]; resultado: number; esProvisional: boolean } =>
-        item !== null,
-    );
-
-  if (con1.length > 0) {
-    return {
-      elegibles: con1,
-      rankingProvisional: true,
-      periodosRequeridos: 1,
     };
   }
 
@@ -570,7 +548,7 @@ const obtenerConjuntoElegibleRanking = (
   };
 };
 
-const construirGanadoresPorTipo = (areas: Awaited<ReturnType<typeof obtenerResultadosAreas>>['areas']) => {
+export const construirGanadoresPorTipo = (areas: Awaited<ReturnType<typeof obtenerResultadosAreas>>['areas']) => {
   const porTipo = (tipo: TipoArea) => {
     const { elegibles, rankingProvisional, periodosRequeridos } = obtenerConjuntoElegibleRanking(areas, tipo);
 
@@ -578,44 +556,31 @@ const construirGanadoresPorTipo = (areas: Awaited<ReturnType<typeof obtenerResul
       return { resultado: null, areas: [], rankingProvisional: false, periodosRequeridos: 0 };
     }
 
-    const calculados = elegibles.map(({ area, resultado }) => {
-      const p1 = area.periodos.find((p) => p.periodo === 1)?.porcentaje ?? 0;
-      const p2 = area.periodos.find((p) => p.periodo === 2)?.porcentaje ?? 0;
-      return {
-        id: area.area.id,
-        nombre: area.area.nombre,
-        resultado,
-        mejora: p2 - p1,
-      };
-    });
+    // Nivel 1 — Candidatos completos: áreas que realizaron TODOS los periodos que les correspondían
+    const completos = elegibles.filter(({ area }) =>
+      area.periodos.every((p) => p.estado === 'NO_APLICA' || p.completado || p.estado === 'REALIZADA'),
+    );
+
+    // Nivel 2 — Fallback: si NO existe absolutamente ninguna área completa dentro de ese tipo,
+    // se utilizan como candidatos las áreas que tengan al menos un periodo realizado (resultadoMensual !== null)
+    const candidatos = completos.length > 0 ? completos : elegibles;
 
     let maxResultado = -Infinity;
-    for (const c of calculados) {
+    for (const c of candidatos) {
       if (c.resultado > maxResultado) {
         maxResultado = c.resultado;
       }
     }
 
-    const mejoresPorResultado = calculados.filter(
+    const coGanadores = candidatos.filter(
       (c) => Math.abs(c.resultado - maxResultado) < 1e-9,
     );
 
-    let maxMejora = -Infinity;
-    for (const c of mejoresPorResultado) {
-      if (c.mejora > maxMejora) {
-        maxMejora = c.mejora;
-      }
-    }
-
-    const coGanadores = mejoresPorResultado.filter(
-      (c) => Math.abs(c.mejora - maxMejora) < 1e-9,
-    );
-
-    coGanadores.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+    coGanadores.sort((a, b) => a.area.area.nombre.localeCompare(b.area.area.nombre, 'es'));
 
     return {
       resultado: maxResultado,
-      areas: coGanadores.map((g) => ({ id: g.id, nombre: g.nombre })),
+      areas: coGanadores.map((g) => ({ id: g.area.area.id, nombre: g.area.area.nombre })),
       rankingProvisional,
       periodosRequeridos,
     };
@@ -681,6 +646,16 @@ export const obtenerResultadosGeneral = async (
     area.periodos.flatMap((periodo) => (periodo.porcentaje === null ? [] : [periodo.porcentaje]))
   ));
   const objetivos = await obtenerObjetivosMes(tx, autenticacion, { ...data.mes, tipoArea: obtenerTipoArea(query) });
+
+  const ahora = new Date();
+  const esMesPasado = (data.mes.anio < ahora.getFullYear()) || (data.mes.anio === ahora.getFullYear() && data.mes.mes < ahora.getMonth() + 1);
+  const resultadosMensualesValidos = data.areas
+    .map((a) => a.resultadoMensual)
+    .filter((r): r is number => r !== null && r !== undefined);
+
+  const hayResultadosMensuales = resultadosMensualesValidos.length > 0;
+  const mostrarGeneral = esMesPasado || hayResultadosMensuales;
+
   const porPeriodo = [1, 2].map((periodo) => {
     const periodos = data.areas.map((area) => area.periodos.find((p) => p.periodo === periodo)).filter(Boolean);
     const completados = periodos.filter((p) => p?.completado);
@@ -697,17 +672,19 @@ export const obtenerResultadosGeneral = async (
     ...data,
     tipoRango: 'mes',
     rango,
-    resultadoGeneral: data.estadoMes.mostrarResultado && porcentajesPeriodo.length ? promedio(porcentajesPeriodo) : null,
+    resultadoGeneral: mostrarGeneral && (resultadosMensualesValidos.length || porcentajesPeriodo.length)
+      ? (resultadosMensualesValidos.length ? promedio(resultadosMensualesValidos) : promedio(porcentajesPeriodo))
+      : null,
     porPeriodo,
     incidenciasPorTipo: construirIncidenciasPorTipo(objetivos),
-    ganadoresPorTipo: data.estadoMes.mostrarResultado
+    ganadoresPorTipo: mostrarGeneral
       ? construirGanadoresPorTipo(data.areas)
       : { administrativo: { resultado: null, areas: [] }, operativo: { resultado: null, areas: [] } },
-    mensajeGanadores: data.estadoMes.mostrarResultado ? null : 'Los ganadores se definirán al cierre del mes.',
-    peoresPorTipo: data.estadoMes.mostrarResultado
+    mensajeGanadores: mostrarGeneral ? null : 'Los ganadores se definirán al contar con resultados del segundo periodo.',
+    peoresPorTipo: mostrarGeneral
       ? construirPeoresPorTipo(data.areas)
       : { administrativo: { resultado: null, areas: [] }, operativo: { resultado: null, areas: [] } },
-    mensajePeores: data.estadoMes.mostrarResultado ? null : 'Los resultados se definirán al cierre del mes.',
+    mensajePeores: mostrarGeneral ? null : 'Los resultados se definirán al contar con resultados del segundo periodo.',
   };
 };
 
