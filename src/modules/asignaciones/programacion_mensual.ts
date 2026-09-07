@@ -505,10 +505,34 @@ export const guardarAsignacionMensual = async (
     expectedAuditorId?: number | null;
     soloSiSinAuditor?: boolean;
     soloPendientes?: boolean;
+    ahora?: Date;
+    omitirValidacionAntiguedad?: boolean;
   },
 ) => {
   const objetivos = await obtenerObjetivosAreaMes(tx, params.areaId, params.anio, params.mes);
   if (!objetivos.length) throw conflicto('El area no esta programada para este mes');
+
+  const ahoraEfectiva = params.ahora ?? new Date();
+  if (!params.omitirValidacionAntiguedad) {
+    const anioActual = ahoraEfectiva.getFullYear();
+    const mesActual = ahoraEfectiva.getMonth() + 1;
+    const mesesDiferencia = (anioActual - params.anio) * 12 + (mesActual - params.mes);
+
+    if (mesesDiferencia > 1) {
+      throw conflicto('No es posible modificar la asignación de auditor para meses anteriores al mes pasado.');
+    }
+  }
+
+  const todasRealizadas = objetivos.length > 0 && objetivos.every((objetivo) => {
+    const asignacion = asignacionVigente(objetivo.asignacionesAuditoria);
+    const detalle = construirDetalleAdminPeriodo(objetivo, ahoraEfectiva, asignacion?.reabiertaHasta ?? null);
+    return detalle.realizada || objetivo.envioResultadoId !== null;
+  });
+
+  if (todasRealizadas) {
+    throw conflicto('No es posible modificar el auditor de este periodo porque todas sus auditorías ya fueron realizadas.');
+  }
+
   await validarAuditorMensualArea(tx, params.areaId, params.auditorMensualId);
 
   const asignacionMensualExistente = await tx.asignacionMensual.findUnique({
