@@ -89,6 +89,14 @@ export const reabrirAsignacionEnTransaccion = async (
   }
 
   const ahora = new Date();
+  const anioActual = ahora.getFullYear();
+  const mesActual = ahora.getMonth() + 1;
+  const mesesDiferencia = (anioActual - objetivo.anio) * 12 + (mesActual - objetivo.mes);
+
+  if (mesesDiferencia > 1) {
+    throw conflicto('Solo se pueden reabrir periodos del mes actual o del mes inmediato anterior.');
+  }
+
   if (ahora <= calcularCierreConGracia(objetivo.terminaEn)) {
     throw conflicto('El periodo todavia esta dentro de su ventana normal o gracia');
   }
