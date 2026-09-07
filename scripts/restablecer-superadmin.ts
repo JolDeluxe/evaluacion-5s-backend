@@ -1,7 +1,7 @@
 import { RolUsuario } from '../src/generated/prisma/enums';
 import { prisma, cerrarPrisma } from '../src/db';
-import { hashContrasena } from '../src/utils/crypto';
 import { registrarAuditoria } from '../src/modules/registros_auditoria/helper';
+import { prepararCamposContrasena } from '../src/utils/cifrado-credencial';
 import readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { randomInt } from 'node:crypto';
@@ -61,8 +61,8 @@ const ejecutar = async () => {
   // 2. Generar contraseña temporal
   const contrasenaTemporal = generarContrasenaTemporal();
 
-  // 3. Crear hash mediante Bun.password.hash con Argon2id
-  const nuevoHash = await hashContrasena(contrasenaTemporal);
+  // 3. Crear hash y credencial cifrada
+  const camposContrasena = await prepararCamposContrasena(contrasenaTemporal);
 
   const ahora = new Date();
 
@@ -72,7 +72,7 @@ const ejecutar = async () => {
     await tx.usuario.update({
       where: { id: targetUser.id },
       data: {
-        hashContrasena: nuevoHash,
+        ...camposContrasena,
         debeCambiarContrasena: true,
         contrasenaCambiadaEn: ahora,
       },

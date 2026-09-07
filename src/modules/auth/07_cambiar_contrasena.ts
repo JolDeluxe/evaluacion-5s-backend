@@ -1,11 +1,12 @@
 import type { Request, Response } from 'express';
-import { limpiarCookieSesion } from '../../config/cookies';
 import { prisma } from '../../db';
-import { hashContrasena, validarContrasena, verificarContrasena } from '../../utils/crypto';
+import { validarContrasena, verificarContrasena } from '../../utils/crypto';
 import { noAutenticado, solicitudInvalida } from '../../utils/errores';
 import { responder } from '../../utils/respuesta';
 import { registrarAuditoria } from '../registros_auditoria/helper';
 import { esquemaCambiarContrasena } from './zod';
+import { prepararCamposContrasena } from '../../utils/cifrado-credencial';
+import { usuarioSeguro } from './helper';
 
 export const cambiarContrasena = async (req: Request, res: Response) => {
   if (!req.autenticacion) throw noAutenticado();
@@ -19,12 +20,12 @@ export const cambiarContrasena = async (req: Request, res: Response) => {
   }
 
   const ahora = new Date();
-  const nuevoHash = await hashContrasena(body.contrasenaNueva);
-  await prisma.$transaction(async (tx) => {
-    await tx.usuario.update({
+  const camposContrasena = await prepararCamposContrasena(body.contrasenaNueva);
+  const usuarioActualizado = await prisma.$transaction(async (tx) => {
+    const actualizado = await tx.usuario.update({
       where: { id: usuario.id },
       data: {
-        hashContrasena: nuevoHash,
+        ...camposContrasena,
         debeCambiarContrasena: false,
         contrasenaCambiadaEn: ahora,
       },
@@ -41,8 +42,11 @@ export const cambiarContrasena = async (req: Request, res: Response) => {
       direccionIp: req.ip,
       agenteUsuario: req.get('user-agent') ?? null,
     }, tx);
+    return actualizado;
   });
 
-  limpiarCookieSesion(res);
-  responder(res, { mensaje: 'Contrasena actualizada. Inicia sesion nuevamente.' });
+  responder(res, {
+    mensaje: 'Contrasena actualizada',
+    usuario: usuarioSeguro(usuarioActualizado),
+  });
 };

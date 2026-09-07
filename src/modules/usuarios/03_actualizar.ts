@@ -4,7 +4,7 @@ import { conflicto } from '../../utils/errores';
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
-import { assertNoQuitaUltimoSuperAdmin, assertPuedeGestionarRolUsuario, seleccionarUsuarioSeguro } from './helper';
+import { assertNoQuitaUltimoSuperAdmin, assertPuedeGestionarRolUsuario, limpiarUsuario, seleccionarUsuarioSeguro } from './helper';
 import { esquemaActualizarUsuario, esquemaId } from './zod';
 import { puedeUsuarioAuditar } from '../asignaciones/servicio_reasignacion';
 import { aplicarResolucionesAuditoriasUsuario } from './servicio_impacto_usuario';
@@ -52,15 +52,17 @@ export const actualizarUsuario = async (req: Request, res: Response) => {
       },
       select: seleccionarUsuarioSeguro,
     });
+    const anteriorSeguro = limpiarUsuario(anterior);
+    const actualizadoSeguro = limpiarUsuario(actualizado);
     await registrarAuditoria({
       usuarioId: req.autenticacion?.usuarioId,
       accion: anterior.rol !== actualizado.rol ? 'CAMBIAR_ROL_USUARIO' : 'ACTUALIZAR_USUARIO',
       tipoEntidad: 'Usuario',
       idEntidad: id,
-      datosAnteriores: anterior,
-      datosNuevos: actualizado,
+      datosAnteriores: anteriorSeguro,
+      datosNuevos: actualizadoSeguro,
     }, tx);
-    return { usuario: actualizado, impacto };
+    return { usuario: actualizadoSeguro, impacto };
   });
   responder(res, usuario);
 };

@@ -3,6 +3,8 @@ import { prisma, type PrismaTransaction } from '../../db';
 
 const camposSensibles = new Set([
   'hashContrasena',
+  'credencialCifrada',
+  'credencial',
   'hashToken',
   'token',
   'contrasena',

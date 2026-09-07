@@ -4,7 +4,7 @@ import { prisma } from '../../db';
 import { RolUsuario } from '../../generated/prisma/enums';
 import { obtenerPaginacion } from '../../utils/paginacion';
 import { responderLista } from '../../utils/respuesta';
-import { seleccionarUsuarioSeguro } from './helper';
+import { limpiarUsuario, seleccionarUsuarioSeguro } from './helper';
 
 const esquemaQuery = z.object({
   busqueda: z.string().trim().optional(),
@@ -68,5 +68,5 @@ export const listarUsuarios = async (req: Request, res: Response) => {
     prisma.usuario.count({ where }),
   ]);
 
-  responderLista(res, datos, { pagina, limite, total });
+  responderLista(res, datos.map(limpiarUsuario), { pagina, limite, total });
 };

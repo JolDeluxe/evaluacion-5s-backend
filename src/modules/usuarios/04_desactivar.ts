@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
-import { assertPuedeGestionarRolUsuario, seleccionarUsuarioSeguro } from './helper';
+import { assertPuedeGestionarRolUsuario, limpiarUsuario, seleccionarUsuarioSeguro } from './helper';
 import {
   aplicarResolucionesAuditoriasUsuario,
   aplicarResolucionesResponsabilidadUsuario,
@@ -55,6 +55,7 @@ export const desactivarUsuario = async (req: Request, res: Response) => {
       data: { revocadoEn: new Date() },
     });
 
+    const actualizadoSeguro = limpiarUsuario(actualizado);
     await registrarAuditoria(
       {
         usuarioId: actorId,
@@ -71,13 +72,13 @@ export const desactivarUsuario = async (req: Request, res: Response) => {
           activo: anterior.activo,
           debeCambiarContrasena: anterior.debeCambiarContrasena,
         },
-        datosNuevos: actualizado,
+        datosNuevos: actualizadoSeguro,
       },
       tx,
     );
 
     return {
-      usuario: actualizado,
+      usuario: actualizadoSeguro,
       impacto: {
         completadas: auditorias.impacto.historico.completadas,
         vencidas: auditorias.impacto.historico.vencidas,

@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import type { PrismaTransaction } from '../../db';
 import { EstadoAsignacionAuditoria } from '../../generated/prisma/enums';
 import { conflicto } from '../../utils/errores';
-import { calcularCierreConGracia, sumarDiasHabiles, tieneEnvioResultadoValido } from '../../utils/periodos';
+import { calcularCierreConGracia, tieneEnvioResultadoValido } from '../../utils/periodos';
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';

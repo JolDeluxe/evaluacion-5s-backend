@@ -41,6 +41,7 @@ export type UsuarioMinAggregateOutputType = {
   telefonoE164: string | null
   nombre: string | null
   hashContrasena: string | null
+  credencialCifrada: string | null
   rol: $Enums.RolUsuario | null
   activo: boolean | null
   debeCambiarContrasena: boolean | null
@@ -57,6 +58,7 @@ export type UsuarioMaxAggregateOutputType = {
   telefonoE164: string | null
   nombre: string | null
   hashContrasena: string | null
+  credencialCifrada: string | null
   rol: $Enums.RolUsuario | null
   activo: boolean | null
   debeCambiarContrasena: boolean | null
@@ -73,6 +75,7 @@ export type UsuarioCountAggregateOutputType = {
   telefonoE164: number
   nombre: number
   hashContrasena: number
+  credencialCifrada: number
   rol: number
   activo: number
   debeCambiarContrasena: number
@@ -99,6 +102,7 @@ export type UsuarioMinAggregateInputType = {
   telefonoE164?: true
   nombre?: true
   hashContrasena?: true
+  credencialCifrada?: true
   rol?: true
   activo?: true
   debeCambiarContrasena?: true
@@ -115,6 +119,7 @@ export type UsuarioMaxAggregateInputType = {
   telefonoE164?: true
   nombre?: true
   hashContrasena?: true
+  credencialCifrada?: true
   rol?: true
   activo?: true
   debeCambiarContrasena?: true
@@ -131,6 +136,7 @@ export type UsuarioCountAggregateInputType = {
   telefonoE164?: true
   nombre?: true
   hashContrasena?: true
+  credencialCifrada?: true
   rol?: true
   activo?: true
   debeCambiarContrasena?: true
@@ -234,6 +240,7 @@ export type UsuarioGroupByOutputType = {
   telefonoE164: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada: string | null
   rol: $Enums.RolUsuario
   activo: boolean
   debeCambiarContrasena: boolean
@@ -273,6 +280,7 @@ export type UsuarioWhereInput = {
   telefonoE164?: Prisma.StringNullableFilter<"Usuario"> | string | null
   nombre?: Prisma.StringFilter<"Usuario"> | string
   hashContrasena?: Prisma.StringFilter<"Usuario"> | string
+  credencialCifrada?: Prisma.StringNullableFilter<"Usuario"> | string | null
   rol?: Prisma.EnumRolUsuarioFilter<"Usuario"> | $Enums.RolUsuario
   activo?: Prisma.BoolFilter<"Usuario"> | boolean
   debeCambiarContrasena?: Prisma.BoolFilter<"Usuario"> | boolean
@@ -303,6 +311,7 @@ export type UsuarioOrderByWithRelationInput = {
   telefonoE164?: Prisma.SortOrderInput | Prisma.SortOrder
   nombre?: Prisma.SortOrder
   hashContrasena?: Prisma.SortOrder
+  credencialCifrada?: Prisma.SortOrderInput | Prisma.SortOrder
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
@@ -337,6 +346,7 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   telefonoE164?: Prisma.StringNullableFilter<"Usuario"> | string | null
   nombre?: Prisma.StringFilter<"Usuario"> | string
   hashContrasena?: Prisma.StringFilter<"Usuario"> | string
+  credencialCifrada?: Prisma.StringNullableFilter<"Usuario"> | string | null
   rol?: Prisma.EnumRolUsuarioFilter<"Usuario"> | $Enums.RolUsuario
   activo?: Prisma.BoolFilter<"Usuario"> | boolean
   debeCambiarContrasena?: Prisma.BoolFilter<"Usuario"> | boolean
@@ -367,6 +377,7 @@ export type UsuarioOrderByWithAggregationInput = {
   telefonoE164?: Prisma.SortOrderInput | Prisma.SortOrder
   nombre?: Prisma.SortOrder
   hashContrasena?: Prisma.SortOrder
+  credencialCifrada?: Prisma.SortOrderInput | Prisma.SortOrder
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
@@ -391,6 +402,7 @@ export type UsuarioScalarWhereWithAggregatesInput = {
   telefonoE164?: Prisma.StringNullableWithAggregatesFilter<"Usuario"> | string | null
   nombre?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   hashContrasena?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
+  credencialCifrada?: Prisma.StringNullableWithAggregatesFilter<"Usuario"> | string | null
   rol?: Prisma.EnumRolUsuarioWithAggregatesFilter<"Usuario"> | $Enums.RolUsuario
   activo?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
   debeCambiarContrasena?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
@@ -406,6 +418,7 @@ export type UsuarioCreateInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -436,6 +449,7 @@ export type UsuarioUncheckedCreateInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -465,6 +479,7 @@ export type UsuarioUpdateInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -495,6 +510,7 @@ export type UsuarioUncheckedUpdateInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -525,6 +541,7 @@ export type UsuarioCreateManyInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -540,6 +557,7 @@ export type UsuarioUpdateManyMutationInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -556,6 +574,7 @@ export type UsuarioUncheckedUpdateManyInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -578,6 +597,7 @@ export type UsuarioCountOrderByAggregateInput = {
   telefonoE164?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   hashContrasena?: Prisma.SortOrder
+  credencialCifrada?: Prisma.SortOrder
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
@@ -598,6 +618,7 @@ export type UsuarioMaxOrderByAggregateInput = {
   telefonoE164?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   hashContrasena?: Prisma.SortOrder
+  credencialCifrada?: Prisma.SortOrder
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
@@ -614,6 +635,7 @@ export type UsuarioMinOrderByAggregateInput = {
   telefonoE164?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   hashContrasena?: Prisma.SortOrder
+  credencialCifrada?: Prisma.SortOrder
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
@@ -875,6 +897,7 @@ export type UsuarioCreateWithoutSesionesInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -904,6 +927,7 @@ export type UsuarioUncheckedCreateWithoutSesionesInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -948,6 +972,7 @@ export type UsuarioUpdateWithoutSesionesInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -977,6 +1002,7 @@ export type UsuarioUncheckedUpdateWithoutSesionesInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1005,6 +1031,7 @@ export type UsuarioCreateWithoutTokensRestablecimientoInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1034,6 +1061,7 @@ export type UsuarioUncheckedCreateWithoutTokensRestablecimientoInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1078,6 +1106,7 @@ export type UsuarioUpdateWithoutTokensRestablecimientoInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1107,6 +1136,7 @@ export type UsuarioUncheckedUpdateWithoutTokensRestablecimientoInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1135,6 +1165,7 @@ export type UsuarioCreateWithoutAreasUsuarioInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1164,6 +1195,7 @@ export type UsuarioUncheckedCreateWithoutAreasUsuarioInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1208,6 +1240,7 @@ export type UsuarioUpdateWithoutAreasUsuarioInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1237,6 +1270,7 @@ export type UsuarioUncheckedUpdateWithoutAreasUsuarioInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1265,6 +1299,7 @@ export type UsuarioCreateWithoutFormulariosCreadosInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1294,6 +1329,7 @@ export type UsuarioUncheckedCreateWithoutFormulariosCreadosInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1338,6 +1374,7 @@ export type UsuarioUpdateWithoutFormulariosCreadosInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1367,6 +1404,7 @@ export type UsuarioUncheckedUpdateWithoutFormulariosCreadosInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1395,6 +1433,7 @@ export type UsuarioCreateWithoutVersionesCreadasInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1424,6 +1463,7 @@ export type UsuarioUncheckedCreateWithoutVersionesCreadasInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1468,6 +1508,7 @@ export type UsuarioUpdateWithoutVersionesCreadasInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1497,6 +1538,7 @@ export type UsuarioUncheckedUpdateWithoutVersionesCreadasInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1525,6 +1567,7 @@ export type UsuarioCreateWithoutAsignacionesMensualesComoAuditorInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1554,6 +1597,7 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesComoAuditorInput =
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1587,6 +1631,7 @@ export type UsuarioCreateWithoutAsignacionesMensualesCreadasInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1616,6 +1661,7 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesCreadasInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1660,6 +1706,7 @@ export type UsuarioUpdateWithoutAsignacionesMensualesComoAuditorInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1689,6 +1736,7 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesComoAuditorInput =
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1728,6 +1776,7 @@ export type UsuarioUpdateWithoutAsignacionesMensualesCreadasInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1757,6 +1806,7 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesCreadasInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1785,6 +1835,7 @@ export type UsuarioCreateWithoutAsignacionesCreadasInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1814,6 +1865,7 @@ export type UsuarioUncheckedCreateWithoutAsignacionesCreadasInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1847,6 +1899,7 @@ export type UsuarioCreateWithoutAsignacionesComoAuditorInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1876,6 +1929,7 @@ export type UsuarioUncheckedCreateWithoutAsignacionesComoAuditorInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -1920,6 +1974,7 @@ export type UsuarioUpdateWithoutAsignacionesCreadasInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1949,6 +2004,7 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesCreadasInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1988,6 +2044,7 @@ export type UsuarioUpdateWithoutAsignacionesComoAuditorInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2017,6 +2074,7 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesComoAuditorInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2045,6 +2103,7 @@ export type UsuarioCreateWithoutEnlacesCreadosInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2074,6 +2133,7 @@ export type UsuarioUncheckedCreateWithoutEnlacesCreadosInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2118,6 +2178,7 @@ export type UsuarioUpdateWithoutEnlacesCreadosInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2147,6 +2208,7 @@ export type UsuarioUncheckedUpdateWithoutEnlacesCreadosInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2175,6 +2237,7 @@ export type UsuarioCreateWithoutEnviosRealizadosInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2204,6 +2267,7 @@ export type UsuarioUncheckedCreateWithoutEnviosRealizadosInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2248,6 +2312,7 @@ export type UsuarioUpdateWithoutEnviosRealizadosInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2277,6 +2342,7 @@ export type UsuarioUncheckedUpdateWithoutEnviosRealizadosInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2305,6 +2371,7 @@ export type UsuarioCreateWithoutSuscripcionesPushInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2334,6 +2401,7 @@ export type UsuarioUncheckedCreateWithoutSuscripcionesPushInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2378,6 +2446,7 @@ export type UsuarioUpdateWithoutSuscripcionesPushInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2407,6 +2476,7 @@ export type UsuarioUncheckedUpdateWithoutSuscripcionesPushInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2435,6 +2505,7 @@ export type UsuarioCreateWithoutNotificacionesInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2464,6 +2535,7 @@ export type UsuarioUncheckedCreateWithoutNotificacionesInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2508,6 +2580,7 @@ export type UsuarioUpdateWithoutNotificacionesInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2537,6 +2610,7 @@ export type UsuarioUncheckedUpdateWithoutNotificacionesInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2565,6 +2639,7 @@ export type UsuarioCreateWithoutRegistrosAuditoriaInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2594,6 +2669,7 @@ export type UsuarioUncheckedCreateWithoutRegistrosAuditoriaInput = {
   telefonoE164?: string | null
   nombre: string
   hashContrasena: string
+  credencialCifrada?: string | null
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2638,6 +2714,7 @@ export type UsuarioUpdateWithoutRegistrosAuditoriaInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2667,6 +2744,7 @@ export type UsuarioUncheckedUpdateWithoutRegistrosAuditoriaInput = {
   telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2844,6 +2922,7 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   telefonoE164?: boolean
   nombre?: boolean
   hashContrasena?: boolean
+  credencialCifrada?: boolean
   rol?: boolean
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2877,6 +2956,7 @@ export type UsuarioSelectScalar = {
   telefonoE164?: boolean
   nombre?: boolean
   hashContrasena?: boolean
+  credencialCifrada?: boolean
   rol?: boolean
   activo?: boolean
   debeCambiarContrasena?: boolean
@@ -2886,7 +2966,7 @@ export type UsuarioSelectScalar = {
   actualizadoEn?: boolean
 }
 
-export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombreUsuario" | "correo" | "telefonoE164" | "nombre" | "hashContrasena" | "rol" | "activo" | "debeCambiarContrasena" | "ultimoInicioSesionEn" | "contrasenaCambiadaEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuario"]>
+export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombreUsuario" | "correo" | "telefonoE164" | "nombre" | "hashContrasena" | "credencialCifrada" | "rol" | "activo" | "debeCambiarContrasena" | "ultimoInicioSesionEn" | "contrasenaCambiadaEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   asignacionesCreadas?: boolean | Prisma.Usuario$asignacionesCreadasArgs<ExtArgs>
   asignacionesComoAuditor?: boolean | Prisma.Usuario$asignacionesComoAuditorArgs<ExtArgs>
@@ -2930,6 +3010,7 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     telefonoE164: string | null
     nombre: string
     hashContrasena: string
+    credencialCifrada: string | null
     rol: $Enums.RolUsuario
     activo: boolean
     debeCambiarContrasena: boolean
@@ -3326,6 +3407,7 @@ export interface UsuarioFieldRefs {
   readonly telefonoE164: Prisma.FieldRef<"Usuario", 'String'>
   readonly nombre: Prisma.FieldRef<"Usuario", 'String'>
   readonly hashContrasena: Prisma.FieldRef<"Usuario", 'String'>
+  readonly credencialCifrada: Prisma.FieldRef<"Usuario", 'String'>
   readonly rol: Prisma.FieldRef<"Usuario", 'RolUsuario'>
   readonly activo: Prisma.FieldRef<"Usuario", 'Boolean'>
   readonly debeCambiarContrasena: Prisma.FieldRef<"Usuario", 'Boolean'>

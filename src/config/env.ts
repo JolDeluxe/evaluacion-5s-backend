@@ -5,6 +5,19 @@ const booleanFromString = z
   .optional()
   .transform((value) => value === 'true');
 
+const credentialsEncryptionKey = z.string().superRefine((value, context) => {
+  const decoded = Buffer.from(value, 'base64');
+  const normalizedInput = value.replace(/=+$/, '');
+  const normalizedDecoded = decoded.toString('base64').replace(/=+$/, '');
+
+  if (decoded.length !== 32 || normalizedInput !== normalizedDecoded) {
+    context.addIssue({
+      code: 'custom',
+      message: 'debe ser una cadena base64 válida de exactamente 32 bytes',
+    });
+  }
+});
+
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
@@ -12,6 +25,7 @@ const envSchema = z.object({
   FRONTEND_ORIGIN: z.string().url(),
   FRONTEND_ORIGINS: z.string().optional(),
   COOKIE_SECRET: z.string().min(32),
+  CREDENTIALS_ENCRYPTION_KEY: credentialsEncryptionKey,
   SESION_NOMBRE_COOKIE: z.string().min(1).default('sid_5s'),
   SESION_DIAS_INACTIVIDAD: z.coerce.number().int().positive().default(180),
   SESION_RENOVAR_CADA_HORAS: z.coerce.number().int().positive().default(8),

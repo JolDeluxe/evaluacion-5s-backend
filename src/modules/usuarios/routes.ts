@@ -9,6 +9,7 @@ import { desactivarUsuario } from './04_desactivar';
 import { reactivarUsuario } from './05_reactivar';
 import { establecerContrasenaTemporal } from './06_contrasena_temporal';
 import { obtenerImpactoAuditoriaUsuario } from './07_impacto_auditoria';
+import { obtenerCredencialUsuario } from './08_obtener_credencial';
 
 export const usuariosRouter = Router();
 
@@ -17,6 +18,7 @@ usuariosRouter.get('/', listarUsuarios);
 usuariosRouter.post('/', crearUsuario);
 usuariosRouter.patch('/:id', actualizarUsuario);
 usuariosRouter.get('/:id/impacto-auditoria', obtenerImpactoAuditoriaUsuario);
+usuariosRouter.get('/:id/credencial', obtenerCredencialUsuario);
 usuariosRouter.post('/:id/desactivar', desactivarUsuario);
 usuariosRouter.post('/:id/reactivar', reactivarUsuario);
 usuariosRouter.post('/:id/contrasena-temporal', establecerContrasenaTemporal);

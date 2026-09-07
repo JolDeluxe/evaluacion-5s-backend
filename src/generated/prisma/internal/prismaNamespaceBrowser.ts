@@ -96,6 +96,7 @@ export const UsuarioScalarFieldEnum = {
   telefonoE164: 'telefonoE164',
   nombre: 'nombre',
   hashContrasena: 'hashContrasena',
+  credencialCifrada: 'credencialCifrada',
   rol: 'rol',
   activo: 'activo',
   debeCambiarContrasena: 'debeCambiarContrasena',
@@ -461,7 +462,8 @@ export const UsuarioOrderByRelevanceFieldEnum = {
   correo: 'correo',
   telefonoE164: 'telefonoE164',
   nombre: 'nombre',
-  hashContrasena: 'hashContrasena'
+  hashContrasena: 'hashContrasena',
+  credencialCifrada: 'credencialCifrada'
 } as const
 
 export type UsuarioOrderByRelevanceFieldEnum = (typeof UsuarioOrderByRelevanceFieldEnum)[keyof typeof UsuarioOrderByRelevanceFieldEnum]

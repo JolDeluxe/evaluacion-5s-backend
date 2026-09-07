@@ -14,6 +14,7 @@ model Usuario {
   telefonoE164            String?                           @db.VarChar(24)
   nombre                  String                            @db.VarChar(160)
   hashContrasena          String                            @db.VarChar(255)
+  credencialCifrada       String?                           @db.Text
   rol                     RolUsuario
   activo                  Boolean                           @default(true)
   debeCambiarContrasena   Boolean                           @default(false)

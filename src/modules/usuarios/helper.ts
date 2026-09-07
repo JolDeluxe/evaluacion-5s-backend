@@ -17,22 +17,16 @@ export const seleccionarUsuarioSeguro = {
   contrasenaCambiadaEn: true,
   creadoEn: true,
   actualizadoEn: true,
+  credencialCifrada: true,
 };
 
-export const limpiarUsuario = (usuario: Usuario) => ({
-  id: usuario.id,
-  nombreUsuario: usuario.nombreUsuario,
-  correo: usuario.correo,
-  telefonoE164: usuario.telefonoE164,
-  nombre: usuario.nombre,
-  rol: usuario.rol,
-  activo: usuario.activo,
-  debeCambiarContrasena: usuario.debeCambiarContrasena,
-  ultimoInicioSesionEn: usuario.ultimoInicioSesionEn,
-  contrasenaCambiadaEn: usuario.contrasenaCambiadaEn,
-  creadoEn: usuario.creadoEn,
-  actualizadoEn: usuario.actualizadoEn,
-});
+export const limpiarUsuario = <T extends Pick<Usuario, 'credencialCifrada'>>(usuario: T) => {
+  const { credencialCifrada, ...usuarioSeguro } = usuario;
+  return {
+    ...usuarioSeguro,
+    tieneCredencialCifrada: Boolean(credencialCifrada),
+  };
+};
 
 export const assertPuedeGestionarRolUsuario = async (
   actor: { usuarioId: number; rol: RolUsuario } | undefined,

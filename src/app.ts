@@ -36,6 +36,9 @@ const redact = [
   '*.accessToken',
   '*.refreshToken',
   '*.hashContrasena',
+  '*.credencialCifrada',
+  '*.credencial',
+  '*.CREDENTIALS_ENCRYPTION_KEY',
   '*.hashToken',
   '*.private_key',
   '*.COOKIE_SECRET',
@@ -70,6 +73,7 @@ const sanitizarUrl = (url?: string) => (
 );
 
 const app = express();
+app.disable('etag');
 
 if (env.PROXY_CONFIANZA === 'loopback') {
   app.set('trust proxy', 'loopback');

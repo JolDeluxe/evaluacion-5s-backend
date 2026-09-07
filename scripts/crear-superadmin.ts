@@ -2,10 +2,11 @@ import { RolUsuario } from '../src/generated/prisma/enums';
 import { prisma, cerrarPrisma } from '../src/db';
 import {
   generarTokenSeguro,
-  hashContrasena,
   normalizarCorreo,
   normalizarNombreUsuario,
 } from '../src/utils/crypto';
+
+import { prepararCamposContrasena } from '../src/utils/cifrado-credencial';
 
 const nombreUsuario = normalizarNombreUsuario(Bun.env.SUPER_ADMIN_NOMBRE_USUARIO ?? 'superadmin');
 const nombre = Bun.env.SUPER_ADMIN_NOMBRE?.trim() || 'Super administrador';
@@ -25,12 +26,13 @@ const ejecutar = async () => {
   }
 
   const contrasenaTemporal = generarTokenSeguro(16);
+  const camposContrasena = await prepararCamposContrasena(contrasenaTemporal);
   const usuario = await prisma.usuario.create({
     data: {
       nombreUsuario,
       correo,
       nombre,
-      hashContrasena: await hashContrasena(contrasenaTemporal),
+      ...camposContrasena,
       rol: RolUsuario.SUPER_ADMIN,
       debeCambiarContrasena: true,
     },

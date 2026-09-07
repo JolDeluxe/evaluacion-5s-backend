@@ -18,6 +18,7 @@ export const usuarioSeguro = (usuario: Usuario) => ({
   contrasenaCambiadaEn: usuario.contrasenaCambiadaEn,
   creadoEn: usuario.creadoEn,
   actualizadoEn: usuario.actualizadoEn,
+  tieneCredencialCifrada: Boolean(usuario.credencialCifrada),
 });
 
 export const crearSesion = async (

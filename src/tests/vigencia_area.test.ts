@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import { areaEsAuditableEnPeriodo, fechaFinDeMes, fechaInicioDeMes } from '../modules/areas/servicio_vigencia_area';
-import { construirPeriodoResumen, construirResultadoMensualCanonico, obtenerConjuntoElegibleRanking, construirGanadoresPorTipo } from '../modules/resultados/servicio';
+import { construirPeriodoResumen, construirResultadoMensualCanonico, construirGanadoresPorTipo } from '../modules/resultados/servicio';
 import { TipoArea } from '../generated/prisma/enums';
 
 describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => {
@@ -171,7 +171,7 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
           { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 100 },
         ],
         estadoMes: 'REALIZADA',
-      } as any;
+      } as unknown as Parameters<typeof construirGanadoresPorTipo>[0][number];
 
       const areaIncompleta = {
         area: { id: 2, codigo: 'BILL', nombre: 'BILLETERAS', tipo: TipoArea.OPERATIVA, esPropia: false },
@@ -181,7 +181,7 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
           { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 100 },
         ],
         estadoMes: 'INCOMPLETA',
-      } as any;
+      } as unknown as Parameters<typeof construirGanadoresPorTipo>[0][number];
 
       const ganadores = construirGanadoresPorTipo([areaCompleta, areaIncompleta]);
       expect(ganadores.operativo.resultado).toBe(100);
@@ -198,7 +198,7 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
           { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 100 },
         ],
         estadoMes: 'INCOMPLETA',
-      } as any;
+      } as unknown as Parameters<typeof construirGanadoresPorTipo>[0][number];
 
       const admin2 = {
         area: { id: 11, codigo: 'SIG', nombre: 'OFICINA DE SIGMA - VIGILANCIA', tipo: TipoArea.ADMINISTRATIVA, esPropia: false },
@@ -208,7 +208,7 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
           { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 100 },
         ],
         estadoMes: 'INCOMPLETA',
-      } as any;
+      } as unknown as Parameters<typeof construirGanadoresPorTipo>[0][number];
 
       const admin3 = {
         area: { id: 12, codigo: 'ADM', nombre: 'ADMINISTRACION', tipo: TipoArea.ADMINISTRATIVA, esPropia: false },
@@ -218,7 +218,7 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
           { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 82.60 },
         ],
         estadoMes: 'INCOMPLETA',
-      } as any;
+      } as unknown as Parameters<typeof construirGanadoresPorTipo>[0][number];
 
       const ganadores = construirGanadoresPorTipo([admin1, admin2, admin3]);
       expect(ganadores.administrativo.resultado).toBe(100);
@@ -238,7 +238,7 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
           { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 97 },
         ],
         estadoMes: 'INCOMPLETA',
-      } as any;
+      } as unknown as Parameters<typeof construirGanadoresPorTipo>[0][number];
 
       const area91 = {
         area: { id: 21, codigo: 'A91', nombre: 'Área 91', tipo: TipoArea.OPERATIVA, esPropia: false },
@@ -248,7 +248,7 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
           { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 91 },
         ],
         estadoMes: 'INCOMPLETA',
-      } as any;
+      } as unknown as Parameters<typeof construirGanadoresPorTipo>[0][number];
 
       const ganadores = construirGanadoresPorTipo([area97, area91]);
       expect(ganadores.operativo.resultado).toBe(97);
@@ -265,7 +265,7 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
           { periodo: 2, completado: false, estado: 'NO_REALIZADA', porcentaje: null },
         ],
         estadoMes: 'NO_REALIZADA',
-      } as any;
+      } as unknown as Parameters<typeof construirGanadoresPorTipo>[0][number];
 
       const ganadores = construirGanadoresPorTipo([areaSinEnvio]);
       expect(ganadores.operativo.resultado).toBe(null);
@@ -274,15 +274,15 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
 
     test('5. Confirmar que NO_REALIZADA + 100 continúa produciendo resultado mensual 100', () => {
       const periodos1 = [
-        { periodo: 1, completado: false, estado: 'NO_REALIZADA', porcentaje: null } as any,
-        { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 100 } as any,
-      ];
+        { periodo: 1, completado: false, estado: 'NO_REALIZADA', porcentaje: null },
+        { periodo: 2, completado: true, estado: 'REALIZADA', porcentaje: 100 },
+      ] as unknown as Parameters<typeof construirResultadoMensualCanonico>[0];
       expect(construirResultadoMensualCanonico(periodos1)).toBe(100);
 
       const periodos2 = [
-        { periodo: 1, completado: true, estado: 'REALIZADA', porcentaje: 100 } as any,
-        { periodo: 2, completado: false, estado: 'NO_REALIZADA', porcentaje: null } as any,
-      ];
+        { periodo: 1, completado: true, estado: 'REALIZADA', porcentaje: 100 },
+        { periodo: 2, completado: false, estado: 'NO_REALIZADA', porcentaje: null },
+      ] as unknown as Parameters<typeof construirResultadoMensualCanonico>[0];
       expect(construirResultadoMensualCanonico(periodos2)).toBe(100);
     });
   });

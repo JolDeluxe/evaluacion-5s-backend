@@ -1,17 +1,21 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../db';
-import { generarTokenSeguro, hashContrasena, normalizarCorreo, normalizarNombreUsuario, validarContrasena } from '../../utils/crypto';
+import { generarTokenSeguro, normalizarCorreo, normalizarNombreUsuario, validarContrasena } from '../../utils/crypto';
 import { solicitudInvalida } from '../../utils/errores';
 import { responderCreado } from '../../utils/respuesta';
 import { registrarAuditoria } from '../registros_auditoria/helper';
-import { assertPuedeGestionarRolUsuario, seleccionarUsuarioSeguro } from './helper';
+import { assertPuedeGestionarRolUsuario, limpiarUsuario, seleccionarUsuarioSeguro } from './helper';
 import { esquemaCrearUsuario } from './zod';
+
+import { prepararCamposContrasena } from '../../utils/cifrado-credencial';
 
 export const crearUsuario = async (req: Request, res: Response) => {
   const body = esquemaCrearUsuario.parse(req.body);
   const contrasenaTemporal = body.contrasena ?? generarTokenSeguro(12);
   const errorContrasena = validarContrasena(contrasenaTemporal);
   if (errorContrasena) throw solicitudInvalida(errorContrasena);
+
+  const camposContrasena = await prepararCamposContrasena(contrasenaTemporal);
 
   const usuario = await prisma.$transaction(async (tx) => {
     await assertPuedeGestionarRolUsuario(req.autenticacion, { rol: body.rol }, tx, 'crear');
@@ -22,19 +26,20 @@ export const crearUsuario = async (req: Request, res: Response) => {
         telefonoE164: body.telefonoE164?.trim() || null,
         nombre: body.nombre.trim(),
         rol: body.rol,
-        hashContrasena: await hashContrasena(contrasenaTemporal),
+        ...camposContrasena,
         debeCambiarContrasena: true,
       },
       select: seleccionarUsuarioSeguro,
     });
+    const usuarioSeguro = limpiarUsuario(creado);
     await registrarAuditoria({
       usuarioId: req.autenticacion?.usuarioId,
       accion: body.rol === 'SUPER_ADMIN' ? 'CREAR_SUPER_ADMIN' : 'CREAR_USUARIO',
       tipoEntidad: 'Usuario',
       idEntidad: creado.id,
-      datosNuevos: creado,
+      datosNuevos: usuarioSeguro,
     }, tx);
-    return creado;
+    return usuarioSeguro;
   });
 
   responderCreado(res, { usuario, contrasenaTemporal: body.contrasena ? undefined : contrasenaTemporal });

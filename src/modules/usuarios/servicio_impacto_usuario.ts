@@ -1,7 +1,6 @@
 import type { PrismaTransaction } from '../../db';
 import { EstadoAsignacionAuditoria } from '../../generated/prisma/enums';
 import { conflicto, solicitudInvalida } from '../../utils/errores';
-import { calcularCierreConGracia } from '../../utils/periodos';
 import { bloquearObjetivoAuditoria, validarAuditorAsignable } from '../asignaciones/helper';
 import { obtenerVistaMensual } from '../asignaciones/programacion_mensual';
 import { clasificarAsignacionParaReasignacion } from '../asignaciones/servicio_reasignacion';

@@ -1,10 +1,12 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../db';
-import { hashContrasena, hashSha256, validarContrasena } from '../../utils/crypto';
+import { hashSha256, validarContrasena } from '../../utils/crypto';
 import { solicitudInvalida } from '../../utils/errores';
 import { responder } from '../../utils/respuesta';
 import { registrarAuditoria } from '../registros_auditoria/helper';
 import { esquemaRestablecerContrasena } from './zod';
+
+import { prepararCamposContrasena } from '../../utils/cifrado-credencial';
 
 export const restablecerContrasena = async (req: Request, res: Response) => {
   const body = esquemaRestablecerContrasena.parse(req.body);
@@ -13,7 +15,7 @@ export const restablecerContrasena = async (req: Request, res: Response) => {
 
   const hashToken = hashSha256(body.token);
   const ahora = new Date();
-  const nuevoHash = await hashContrasena(body.contrasena);
+  const camposContrasena = await prepararCamposContrasena(body.contrasena);
 
   await prisma.$transaction(async (tx) => {
     const token = await tx.tokenRestablecimientoContrasena.findUnique({
@@ -28,7 +30,7 @@ export const restablecerContrasena = async (req: Request, res: Response) => {
     await tx.usuario.update({
       where: { id: token.usuarioId },
       data: {
-        hashContrasena: nuevoHash,
+        ...camposContrasena,
         debeCambiarContrasena: false,
         contrasenaCambiadaEn: ahora,
       },
