@@ -131,3 +131,54 @@ export const calcularProximoIntento = (intentos: number) => {
   const minutos = [1, 5, 15, 60, 360][Math.min(intentos, 4)];
   return new Date(Date.now() + minutos * 60 * 1000);
 };
+
+export type NodemailerErrorLike = Error & {
+  code?: string;
+  responseCode?: number;
+  command?: string;
+};
+
+/**
+ * Determina si un error retornado por el proveedor SMTP es permanente o transitorio.
+ * Utiliza propiedades estructuradas de Nodemailer/Node (responseCode 5xx, code EENVELOPE, etc.)
+ */
+export const esErrorPermanenteSmtp = (error: unknown): boolean => {
+  if (!error) return false;
+
+  const err = error as NodemailerErrorLike;
+
+  // 1. Códigos de respuesta SMTP 5xx (550-559 = mailbox unavailable, user unknown, etc.)
+  if (typeof err.responseCode === 'number') {
+    if (err.responseCode >= 550 && err.responseCode < 600) {
+      return true;
+    }
+  }
+
+  // 2. Códigos estructurados de Nodemailer / Node
+  if (typeof err.code === 'string') {
+    const codigosPermanentes = [
+      'EENVELOPE', // Destinatario o remitente rechazado a nivel de sobre
+      'EMESSAGE', // Mensaje rechazado permanentemente por política o formato
+      'EADDRNOTAVAIL',
+    ];
+    if (codigosPermanentes.includes(err.code)) {
+      return true;
+    }
+  }
+
+  // 3. Fallback defensivo sobre mensaje
+  if (err instanceof Error) {
+    const msg = err.message.toLowerCase();
+    if (
+      msg.includes('user not found') ||
+      msg.includes('no such user') ||
+      msg.includes('mailbox unavailable') ||
+      msg.includes('recipient address rejected')
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
+

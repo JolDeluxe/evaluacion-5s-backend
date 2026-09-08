@@ -585,17 +585,17 @@ describe('Asignacion mensual simplificada', () => {
 
   test('reabrir conserva inicialmente el auditor de la asignacion', async () => {
     const tx = new FakeTx({ soloArea1: true });
-    await prepararMes(tx, 2026, 1);
-    const p2 = tx.objetivosDeAreaMes(1, 2026, 1)[1];
-    await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 1, auditorMensualId: 10, asignadoPorId: 1 });
+    await prepararMes(tx, 2026, 8);
+    const p1 = tx.objetivosDeAreaMes(1, 2026, 8)[0];
+    await guardarAsignacionMensual(tx as any, { areaId: 1, anio: 2026, mes: 8, auditorMensualId: 10, asignadoPorId: 1 });
 
     const asignacion = await tx.asignacionAuditoria.create({
       data: {
-        objetivoAuditoriaId: p2.id,
+        objetivoAuditoriaId: p1.id,
         auditorId: 10,
         asignadoPorId: 1,
         estado: EstadoAsignacionAuditoria.VENCIDA,
-        venceEn: date(2026, 2, 6),
+        venceEn: date(2026, 8, 22),
       },
     });
 
@@ -867,8 +867,8 @@ describe('Asignacion mensual simplificada', () => {
       const tx = new FakeTx({ soloArea1: true });
       tx.usuarioArea.findFirst = async () => ({ id: 99 } as any); // El auditor es responsable de su propia área
 
-      const p1 = { id: 100, areaId: 1, anio: 2026, mes: 8, periodo: 1, iniciaEn: new Date(2026, 7, 1), terminaEn: new Date(2026, 7, 10), envioResultado: null, enviosAuditoria: [], asignacionesAuditoria: [] };
-      tx.objetivos.push(p1 as any);
+      await prepararMes(tx, 2026, 8);
+      const p1 = tx.objetivos.find((o) => o.periodo === 1);
       const asigP1 = await tx.asignacionAuditoria.create({
         data: { objetivoAuditoriaId: p1.id, auditorId: 10, asignadoPorId: 1, estado: 'VENCIDA', venceEn: new Date(2026, 7, 10) },
       });

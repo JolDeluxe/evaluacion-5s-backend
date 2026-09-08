@@ -70,7 +70,8 @@ export const ModelName = {
   SuscripcionPush: 'SuscripcionPush',
   Notificacion: 'Notificacion',
   EntregaNotificacion: 'EntregaNotificacion',
-  RegistroAuditoria: 'RegistroAuditoria'
+  RegistroAuditoria: 'RegistroAuditoria',
+  SecretoSistema: 'SecretoSistema'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -433,6 +434,17 @@ export const RegistroAuditoriaScalarFieldEnum = {
 export type RegistroAuditoriaScalarFieldEnum = (typeof RegistroAuditoriaScalarFieldEnum)[keyof typeof RegistroAuditoriaScalarFieldEnum]
 
 
+export const SecretoSistemaScalarFieldEnum = {
+  clave: 'clave',
+  valorCifrado: 'valorCifrado',
+  metadatos: 'metadatos',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type SecretoSistemaScalarFieldEnum = (typeof SecretoSistemaScalarFieldEnum)[keyof typeof SecretoSistemaScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -631,4 +643,12 @@ export const RegistroAuditoriaOrderByRelevanceFieldEnum = {
 } as const
 
 export type RegistroAuditoriaOrderByRelevanceFieldEnum = (typeof RegistroAuditoriaOrderByRelevanceFieldEnum)[keyof typeof RegistroAuditoriaOrderByRelevanceFieldEnum]
+
+
+export const SecretoSistemaOrderByRelevanceFieldEnum = {
+  clave: 'clave',
+  valorCifrado: 'valorCifrado'
+} as const
+
+export type SecretoSistemaOrderByRelevanceFieldEnum = (typeof SecretoSistemaOrderByRelevanceFieldEnum)[keyof typeof SecretoSistemaOrderByRelevanceFieldEnum]
 

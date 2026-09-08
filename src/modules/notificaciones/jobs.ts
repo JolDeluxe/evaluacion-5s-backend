@@ -5,6 +5,8 @@ import { EstadoAsignacionAuditoria, TipoNotificacion } from '../../generated/pri
 import { calcularCierreConGracia, tieneEnvioResultadoValido } from '../../utils/periodos';
 import { crearNotificacionUsuario } from './helper';
 import { procesarEntregasPendientes } from './worker';
+import { reconciliarAsignaciones } from './reconciliador-asignaciones';
+import { reconciliarResultados } from './reconciliador-resultados';
 
 export const iniciarJobsNotificaciones = () => {
   if (!env.NOTIFICACIONES_WORKER_ENABLED) return [];
@@ -17,6 +19,8 @@ export const iniciarJobsNotificaciones = () => {
     }),
     cron.schedule('*/30 * * * *', () => {
       generarNotificacionesPeriodos().catch(() => undefined);
+      reconciliarAsignaciones().catch(() => undefined);
+      reconciliarResultados().catch(() => undefined);
     }),
   ];
   return tareas;

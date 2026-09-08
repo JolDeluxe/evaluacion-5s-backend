@@ -141,3 +141,8 @@ export type EntregaNotificacion = Prisma.EntregaNotificacionModel
  * 
  */
 export type RegistroAuditoria = Prisma.RegistroAuditoriaModel
+/**
+ * Model SecretoSistema
+ * 
+ */
+export type SecretoSistema = Prisma.SecretoSistemaModel

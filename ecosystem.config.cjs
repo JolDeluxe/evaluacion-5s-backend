@@ -7,6 +7,7 @@ module.exports = {
       watch: false,
       env: {
         NODE_ENV: 'production',
+        TZ: 'America/Mexico_City',
       },
     },
   ],

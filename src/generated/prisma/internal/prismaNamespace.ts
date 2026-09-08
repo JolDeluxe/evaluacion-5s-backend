@@ -416,7 +416,8 @@ export const ModelName = {
   SuscripcionPush: 'SuscripcionPush',
   Notificacion: 'Notificacion',
   EntregaNotificacion: 'EntregaNotificacion',
-  RegistroAuditoria: 'RegistroAuditoria'
+  RegistroAuditoria: 'RegistroAuditoria',
+  SecretoSistema: 'SecretoSistema'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -432,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "usuario" | "sesion" | "tokenRestablecimientoContrasena" | "area" | "usuarioArea" | "formulario" | "versionFormulario" | "seccionFormulario" | "preguntaFormulario" | "objetivoAuditoria" | "asignacionMensual" | "asignacionAuditoria" | "enlaceInvitado" | "envioAuditoria" | "respuestaAuditoria" | "fotoAuditoria" | "suscripcionPush" | "notificacion" | "entregaNotificacion" | "registroAuditoria"
+    modelProps: "usuario" | "sesion" | "tokenRestablecimientoContrasena" | "area" | "usuarioArea" | "formulario" | "versionFormulario" | "seccionFormulario" | "preguntaFormulario" | "objetivoAuditoria" | "asignacionMensual" | "asignacionAuditoria" | "enlaceInvitado" | "envioAuditoria" | "respuestaAuditoria" | "fotoAuditoria" | "suscripcionPush" | "notificacion" | "entregaNotificacion" | "registroAuditoria" | "secretoSistema"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1756,6 +1757,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SecretoSistema: {
+      payload: Prisma.$SecretoSistemaPayload<ExtArgs>
+      fields: Prisma.SecretoSistemaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SecretoSistemaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SecretoSistemaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload>
+        }
+        findFirst: {
+          args: Prisma.SecretoSistemaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SecretoSistemaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload>
+        }
+        findMany: {
+          args: Prisma.SecretoSistemaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload>[]
+        }
+        create: {
+          args: Prisma.SecretoSistemaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload>
+        }
+        createMany: {
+          args: Prisma.SecretoSistemaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.SecretoSistemaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload>
+        }
+        update: {
+          args: Prisma.SecretoSistemaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload>
+        }
+        deleteMany: {
+          args: Prisma.SecretoSistemaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SecretoSistemaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.SecretoSistemaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SecretoSistemaPayload>
+        }
+        aggregate: {
+          args: Prisma.SecretoSistemaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSecretoSistema>
+        }
+        groupBy: {
+          args: Prisma.SecretoSistemaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SecretoSistemaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SecretoSistemaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SecretoSistemaCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2139,6 +2206,17 @@ export const RegistroAuditoriaScalarFieldEnum = {
 export type RegistroAuditoriaScalarFieldEnum = (typeof RegistroAuditoriaScalarFieldEnum)[keyof typeof RegistroAuditoriaScalarFieldEnum]
 
 
+export const SecretoSistemaScalarFieldEnum = {
+  clave: 'clave',
+  valorCifrado: 'valorCifrado',
+  metadatos: 'metadatos',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type SecretoSistemaScalarFieldEnum = (typeof SecretoSistemaScalarFieldEnum)[keyof typeof SecretoSistemaScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2337,6 +2415,14 @@ export const RegistroAuditoriaOrderByRelevanceFieldEnum = {
 } as const
 
 export type RegistroAuditoriaOrderByRelevanceFieldEnum = (typeof RegistroAuditoriaOrderByRelevanceFieldEnum)[keyof typeof RegistroAuditoriaOrderByRelevanceFieldEnum]
+
+
+export const SecretoSistemaOrderByRelevanceFieldEnum = {
+  clave: 'clave',
+  valorCifrado: 'valorCifrado'
+} as const
+
+export type SecretoSistemaOrderByRelevanceFieldEnum = (typeof SecretoSistemaOrderByRelevanceFieldEnum)[keyof typeof SecretoSistemaOrderByRelevanceFieldEnum]
 
 
 
@@ -2627,6 +2713,7 @@ export type GlobalOmitConfig = {
   notificacion?: Prisma.NotificacionOmit
   entregaNotificacion?: Prisma.EntregaNotificacionOmit
   registroAuditoria?: Prisma.RegistroAuditoriaOmit
+  secretoSistema?: Prisma.SecretoSistemaOmit
 }
 
 /* Types for Logging */

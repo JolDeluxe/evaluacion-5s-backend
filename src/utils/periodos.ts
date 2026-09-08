@@ -28,6 +28,7 @@ export const esDiaHabil = (fecha: Date) => {
 
 export const sumarDiasHabiles = (fecha: Date, dias: number) => {
   const resultado = new Date(fecha);
+  if (Number.isNaN(resultado.getTime())) return resultado;
   let restantes = dias;
 
   while (restantes > 0) {
@@ -39,6 +40,29 @@ export const sumarDiasHabiles = (fecha: Date, dias: number) => {
 };
 
 export const calcularCierreConGracia = (terminaEn: Date) => sumarDiasHabiles(terminaEn, DIAS_HABILES_GRACIA);
+
+/**
+ * Devuelve el primer día hábil del mes (lunes–viernes).
+ * Si el día 1 del mes ya es hábil, lo devuelve tal cual.
+ * De lo contrario avanza hasta el primer lunes.
+ * La hora devuelta es 00:00:00.000 del día resultante.
+ */
+export const primerDiaHabilMes = (anio: number, mes: number): Date => {
+  const dia1 = new Date(anio, mes - 1, 1, 0, 0, 0, 0);
+  if (esDiaHabil(dia1)) return dia1;
+  // Avanzar hasta el primer día hábil
+  const resultado = new Date(dia1);
+  while (!esDiaHabil(resultado)) {
+    resultado.setDate(resultado.getDate() + 1);
+  }
+  return resultado;
+};
+
+/**
+ * Devuelve el mes anterior dado un par anio/mes.
+ */
+export const mesAnteriorDe = (anio: number, mes: number): { anio: number; mes: number } =>
+  mes === 1 ? { anio: anio - 1, mes: 12 } : { anio, mes: mes - 1 };
 
 export const tieneEnvioResultadoValido = (objetivo: Pick<ObjetivoConPeriodo, 'envioResultado'>) =>
   Boolean(objetivo.envioResultado && !objetivo.envioResultado.invalidadoEn);

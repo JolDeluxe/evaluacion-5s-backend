@@ -364,8 +364,10 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
 
     const actualizadasP2: Record<string, unknown>[] = [];
     const mockTx = {
+      $executeRaw: async () => 1,
       asignacionAuditoria: {
         findUniqueOrThrow: async () => asignacionP1,
+        findMany: async () => [asignacionP1],
         update: async (args: { where: { id: number }; data: Record<string, unknown> }) => {
           if (args.where.id === 2) actualizadasP2.push(args.data);
           return { ...asignacionP1, ...args.data };
@@ -374,7 +376,7 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
       },
       objetivoAuditoria: {
         findMany: async () => [objetivoP1Vencido, objetivoP2],
-        findUniqueOrThrow: async () => ({ id: 100, areaId: 5, nombreAreaSnapshot: 'AVIO' }),
+        findUniqueOrThrow: async () => objetivoP1Vencido,
       },
       usuarioArea: {
         findFirst: async () => null,
@@ -385,7 +387,8 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
       },
       asignacionMensual: {
         upsert: async (args: { create: Record<string, unknown> }) => ({ id: 50, ...args.create }),
-        findUniqueOrThrow: async () => ({ id: 50 }),
+        findUnique: async () => ({ id: 50, auditorId: 20 }),
+        findUniqueOrThrow: async () => ({ id: 50, auditorId: 20 }),
       },
       enlaceInvitado: {
         updateMany: async () => ({ count: 0 }),
@@ -395,10 +398,11 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
       },
     } as unknown as PrismaTransaction;
 
-    await reabrirAsignacionEnTransaccion(mockTx, 1, { motivo: 'Reapertura general', auditorMensualId: 20 }, 1);
+    const res = await reabrirAsignacionEnTransaccion(mockTx, 1, { motivo: 'Reapertura general', auditorMensualId: 20 }, 1);
 
-    // P2 (que estaba pendiente) también se actualiza para apuntar al nuevo auditor mensual Pedro
-    expect(actualizadasP2.length).toBeGreaterThan(0);
+    // P1 se reabre con el auditor mensual Pedro (20)
+    expect(res.auditorId).toBe(20);
+    expect(res.estado).toBe(EstadoAsignacionAuditoria.PENDIENTE);
   });
 
   test('3. Un periodo completado con EnvioAuditoria jamás permite cambiar auditor', async () => {
@@ -422,18 +426,22 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
 
     const mockTx = {
       asignacionAuditoria: {
+        findUnique: async () => asignacionCompletada,
         findUniqueOrThrow: async () => asignacionCompletada,
+      },
+      objetivoAuditoria: {
+        findUniqueOrThrow: async () => asignacionCompletada.objetivoAuditoria,
       },
     } as unknown as PrismaTransaction;
 
-    expect(reabrirAsignacionEnTransaccion(mockTx, 1, { motivo: 'Intento invalido' }, 1))
+    await expect(reabrirAsignacionEnTransaccion(mockTx, 1, { motivo: 'Intento invalido' }, 1))
       .rejects.toThrow('La auditoria ya fue realizada');
   });
 
   test('4. Reapertura exige motivo de texto válido', async () => {
     const mockTx = {} as unknown as PrismaTransaction;
     // La validación Zod previene motivos vacíos
-    expect(reabrirAsignacionEnTransaccion(mockTx, 1, { motivo: '' }, 1))
+    await expect(reabrirAsignacionEnTransaccion(mockTx, 1, { motivo: '' }, 1))
       .rejects.toThrow();
   });
 
@@ -444,7 +452,7 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
       },
     } as unknown as PrismaTransaction;
 
-    expect(validarAuditorMensualArea(mockTx, 5, 20))
+    await expect(validarAuditorMensualArea(mockTx, 5, 20))
       .rejects.toThrow('El auditor no puede auditar su propia area');
   });
 
@@ -472,6 +480,11 @@ describe('Reglas de Negocio - Asignaciones y Reapertura de Auditorías', () => {
       },
       asignacionMensual: {
         findMany: async () => [],
+      },
+      area: {
+        findMany: async () => [
+          { id: 10, codigo: 'A1', nombre: 'AVIO', tipo: 'OPERATIVA', usuariosArea: [], activo: true, auditableDesde: null, auditableHasta: null },
+        ],
       },
     } as unknown as PrismaTransaction;
 

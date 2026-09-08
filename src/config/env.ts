@@ -46,6 +46,25 @@ const envSchema = z.object({
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().optional(),
   WHATSAPP_ENABLED: booleanFromString.default(false),
+  EMAIL_ENABLED: booleanFromString.default(false),
+  EMAIL_TEST_ENABLED: booleanFromString.default(false),
+  EMAIL_PROVIDER: z.enum(['microsoft_graph', 'smtp']).default('microsoft_graph'),
+  EMAIL_TOKEN_ENCRYPTION_KEY: z.string().optional().superRefine((value, context) => {
+    if (!value) return;
+    const decoded = Buffer.from(value, 'base64');
+    const normalizedInput = value.replace(/=+$/, '');
+    const normalizedDecoded = decoded.toString('base64').replace(/=+$/, '');
+    if (decoded.length !== 32 || normalizedInput !== normalizedDecoded) {
+      context.addIssue({
+        code: 'custom',
+        message: 'debe ser una cadena base64 válida de exactamente 32 bytes',
+      });
+    }
+  }),
+  MICROSOFT_GRAPH_CLIENT_ID: z.string().optional(),
+  MICROSOFT_GRAPH_AUTHORITY: z.string().url().default('https://login.microsoftonline.com/consumers'),
+  MICROSOFT_GRAPH_SENDER_EMAIL: z.string().optional(),
+  APP_PUBLIC_URL: z.string().url().default('http://localhost:5173'),
   NOTIFICACIONES_WORKER_ENABLED: booleanFromString.default(true),
   NOTIFICACIONES_WORKER_CRON: z.string().default('*/1 * * * *'),
   INVITADO_PUBLICO_ENABLED: booleanFromString.default(false),

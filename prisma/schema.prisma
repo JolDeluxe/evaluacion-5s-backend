@@ -454,6 +454,16 @@ model RegistroAuditoria {
   @@map("registros_auditoria")
 }
 
+model SecretoSistema {
+  clave         String   @id @db.VarChar(120)
+  valorCifrado  String   @db.LongText
+  metadatos     Json?
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@map("secretos_sistema")
+}
+
 enum RolUsuario {
   SUPER_ADMIN
   ADMINISTRADOR
@@ -492,6 +502,8 @@ enum TipoNotificacion {
   RESULTADO_PUBLICADO
   APROBACION_PENDIENTE
   SISTEMA
+  ASIGNACION_MENSUAL_CORREO
+  RESULTADO_MENSUAL_CORREO
 }
 
 enum CanalNotificacion {
