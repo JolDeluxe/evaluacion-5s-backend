@@ -108,6 +108,38 @@ El score se calcula con preguntas booleanas: cada `cumple=true` suma 1. Si
 `cumple=false`, `hallazgo` es obligatorio. Las fotos se guardan como
 `FotoAuditoria` ligada a `RespuestaAuditoria`.
 
+### Auditorias
+
+- `GET /api/v1/auditorias`
+- `POST /api/v1/auditorias`
+- `GET /api/v1/auditorias/:id`
+- `POST /api/v1/auditorias/:id/invalidar`
+- `POST /api/v1/auditorias/objetivos/:objetivoId/oficial/:envioId`
+
+Body resumido de envio:
+
+```json
+{
+  "identificadorCliente": "uuid",
+  "asignacionAuditoriaId": 1,
+  "nombreAuditorSnapshot": "Nombre auditor",
+  "finalizadoEn": "2026-08-21T12:00:00.000Z",
+  "codigoVerificacion": "ABCD-2345",
+  "respuestas": [
+    {
+      "preguntaFormularioId": 1,
+      "cumple": true,
+      "hallazgo": null,
+      "fotos": []
+    }
+  ]
+}
+```
+
+El score se calcula con preguntas booleanas: cada `cumple=true` suma 1. Si
+`cumple=false`, `hallazgo` es obligatorio. Las fotos se guardan como
+`FotoAuditoria` ligada a `RespuestaAuditoria`.
+
 ### Evidencias
 
 - `POST /api/v1/evidencias/firmar`: firma carga directa Cloudinary.
@@ -116,18 +148,39 @@ El score se calcula con preguntas booleanas: cada `cumple=true` suma 1. Si
 ### Resultados
 
 - `GET /api/v1/resultados/resumen?anio=2026&mes=8`
-- `GET /api/v1/resultados/ciclos/:id`
 - `GET /api/v1/resultados/areas?tipoArea=OPERATIVA`
 - `GET /api/v1/resultados/areas/:id/historial`
+- `GET /api/v1/resultados/areas/:areaId`
+- `GET /api/v1/resultados/areas/:areaId/periodos/:periodo`
+- `GET /api/v1/resultados/envios/:id`
+- `GET /api/v1/resultados/general` (requiere roles con acceso a resultados completos)
+- `GET /api/v1/resultados/general/pdf` (requiere roles admin negocio, descarga reporte PDF)
+- `GET /api/v1/resultados/reportes/general/pdf-directo?token=...` (descarga directa pública de PDF firmada con HMAC token para correos)
 
 Los resultados usan `ObjetivoAuditoria.envioResultadoId` como fuente de verdad.
 
-### Sistema tecnico
+### Sistema técnico y Notificaciones de Correo
 
-Solo `SUPER_ADMIN`.
+Exclusivo para rol `SUPER_ADMIN`.
 
-- `GET /api/v1/sistema/resumen`
-- `GET /api/v1/sistema/sesiones`
-- `POST /api/v1/sistema/sesiones/:id/revocar`
-- `GET /api/v1/sistema/entregas-notificacion`
-- `POST /api/v1/sistema/entregas-notificacion/:id/reintentar`
+- `GET /api/v1/sistema/resumen`: Estadísticas globales de usuarios, sesiones y registros de auditoría.
+- `GET /api/v1/sistema/sesiones`: Listado de sesiones activas.
+- `POST /api/v1/sistema/sesiones/:id/revocar`: Revocación manual de sesión.
+- `GET /api/v1/sistema/entregas-notificacion`: Listado paginado con soporte de cursor y filtros (`canal`, `estado`, `desde`, `hasta`, `limite`, `cursor`).
+- `POST /api/v1/sistema/entregas-notificacion/:id/reintentar`: Reintento de entrega fallida (resetea intentos a 0 y pasa a PENDIENTE).
+- `GET /api/v1/sistema/correos/resumen`: Métricas consolidadas (totales por estado, actividad 24h/7d/30d y por tipo).
+- `GET /api/v1/sistema/correos/estado`: Configuración actual de correo, proveedores (SMTP / Graph), timezone y worker.
+- `POST /api/v1/sistema/correos/reenviar/:id`: Reenvío manual de entrega enviada (crea nueva entrega hacia el correo actual del usuario).
+- `GET /api/v1/sistema/correos/simular`: Simulación dry-run de asignaciones, recordatorios P1/P2 y resultados.
+- `GET /api/v1/sistema/correos/preview`: Renderizado HTML/texto con QR inline y logo en Data URI para previsualización modal.
+- `POST /api/v1/sistema/correos/enviar-prueba`: Envío de prueba controlado dirigido exclusivamente a la cuenta del SUPER_ADMIN.
+- `GET /api/v1/sistema/correos/control-operativo`: Lectura del estado persistido en BD (ACTIVO/PAUSADO) y métricas preflight de la cola.
+- `POST /api/v1/sistema/correos/control-operativo/pausar`: Pausa operativa manual fail-safe.
+- `POST /api/v1/sistema/correos/control-operativo/reanudar`: Reanudación operativa (bloquea si existen correos dirigidos a `@example.test`).
+- `GET /api/v1/sistema/correos/entregas/:id/detalle`: Detalle completo de una entrega con datos de usuario y notificación.
+- `POST /api/v1/sistema/correos/entregas/:id/cancelar`: Cancelación individual de una entrega PENDIENTE o FALLIDA.
+- `POST /api/v1/sistema/correos/entregas/cancelar-masivo`: Cancelación en lote de hasta 500 entregas PENDIENTE o FALLIDA.
+- `POST /api/v1/sistema/correos/probar-cola`: Encolamiento de exactamente 1 entrega canario en estado PENDIENTE dirigida al SUPER_ADMIN.
+- `GET /api/v1/sistema/correos/microsoft/estado`: Estado de autenticación y conexión MSAL con Microsoft Graph.
+- `POST /api/v1/sistema/correos/microsoft/iniciar`: Inicio de flujo Device Code de autenticación con Microsoft.
+- `POST /api/v1/sistema/correos/microsoft/desconectar`: Desconexión y limpieza de tokens de Microsoft Graph.

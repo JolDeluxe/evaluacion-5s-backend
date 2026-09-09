@@ -1,4 +1,4 @@
-﻿import type { PrismaTransaction } from '../../db';
+import type { PrismaTransaction } from '../../db';
 import { prisma } from '../../db';
 import {
   CanalNotificacion,
@@ -10,6 +10,7 @@ import { hashSha256, normalizarCorreo } from '../../utils/crypto';
 import { calcularCierreConGracia, mesAnteriorDe, MESES_NOMBRES } from '../../utils/periodos';
 import { appUrl } from '../../utils/app-urls';
 import { obtenerResultadosGeneral } from '../resultados/servicio';
+import { crearTokenDescargaPdf } from '../resultados/token_descarga_pdf';
 
 export type ResultadoReconciliacionResultados = {
   revisados: number;
@@ -160,6 +161,9 @@ export const reconciliarResultados = async (
       ? `Hola ${usuario.nombre}, están listos los resultados de ${mesEtiqueta}. Tus áreas: ${areas.map((a) => `${a.nombre}: ${formatPct(a.resultado)}`).join(', ')}. General: ${formatPct(datosGeneral.resultadoGeneral)}.`
       : `Hola ${usuario.nombre}, están listos los resultados de ${mesEtiqueta}. Resultado general: ${formatPct(datosGeneral.resultadoGeneral)}.`;
 
+    const tokenPdf = crearTokenDescargaPdf({ tipo: 'mes', mes: yyyyMM, usuarioId: usuario.id });
+    const urlDescargaPdf = appUrl(`/api/v1/resultados/reportes/general/pdf-directo?token=${tokenPdf}`);
+
     const payloadDatos = {
       templateName: 'monthly_results' as const,
       templateVersion: 'v1' as const,
@@ -169,6 +173,7 @@ export const reconciliarResultados = async (
       areas,
       resultadoGeneral: datosGeneral.resultadoGeneral ?? null,
       urlResultados,
+      urlDescargaPdf,
     };
 
     const notificacion = await tx.notificacion.create({

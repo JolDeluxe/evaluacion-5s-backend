@@ -2,6 +2,7 @@ import type { PrismaTransaction } from '../../db';
 import { TipoArea } from '../../generated/prisma/enums';
 import { solicitudInvalida } from '../../utils/errores';
 import { obtenerAreaIdsConDetalle } from '../../utils/areas_permitidas';
+import { puedeVerResultadosCompletos } from '../../utils/permisos';
 import { calcularCierreConGracia } from '../../utils/periodos';
 import { promedio } from './helper';
 import { construirPeriodoResumen, construirResultadoMensualCanonico } from './servicio';
@@ -161,13 +162,16 @@ export async function obtenerResultadosRangoGeneral(
   tx: PrismaTransaction,
   autenticacion: AutenticacionResultados,
   query: QueryRango,
+  options: { alcanceGeneral?: boolean } = {},
 ) {
   const rango = parsearRangoQuery(query);
   const tipoAreaFilter = (query.tipoArea && [TipoArea.ADMINISTRATIVA, TipoArea.OPERATIVA].includes(query.tipoArea as TipoArea))
     ? (query.tipoArea as TipoArea)
     : undefined;
 
-  const areaIdsDetalle = await obtenerAreaIdsConDetalle(tx, autenticacion);
+  const areaIdsDetalle = options.alcanceGeneral
+    ? null
+    : await obtenerAreaIdsConDetalle(tx, autenticacion);
 
   // Cargar todos los objetivosAuditoria dentro de los meses del rango
   const objetivosRango = await tx.objetivoAuditoria.findMany({
@@ -499,6 +503,8 @@ export async function obtenerResultadosRangoGeneral(
 
   const mostrarGanadoresPeores = estadoRango === 'CONSOLIDADO';
 
+  const puedeVerDetallesRestringidos = puedeVerResultadosCompletos(autenticacion?.rol);
+
   return {
     rango,
     estadoRango: {
@@ -509,14 +515,20 @@ export async function obtenerResultadosRangoGeneral(
     },
     resultadoGeneral: resultadoGeneralRango,
     areas: areasAgregadas,
-    incidenciasPorTipo,
+    ...(puedeVerDetallesRestringidos ? { incidenciasPorTipo } : {}),
     ganadoresPorTipo: mostrarGanadoresPeores
       ? { administrativo: construirGanadoresRango(TipoArea.ADMINISTRATIVA), operativo: construirGanadoresRango(TipoArea.OPERATIVA) }
       : { administrativo: { resultado: null, areas: [] }, operativo: { resultado: null, areas: [] } },
-    peoresPorTipo: mostrarGanadoresPeores
-      ? { administrativo: construirPeoresRango(TipoArea.ADMINISTRATIVA), operativo: construirPeoresRango(TipoArea.OPERATIVA) }
-      : { administrativo: { resultado: null, areas: [] }, operativo: { resultado: null, areas: [] } },
+    ...(puedeVerDetallesRestringidos
+      ? {
+          peoresPorTipo: mostrarGanadoresPeores
+            ? { administrativo: construirPeoresRango(TipoArea.ADMINISTRATIVA), operativo: construirPeoresRango(TipoArea.OPERATIVA) }
+            : { administrativo: { resultado: null, areas: [] }, operativo: { resultado: null, areas: [] } },
+        }
+      : {}),
     mensajeGanadores: mostrarGanadoresPeores ? null : 'Los ganadores se definirán al cierre del rango.',
-    mensajePeores: mostrarGanadoresPeores ? null : 'Los resultados se definirán al cierre del rango.',
+    ...(puedeVerDetallesRestringidos
+      ? { mensajePeores: mostrarGanadoresPeores ? null : 'Los resultados se definirán al cierre del rango.' }
+      : {}),
   };
 }

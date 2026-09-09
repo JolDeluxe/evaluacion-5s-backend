@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../db';
-import { normalizarCorreo } from '../../utils/crypto';
+import { normalizarCorreo, normalizarNombreUsuario } from '../../utils/crypto';
 import { conflicto, noAutenticado } from '../../utils/errores';
 import { responder } from '../../utils/respuesta';
 import { registrarAuditoria } from '../registros_auditoria/helper';
@@ -17,6 +17,9 @@ export const actualizarPerfil = async (req: Request, res: Response) => {
   });
 
   const correoNormalizado = normalizarCorreo(body.correo);
+  const nombreUsuarioNormalizado = body.nombreUsuario
+    ? normalizarNombreUsuario(body.nombreUsuario)
+    : usuarioActual.nombreUsuario;
   const telefonoLimpio = body.telefonoE164?.trim() || null;
   const nombreLimpio = body.nombre.trim();
 
@@ -32,10 +35,23 @@ export const actualizarPerfil = async (req: Request, res: Response) => {
     }
   }
 
+  if (nombreUsuarioNormalizado !== usuarioActual.nombreUsuario) {
+    const existe = await prisma.usuario.findFirst({
+      where: {
+        nombreUsuario: nombreUsuarioNormalizado,
+        id: { not: usuarioId },
+      },
+    });
+    if (existe) {
+      throw conflicto('El nombre de usuario ya está registrado por otro usuario');
+    }
+  }
+
   const usuarioActualizado = await prisma.$transaction(async (tx) => {
     const actualizado = await tx.usuario.update({
       where: { id: usuarioId },
       data: {
+        nombreUsuario: nombreUsuarioNormalizado,
         nombre: nombreLimpio,
         correo: correoNormalizado,
         telefonoE164: telefonoLimpio,

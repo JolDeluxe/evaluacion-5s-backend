@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from 'bun:test';
 import {
   CanalNotificacion,
@@ -160,18 +160,47 @@ class FakeDbTx {
     findUnique: async (args: any) => {
       return this.notificaciones.find((n) => n.claveDedupe === args.where.claveDedupe) || null;
     },
+    findMany: async (args: any) => {
+      let res = [...this.notificaciones];
+      if (args?.where?.usuarioId !== undefined) {
+        res = res.filter((n) => n.usuarioId === args.where.usuarioId);
+      }
+      if (args?.where?.tipo !== undefined) {
+        res = res.filter((n) => n.tipo === args.where.tipo);
+      }
+      return res.sort((a, b) => (b.creadoEn?.getTime() || 0) - (a.creadoEn?.getTime() || 0));
+    },
     create: async (args: any) => {
       const nuevo = { id: this.notificaciones.length + 1, ...args.data, creadoEn: new Date() };
       this.notificaciones.push(nuevo);
       return nuevo;
     },
+    update: async (args: any) => {
+      const idx = this.notificaciones.findIndex((n) => n.id === args.where.id);
+      if (idx === -1) throw new Error('Notificacion no encontrada');
+      this.notificaciones[idx] = { ...this.notificaciones[idx], ...args.data };
+      return this.notificaciones[idx];
+    },
   };
 
   entregaNotificacion = {
+    findMany: async (args: any) => {
+      let res = [...this.entregas];
+      if (args?.where?.notificacionId?.in) {
+        res = res.filter((e) => args.where.notificacionId.in.includes(e.notificacionId));
+      }
+      return res;
+    },
     create: async (args: any) => {
       const nueva = { id: this.entregas.length + 1, ...args.data, creadoEn: new Date() };
       this.entregas.push(nueva);
       return nueva;
+    },
+    update: async (args: any) => {
+      const idx = this.entregas.findIndex((e) => e.id === args.where.id);
+      if (idx === -1) throw new Error('Entrega no encontrada');
+      this.entregas[idx] = { ...this.entregas[idx], ...args.data };
+      return this.entregas[idx];
     },
   };
 }

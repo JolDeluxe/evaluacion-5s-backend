@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test, beforeEach, afterEach, setSystemTime } from 'bun:test';
 import { EstadoAsignacionAuditoria, RolUsuario, TipoArea, AlcanceFormulario } from '../generated/prisma/enums';
 import {
   asegurarProgramacionMensual,
@@ -653,6 +653,13 @@ describe('Asignacion mensual simplificada', () => {
   });
 
   describe('Sincronización Automática de Asignación Mensual', () => {
+    beforeEach(() => {
+      setSystemTime(new Date(2026, 7, 20, 12, 0, 0));
+    });
+
+    afterEach(() => {
+      setSystemTime();
+    });
 
     test('1. P1 vencida sin AsignacionAuditoria + P2 pendiente + nuevo auditor Fernando -> P1 NO se reabre automáticamente; P2 Fernando pendiente', async () => {
       const tx = new FakeTx({ soloArea1: true });
@@ -869,6 +876,7 @@ describe('Asignacion mensual simplificada', () => {
 
       await prepararMes(tx, 2026, 8);
       const p1 = tx.objetivos.find((o) => o.periodo === 1);
+      p1.terminaEn = new Date(2026, 7, 10);
       const asigP1 = await tx.asignacionAuditoria.create({
         data: { objetivoAuditoriaId: p1.id, auditorId: 10, asignadoPorId: 1, estado: 'VENCIDA', venceEn: new Date(2026, 7, 10) },
       });

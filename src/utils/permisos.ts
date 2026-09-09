@@ -23,6 +23,8 @@ export const ROLES_RESULTADOS_COMPLETOS = [
   RolUsuario.SUPER_ADMIN,
 ] as const;
 
+export const ROLES_RESULTADOS_GENERAL = ROLES_CON_CUENTA;
+
 export const esSuperAdmin = (rol?: RolUsuario | null) => rol === RolUsuario.SUPER_ADMIN;
 export const puedeConsultarAuditorias = (rol?: RolUsuario | null) => Boolean(
   rol && ROLES_QUE_CONSULTAN_AUDITORIAS.some((permitido) => permitido === rol)
@@ -32,3 +34,6 @@ export const puedeEjecutarAuditoria = (rol?: RolUsuario | null) => Boolean(
 );
 export const puedeAdministrar5S = (rol?: RolUsuario | null) => rol === RolUsuario.ADMINISTRADOR || rol === RolUsuario.SUPER_ADMIN;
 export const puedeVerResultadosCompletos = puedeAdministrar5S;
+export const puedeConsultarResultadosGeneral = (rol?: RolUsuario | null) => Boolean(
+  rol && ROLES_RESULTADOS_GENERAL.some((permitido) => permitido === rol)
+);

@@ -1,0 +1,2 @@
+[test]
+env = { NODE_ENV = "test", DATABASE_URL = "mysql://cuadra:cuadra1234@localhost:3306/encuestas_5s_test" }

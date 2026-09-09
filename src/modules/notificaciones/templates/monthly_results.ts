@@ -1,4 +1,4 @@
-﻿export type MonthlyResultsData = {
+export type MonthlyResultsData = {
   templateName: 'monthly_results';
   templateVersion: 'v1';
   destinatarioNombre: string;
@@ -10,6 +10,7 @@
   }>;
   resultadoGeneral: number | null;
   urlResultados: string;
+  urlDescargaPdf?: string;
 };
 
 export type TemplateRenderResult = {
@@ -19,71 +20,14 @@ export type TemplateRenderResult = {
   qrUrl?: string;
 };
 
-type SemaforoInfo = {
-  label: string;
-  color: string;
-  textColor: string;
-  bgColor: string;
-  borderColor: string;
-};
-
-const getSemaforoInfo = (calificacion: number | null | undefined): SemaforoInfo => {
-  if (calificacion === null || calificacion === undefined || Number.isNaN(Number(calificacion))) {
-    return {
-      label: 'Sin evaluar',
-      color: '#94a3b8',
-      textColor: '#475569',
-      bgColor: '#f1f5f9',
-      borderColor: '#e2e8f0',
-    };
-  }
-
-  const num = Number(calificacion);
-  const ratio = num > 1 ? num / 100 : num;
-
-  if (ratio >= 0.90) {
-    return {
-      label: 'Excelente',
-      color: '#22c55e',
-      textColor: '#15803d',
-      bgColor: '#dcfce7',
-      borderColor: '#86efac',
-    };
-  }
-  if (ratio >= 0.70) {
-    return {
-      label: 'Satisfactorio',
-      color: '#eab308',
-      textColor: '#a16207',
-      bgColor: '#fef9c3',
-      borderColor: '#fde047',
-    };
-  }
-  if (ratio >= 0.50) {
-    return {
-      label: 'Requiere atención',
-      color: '#f97316',
-      textColor: '#c2410c',
-      bgColor: '#ffedd5',
-      borderColor: '#fdba74',
-    };
-  }
-  return {
-    label: 'Crítico',
-    color: '#ef4444',
-    textColor: '#b91c1c',
-    bgColor: '#fee2e2',
-    borderColor: '#fca5a5',
-  };
-};
-
 const formatPct = (val: number | null | undefined): string => {
   if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
   return `${Number(val).toFixed(1)}%`;
 };
 
-const escapeHtml = (text: string): string => {
-  return text
+const escapeHtml = (text?: string | null): string => {
+  if (!text) return '';
+  return String(text)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -91,30 +35,44 @@ const escapeHtml = (text: string): string => {
     .replace(/'/g, '&#39;');
 };
 
+const getSemaforoStyle = (calif: number | null | undefined): { text: string; bg: string } | null => {
+  if (calif === null || calif === undefined || Number.isNaN(Number(calif))) {
+    return null;
+  }
+  const ratio = calif > 1 ? calif / 100 : calif;
+  if (ratio >= 0.90) return { text: '#15803d', bg: '#dcfce7' };
+  if (ratio >= 0.70) return { text: '#a16207', bg: '#fef9c3' };
+  if (ratio >= 0.50) return { text: '#c2410c', bg: '#ffedd5' };
+  return { text: '#b91c1c', bg: '#fee2e2' };
+};
+
 export const renderMonthlyResults = (data: MonthlyResultsData): TemplateRenderResult => {
   const subject = `Resultados 5S — ${data.mesEtiqueta}`;
   const nombreSeguro = escapeHtml(data.destinatarioNombre);
   const mesSeguro = escapeHtml(data.mesEtiqueta);
+  const urlPdfSegura = data.urlDescargaPdf || (data.urlResultados.includes('?') ? `${data.urlResultados}&descargar=pdf` : `${data.urlResultados}?descargar=pdf`);
 
-  const semaforoGeneral = getSemaforoInfo(data.resultadoGeneral);
   const generalPctStr = formatPct(data.resultadoGeneral);
+  const semGeneral = getSemaforoStyle(data.resultadoGeneral);
 
   const tieneAreas = data.areas && data.areas.length > 0;
 
   const filasAreasHtml = tieneAreas
     ? data.areas
         .map((area, index) => {
-          const sem = getSemaforoInfo(area.resultado);
           const scoreStr = formatPct(area.resultado);
+          const semArea = getSemaforoStyle(area.resultado);
+
+          const badgeStyle = semArea
+            ? `display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 13px; font-weight: 800; color: ${semArea.text}; background-color: ${semArea.bg};`
+            : 'display: inline-block; font-size: 14px; font-weight: 800; color: #a1a1aa;';
+
           return `
-            <tr style="border-top: 1px solid #f1f5f9;">
-              <td style="padding: 12px 16px; font-size: 13px; font-weight: 600; color: #64748b; width: 36px; text-align: center;">${index + 1}</td>
-              <td style="padding: 12px 16px; font-size: 14px; font-weight: 700; color: #0f172a; text-transform: uppercase;">${escapeHtml(area.nombre)}</td>
-              <td style="padding: 12px 16px; font-size: 15px; font-weight: 800; color: ${sem.textColor}; text-align: right; white-space: nowrap;">${scoreStr}</td>
-              <td style="padding: 12px 16px; text-align: right; width: 130px;">
-                <span style="display: inline-block; padding: 3px 8px; font-size: 11px; font-weight: 700; color: ${sem.textColor}; background-color: ${sem.bgColor}; border: 1px solid ${sem.borderColor}; border-radius: 9999px; text-transform: uppercase;">
-                  ${sem.label}
-                </span>
+            <tr style="border-top: 1px solid #f4f4f5;">
+              <td style="padding: 11px 16px; font-size: 13px; font-weight: 600; color: #71717a; width: 40px; text-align: center; border-right: 1px solid #f4f4f5;">${index + 1}</td>
+              <td style="padding: 11px 16px; font-size: 13px; font-weight: 700; color: #18181b; text-transform: uppercase; letter-spacing: 0.02em;">${escapeHtml(area.nombre)}</td>
+              <td style="padding: 11px 16px; text-align: right; white-space: nowrap;">
+                <span style="${badgeStyle}">${scoreStr}</span>
               </td>
             </tr>
           `;
@@ -125,16 +83,15 @@ export const renderMonthlyResults = (data: MonthlyResultsData): TemplateRenderRe
   const bloqueAreasHtml = tieneAreas
     ? `
       <div style="margin-top: 24px;">
-        <h3 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">
-          Tus Áreas Evaluadas
+        <h3 style="margin: 0 0 12px 0; font-size: 12px; font-weight: 800; color: #52525b; text-transform: uppercase; letter-spacing: 0.08em;">
+          Áreas bajo tu responsabilidad
         </h3>
-        <table width="100%" cellpadding="0" cellspacing="0" style="border: 1px solid #e2e8f0; border-radius: 8px; border-collapse: separate; overflow: hidden;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #e4e4e7; border-radius: 8px; border-collapse: separate; overflow: hidden; background-color: #ffffff;">
           <thead>
-            <tr style="background-color: #f8fafc;">
-              <th style="padding: 10px 16px; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; width: 36px; text-align: center;">#</th>
-              <th style="padding: 10px 16px; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; text-align: left;">Área / Departamento</th>
-              <th style="padding: 10px 16px; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; text-align: right;">Calificación</th>
-              <th style="padding: 10px 16px; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; text-align: right;">Nivel</th>
+            <tr style="background-color: #fafafa;">
+              <th style="padding: 10px 16px; font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.08em; width: 40px; text-align: center; border-bottom: 1px solid #e4e4e7;">#</th>
+              <th style="padding: 10px 16px; font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.08em; text-align: left; border-bottom: 1px solid #e4e4e7;">Área / Departamento</th>
+              <th style="padding: 10px 16px; font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.08em; text-align: right; border-bottom: 1px solid #e4e4e7;">Calificación</th>
             </tr>
           </thead>
           <tbody>
@@ -144,8 +101,8 @@ export const renderMonthlyResults = (data: MonthlyResultsData): TemplateRenderRe
       </div>
     `
     : `
-      <p style="margin: 16px 0 0 0; font-size: 14px; color: #64748b; line-height: 1.5;">
-        Este informe contiene el resultado global consolidado de todas las áreas evaluadas en la organización para el período de ${mesSeguro}.
+      <p style="margin: 20px 0 0 0; font-size: 14px; color: #52525b; line-height: 1.6; background-color: #fafafa; border: 1px solid #e4e4e7; border-radius: 8px; padding: 14px 18px;">
+        Este informe contiene los resultados generales consolidados para el período de <strong>${mesSeguro}</strong>. Se anexa el documento oficial en formato PDF.
       </p>
     `;
 
@@ -156,52 +113,49 @@ export const renderMonthlyResults = (data: MonthlyResultsData): TemplateRenderRe
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${escapeHtml(subject)}</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #1e293b;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 32px 16px;">
+<body style="margin: 0; padding: 0; background-color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #18181b;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f4f5; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 580px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-          <!-- Header -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 580px; background-color: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);">
+          <!-- Header Institucional Cuadra -->
           <tr>
-            <td style="background-color: #0f172a; padding: 24px 32px; text-align: left;">
-              <div style="display: inline-block; background-color: rgba(255, 255, 255, 0.15); border-radius: 4px; padding: 4px 8px; font-size: 11px; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
-                Encuestas 5S
+            <td align="center" style="background-color: #ffffff; padding: 28px 24px 20px 24px; border-bottom: 1px solid #e4e4e7;">
+              <img src="cid:logo-cuadra" alt="Cuadra" width="160" style="display: block; margin: 0 auto; border: 0; outline: none; text-decoration: none; width: 160px; max-width: 100%; height: auto;" />
+              <div style="margin-top: 14px; font-size: 11px; font-weight: 800; color: #71717a; text-transform: uppercase; letter-spacing: 0.15em;">
+                Sistema de Encuestas 5S
               </div>
-              <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; letter-spacing: -0.025em;">
-                Resultados Mensuales
-              </h1>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding: 32px;">
-              <p style="margin: 0 0 16px 0; font-size: 15px; color: #334155; line-height: 1.5;">
+            <td style="padding: 32px 32px 28px 32px; background-color: #ffffff;">
+              <h1 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 800; color: #18181b; letter-spacing: -0.02em; line-height: 1.3;">
+                Resultados Mensuales 5S — ${mesSeguro}
+              </h1>
+
+              <p style="margin: 0 0 16px 0; font-size: 15px; color: #27272a; line-height: 1.6;">
                 Hola <strong>${nombreSeguro}</strong>,
               </p>
-              <p style="margin: 0 0 20px 0; font-size: 15px; color: #475569; line-height: 1.5;">
-                Ya se encuentran disponibles los resultados finales de las auditorías de 5S correspondientes a <strong>${mesSeguro}</strong>:
+
+              <p style="margin: 0 0 24px 0; font-size: 14px; color: #52525b; line-height: 1.6;">
+                Ya se encuentran disponibles los resultados finales consolidados de las auditorías de 5S correspondientes a <strong>${mesSeguro}</strong>. Se ha adjuntado el informe en formato PDF a este mensaje.
               </p>
 
-              <!-- Tarjeta de Resultado Global -->
-              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px 24px; margin: 20px 0;">
-                <table width="100%" cellpadding="0" cellspacing="0">
+              <!-- Tarjeta de Resultados Generales -->
+              <div style="background-color: #fafafa; border: 1px solid #e4e4e7; border-radius: 10px; padding: 20px 24px; margin: 20px 0 24px 0;">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td style="vertical-align: middle;">
-                      <div style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">
-                        Resultado Global 5S
-                      </div>
-                      <div style="font-size: 13px; font-weight: 600; color: #334155; margin-top: 2px;">
-                        Promedio de la organización
+                      <div style="font-size: 13px; font-weight: 800; color: #18181b; text-transform: uppercase; letter-spacing: 0.06em;">
+                        Resultados Generales 5S
                       </div>
                     </td>
                     <td style="vertical-align: middle; text-align: right;">
-                      <div style="font-size: 28px; font-weight: 900; color: ${semaforoGeneral.textColor}; letter-spacing: -0.02em;">
+                      <div style="font-size: 28px; font-weight: 900; color: ${semGeneral ? semGeneral.text : '#71717a'}; letter-spacing: -0.02em; line-height: 1;">
                         ${generalPctStr}
                       </div>
-                      <span style="display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 700; color: ${semaforoGeneral.textColor}; background-color: ${semaforoGeneral.bgColor}; border: 1px solid ${semaforoGeneral.borderColor}; border-radius: 9999px; text-transform: uppercase; margin-top: 2px;">
-                        ${semaforoGeneral.label}
-                      </span>
                     </td>
                   </tr>
                 </table>
@@ -209,20 +163,23 @@ export const renderMonthlyResults = (data: MonthlyResultsData): TemplateRenderRe
 
               ${bloqueAreasHtml}
 
-              <!-- CTA Button -->
-              <div style="text-align: center; margin: 32px 0 24px 0;">
-                <a href="${data.urlResultados}" style="display: inline-block; background-color: #0f172a; color: #ffffff; padding: 14px 32px; font-size: 14px; font-weight: 700; text-decoration: none; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                  Ver Resultados Completos &rarr;
+              <!-- Botones CTA -->
+              <div style="text-align: center; margin: 32px 0 28px 0;">
+                <a href="${data.urlResultados}" style="display: inline-block; background-color: #18181b; color: #ffffff; padding: 13px 26px; font-size: 13px; font-weight: 700; text-decoration: none; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); margin: 6px 6px;">
+                  VER RESULTADOS &rarr;
+                </a>
+                <a href="${urlPdfSegura}" style="display: inline-block; background-color: #ffffff; color: #18181b; border: 1.5px solid #18181b; padding: 11.5px 24px; font-size: 13px; font-weight: 700; text-decoration: none; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); margin: 6px 6px;">
+                  DESCARGAR PDF &#x2193;
                 </a>
               </div>
 
-              <!-- QR Code Section -->
-              <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e2e8f0; text-align: center;">
-                <p style="margin: 0 0 12px 0; font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">
-                  O escanea el código QR desde tu celular
+              <!-- Sección QR -->
+              <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e4e4e7; text-align: center;">
+                <p style="margin: 0 0 14px 0; font-size: 12px; font-weight: 700; color: #52525b; text-transform: uppercase; letter-spacing: 0.06em;">
+                  O escanea el código QR desde tu dispositivo móvil
                 </p>
-                <div style="display: inline-block; padding: 8px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
-                  <img src="cid:qr-code" alt="Código QR para acceso a resultados" width="160" height="160" style="display: block; margin: 0 auto; border: 0;" />
+                <div style="display: inline-block; padding: 10px; background-color: #ffffff; border: 1px solid #e4e4e7; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                  <img src="cid:qr-code" alt="Código QR para acceso a resultados" width="150" height="150" style="display: block; margin: 0 auto; border: 0; width: 150px; height: 150px;" />
                 </div>
               </div>
             </td>
@@ -230,12 +187,12 @@ export const renderMonthlyResults = (data: MonthlyResultsData): TemplateRenderRe
 
           <!-- Footer -->
           <tr>
-            <td style="background-color: #f8fafc; padding: 20px 32px; border-top: 1px solid #e2e8f0; text-align: center;">
-              <p style="margin: 0; font-size: 12px; color: #94a3b8; line-height: 1.5;">
-                Este es un mensaje automático generado por el Sistema de Encuestas 5S.
+            <td style="background-color: #fafafa; padding: 20px 32px; border-top: 1px solid #e4e4e7; text-align: center;">
+              <p style="margin: 0; font-size: 12px; color: #71717a; line-height: 1.5;">
+                Este es un informe oficial emitido por el Sistema de Encuestas 5S de Cuadra.
               </p>
-              <p style="margin: 4px 0 0 0; font-size: 12px; color: #94a3b8;">
-                Por favor no respondas directamente a este correo.
+              <p style="margin: 4px 0 0 0; font-size: 12px; color: #a1a1aa;">
+                Por favor no respondas a este correo.
               </p>
             </td>
           </tr>
@@ -248,27 +205,29 @@ export const renderMonthlyResults = (data: MonthlyResultsData): TemplateRenderRe
 
   const areasTexto = tieneAreas
     ? data.areas
-        .map((a, i) => {
-          const sem = getSemaforoInfo(a.resultado);
-          return `  ${i + 1}. ${a.nombre}: ${formatPct(a.resultado)} (${sem.label})`;
-        })
+        .map((a, i) => `  ${i + 1}. ${a.nombre}: ${formatPct(a.resultado)}`)
         .join('\n')
     : '';
 
-  const text = `ENCUESTAS 5S — RESULTADOS MENSUALES
-====================================
+  const text = `CUADRA — SISTEMA DE ENCUESTAS 5S
+RESULTADOS MENSUALES (${data.mesEtiqueta})
+============================================================
 
 Hola ${data.destinatarioNombre},
 
 Están listos los resultados de las auditorías de 5S para ${data.mesEtiqueta}.
+Se anexa el reporte oficial consolidado en formato PDF.
 
-Resultado Global: ${generalPctStr} (${semaforoGeneral.label})
-${tieneAreas ? `\nTus Áreas Evaluadas:\n${areasTexto}\n` : ''}
-Para consultar el detalle completo con hallazgos y gráficos:
+Resultados Generales 5S: ${generalPctStr}
+${tieneAreas ? `\nÁreas bajo tu responsabilidad:\n${areasTexto}\n` : ''}
+Para consultar el detalle interactivo completo con hallazgos y evidencias:
 ${data.urlResultados}
 
-------------------------------------
-Este es un mensaje automático del Sistema de Encuestas 5S.
+Para descargar una copia del reporte oficial en PDF:
+${urlPdfSegura}
+
+------------------------------------------------------------
+Este es un informe oficial emitido por el Sistema de Encuestas 5S de Cuadra.
 Por favor no respondas a este correo.
 `;
 

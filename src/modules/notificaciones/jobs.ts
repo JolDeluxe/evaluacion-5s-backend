@@ -6,6 +6,7 @@ import { calcularCierreConGracia, tieneEnvioResultadoValido } from '../../utils/
 import { crearNotificacionUsuario } from './helper';
 import { procesarEntregasPendientes } from './worker';
 import { reconciliarAsignaciones } from './reconciliador-asignaciones';
+import { reconciliarRecordatoriosPeriodo } from './reconciliador-recordatorios';
 import { reconciliarResultados } from './reconciliador-resultados';
 
 export const iniciarJobsNotificaciones = () => {
@@ -20,6 +21,8 @@ export const iniciarJobsNotificaciones = () => {
     cron.schedule('*/30 * * * *', () => {
       generarNotificacionesPeriodos().catch(() => undefined);
       reconciliarAsignaciones().catch(() => undefined);
+      reconciliarRecordatoriosPeriodo(prisma, 1).catch(() => undefined);
+      reconciliarRecordatoriosPeriodo(prisma, 2).catch(() => undefined);
       reconciliarResultados().catch(() => undefined);
     }),
   ];

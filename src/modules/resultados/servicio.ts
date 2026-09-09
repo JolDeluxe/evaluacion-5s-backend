@@ -3,7 +3,7 @@ import { env } from '../../config/env';
 import { TipoArea } from '../../generated/prisma/enums';
 import { noEncontrado, prohibido, solicitudInvalida } from '../../utils/errores';
 import { obtenerAreaIdsConDetalle, tieneDetalleDeArea } from '../../utils/areas_permitidas';
-import { puedeAdministrar5S } from '../../utils/permisos';
+import { puedeAdministrar5S, puedeVerResultadosCompletos } from '../../utils/permisos';
 import { calcularCierreConGracia, derivarSituacionObjetivo, SituacionObjetivo } from '../../utils/periodos';
 import { promedio } from './helper';
 import { areaEsAuditableEnPeriodo } from '../areas/servicio_vigencia_area';
@@ -402,8 +402,11 @@ const obtenerObjetivosMes = async (
   tx: PrismaTransaction,
   autenticacion: AutenticacionResultados,
   filtros: { anio: number; mes: number; tipoArea?: TipoArea },
+  options: { alcanceGeneral?: boolean } = {},
 ) => {
-  const areaIdsDetalle = await obtenerAreaIdsConDetalle(tx, autenticacion);
+  const areaIdsDetalle = options.alcanceGeneral
+    ? null
+    : await obtenerAreaIdsConDetalle(tx, autenticacion);
 
   return tx.objetivoAuditoria.findMany({
     where: {
@@ -456,10 +459,16 @@ export const obtenerResultadosAreas = async (
   tx: PrismaTransaction,
   autenticacion: AutenticacionResultados,
   query: QueryMes,
+  options: { alcanceGeneral?: boolean } = {},
 ) => {
   const mes = obtenerMesResultados(query);
   const tipoArea = obtenerTipoArea(query);
-  const objetivos = await obtenerObjetivosMes(tx, autenticacion, { ...mes, tipoArea });
+  const objetivos = await obtenerObjetivosMes(
+    tx,
+    autenticacion,
+    { ...mes, tipoArea },
+    options,
+  );
   const areaIdsPropias = await obtenerAreaIdsPropias(tx, autenticacion);
   const objetivosPorArea = new Map<number, typeof objetivos>();
 
@@ -497,8 +506,8 @@ export const obtenerResultadosAreas = async (
 
   return {
     mes,
-    alcance: puedeAdministrar5S(autenticacion?.rol) ? 'GENERAL' : 'MIS_AREAS',
-    puedeVerGeneral: puedeAdministrar5S(autenticacion?.rol),
+    alcance: options.alcanceGeneral || puedeAdministrar5S(autenticacion?.rol) ? 'GENERAL' : 'MIS_AREAS',
+    puedeVerGeneral: options.alcanceGeneral || puedeAdministrar5S(autenticacion?.rol),
     areas,
     estadoMes,
     resumen: {
@@ -632,20 +641,22 @@ export const obtenerResultadosGeneral = async (
   autenticacion: AutenticacionResultados,
   query: QueryMes & { tipo?: string; trimestre?: unknown; semestre?: unknown },
 ) => {
-  if (!puedeAdministrar5S(autenticacion?.rol)) {
-    throw prohibido('No tienes permiso para consultar el resultado general');
-  }
-
   const rango = parsearRangoQuery(query);
   if (rango.tipo !== 'mes') {
-    return obtenerResultadosRangoGeneral(tx, autenticacion, query);
+    return obtenerResultadosRangoGeneral(tx, autenticacion, query, { alcanceGeneral: true });
   }
 
-  const data = await obtenerResultadosAreas(tx, autenticacion, query);
+  const data = await obtenerResultadosAreas(tx, autenticacion, query, { alcanceGeneral: true });
   const porcentajesPeriodo = data.areas.flatMap((area) => (
     area.periodos.flatMap((periodo) => (periodo.porcentaje === null ? [] : [periodo.porcentaje]))
   ));
-  const objetivos = await obtenerObjetivosMes(tx, autenticacion, { ...data.mes, tipoArea: obtenerTipoArea(query) });
+  const objetivos = await obtenerObjetivosMes(
+    tx,
+    autenticacion,
+    { ...data.mes, tipoArea: obtenerTipoArea(query) },
+    { alcanceGeneral: true },
+  );
+  const puedeVerDetallesRestringidos = puedeVerResultadosCompletos(autenticacion?.rol);
 
   const ahora = new Date();
   const esMesPasado = (data.mes.anio < ahora.getFullYear()) || (data.mes.anio === ahora.getFullYear() && data.mes.mes < ahora.getMonth() + 1);
@@ -676,15 +687,21 @@ export const obtenerResultadosGeneral = async (
       ? (resultadosMensualesValidos.length ? promedio(resultadosMensualesValidos) : promedio(porcentajesPeriodo))
       : null,
     porPeriodo,
-    incidenciasPorTipo: construirIncidenciasPorTipo(objetivos),
+    ...(puedeVerDetallesRestringidos
+      ? { incidenciasPorTipo: construirIncidenciasPorTipo(objetivos) }
+      : {}),
     ganadoresPorTipo: mostrarGeneral
       ? construirGanadoresPorTipo(data.areas)
       : { administrativo: { resultado: null, areas: [] }, operativo: { resultado: null, areas: [] } },
     mensajeGanadores: mostrarGeneral ? null : 'Los ganadores se definirán al contar con resultados del segundo periodo.',
-    peoresPorTipo: mostrarGeneral
-      ? construirPeoresPorTipo(data.areas)
-      : { administrativo: { resultado: null, areas: [] }, operativo: { resultado: null, areas: [] } },
-    mensajePeores: mostrarGeneral ? null : 'Los resultados se definirán al contar con resultados del segundo periodo.',
+    ...(puedeVerDetallesRestringidos
+      ? {
+          peoresPorTipo: mostrarGeneral
+            ? construirPeoresPorTipo(data.areas)
+            : { administrativo: { resultado: null, areas: [] }, operativo: { resultado: null, areas: [] } },
+          mensajePeores: mostrarGeneral ? null : 'Los resultados se definirán al contar con resultados del segundo periodo.',
+        }
+      : {}),
   };
 };
 

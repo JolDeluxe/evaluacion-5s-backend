@@ -1,3 +1,7 @@
+// =============================================================================
+// PRISMA
+// =============================================================================
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -7,480 +11,986 @@ datasource db {
   provider = "mysql"
 }
 
-model Usuario {
-  id                      Int                               @id @default(autoincrement())
-  nombreUsuario           String                            @unique @db.VarChar(80)
-  correo                  String?                           @unique @db.VarChar(180)
-  telefonoE164            String?                           @db.VarChar(24)
-  nombre                  String                            @db.VarChar(160)
-  hashContrasena          String                            @db.VarChar(255)
-  credencialCifrada       String?                           @db.Text
-  rol                     RolUsuario
-  activo                  Boolean                           @default(true)
-  debeCambiarContrasena   Boolean                           @default(false)
-  ultimoInicioSesionEn    DateTime?
-  contrasenaCambiadaEn    DateTime?
-  creadoEn                DateTime                          @default(now())
-  actualizadoEn           DateTime                          @updatedAt
-  asignacionesCreadas     AsignacionAuditoria[]             @relation("UsuarioCreadorAsignacion")
-  asignacionesComoAuditor AsignacionAuditoria[]             @relation("UsuarioAuditorAsignacion")
-  asignacionesMensualesCreadas AsignacionMensual[]           @relation("UsuarioCreadorAsignacionMensual")
-  asignacionesMensualesComoAuditor AsignacionMensual[]       @relation("UsuarioAuditorAsignacionMensual")
-  enlacesCreados          EnlaceInvitado[]                  @relation("UsuarioCreadorEnlace")
-  enviosRealizados        EnvioAuditoria[]                  @relation("UsuarioEnviadorAuditoria")
-  formulariosCreados      Formulario[]                      @relation("UsuarioCreadorFormulario")
-  notificaciones          Notificacion[]
-  registrosAuditoria      RegistroAuditoria[]
-  sesiones                Sesion[]
-  suscripcionesPush       SuscripcionPush[]
-  tokensRestablecimiento  TokenRestablecimientoContrasena[]
-  areasUsuario            UsuarioArea[]
-  versionesCreadas        VersionFormulario[]               @relation("UsuarioCreadorVersionFormulario")
 
+// =============================================================================
+// USUARIOS, AUTENTICACIÓN Y ACCESO
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Usuario
+// Cuenta principal del sistema.
+// Contiene identidad, autenticación, rol, estado y relaciones operativas.
+// -----------------------------------------------------------------------------
+model Usuario {
+  // IDENTIDAD Y CONTACTO
+  id            Int     @id @default(autoincrement())
+  nombreUsuario String  @unique @db.VarChar(80)
+  correo        String? @unique @db.VarChar(180)
+  telefonoE164  String? @db.VarChar(24)
+  nombre        String  @db.VarChar(160)
+
+  // AUTENTICACIÓN Y CREDENCIALES
+  hashContrasena    String  @db.VarChar(255)
+  credencialCifrada String? @db.Text
+
+  // AUTORIZACIÓN Y ESTADO
+  rol                   RolUsuario
+  activo                Boolean    @default(true)
+  debeCambiarContrasena Boolean    @default(false)
+
+  // ACTIVIDAD DE LA CUENTA
+  ultimoInicioSesionEn DateTime?
+  contrasenaCambiadaEn DateTime?
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES: ASIGNACIONES
+  asignacionesCreadas AsignacionAuditoria[] @relation("UsuarioCreadorAsignacion")
+
+  asignacionesComoAuditor AsignacionAuditoria[] @relation("UsuarioAuditorAsignacion")
+
+  asignacionesMensualesCreadas AsignacionMensual[] @relation("UsuarioCreadorAsignacionMensual")
+
+  asignacionesMensualesComoAuditor AsignacionMensual[] @relation("UsuarioAuditorAsignacionMensual")
+
+  // RELACIONES: AUDITORÍAS E INVITADOS
+  enlacesCreados EnlaceInvitado[] @relation("UsuarioCreadorEnlace")
+
+  enviosRealizados EnvioAuditoria[] @relation("UsuarioEnviadorAuditoria")
+
+  // RELACIONES: FORMULARIOS
+  formulariosCreados Formulario[] @relation("UsuarioCreadorFormulario")
+
+  versionesCreadas VersionFormulario[] @relation("UsuarioCreadorVersionFormulario")
+
+  // RELACIONES: NOTIFICACIONES Y ACCESO
+  notificaciones         Notificacion[]
+  sesiones               Sesion[]
+  suscripcionesPush      SuscripcionPush[]
+  tokensRestablecimiento TokenRestablecimientoContrasena[]
+
+  // RELACIONES: ÁREAS Y REGISTRO DEL SISTEMA
+  areasUsuario       UsuarioArea[]
+  registrosAuditoria RegistroAuditoria[]
+
+  // ÍNDICES
   @@index([rol, activo])
+
+  // TABLA FÍSICA
   @@map("usuarios")
 }
 
-model Sesion {
-  id                Int       @id @default(autoincrement())
-  usuarioId         Int
-  hashToken         String    @unique @db.Char(64)
-  expiraEn          DateTime
-  ultimoUsoEn       DateTime?
-  revocadoEn        DateTime?
-  agenteUsuario     String?   @db.VarChar(512)
-  nombreDispositivo String?   @db.VarChar(120)
-  direccionIp       String?   @db.VarChar(64)
-  creadoEn          DateTime  @default(now())
-  actualizadoEn     DateTime  @updatedAt
-  usuario           Usuario   @relation(fields: [usuarioId], references: [id])
 
+// -----------------------------------------------------------------------------
+// Sesion
+// Sesiones autenticadas de los usuarios.
+// El token se conserva mediante hash, no como token plano.
+// -----------------------------------------------------------------------------
+model Sesion {
+  // IDENTIFICACIÓN
+  id        Int @id @default(autoincrement())
+  usuarioId Int
+
+  // TOKEN Y VIGENCIA
+  hashToken   String    @unique @db.Char(64)
+  expiraEn    DateTime
+  ultimoUsoEn DateTime?
+  revocadoEn  DateTime?
+
+  // INFORMACIÓN DEL CLIENTE
+  agenteUsuario     String? @db.VarChar(512)
+  nombreDispositivo String? @db.VarChar(120)
+  direccionIp       String? @db.VarChar(64)
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  // ÍNDICES
   @@index([usuarioId])
   @@index([expiraEn])
   @@index([usuarioId, revocadoEn, expiraEn])
+
   @@map("sesiones")
 }
 
-model TokenRestablecimientoContrasena {
-  id            Int       @id @default(autoincrement())
-  usuarioId     Int
-  hashToken     String    @unique @db.Char(64)
-  expiraEn      DateTime
-  usadoEn       DateTime?
-  creadoEn      DateTime  @default(now())
-  actualizadoEn DateTime  @updatedAt
-  usuario       Usuario   @relation(fields: [usuarioId], references: [id])
 
+// -----------------------------------------------------------------------------
+// TokenRestablecimientoContrasena
+// Tokens temporales utilizados para recuperar/cambiar una contraseña.
+// -----------------------------------------------------------------------------
+model TokenRestablecimientoContrasena {
+  // IDENTIFICACIÓN Y USUARIO
+  id        Int @id @default(autoincrement())
+  usuarioId Int
+
+  // TOKEN Y ESTADO
+  hashToken String    @unique @db.Char(64)
+  expiraEn  DateTime
+  usadoEn   DateTime?
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  // ÍNDICES
   @@index([usuarioId])
   @@index([expiraEn])
   @@index([usuarioId, usadoEn, expiraEn])
+
   @@map("tokens_restablecimiento_contrasena")
 }
 
+
+// =============================================================================
+// ÁREAS Y RESPONSABILIDADES
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Area
+// Departamento/área auditable de la organización.
+// -----------------------------------------------------------------------------
 model Area {
-  id                 Int                 @id @default(autoincrement())
-  codigo             String              @unique @db.VarChar(50)
-  nombre             String              @db.VarChar(160)
-  tipo               TipoArea
-  activo             Boolean             @default(true)
-  auditableDesde     DateTime?           @db.Date
-  auditableHasta     DateTime?           @db.Date
-  codigoVerificacion String              @unique @db.VarChar(16)
-  creadoEn           DateTime            @default(now())
-  actualizadoEn      DateTime            @updatedAt
+  // IDENTIDAD
+  id     Int    @id @default(autoincrement())
+  codigo String @unique @db.VarChar(50)
+  nombre String @db.VarChar(160)
+
+  // CLASIFICACIÓN Y ESTADO
+  tipo   TipoArea
+  activo Boolean @default(true)
+
+  // VIGENCIA PARA AUDITORÍAS
+  auditableDesde DateTime? @db.Date
+  auditableHasta DateTime? @db.Date
+
+  // VERIFICACIÓN FÍSICA / QR
+  codigoVerificacion String @unique @db.VarChar(16)
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
   objetivosAuditoria    ObjetivoAuditoria[]
   asignacionesMensuales AsignacionMensual[]
   usuariosArea          UsuarioArea[]
 
+  // ÍNDICES
   @@index([tipo, activo])
   @@index([activo, auditableDesde])
+
   @@map("areas")
 }
 
+
+// -----------------------------------------------------------------------------
+// UsuarioArea
+// Tabla puente entre Usuario y Area.
+// Permite que un usuario esté asociado con una o más áreas.
+// -----------------------------------------------------------------------------
 model UsuarioArea {
-  id            Int      @id @default(autoincrement())
-  usuarioId     Int
-  areaId        Int
+  // IDENTIFICACIÓN
+  id Int @id @default(autoincrement())
+
+  // CLAVES FORÁNEAS
+  usuarioId Int
+  areaId    Int
+
+  // METADATOS
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
-  area          Area     @relation(fields: [areaId], references: [id])
-  usuario       Usuario  @relation(fields: [usuarioId], references: [id])
 
+  // RELACIONES
+  area    Area    @relation(fields: [areaId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  // RESTRICCIONES
   @@unique([usuarioId, areaId])
+
+  // ÍNDICES
   @@index([usuarioId])
   @@index([areaId])
+
   @@map("usuarios_areas")
 }
 
-model Formulario {
-  id            Int                 @id @default(autoincrement())
-  nombre        String              @db.VarChar(160)
-  slug          String              @unique @db.VarChar(120)
-  descripcion   String?             @db.Text
-  alcance       AlcanceFormulario
-  activo        Boolean             @default(true)
-  creadoPorId   Int
-  creadoEn      DateTime            @default(now())
-  actualizadoEn DateTime            @updatedAt
-  creadoPor     Usuario             @relation("UsuarioCreadorFormulario", fields: [creadoPorId], references: [id])
-  versiones     VersionFormulario[]
 
+// =============================================================================
+// FORMULARIOS Y VERSIONADO
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Formulario
+// Definición lógica de un formulario.
+// Las preguntas concretas pertenecen a sus versiones.
+// -----------------------------------------------------------------------------
+model Formulario {
+  // IDENTIDAD
+  id          Int     @id @default(autoincrement())
+  nombre      String  @db.VarChar(160)
+  slug        String  @unique @db.VarChar(120)
+  descripcion String? @db.Text
+
+  // CONFIGURACIÓN
+  alcance AlcanceFormulario
+  activo  Boolean @default(true)
+
+  // AUTORÍA
+  creadoPorId Int
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  creadoPor Usuario @relation( "UsuarioCreadorFormulario", fields: [creadoPorId], references: [id] )
+
+  versiones VersionFormulario[]
+
+  // ÍNDICES
   @@index([alcance, activo])
   @@index([creadoPorId])
+
   @@map("formularios")
 }
 
-model VersionFormulario {
-  id               Int                 @id @default(autoincrement())
-  formularioId     Int
-  numeroVersion    Int
-  activa           Boolean             @default(true)
-  creadoPorId      Int
-  creadoEn         DateTime            @default(now())
-  actualizadoEn    DateTime            @updatedAt
-  objetivosAuditoria ObjetivoAuditoria[]
-  secciones        SeccionFormulario[]
-  creadoPor        Usuario             @relation("UsuarioCreadorVersionFormulario", fields: [creadoPorId], references: [id])
-  formulario       Formulario          @relation(fields: [formularioId], references: [id])
 
+// -----------------------------------------------------------------------------
+// VersionFormulario
+// Versión concreta e histórica de un formulario.
+// -----------------------------------------------------------------------------
+model VersionFormulario {
+  // IDENTIFICACIÓN
+  id            Int @id @default(autoincrement())
+  formularioId  Int
+  numeroVersion Int
+
+  // ESTADO
+  activa Boolean @default(true)
+
+  // AUTORÍA
+  creadoPorId Int
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES OPERATIVAS
+  objetivosAuditoria ObjetivoAuditoria[]
+  secciones          SeccionFormulario[]
+
+  // RELACIONES DE AUTORÍA
+  creadoPor Usuario @relation( "UsuarioCreadorVersionFormulario", fields: [creadoPorId], references: [id] )
+
+  formulario Formulario @relation( fields: [formularioId], references: [id] )
+
+  // RESTRICCIONES
   @@unique([formularioId, numeroVersion])
+
+  // ÍNDICES
   @@index([formularioId, activa])
   @@index([creadoPorId])
+
   @@map("versiones_formulario")
 }
 
-model SeccionFormulario {
-  id                  Int                  @id @default(autoincrement())
-  versionFormularioId Int
-  claveEstable        String               @db.Char(36)
-  nombre              String               @db.VarChar(160)
-  objetivo            String?              @db.Text
-  orden               Int
-  creadoEn            DateTime             @default(now())
-  actualizadoEn       DateTime             @updatedAt
-  preguntas           PreguntaFormulario[]
-  versionFormulario   VersionFormulario    @relation(fields: [versionFormularioId], references: [id])
 
+// -----------------------------------------------------------------------------
+// SeccionFormulario
+// Sección perteneciente a una versión concreta del formulario.
+// -----------------------------------------------------------------------------
+model SeccionFormulario {
+  // IDENTIFICACIÓN
+  id                  Int    @id @default(autoincrement())
+  versionFormularioId Int
+  claveEstable        String @db.Char(36)
+
+  // CONTENIDO
+  nombre   String  @db.VarChar(160)
+  objetivo String? @db.Text
+  orden    Int
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  preguntas         PreguntaFormulario[]
+  versionFormulario VersionFormulario @relation( fields: [versionFormularioId], references: [id] )
+
+  // RESTRICCIONES
   @@unique([versionFormularioId, claveEstable])
+
+  // ÍNDICES
   @@index([versionFormularioId, orden])
+
   @@map("secciones_formulario")
 }
 
+
+// -----------------------------------------------------------------------------
+// PreguntaFormulario
+// Pregunta concreta perteneciente a una sección/version.
+// -----------------------------------------------------------------------------
 model PreguntaFormulario {
-  id                  Int                  @id @default(autoincrement())
+  // IDENTIFICACIÓN
+  id                  Int    @id @default(autoincrement())
   seccionFormularioId Int
-  claveEstable        String               @db.Char(36)
-  texto               String               @db.Text
-  orden               Int
-  requiereHallazgo    Boolean              @default(true)
-  creadoEn            DateTime             @default(now())
-  actualizadoEn       DateTime             @updatedAt
-  seccionFormulario   SeccionFormulario    @relation(fields: [seccionFormularioId], references: [id])
+  claveEstable        String @db.Char(36)
+
+  // CONTENIDO
+  texto String @db.Text
+  orden Int
+
+  // CONFIGURACIÓN
+  requiereHallazgo Boolean @default(true)
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  seccionFormulario SeccionFormulario @relation( fields: [seccionFormularioId], references: [id] )
+
   respuestasAuditoria RespuestaAuditoria[]
 
+  // RESTRICCIONES
   @@unique([seccionFormularioId, claveEstable])
+
+  // ÍNDICES
   @@index([seccionFormularioId, orden])
+
   @@map("preguntas_formulario")
 }
 
-model ObjetivoAuditoria {
-  id                    Int                   @id @default(autoincrement())
-  areaId                Int
-  anio                  Int
-  mes                   Int
-  periodo               Int
-  versionFormularioId   Int
-  iniciaEn              DateTime
-  terminaEn             DateTime
-  codigoAreaSnapshot    String                @db.VarChar(50)
-  nombreAreaSnapshot    String                @db.VarChar(160)
-  tipoAreaSnapshot      TipoArea
-  envioResultadoId      Int?                  @unique
-  canceladoEn           DateTime?
-  motivoCancelacion     String?               @db.Text
-  creadoEn              DateTime              @default(now())
-  actualizadoEn         DateTime              @updatedAt
-  asignacionesAuditoria AsignacionAuditoria[]
-  enviosAuditoria       EnvioAuditoria[]      @relation("EnviosObjetivo")
-  area                  Area                  @relation(fields: [areaId], references: [id])
-  envioResultado        EnvioAuditoria?       @relation("EnvioResultadoObjetivo", fields: [envioResultadoId], references: [id], onDelete: Restrict)
-  versionFormulario     VersionFormulario     @relation(fields: [versionFormularioId], references: [id])
 
+// =============================================================================
+// PLANIFICACIÓN DE AUDITORÍAS
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// ObjetivoAuditoria
+// Representa una auditoría esperada para un área, mes y periodo determinados.
+// Conserva snapshots del área y la versión exacta del formulario.
+// -----------------------------------------------------------------------------
+model ObjetivoAuditoria {
+  // IDENTIFICACIÓN
+  id Int @id @default(autoincrement())
+
+  // CONTEXTO TEMPORAL Y ÁREA
+  areaId  Int
+  anio    Int
+  mes     Int
+  periodo Int
+
+  // FORMULARIO UTILIZADO
+  versionFormularioId Int
+
+  // VENTANA DE AUDITORÍA
+  iniciaEn  DateTime
+  terminaEn DateTime
+
+  // SNAPSHOT HISTÓRICO DEL ÁREA
+  codigoAreaSnapshot String   @db.VarChar(50)
+  nombreAreaSnapshot String   @db.VarChar(160)
+  tipoAreaSnapshot   TipoArea
+
+  // RESULTADO OFICIAL
+  envioResultadoId Int? @unique
+
+  // CANCELACIÓN
+  canceladoEn       DateTime?
+  motivoCancelacion String?   @db.Text
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES: EJECUCIÓN
+  asignacionesAuditoria AsignacionAuditoria[]
+  enviosAuditoria       EnvioAuditoria[] @relation("EnviosObjetivo")
+
+  // RELACIONES: DEFINICIÓN
+  area Area @relation( fields: [areaId], references: [id] )
+
+  versionFormulario VersionFormulario @relation( fields: [versionFormularioId], references: [id] )
+
+  // RELACIÓN: ENVÍO CONSIDERADO COMO RESULTADO
+  envioResultado EnvioAuditoria? @relation( "EnvioResultadoObjetivo", fields: [envioResultadoId], references: [id], onDelete: Restrict )
+
+  // RESTRICCIONES
   @@unique([areaId, anio, mes, periodo])
+
+  // ÍNDICES
   @@index([anio, mes, periodo, tipoAreaSnapshot])
   @@index([versionFormularioId])
+
   @@map("objetivos_auditoria")
 }
 
+
+// -----------------------------------------------------------------------------
+// AsignacionMensual
+// Responsable asignado a un área durante un mes determinado.
+// -----------------------------------------------------------------------------
 model AsignacionMensual {
-  id                    Int                    @id @default(autoincrement())
-  areaId                Int
-  anio                  Int
-  mes                   Int
-  auditorId             Int
-  asignadoPorId         Int
-  asignadoEn            DateTime?
-  creadoEn              DateTime               @default(now())
-  actualizadoEn         DateTime               @updatedAt
-  area                  Area                   @relation(fields: [areaId], references: [id])
-  auditor               Usuario                @relation("UsuarioAuditorAsignacionMensual", fields: [auditorId], references: [id])
-  asignadoPor           Usuario                @relation("UsuarioCreadorAsignacionMensual", fields: [asignadoPorId], references: [id])
+  // IDENTIFICACIÓN
+  id Int @id @default(autoincrement())
+
+  // CONTEXTO
+  areaId Int
+  anio   Int
+  mes    Int
+
+  // RESPONSABLES
+  auditorId     Int
+  asignadoPorId Int
+
+  // FECHA DE ASIGNACIÓN
+  asignadoEn DateTime?
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  area Area @relation( fields: [areaId], references: [id] )
+
+  auditor Usuario @relation( "UsuarioAuditorAsignacionMensual", fields: [auditorId], references: [id] )
+
+  asignadoPor Usuario @relation( "UsuarioCreadorAsignacionMensual", fields: [asignadoPorId], references: [id] )
+
   asignacionesAuditoria AsignacionAuditoria[]
 
+  // RESTRICCIONES
   @@unique([areaId, anio, mes])
+
+  // ÍNDICES
   @@index([auditorId, anio, mes])
+
   @@map("asignaciones_mensuales")
 }
 
-model AsignacionAuditoria {
-  id                  Int                       @id @default(autoincrement())
-  asignacionMensualId Int?
-  objetivoAuditoriaId Int
-  auditorId           Int
-  asignadoPorId       Int
-  estado              EstadoAsignacionAuditoria @default(PENDIENTE)
-  asignadoEn          DateTime?
-  venceEn             DateTime
-  iniciadoEn          DateTime?
-  completadoEn        DateTime?
-  canceladoEn         DateTime?
-  motivoCancelacion   String?                   @db.Text
-  motivoExcepcion     String?                   @db.Text
-  reabiertaHasta      DateTime?
-  reabiertaEn         DateTime?
-  reabiertaPorId      Int?
-  motivoReapertura    String?                   @db.Text
-  creadoEn            DateTime                  @default(now())
-  actualizadoEn       DateTime                  @updatedAt
-  asignadoPor         Usuario                   @relation("UsuarioCreadorAsignacion", fields: [asignadoPorId], references: [id])
-  auditor             Usuario                   @relation("UsuarioAuditorAsignacion", fields: [auditorId], references: [id])
-  objetivoAuditoria   ObjetivoAuditoria         @relation(fields: [objetivoAuditoriaId], references: [id])
-  asignacionMensual   AsignacionMensual?        @relation(fields: [asignacionMensualId], references: [id])
-  enlacesInvitado     EnlaceInvitado[]
-  enviosAuditoria     EnvioAuditoria[]
 
+// -----------------------------------------------------------------------------
+// AsignacionAuditoria
+// Asignación operativa correspondiente a una auditoría/periodo concreto.
+// -----------------------------------------------------------------------------
+model AsignacionAuditoria {
+  // IDENTIFICACIÓN
+  id Int @id @default(autoincrement())
+
+  // ORIGEN DE LA ASIGNACIÓN
+  asignacionMensualId Int?
+
+  // AUDITORÍA OBJETIVO
+  objetivoAuditoriaId Int
+
+  // RESPONSABLES
+  auditorId     Int
+  asignadoPorId Int
+
+  // ESTADO
+  estado EstadoAsignacionAuditoria @default(PENDIENTE)
+
+  // CICLO DE VIDA
+  asignadoEn   DateTime?
+  venceEn      DateTime
+  iniciadoEn   DateTime?
+  completadoEn DateTime?
+
+  // CANCELACIÓN
+  canceladoEn       DateTime?
+  motivoCancelacion String? @db.Text
+
+  // EXCEPCIONES
+  motivoExcepcion String? @db.Text
+
+  // REAPERTURA
+  reabiertaHasta   DateTime?
+  reabiertaEn      DateTime?
+  reabiertaPorId   Int?
+  motivoReapertura String? @db.Text
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES: RESPONSABLES
+  asignadoPor Usuario @relation( "UsuarioCreadorAsignacion", fields: [asignadoPorId], references: [id] )
+
+  auditor Usuario @relation( "UsuarioAuditorAsignacion", fields: [auditorId], references: [id] )
+
+  // RELACIONES: PLANIFICACIÓN
+  objetivoAuditoria ObjetivoAuditoria @relation( fields: [objetivoAuditoriaId], references: [id] )
+
+  asignacionMensual AsignacionMensual? @relation( fields: [asignacionMensualId], references: [id] )
+
+  // RELACIONES: EJECUCIÓN
+  enlacesInvitado EnlaceInvitado[]
+  enviosAuditoria EnvioAuditoria[]
+
+  // ÍNDICES
   @@index([auditorId, estado, venceEn])
   @@index([objetivoAuditoriaId, estado])
   @@index([asignacionMensualId])
   @@index([asignadoPorId])
   @@index([reabiertaHasta])
+
   @@map("asignaciones_auditoria")
 }
 
+
+// =============================================================================
+// AUDITORÍAS POR INVITADO
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// EnlaceInvitado
+// Token delegado para permitir realizar una auditoría sin rol INVITADO.
+// -----------------------------------------------------------------------------
 model EnlaceInvitado {
-  id                    Int                 @id @default(autoincrement())
+  // IDENTIFICACIÓN
+  id Int @id @default(autoincrement())
+
+  // CONTEXTO
   asignacionAuditoriaId Int
   creadoPorId           Int
-  hashToken             String              @unique @db.Char(64)
-  expiraEn              DateTime
-  usadoEn               DateTime?
-  revocadoEn            DateTime?
-  creadoEn              DateTime            @default(now())
-  actualizadoEn         DateTime            @updatedAt
-  asignacionAuditoria   AsignacionAuditoria @relation(fields: [asignacionAuditoriaId], references: [id])
-  creadoPor             Usuario             @relation("UsuarioCreadorEnlace", fields: [creadoPorId], references: [id])
-  enviosAuditoria       EnvioAuditoria[]
 
+  // TOKEN Y VIGENCIA
+  hashToken   String    @unique @db.Char(64)
+  expiraEn    DateTime
+  usadoEn     DateTime?
+  revocadoEn  DateTime?
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  asignacionAuditoria AsignacionAuditoria @relation( fields: [asignacionAuditoriaId], references: [id] )
+
+  creadoPor Usuario @relation( "UsuarioCreadorEnlace", fields: [creadoPorId], references: [id] )
+
+  enviosAuditoria EnvioAuditoria[]
+
+  // ÍNDICES
   @@index([asignacionAuditoriaId])
   @@index([creadoPorId])
   @@index([expiraEn, revocadoEn])
+
   @@map("enlaces_invitado")
 }
 
+
+// =============================================================================
+// EJECUCIÓN Y RESULTADOS DE AUDITORÍAS
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// EnvioAuditoria
+// Auditoría finalizada y recibida por el backend.
+// Conserva resultados calculados y datos históricos del auditor.
+// -----------------------------------------------------------------------------
 model EnvioAuditoria {
-  id                    Int                  @id @default(autoincrement())
-  identificadorCliente  String               @unique @db.Char(36)
+  // IDENTIFICACIÓN
+  id                   Int    @id @default(autoincrement())
+  identificadorCliente String @unique @db.Char(36)
+
+  // CONTEXTO DE LA AUDITORÍA
   objetivoAuditoriaId   Int
   asignacionAuditoriaId Int?
-  enviadoPorUsuarioId   Int?
-  enlaceInvitadoId      Int?
-  nombreAuditorSnapshot String               @db.VarChar(160)
-  origen                OrigenEnvioAuditoria
-  puntajeObtenido       Decimal              @db.Decimal(10, 4)
-  puntajePosible        Decimal              @db.Decimal(10, 4)
-  porcentaje            Decimal              @db.Decimal(10, 4)
-  finalizadoEn          DateTime
-  verificadoEn          DateTime
-  recibidoEn            DateTime             @default(now())
-  invalidadoEn          DateTime?
-  motivoInvalidacion    String?              @db.Text
-  creadoEn              DateTime             @default(now())
-  actualizadoEn         DateTime             @updatedAt
-  asignacionAuditoria   AsignacionAuditoria? @relation(fields: [asignacionAuditoriaId], references: [id], onDelete: Restrict)
-  enlaceInvitado        EnlaceInvitado?      @relation(fields: [enlaceInvitadoId], references: [id], onDelete: Restrict)
-  enviadoPorUsuario     Usuario?             @relation("UsuarioEnviadorAuditoria", fields: [enviadoPorUsuarioId], references: [id], onDelete: Restrict)
-  objetivoAuditoria     ObjetivoAuditoria    @relation("EnviosObjetivo", fields: [objetivoAuditoriaId], references: [id])
-  objetivoComoResultado ObjetivoAuditoria?   @relation("EnvioResultadoObjetivo")
-  respuestasAuditoria   RespuestaAuditoria[]
 
+  // IDENTIDAD DEL ACTOR
+  enviadoPorUsuarioId Int?
+  enlaceInvitadoId    Int?
+
+  // SNAPSHOT DEL AUDITOR
+  nombreAuditorSnapshot String @db.VarChar(160)
+
+  // ORIGEN
+  origen OrigenEnvioAuditoria
+
+  // RESULTADO
+  puntajeObtenido Decimal @db.Decimal(10, 4)
+  puntajePosible  Decimal @db.Decimal(10, 4)
+  porcentaje      Decimal @db.Decimal(10, 4)
+
+  // FECHAS DE EJECUCIÓN
+  finalizadoEn DateTime
+  verificadoEn DateTime
+  recibidoEn   DateTime @default(now())
+
+  // INVALIDACIÓN
+  invalidadoEn       DateTime?
+  motivoInvalidacion String? @db.Text
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  asignacionAuditoria AsignacionAuditoria? @relation( fields: [asignacionAuditoriaId], references: [id], onDelete: Restrict )
+
+  enlaceInvitado EnlaceInvitado? @relation( fields: [enlaceInvitadoId], references: [id], onDelete: Restrict )
+
+  enviadoPorUsuario Usuario? @relation( "UsuarioEnviadorAuditoria", fields: [enviadoPorUsuarioId], references: [id], onDelete: Restrict )
+
+  objetivoAuditoria ObjetivoAuditoria @relation( "EnviosObjetivo", fields: [objetivoAuditoriaId], references: [id] )
+
+  objetivoComoResultado ObjetivoAuditoria? @relation("EnvioResultadoObjetivo")
+
+  respuestasAuditoria RespuestaAuditoria[]
+
+  // ÍNDICES
   @@index([objetivoAuditoriaId])
   @@index([asignacionAuditoriaId])
   @@index([enviadoPorUsuarioId, finalizadoEn(sort: Desc)])
   @@index([recibidoEn(sort: Desc)])
   @@index([enlaceInvitadoId])
+
   @@map("envios_auditoria")
 }
 
+
+// -----------------------------------------------------------------------------
+// RespuestaAuditoria
+// Respuesta SÍ/NO correspondiente a una pregunta de un envío.
+// -----------------------------------------------------------------------------
 model RespuestaAuditoria {
-  id                   Int                @id @default(autoincrement())
+  // IDENTIFICACIÓN
+  id Int @id @default(autoincrement())
+
+  // CONTEXTO
   envioAuditoriaId     Int
   preguntaFormularioId Int
-  cumple               Boolean
-  hallazgo             String?            @db.Text
-  creadoEn             DateTime           @default(now())
-  actualizadoEn        DateTime           @updatedAt
-  fotosAuditoria       FotoAuditoria[]
-  envioAuditoria       EnvioAuditoria     @relation(fields: [envioAuditoriaId], references: [id])
-  preguntaFormulario   PreguntaFormulario @relation(fields: [preguntaFormularioId], references: [id])
 
+  // RESPUESTA
+  cumple   Boolean
+  hallazgo String? @db.Text
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  fotosAuditoria FotoAuditoria[]
+
+  envioAuditoria EnvioAuditoria @relation( fields: [envioAuditoriaId], references: [id] )
+
+  preguntaFormulario PreguntaFormulario @relation( fields: [preguntaFormularioId], references: [id] )
+
+  // RESTRICCIONES
   @@unique([envioAuditoriaId, preguntaFormularioId])
+
+  // ÍNDICES
   @@index([preguntaFormularioId])
+
   @@map("respuestas_auditoria")
 }
 
-model FotoAuditoria {
-  id                   Int                @id @default(autoincrement())
-  identificadorCliente String             @unique @db.Char(36)
-  respuestaAuditoriaId Int
-  publicIdCloudinary   String             @db.VarChar(255)
-  assetIdCloudinary    String?            @db.VarChar(255)
-  formato              String?            @db.VarChar(20)
-  tipoMime             String?            @db.VarChar(120)
-  bytes                Int?
-  ancho                Int?
-  alto                 Int?
-  capturadaEn          DateTime?
-  subidaEn             DateTime?
-  creadoEn             DateTime           @default(now())
-  actualizadoEn        DateTime           @updatedAt
-  respuestaAuditoria   RespuestaAuditoria @relation(fields: [respuestaAuditoriaId], references: [id])
 
+// -----------------------------------------------------------------------------
+// FotoAuditoria
+// Evidencia fotográfica asociada con una respuesta.
+// Los archivos son almacenados externamente en Cloudinary.
+// -----------------------------------------------------------------------------
+model FotoAuditoria {
+  // IDENTIFICACIÓN
+  id                   Int    @id @default(autoincrement())
+  identificadorCliente String @unique @db.Char(36)
+
+  // RESPUESTA A LA QUE PERTENECE
+  respuestaAuditoriaId Int
+
+  // CLOUDINARY
+  publicIdCloudinary String  @db.VarChar(255)
+  assetIdCloudinary  String? @db.VarChar(255)
+
+  // METADATOS DEL ARCHIVO
+  formato  String? @db.VarChar(20)
+  tipoMime String? @db.VarChar(120)
+  bytes    Int?
+  ancho    Int?
+  alto     Int?
+
+  // FECHAS DE LA IMAGEN
+  capturadaEn DateTime?
+  subidaEn    DateTime?
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  respuestaAuditoria RespuestaAuditoria @relation( fields: [respuestaAuditoriaId], references: [id] )
+
+  // ÍNDICES
   @@index([respuestaAuditoriaId])
   @@index([publicIdCloudinary])
+
   @@map("fotos_auditoria")
 }
 
-model SuscripcionPush {
-  id                   Int                   @id @default(autoincrement())
-  usuarioId            Int
-  endpoint             String                @db.Text
-  hashEndpoint         String                @unique @db.Char(64)
-  p256dh               String                @db.VarChar(255)
-  auth                 String                @db.VarChar(255)
-  nombreDispositivo    String?               @db.VarChar(120)
-  agenteUsuario        String?               @db.VarChar(512)
-  expiraEn             DateTime?
-  ultimoUsoEn          DateTime?
-  revocadoEn           DateTime?
-  creadoEn             DateTime              @default(now())
-  actualizadoEn        DateTime              @updatedAt
-  entregasNotificacion EntregaNotificacion[]
-  usuario              Usuario               @relation(fields: [usuarioId], references: [id])
 
+// =============================================================================
+// NOTIFICACIONES Y CANALES
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// SuscripcionPush
+// Navegador/dispositivo registrado para recibir Web Push.
+// -----------------------------------------------------------------------------
+model SuscripcionPush {
+  // IDENTIFICACIÓN
+  id        Int @id @default(autoincrement())
+  usuarioId Int
+
+  // CREDENCIALES PUSH
+  endpoint     String @db.Text
+  hashEndpoint String @unique @db.Char(64)
+  p256dh       String @db.VarChar(255)
+  auth         String @db.VarChar(255)
+
+  // INFORMACIÓN DEL DISPOSITIVO
+  nombreDispositivo String? @db.VarChar(120)
+  agenteUsuario     String? @db.VarChar(512)
+
+  // CICLO DE VIDA
+  expiraEn    DateTime?
+  ultimoUsoEn DateTime?
+  revocadoEn  DateTime?
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  entregasNotificacion EntregaNotificacion[]
+
+  usuario Usuario @relation( fields: [usuarioId], references: [id] )
+
+  // ÍNDICES
   @@index([usuarioId, revocadoEn])
   @@index([expiraEn])
   @@index([ultimoUsoEn])
+
   @@map("suscripciones_push")
 }
 
-model Notificacion {
-  id                   Int                   @id @default(autoincrement())
-  usuarioId            Int
-  claveDedupe          String?               @unique
-  tipo                 TipoNotificacion
-  titulo               String                @db.VarChar(180)
-  mensaje              String                @db.Text
-  ruta                 String?               @db.VarChar(255)
-  datos                Json?
-  leidaEn              DateTime?
-  creadoEn             DateTime              @default(now())
-  actualizadoEn        DateTime              @updatedAt
-  entregasNotificacion EntregaNotificacion[]
-  usuario              Usuario               @relation(fields: [usuarioId], references: [id])
 
+// -----------------------------------------------------------------------------
+// Notificacion
+// Evento/aviso lógico del sistema.
+// NO implica necesariamente una entrega por correo, push o WhatsApp.
+// -----------------------------------------------------------------------------
+model Notificacion {
+  // IDENTIFICACIÓN
+  id        Int @id @default(autoincrement())
+  usuarioId Int
+
+  // IDEMPOTENCIA / DEDUPLICACIÓN
+  claveDedupe String? @unique
+
+  // CONTENIDO
+  tipo    TipoNotificacion
+  titulo  String @db.VarChar(180)
+  mensaje String @db.Text
+  ruta    String? @db.VarChar(255)
+  datos   Json?
+
+  // ESTADO EN LA APLICACIÓN
+  leidaEn DateTime?
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  entregasNotificacion EntregaNotificacion[]
+
+  usuario Usuario @relation( fields: [usuarioId], references: [id] )
+
+  // ÍNDICES
   @@index([usuarioId, leidaEn, creadoEn(sort: Desc)])
   @@index([tipo, creadoEn(sort: Desc)])
+
   @@map("notificaciones")
 }
 
-model EntregaNotificacion {
-  id                Int                       @id @default(autoincrement())
-  notificacionId    Int
-  suscripcionPushId Int?
-  canal             CanalNotificacion
-  estado            EstadoEntregaNotificacion @default(PENDIENTE)
-  destinoSnapshot   String?                   @db.VarChar(255)
-  destinoHash       String?                   @db.Char(64)
-  programadoEn      DateTime
-  proximoIntentoEn  DateTime?
-  bloqueadoHasta    DateTime?
-  bloqueadoPor      String?                   @db.VarChar(120)
-  intentos          Int                       @default(0)
-  enviadoEn         DateTime?
-  ultimoIntentoEn   DateTime?
-  idMensajeExterno  String?                   @db.VarChar(255)
-  ultimoError       String?                   @db.Text
-  creadoEn          DateTime                  @default(now())
-  actualizadoEn     DateTime                  @updatedAt
-  notificacion      Notificacion              @relation(fields: [notificacionId], references: [id])
-  suscripcionPush   SuscripcionPush?          @relation(fields: [suscripcionPushId], references: [id], onDelete: Restrict)
 
+// -----------------------------------------------------------------------------
+// EntregaNotificacion
+// Despacho físico de una Notificacion mediante un canal externo.
+// También funciona como registro persistente de la cola.
+// -----------------------------------------------------------------------------
+model EntregaNotificacion {
+  // IDENTIFICACIÓN
+  id             Int @id @default(autoincrement())
+  notificacionId Int
+
+  // DESTINO PUSH OPCIONAL
+  suscripcionPushId Int?
+
+  // CANAL Y ESTADO
+  canal  CanalNotificacion
+  estado EstadoEntregaNotificacion @default(PENDIENTE)
+
+  // DESTINO HISTÓRICO
+  destinoSnapshot String? @db.VarChar(255)
+  destinoHash     String? @db.Char(64)
+
+  // PROGRAMACIÓN Y REINTENTOS
+  programadoEn     DateTime
+  proximoIntentoEn DateTime?
+
+  // LOCK DEL WORKER
+  bloqueadoHasta DateTime?
+  bloqueadoPor   String? @db.VarChar(120)
+
+  // INTENTOS Y RESULTADO
+  intentos        Int       @default(0)
+  enviadoEn       DateTime?
+  ultimoIntentoEn DateTime?
+
+  // RESPUESTA DEL PROVEEDOR
+  idMensajeExterno String? @db.VarChar(255)
+  ultimoError      String? @db.Text
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  notificacion Notificacion @relation( fields: [notificacionId], references: [id] )
+
+  suscripcionPush SuscripcionPush? @relation( fields: [suscripcionPushId], references: [id], onDelete: Restrict )
+
+  // RESTRICCIONES
   @@unique([notificacionId, canal, destinoHash])
+
+  // ÍNDICES DE COLA
   @@index([estado, programadoEn])
   @@index([estado, proximoIntentoEn])
   @@index([estado, bloqueadoHasta])
+
+  // ÍNDICES DE RELACIÓN
   @@index([suscripcionPushId])
   @@index([notificacionId, canal])
+
   @@map("entregas_notificacion")
 }
 
+
+// =============================================================================
+// AUDITORÍA INTERNA DEL SISTEMA
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// RegistroAuditoria
+// Bitácora de acciones realizadas dentro de la aplicación.
+// No confundir con las auditorías 5S.
+// -----------------------------------------------------------------------------
 model RegistroAuditoria {
-  id              Int      @id @default(autoincrement())
-  usuarioId       Int?
-  accion          String   @db.VarChar(120)
-  tipoEntidad     String   @db.VarChar(120)
-  idEntidad       Int?
+  // IDENTIFICACIÓN
+  id Int @id @default(autoincrement())
+
+  // ACTOR
+  usuarioId Int?
+
+  // ACCIÓN
+  accion      String @db.VarChar(120)
+  tipoEntidad String @db.VarChar(120)
+  idEntidad   Int?
+
+  // CAMBIOS
   datosAnteriores Json?
   datosNuevos     Json?
-  direccionIp     String?  @db.VarChar(64)
-  agenteUsuario   String?  @db.VarChar(512)
-  creadoEn        DateTime @default(now())
-  actualizadoEn   DateTime @updatedAt
-  usuario         Usuario? @relation(fields: [usuarioId], references: [id])
 
+  // ORIGEN DE LA PETICIÓN
+  direccionIp   String? @db.VarChar(64)
+  agenteUsuario String? @db.VarChar(512)
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  usuario Usuario? @relation( fields: [usuarioId], references: [id] )
+
+  // ÍNDICES
   @@index([usuarioId, creadoEn(sort: Desc)])
   @@index([tipoEntidad, idEntidad, creadoEn(sort: Desc)])
   @@index([accion, creadoEn(sort: Desc)])
+
   @@map("registros_auditoria")
 }
 
+
+// =============================================================================
+// CONFIGURACIÓN SEGURA DEL SISTEMA
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// SecretoSistema
+// Valores sensibles/configuración persistente cifrada.
+// -----------------------------------------------------------------------------
 model SecretoSistema {
-  clave         String   @id @db.VarChar(120)
-  valorCifrado  String   @db.LongText
-  metadatos     Json?
+  // IDENTIFICADOR
+  clave String @id @db.VarChar(120)
+
+  // CONTENIDO CIFRADO
+  valorCifrado String @db.LongText
+
+  // INFORMACIÓN ADICIONAL
+  metadatos Json?
+
+  // METADATOS
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
 
   @@map("secretos_sistema")
 }
 
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+// Roles reales de las cuentas autenticadas.
+// Los invitados NO son usuarios ni tienen rol INVITADO.
 enum RolUsuario {
   SUPER_ADMIN
   ADMINISTRADOR
   AUDITOR
 }
 
+
+// Clasificación organizacional del área.
 enum TipoArea {
   ADMINISTRATIVA
   OPERATIVA
 }
 
+
+// Tipo de áreas donde puede utilizarse un formulario.
 enum AlcanceFormulario {
   ADMINISTRATIVO
   OPERATIVO
   AMBOS
 }
 
+
+// Ciclo de vida operativo de una asignación de auditoría.
 enum EstadoAsignacionAuditoria {
   PENDIENTE
   EN_PROCESO
@@ -489,11 +999,15 @@ enum EstadoAsignacionAuditoria {
   VENCIDA
 }
 
+
+// Actor que realizó un envío de auditoría.
 enum OrigenEnvioAuditoria {
   USUARIO
   INVITADO
 }
 
+
+// Clasificación lógica de las notificaciones.
 enum TipoNotificacion {
   NUEVA_ASIGNACION
   RECORDATORIO
@@ -506,12 +1020,16 @@ enum TipoNotificacion {
   RESULTADO_MENSUAL_CORREO
 }
 
+
+// Canal físico por el cual puede despacharse una notificación.
 enum CanalNotificacion {
   PUSH
   CORREO
   WHATSAPP
 }
 
+
+// Estado de una entrega física.
 enum EstadoEntregaNotificacion {
   PENDIENTE
   PROCESANDO

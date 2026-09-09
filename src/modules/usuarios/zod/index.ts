@@ -2,9 +2,18 @@ import { z } from 'zod';
 import { RolUsuario } from '../../../generated/prisma/enums';
 
 const telefono = z.string().trim().regex(/^\+[1-9]\d{7,14}$/).optional().nullable();
+const nombreUsuario = z.string()
+  .trim()
+  .transform((valor) => valor.toLowerCase())
+  .pipe(
+    z.string()
+      .min(3, 'El nombre de usuario debe tener al menos 3 letras')
+      .max(80, 'El nombre de usuario no debe exceder 80 letras')
+      .regex(/^[a-z]+$/, 'El nombre de usuario solo puede usar letras minúsculas, sin espacios, números ni símbolos'),
+  );
 
 export const esquemaCrearUsuario = z.object({
-  nombreUsuario: z.string().trim().min(3).max(80),
+  nombreUsuario,
   correo: z.string().trim().email().max(180).optional().nullable(),
   telefonoE164: telefono,
   nombre: z.string().trim().min(1).max(160),

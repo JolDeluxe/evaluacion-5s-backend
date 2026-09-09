@@ -21,7 +21,9 @@ export const reintentarEntregaNotificacionSistema = async (req: Request, res: Re
       where: { id },
       data: {
         estado: EstadoEntregaNotificacion.PENDIENTE,
-        proximoIntentoEn: new Date(),
+        intentos: 0,
+        programadoEn: new Date(),
+        proximoIntentoEn: null,
         bloqueadoHasta: null,
         bloqueadoPor: null,
         ultimoError: null,

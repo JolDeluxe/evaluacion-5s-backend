@@ -18,6 +18,17 @@ import {
   estadoConexionMicrosoftSistema,
   iniciarConexionMicrosoftSistema,
 } from './12_microsoft_conexion';
+import {
+  obtenerControlOperativoSistema,
+  pausarCorreosSistema,
+  reanudarCorreosSistema,
+} from './13_control_operativo';
+import {
+  cancelarEntregaSistema,
+  cancelarEntregasMasivoSistema,
+  detalleEntregaSistema,
+} from './14_gestionar_entregas';
+import { probarColaSistema } from './15_probar_cola';
 
 export const sistemaRouter = Router();
 
@@ -36,5 +47,19 @@ sistemaRouter.post('/correos/enviar-prueba', enviarPruebaCorreoSistema);
 sistemaRouter.get('/correos/microsoft/estado', estadoConexionMicrosoftSistema);
 sistemaRouter.post('/correos/microsoft/iniciar', iniciarConexionMicrosoftSistema);
 sistemaRouter.post('/correos/microsoft/desconectar', desconectarMicrosoftSistema);
+
+// Control operativo de correos automáticos (Fail-Safe)
+sistemaRouter.get('/correos/control-operativo', obtenerControlOperativoSistema);
+sistemaRouter.post('/correos/control-operativo/pausar', pausarCorreosSistema);
+sistemaRouter.post('/correos/control-operativo/reanudar', reanudarCorreosSistema);
+
+// Gestión de entregas (detalle, cancelación individual y masiva)
+sistemaRouter.get('/correos/entregas/:id/detalle', detalleEntregaSistema);
+sistemaRouter.post('/correos/entregas/:id/cancelar', cancelarEntregaSistema);
+sistemaRouter.post('/correos/entregas/cancelar-masivo', cancelarEntregasMasivoSistema);
+
+// Prueba canario real en cola
+sistemaRouter.post('/correos/probar-cola', probarColaSistema);
+
 
 

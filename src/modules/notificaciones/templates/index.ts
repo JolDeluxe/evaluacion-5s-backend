@@ -1,9 +1,14 @@
-﻿import type { MonthlyAssignmentsData, TemplateRenderResult } from './audit_assignment_monthly';
+import type { MonthlyAssignmentsData, TemplateRenderResult } from './audit_assignment_monthly';
 import { renderAuditAssignmentMonthly } from './audit_assignment_monthly';
 import type { MonthlyResultsData } from './monthly_results';
 import { renderMonthlyResults } from './monthly_results';
+import type { PeriodReminderData } from './period_reminder';
+import { renderPeriodReminder } from './period_reminder';
 
-export type NotificacionTemplateData = MonthlyAssignmentsData | MonthlyResultsData;
+export type NotificacionTemplateData =
+  | MonthlyAssignmentsData
+  | MonthlyResultsData
+  | PeriodReminderData;
 
 export type { TemplateRenderResult };
 
@@ -24,6 +29,10 @@ export const resolverTemplate = (
 
     if (payload.templateName === 'monthly_results') {
       return renderMonthlyResults(datos as MonthlyResultsData);
+    }
+
+    if (payload.templateName === 'period_reminder') {
+      return renderPeriodReminder(datos as PeriodReminderData);
     }
   }
 

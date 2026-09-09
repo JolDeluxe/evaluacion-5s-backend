@@ -1,4 +1,4 @@
-﻿import { transportCorreo } from '../../../config/correo';
+import { transportCorreo } from '../../../config/correo';
 import { env } from '../../../config/env';
 import { esErrorPermanenteSmtp } from '../helper';
 
@@ -38,6 +38,9 @@ export const enviarCorreoSmtp = async (input: EmailInput): Promise<EmailResult> 
   }
 
   try {
+    const timestamp = new Date().toISOString();
+    console.log(`[SMTP Pool] Despachando correo a ${input.to} | Timestamp: ${timestamp}`);
+
     const info = await transportCorreo.sendMail({
       from: env.SMTP_FROM,
       to: input.to,
@@ -46,6 +49,8 @@ export const enviarCorreoSmtp = async (input: EmailInput): Promise<EmailResult> 
       html: input.html,
       attachments: input.attachments,
     });
+
+    console.log(`[SMTP Pool] Correo entregado exitosamente a ${input.to} | MessageId: ${info.messageId}`);
 
     return {
       enviado: true,

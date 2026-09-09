@@ -1,24 +1,42 @@
-﻿import { randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { env } from '../../config/env';
 import { webPush } from '../../config/push';
 import { prisma } from '../../db';
-import { CanalNotificacion, EstadoEntregaNotificacion } from '../../generated/prisma/enums';
+import {
+  CanalNotificacion,
+  EstadoAsignacionAuditoria,
+  EstadoEntregaNotificacion,
+  RolUsuario,
+  TipoNotificacion,
+} from '../../generated/prisma/enums';
+import {
+  evaluarVentanaRecordatorioPeriodo,
+  obtenerUltimoDiaHabilPeriodo,
+  tieneEnvioResultadoValido,
+} from '../../utils/periodos';
 import { calcularProximoIntento } from './helper';
 import { generarQrBuffer } from './qr';
+import { obtenerAdjuntoLogoCuadra } from './logo';
 import { resolverTemplate } from './templates';
+import { generarPdfResultadosGeneral } from './reportes/pdf-resultados';
+import { obtenerResultadosGeneral } from '../resultados/servicio';
+import { obtenerEstadoControlOperativo } from './control-operativo';
 import type { EmailAttachment } from './proveedores/email';
 import { enviarCorreo } from './proveedores/email';
 import { enviarWhatsapp } from './proveedores/whatsapp';
 
 const workerId = `worker-${process.pid}-${randomUUID()}`;
+const MAX_INTENTOS = 5;
 
 export const procesarEntregasPendientes = async () => {
   const ahora = new Date();
 
-  // Filtrar canales activos según configuración. Si EMAIL_ENABLED=false, las entregas
-  // por canal CORREO permanecen en PENDIENTE sin ser reclamadas ni fallar.
+  // Filtrar canales activos según configuración y control operativo.
+  // Si EMAIL_ENABLED=false o el control operativo está en PAUSADO (fail-safe),
+  // las entregas por canal CORREO permanecen en PENDIENTE sin ser reclamadas ni fallar.
+  const infoControl = await obtenerEstadoControlOperativo();
   const canalesPermitidos: CanalNotificacion[] = [CanalNotificacion.PUSH, CanalNotificacion.WHATSAPP];
-  if (env.EMAIL_ENABLED) {
+  if (infoControl.estado === 'ACTIVO' && (env.EMAIL_ENABLED || env.EMAIL_TEST_ENABLED)) {
     canalesPermitidos.push(CanalNotificacion.CORREO);
   }
 
@@ -26,8 +44,8 @@ export const procesarEntregasPendientes = async () => {
     where: {
       canal: { in: canalesPermitidos },
       OR: [
-        { estado: EstadoEntregaNotificacion.PENDIENTE, programadoEn: { lte: ahora } },
-        { estado: EstadoEntregaNotificacion.FALLIDA, proximoIntentoEn: { lte: ahora }, intentos: { lt: 5 } },
+        { estado: EstadoEntregaNotificacion.PENDIENTE, programadoEn: { lte: ahora }, intentos: { lt: MAX_INTENTOS } },
+        { estado: EstadoEntregaNotificacion.FALLIDA, proximoIntentoEn: { lte: ahora, not: null }, intentos: { lt: MAX_INTENTOS } },
         { estado: EstadoEntregaNotificacion.PROCESANDO, bloqueadoHasta: { lt: ahora } },
       ],
     },
@@ -41,8 +59,8 @@ export const procesarEntregasPendientes = async () => {
         id: candidato.id,
         canal: { in: canalesPermitidos },
         OR: [
-          { estado: EstadoEntregaNotificacion.PENDIENTE },
-          { estado: EstadoEntregaNotificacion.FALLIDA, proximoIntentoEn: { lte: ahora } },
+          { estado: EstadoEntregaNotificacion.PENDIENTE, intentos: { lt: MAX_INTENTOS } },
+          { estado: EstadoEntregaNotificacion.FALLIDA, proximoIntentoEn: { lte: ahora, not: null }, intentos: { lt: MAX_INTENTOS } },
           { estado: EstadoEntregaNotificacion.PROCESANDO, bloqueadoHasta: { lt: ahora } },
         ],
       },
@@ -79,10 +97,102 @@ const procesarEntrega = async (id: number) => {
         })
       );
     } else if (entrega.canal === CanalNotificacion.CORREO) {
+      // Revalidación inmediata de control operativo: si el sistema fue pausado
+      // o el envío de correo no está habilitado mientras la entrega estaba reclamada, liberarla a PENDIENTE.
+      const infoControl = await obtenerEstadoControlOperativo();
+      const datosPayload = (entrega.notificacion.datos || {}) as Record<string, unknown>;
+      const esCanario = Boolean(datosPayload.esCanario || entrega.notificacion.claveDedupe?.startsWith('canary:'));
+      const correoHabilitado = env.EMAIL_ENABLED || (env.EMAIL_TEST_ENABLED && esCanario);
+
+      if (!correoHabilitado || infoControl.estado !== 'ACTIVO') {
+        await prisma.entregaNotificacion.update({
+          where: { id },
+          data: {
+            estado: EstadoEntregaNotificacion.PENDIENTE,
+            bloqueadoHasta: null,
+            bloqueadoPor: null,
+          },
+        });
+        return;
+      }
+
       if (!entrega.destinoSnapshot || entrega.destinoSnapshot === 'sin-correo') {
         const err = new Error('Destino de correo no informado');
         (err as unknown as { permanente: boolean }).permanente = true;
         throw err;
+      }
+
+      // Revalidación previa al envío para RECORDATORIO de periodo:
+      // 1. Si la fecha límite del recordatorio ya expiró (ej. pausa prolongada), cancelar ordenadamente.
+      // 2. Si el auditor ya terminó sus auditorías pendientes, cancelar ordenadamente sin enviar.
+      if (
+        entrega.notificacion.tipo === TipoNotificacion.RECORDATORIO &&
+        datosPayload.templateName === 'period_reminder'
+      ) {
+        const periodo = Number(datosPayload.periodo);
+        const mesStr = String(datosPayload.mes || '');
+        const [anioStr, numMesStr] = mesStr.split('-');
+        const anio = Number(anioStr);
+        const mes = Number(numMesStr);
+
+        if (anio && mes && (periodo === 1 || periodo === 2)) {
+          // Revalidar si la ventana ya es obsoleta
+          const fechaRecordatorio = obtenerUltimoDiaHabilPeriodo(anio, mes, periodo as 1 | 2);
+          const ventana = evaluarVentanaRecordatorioPeriodo(fechaRecordatorio, new Date());
+          if (ventana.esObsoleto) {
+            await prisma.entregaNotificacion.update({
+              where: { id },
+              data: {
+                estado: EstadoEntregaNotificacion.CANCELADA,
+                proximoIntentoEn: null,
+                ultimoError: `Recordatorio vencido (${ventana.motivo}). Envío cancelado por fecha expirada.`,
+                bloqueadoHasta: null,
+                bloqueadoPor: null,
+              },
+            });
+            return;
+          }
+
+          const asignaciones = await prisma.asignacionAuditoria.findMany({
+            where: {
+              auditorId: entrega.notificacion.usuarioId,
+              estado: {
+                in: [EstadoAsignacionAuditoria.PENDIENTE, EstadoAsignacionAuditoria.EN_PROCESO],
+              },
+              completadoEn: null,
+              objetivoAuditoria: {
+                anio,
+                mes,
+                periodo,
+                canceladoEn: null,
+              },
+            },
+            include: {
+              objetivoAuditoria: {
+                include: { envioResultado: true, enviosAuditoria: true },
+              },
+            },
+          });
+
+          const pendientesReales = asignaciones.filter(
+            (asig) => !tieneEnvioResultadoValido(asig.objetivoAuditoria)
+          );
+
+          if (pendientesReales.length === 0) {
+            // El auditor ya concluyó sus auditorías; no enviar aviso extemporáneo ni marcar FALLIDA
+            await prisma.entregaNotificacion.update({
+              where: { id },
+              data: {
+                estado: EstadoEntregaNotificacion.CANCELADA,
+                proximoIntentoEn: null,
+                ultimoError: 'Auditorías ya completadas previamente. Envío de recordatorio omitido.',
+                bloqueadoHasta: null,
+                bloqueadoPor: null,
+              },
+            });
+            return;
+          }
+        }
       }
 
       const templateResult = resolverTemplate(entrega.notificacion.datos, {
@@ -92,6 +202,11 @@ const procesarEntrega = async (id: number) => {
       });
 
       const attachments: EmailAttachment[] = [];
+      const logoAttachment = obtenerAdjuntoLogoCuadra();
+      if (logoAttachment) {
+        attachments.push(logoAttachment);
+      }
+
       if (templateResult?.qrUrl) {
         try {
           const qrBuffer = await generarQrBuffer(templateResult.qrUrl);
@@ -107,13 +222,42 @@ const procesarEntrega = async (id: number) => {
         }
       }
 
-      const resEnvio = await enviarCorreo({
-        to: entrega.destinoSnapshot,
-        subject: templateResult?.subject ?? entrega.notificacion.titulo,
-        text: templateResult?.text ?? entrega.notificacion.mensaje,
-        html: templateResult?.html,
-        attachments: attachments.length > 0 ? attachments : undefined,
-      });
+      // Adjuntar PDF de Resultados Generales para correos de resultados mensuales
+      if (
+        entrega.notificacion.tipo === TipoNotificacion.RESULTADO_MENSUAL_CORREO ||
+        datosPayload.templateName === 'monthly_results'
+      ) {
+        try {
+          const mesYMD = String(datosPayload.mes || '');
+          const mesEtiqueta = String(datosPayload.mesEtiqueta || mesYMD);
+          if (mesYMD) {
+            const authInterna = { usuarioId: 0, rol: RolUsuario.SUPER_ADMIN };
+            const datosGeneral = await obtenerResultadosGeneral(prisma, authInterna, {
+              tipo: 'mes',
+              mes: mesYMD,
+            });
+            const pdfBuffer = await generarPdfResultadosGeneral(datosGeneral, mesEtiqueta);
+            attachments.push({
+              filename: `Resultados Generales 5S - ${mesYMD}.pdf`,
+              content: pdfBuffer,
+              contentType: 'application/pdf',
+            });
+          }
+        } catch {
+          // Si falla la generación del PDF, continuar con el despacho del correo
+        }
+      }
+
+      const resEnvio = await enviarCorreo(
+        {
+          to: entrega.destinoSnapshot,
+          subject: (datosPayload.subject as string) ?? templateResult?.subject ?? entrega.notificacion.titulo,
+          text: (datosPayload.text as string) ?? templateResult?.text ?? entrega.notificacion.mensaje,
+          html: (datosPayload.html as string) ?? templateResult?.html,
+          attachments: attachments.length > 0 ? attachments : undefined,
+        },
+        { esCanario }
+      );
 
       if (!resEnvio.enviado) {
         const error = new Error(resEnvio.error ?? 'Fallo al enviar correo');
@@ -141,15 +285,15 @@ const procesarEntrega = async (id: number) => {
   } catch (error) {
     const errObj = error as { permanente?: boolean; message?: string; retryAfterSeconds?: number };
     const esPermanente = errObj?.permanente === true;
-    const intentos = entrega.intentos + 1;
-    const maxAlcanzado = intentos >= 5;
+    const nuevosIntentos = Math.min(MAX_INTENTOS, entrega.intentos + 1);
+    const maxAlcanzado = nuevosIntentos >= MAX_INTENTOS;
 
     let proximoIntentoEn: Date | null = null;
     if (!esPermanente && !maxAlcanzado) {
       if (typeof errObj?.retryAfterSeconds === 'number' && errObj.retryAfterSeconds > 0) {
         proximoIntentoEn = new Date(Date.now() + errObj.retryAfterSeconds * 1000);
       } else {
-        proximoIntentoEn = calcularProximoIntento(intentos);
+        proximoIntentoEn = calcularProximoIntento(nuevosIntentos);
       }
     }
 
@@ -157,7 +301,7 @@ const procesarEntrega = async (id: number) => {
       where: { id },
       data: {
         estado: EstadoEntregaNotificacion.FALLIDA,
-        intentos,
+        intentos: nuevosIntentos,
         ultimoIntentoEn: new Date(),
         proximoIntentoEn,
         ultimoError: error instanceof Error ? error.message.slice(0, 1000) : 'Error desconocido',

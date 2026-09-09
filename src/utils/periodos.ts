@@ -64,6 +64,92 @@ export const primerDiaHabilMes = (anio: number, mes: number): Date => {
 export const mesAnteriorDe = (anio: number, mes: number): { anio: number; mes: number } =>
   mes === 1 ? { anio: anio - 1, mes: 12 } : { anio, mes: mes - 1 };
 
+/**
+ * Devuelve el último día hábil menor o igual a la fecha límite natural del periodo.
+ * - Para P1: último día hábil <= 15 del mes.
+ * - Para P2: último día hábil <= fin de mes.
+ * La hora devuelta es 00:00:00.000 del día resultante.
+ */
+export const obtenerUltimoDiaHabilPeriodo = (anio: number, mes: number, periodo: 1 | 2): Date => {
+  const diaInicio = periodo === 1 ? 15 : new Date(anio, mes, 0).getDate();
+  const fecha = new Date(anio, mes - 1, diaInicio, 0, 0, 0, 0);
+
+  while (!esDiaHabil(fecha)) {
+    fecha.setDate(fecha.getDate() - 1);
+  }
+
+  return fecha;
+};
+
+/**
+ * Obtiene los componentes de fecha/hora en la zona horaria oficial America/Mexico_City.
+ */
+export const obtenerFechaHoraCDMX = (fecha: Date = new Date()): { yyyyMMdd: string; hora: number } => {
+  const partes = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Mexico_City',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+  }).formatToParts(fecha);
+
+  const year = partes.find((p) => p.type === 'year')?.value ?? '1970';
+  const month = partes.find((p) => p.type === 'month')?.value ?? '01';
+  const day = partes.find((p) => p.type === 'day')?.value ?? '01';
+  const hour = Number(partes.find((p) => p.type === 'hour')?.value ?? '0');
+
+  return {
+    yyyyMMdd: `${year}-${month}-${day}`,
+    hora: hour,
+  };
+};
+
+/**
+ * Evalúa si una fecha actual está dentro de la ventana de recordatorio para un periodo:
+ * - Solo ejecutable en la fecha exacta del recordatorio (último día hábil del corte).
+ * - A partir de las 09:00 AM (hora CDMX).
+ * - Si el día ya pasó, se considera extemporáneo/obsoleto.
+ */
+export const evaluarVentanaRecordatorioPeriodo = (
+  fechaRecordatorio: Date,
+  ahora = new Date(),
+): { esElegible: boolean; esObsoleto: boolean; motivo: string } => {
+  const cdmx = obtenerFechaHoraCDMX(ahora);
+  const recordatorioYMD = `${fechaRecordatorio.getFullYear()}-${String(fechaRecordatorio.getMonth() + 1).padStart(2, '0')}-${String(fechaRecordatorio.getDate()).padStart(2, '0')}`;
+
+  if (cdmx.yyyyMMdd < recordatorioYMD) {
+    return {
+      esElegible: false,
+      esObsoleto: false,
+      motivo: `Aún no es la fecha del recordatorio (${recordatorioYMD}).`,
+    };
+  }
+
+  if (cdmx.yyyyMMdd > recordatorioYMD) {
+    return {
+      esElegible: false,
+      esObsoleto: true,
+      motivo: `La fecha del recordatorio (${recordatorioYMD}) ya pasó. No se envían recordatorios extemporáneos.`,
+    };
+  }
+
+  // Mismo día
+  if (cdmx.hora < 9) {
+    return {
+      esElegible: false,
+      esObsoleto: false,
+      motivo: `El recordatorio se ejecuta a partir de las 09:00 AM (hora CDMX). Hora actual: ${cdmx.hora}:00.`,
+    };
+  }
+
+  return {
+    esElegible: true,
+    esObsoleto: false,
+    motivo: 'Ventana activa para envío de recordatorio.',
+  };
+};
+
 export const tieneEnvioResultadoValido = (objetivo: Pick<ObjetivoConPeriodo, 'envioResultado'>) =>
   Boolean(objetivo.envioResultado && !objetivo.envioResultado.invalidadoEn);
 

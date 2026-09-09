@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'bun:test';
 import { generarQrBuffer } from '../modules/notificaciones/qr';
 import { renderAuditAssignmentMonthly } from '../modules/notificaciones/templates/audit_assignment_monthly';
 import { renderMonthlyResults } from '../modules/notificaciones/templates/monthly_results';
@@ -85,18 +85,30 @@ describe('Templates de Notificaciones por Correo', () => {
       expect(result.html).toContain('88.2%');
       expect(result.html).toContain('BORDADO');
       expect(result.html).toContain('95.5%');
-      expect(result.html).toContain('Excelente');
       expect(result.html).toContain('CORTE');
       expect(result.html).toContain('78.0%');
-      expect(result.html).toContain('Satisfactorio');
       expect(result.html).toContain('EMPAQUE');
       expect(result.html).toContain('45.0%');
-      expect(result.html).toContain('Crítico');
       expect(result.html).toContain('cid:qr-code');
+      expect(result.html).toContain('Resultados Generales 5S');
+      expect(result.html).toContain('Áreas bajo tu responsabilidad');
+      expect(result.html).toContain('Calificación');
+
+      // Confirmar ausencia de etiquetas interpretativas, columna Nivel y textos robóticos
+      expect(result.html).not.toContain('Excelente');
+      expect(result.html).not.toContain('Satisfactorio');
+      expect(result.html).not.toContain('Crítico');
+      expect(result.html).not.toContain('>Nivel<');
+      expect(result.html).not.toContain('Promedio general de la organización');
 
       // Text validations
-      expect(result.text).toContain('BORDADO: 95.5% (Excelente)');
-      expect(result.text).toContain('Resultado Global: 88.2%');
+      expect(result.text).toContain('BORDADO: 95.5%');
+      expect(result.text).toContain('Resultados Generales 5S: 88.2%');
+      expect(result.text).toContain('Áreas bajo tu responsabilidad');
+      expect(result.text).not.toContain('Excelente');
+      expect(result.text).not.toContain('Satisfactorio');
+      expect(result.text).not.toContain('Crítico');
+      expect(result.text).not.toContain('Promedio general de la organización');
     });
 
     it('renderiza resultados para un ADMINISTRADOR sin áreas directas a cargo', () => {
@@ -115,9 +127,12 @@ describe('Templates de Notificaciones por Correo', () => {
 
       expect(result.html).toContain('Super Administrador');
       expect(result.html).toContain('92.4%');
-      expect(result.html).toContain('Excelente');
+      expect(result.html).not.toContain('Excelente');
+      expect(result.html).not.toContain('Áreas bajo tu responsabilidad');
       expect(result.html).not.toContain('Tus Áreas Evaluadas');
-      expect(result.text).toContain('Resultado Global: 92.4% (Excelente)');
+      expect(result.text).toContain('Resultados Generales 5S: 92.4%');
+      expect(result.text).not.toContain('Excelente');
+      expect(result.text).not.toContain('Promedio general de la organización');
     });
   });
 

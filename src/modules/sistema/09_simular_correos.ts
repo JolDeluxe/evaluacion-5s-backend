@@ -1,15 +1,23 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../../db';
-import { RolUsuario } from '../../generated/prisma/enums';
+import { EstadoAsignacionAuditoria, RolUsuario } from '../../generated/prisma/enums';
 import { normalizarCorreo } from '../../utils/crypto';
-import { calcularCierreConGracia, mesAnteriorDe, MESES_NOMBRES, primerDiaHabilMes } from '../../utils/periodos';
+import {
+  calcularCierreConGracia,
+  evaluarVentanaRecordatorioPeriodo,
+  mesAnteriorDe,
+  MESES_NOMBRES,
+  obtenerUltimoDiaHabilPeriodo,
+  primerDiaHabilMes,
+  tieneEnvioResultadoValido,
+} from '../../utils/periodos';
 import { responder } from '../../utils/respuesta';
 import { obtenerVistaMensual } from '../asignaciones/programacion_mensual';
 import { obtenerResultadosGeneral } from '../resultados/servicio';
 
 const esquemaSimulacion = z.object({
-  tipo: z.enum(['asignaciones', 'resultados']).default('asignaciones'),
+  tipo: z.enum(['asignaciones', 'recordatorio_p1', 'recordatorio_p2', 'resultados']).default('asignaciones'),
   anio: z.coerce.number().int().min(2000).max(2100).optional(),
   mes: z.coerce.number().int().min(1).max(12).optional(),
 });
@@ -105,6 +113,135 @@ export const simularCorreosSistema = async (req: Request, res: Response) => {
         mesEtiqueta,
         primerDiaHabil: primerDiaHabil.toISOString(),
         esElegiblePorFecha: esElegibleFecha,
+        resumen: {
+          totalDestinatarios: destinatarios.length,
+          aEnviar: destinatarios.filter((d) => d.accionSimulada === 'ENVIAR_CORREO').length,
+          yaRegistrados: destinatarios.filter((d) => d.accionSimulada === 'IGNORAR_DUPLICADO').length,
+          sinCorreo: destinatarios.filter((d) => d.accionSimulada === 'CANCELAR_SIN_CORREO').length,
+        },
+        destinatarios,
+      },
+    });
+  }
+
+  // Simulación de Recordatorios (Periodo 1 o Periodo 2)
+  if (query.tipo === 'recordatorio_p1' || query.tipo === 'recordatorio_p2') {
+    const periodo: 1 | 2 = query.tipo === 'recordatorio_p1' ? 1 : 2;
+    const anio = query.anio ?? ahora.getFullYear();
+    const mes = query.mes ?? ahora.getMonth() + 1;
+    const yyyyMM = `${anio}-${String(mes).padStart(2, '0')}`;
+    const mesEtiqueta = `${MESES_NOMBRES[mes - 1]} ${anio}`;
+
+    const fechaRecordatorio = obtenerUltimoDiaHabilPeriodo(anio, mes, periodo);
+    const fechaRecordatorioStr = `${fechaRecordatorio.getFullYear()}-${String(fechaRecordatorio.getMonth() + 1).padStart(2, '0')}-${String(fechaRecordatorio.getDate()).padStart(2, '0')}`;
+    const fechaLimiteTexto = `${fechaRecordatorio.getDate()} de ${MESES_NOMBRES[mes - 1]} de ${anio}`;
+    const ventana = evaluarVentanaRecordatorioPeriodo(fechaRecordatorio, ahora);
+
+    const asignaciones = await prisma.asignacionAuditoria.findMany({
+      where: {
+        estado: {
+          in: [EstadoAsignacionAuditoria.PENDIENTE, EstadoAsignacionAuditoria.EN_PROCESO],
+        },
+        completadoEn: null,
+        objetivoAuditoria: {
+          anio,
+          mes,
+          periodo,
+          canceladoEn: null,
+        },
+      },
+      include: {
+        auditor: {
+          select: { id: true, nombre: true, correo: true, activo: true, rol: true },
+        },
+        objetivoAuditoria: {
+          include: {
+            envioResultado: true,
+            enviosAuditoria: true,
+            area: { select: { id: true, nombre: true } },
+          },
+        },
+      },
+    });
+
+    const porAuditor = new Map<
+      number,
+      {
+        auditor: { id: number; nombre: string; correo: string | null; activo: boolean; rol: RolUsuario };
+        areas: string[];
+      }
+    >();
+
+    for (const asig of asignaciones) {
+      if (!asig.auditor.activo) continue;
+      if (tieneEnvioResultadoValido(asig.objetivoAuditoria)) continue;
+
+      const auditorId = asig.auditor.id;
+      const actual = porAuditor.get(auditorId) ?? {
+        auditor: asig.auditor,
+        areas: [],
+      };
+
+      const nombreArea = asig.objetivoAuditoria.area?.nombre || asig.objetivoAuditoria.nombreAreaSnapshot;
+      if (nombreArea && !actual.areas.includes(nombreArea)) {
+        actual.areas.push(nombreArea);
+      }
+
+      porAuditor.set(auditorId, actual);
+    }
+
+    const destinatarios = [];
+    for (const [auditorId, { auditor, areas }] of porAuditor.entries()) {
+      if (areas.length === 0) continue;
+
+      const claveDedupe = `recordatorio-periodo-correo:${auditorId}:${yyyyMM}:P${periodo}`;
+      const notifExistente = await prisma.notificacion.findUnique({
+        where: { claveDedupe },
+        include: {
+          entregasNotificacion: {
+            where: { canal: 'CORREO' },
+            select: { id: true, estado: true, enviadoEn: true, ultimoError: true },
+          },
+        },
+      });
+
+      const correoNormalizado = normalizarCorreo(auditor.correo);
+      let accionSimulada: 'ENVIAR_CORREO' | 'IGNORAR_DUPLICADO' | 'CANCELAR_SIN_CORREO';
+
+      if (notifExistente) {
+        accionSimulada = 'IGNORAR_DUPLICADO';
+      } else if (!correoNormalizado) {
+        accionSimulada = 'CANCELAR_SIN_CORREO';
+      } else {
+        accionSimulada = 'ENVIAR_CORREO';
+      }
+
+      destinatarios.push({
+        usuarioId: auditor.id,
+        nombre: auditor.nombre,
+        correo: auditor.correo,
+        correoNormalizado,
+        rol: auditor.rol,
+        areas,
+        claveDedupe,
+        yaExisteEnBd: Boolean(notifExistente),
+        entregaExistente: notifExistente?.entregasNotificacion[0] ?? null,
+        accionSimulada,
+      });
+    }
+
+    return responder(res, {
+      simulacion: {
+        tipo: query.tipo,
+        periodo,
+        anio,
+        mes,
+        mesEtiqueta,
+        fechaRecordatorio: fechaRecordatorioStr,
+        fechaLimiteTexto,
+        esElegiblePorFecha: ventana.esElegible,
+        esObsoleto: ventana.esObsoleto,
+        motivoVentana: ventana.motivo,
         resumen: {
           totalDestinatarios: destinatarios.length,
           aEnviar: destinatarios.filter((d) => d.accionSimulada === 'ENVIAR_CORREO').length,

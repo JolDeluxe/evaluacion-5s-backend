@@ -1,4 +1,4 @@
-﻿import { env } from '../../../config/env';
+import { env } from '../../../config/env';
 import type { EmailInput, EmailResult } from './email-smtp';
 import { enviarCorreoSmtp } from './email-smtp';
 import { enviarCorreoMicrosoftGraph } from './microsoft-graph';
@@ -17,11 +17,15 @@ export const despacharSegunProveedor = async (input: EmailInput): Promise<EmailR
 };
 
 /**
- * Punto de entrada principal para el envío automático de correos en el worker.
- * Respeta el feature flag EMAIL_ENABLED. Si está en false, no se realiza el envío.
+ * Punto de entrada principal para el envío de correos en el worker.
+ * Respeta el feature flag EMAIL_ENABLED. Si está en false, solo permite entregas canario de prueba en cola (EMAIL_TEST_ENABLED=true).
  */
-export const enviarCorreo = async (input: EmailInput): Promise<EmailResult & { retryAfterSeconds?: number }> => {
-  if (!env.EMAIL_ENABLED) {
+export const enviarCorreo = async (
+  input: EmailInput,
+  opciones?: { esCanario?: boolean }
+): Promise<EmailResult & { retryAfterSeconds?: number }> => {
+  const permitido = env.EMAIL_ENABLED || (env.EMAIL_TEST_ENABLED && Boolean(opciones?.esCanario));
+  if (!permitido) {
     return {
       enviado: false,
       error: 'EMAIL_ENABLED=false — servicio de correo pausado por configuración',

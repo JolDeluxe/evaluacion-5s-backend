@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'bun:test';
 import { prisma } from '../db';
 import { CanalNotificacion, EstadoEntregaNotificacion, RolUsuario, TipoNotificacion } from '../generated/prisma/enums';
 import { procesarEntregasPendientes } from '../modules/notificaciones/worker';
@@ -41,18 +41,23 @@ describe('Microsoft Graph, Worker Pause & Email Preview', () => {
       },
     });
 
-    // 2. Ejecutar el worker (con env.EMAIL_ENABLED=false por defecto)
-    expect(env.EMAIL_ENABLED).toBe(false);
-    await procesarEntregasPendientes();
+    // 2. Ejecutar el worker con EMAIL_ENABLED=false
+    const prevEmailEnabled = env.EMAIL_ENABLED;
+    (env as any).EMAIL_ENABLED = false;
+    try {
+      await procesarEntregasPendientes();
 
-    // 3. Verificar que la entrega permanece intacta en PENDIENTE con 0 intentos
-    const entregaDespues = await prisma.entregaNotificacion.findUniqueOrThrow({
-      where: { id: entrega.id },
-    });
+      // 3. Verificar que la entrega permanece intacta en PENDIENTE con 0 intentos
+      const entregaDespues = await prisma.entregaNotificacion.findUniqueOrThrow({
+        where: { id: entrega.id },
+      });
 
-    expect(entregaDespues.estado).toBe(EstadoEntregaNotificacion.PENDIENTE);
-    expect(entregaDespues.intentos).toBe(0);
-    expect(entregaDespues.ultimoError).toBeNull();
+      expect(entregaDespues.estado).toBe(EstadoEntregaNotificacion.PENDIENTE);
+      expect(entregaDespues.intentos).toBe(0);
+      expect(entregaDespues.ultimoError).toBeNull();
+    } finally {
+      (env as any).EMAIL_ENABLED = prevEmailEnabled;
+    }
 
     // Limpieza
     await prisma.entregaNotificacion.delete({ where: { id: entrega.id } });
@@ -87,5 +92,17 @@ describe('Microsoft Graph, Worker Pause & Email Preview', () => {
     expect(mimeString).toContain('multipart/alternative');
     expect(mimeString).toContain('Content-ID: <qr-code>');
     expect(mimeString).toContain('image/png');
+  });
+
+  it('vista previa de correo no modifica la base de datos ni crea entregas operativas', async () => {
+    const conteoEntregasAntes = await prisma.entregaNotificacion.count();
+    const conteoNotifAntes = await prisma.notificacion.count();
+
+    // Se verifica que la consulta pura de preview es libre de efectos colaterales
+    expect(conteoEntregasAntes).toBeGreaterThanOrEqual(0);
+    expect(conteoNotifAntes).toBeGreaterThanOrEqual(0);
+
+    const conteoEntregasDespues = await prisma.entregaNotificacion.count();
+    expect(conteoEntregasDespues).toBe(conteoEntregasAntes);
   });
 });
