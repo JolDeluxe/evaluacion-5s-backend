@@ -295,13 +295,13 @@ export type UsuarioWhereInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoListRelationFilter
   enviosRealizados?: Prisma.EnvioAuditoriaListRelationFilter
   formulariosCreados?: Prisma.FormularioListRelationFilter
+  versionesCreadas?: Prisma.VersionFormularioListRelationFilter
   notificaciones?: Prisma.NotificacionListRelationFilter
-  registrosAuditoria?: Prisma.RegistroAuditoriaListRelationFilter
   sesiones?: Prisma.SesionListRelationFilter
   suscripcionesPush?: Prisma.SuscripcionPushListRelationFilter
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaListRelationFilter
   areasUsuario?: Prisma.UsuarioAreaListRelationFilter
-  versionesCreadas?: Prisma.VersionFormularioListRelationFilter
+  registrosAuditoria?: Prisma.RegistroAuditoriaListRelationFilter
 }
 
 export type UsuarioOrderByWithRelationInput = {
@@ -326,13 +326,13 @@ export type UsuarioOrderByWithRelationInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoOrderByRelationAggregateInput
   enviosRealizados?: Prisma.EnvioAuditoriaOrderByRelationAggregateInput
   formulariosCreados?: Prisma.FormularioOrderByRelationAggregateInput
+  versionesCreadas?: Prisma.VersionFormularioOrderByRelationAggregateInput
   notificaciones?: Prisma.NotificacionOrderByRelationAggregateInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaOrderByRelationAggregateInput
   sesiones?: Prisma.SesionOrderByRelationAggregateInput
   suscripcionesPush?: Prisma.SuscripcionPushOrderByRelationAggregateInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaOrderByRelationAggregateInput
   areasUsuario?: Prisma.UsuarioAreaOrderByRelationAggregateInput
-  versionesCreadas?: Prisma.VersionFormularioOrderByRelationAggregateInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaOrderByRelationAggregateInput
   _relevance?: Prisma.UsuarioOrderByRelevanceInput
 }
 
@@ -361,13 +361,13 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   enlacesCreados?: Prisma.EnlaceInvitadoListRelationFilter
   enviosRealizados?: Prisma.EnvioAuditoriaListRelationFilter
   formulariosCreados?: Prisma.FormularioListRelationFilter
+  versionesCreadas?: Prisma.VersionFormularioListRelationFilter
   notificaciones?: Prisma.NotificacionListRelationFilter
-  registrosAuditoria?: Prisma.RegistroAuditoriaListRelationFilter
   sesiones?: Prisma.SesionListRelationFilter
   suscripcionesPush?: Prisma.SuscripcionPushListRelationFilter
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaListRelationFilter
   areasUsuario?: Prisma.UsuarioAreaListRelationFilter
-  versionesCreadas?: Prisma.VersionFormularioListRelationFilter
+  registrosAuditoria?: Prisma.RegistroAuditoriaListRelationFilter
 }, "id" | "nombreUsuario" | "correo">
 
 export type UsuarioOrderByWithAggregationInput = {
@@ -433,13 +433,13 @@ export type UsuarioCreateInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateInput = {
@@ -464,13 +464,13 @@ export type UsuarioUncheckedCreateInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUpdateInput = {
@@ -494,13 +494,13 @@ export type UsuarioUpdateInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateInput = {
@@ -525,13 +525,13 @@ export type UsuarioUncheckedUpdateInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateManyInput = {
@@ -912,12 +912,12 @@ export type UsuarioCreateWithoutSesionesInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutSesionesInput = {
@@ -942,12 +942,12 @@ export type UsuarioUncheckedCreateWithoutSesionesInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutSesionesInput = {
@@ -987,12 +987,12 @@ export type UsuarioUpdateWithoutSesionesInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutSesionesInput = {
@@ -1017,12 +1017,12 @@ export type UsuarioUncheckedUpdateWithoutSesionesInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutTokensRestablecimientoInput = {
@@ -1046,12 +1046,12 @@ export type UsuarioCreateWithoutTokensRestablecimientoInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutTokensRestablecimientoInput = {
@@ -1076,12 +1076,12 @@ export type UsuarioUncheckedCreateWithoutTokensRestablecimientoInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutTokensRestablecimientoInput = {
@@ -1121,12 +1121,12 @@ export type UsuarioUpdateWithoutTokensRestablecimientoInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutTokensRestablecimientoInput = {
@@ -1151,12 +1151,12 @@ export type UsuarioUncheckedUpdateWithoutTokensRestablecimientoInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutAreasUsuarioInput = {
@@ -1180,12 +1180,12 @@ export type UsuarioCreateWithoutAreasUsuarioInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutAreasUsuarioInput = {
@@ -1210,12 +1210,12 @@ export type UsuarioUncheckedCreateWithoutAreasUsuarioInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutAreasUsuarioInput = {
@@ -1255,12 +1255,12 @@ export type UsuarioUpdateWithoutAreasUsuarioInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutAreasUsuarioInput = {
@@ -1285,12 +1285,12 @@ export type UsuarioUncheckedUpdateWithoutAreasUsuarioInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutFormulariosCreadosInput = {
@@ -1313,13 +1313,13 @@ export type UsuarioCreateWithoutFormulariosCreadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutFormulariosCreadosInput = {
@@ -1343,13 +1343,13 @@ export type UsuarioUncheckedCreateWithoutFormulariosCreadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutFormulariosCreadosInput = {
@@ -1388,13 +1388,13 @@ export type UsuarioUpdateWithoutFormulariosCreadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutFormulariosCreadosInput = {
@@ -1418,13 +1418,13 @@ export type UsuarioUncheckedUpdateWithoutFormulariosCreadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutVersionesCreadasInput = {
@@ -1449,11 +1449,11 @@ export type UsuarioCreateWithoutVersionesCreadasInput = {
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutVersionesCreadasInput = {
@@ -1479,11 +1479,11 @@ export type UsuarioUncheckedCreateWithoutVersionesCreadasInput = {
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutVersionesCreadasInput = {
@@ -1524,11 +1524,11 @@ export type UsuarioUpdateWithoutVersionesCreadasInput = {
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutVersionesCreadasInput = {
@@ -1554,11 +1554,11 @@ export type UsuarioUncheckedUpdateWithoutVersionesCreadasInput = {
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutAsignacionesMensualesComoAuditorInput = {
@@ -1581,13 +1581,13 @@ export type UsuarioCreateWithoutAsignacionesMensualesComoAuditorInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutAsignacionesMensualesComoAuditorInput = {
@@ -1611,13 +1611,13 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesComoAuditorInput =
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutAsignacionesMensualesComoAuditorInput = {
@@ -1645,13 +1645,13 @@ export type UsuarioCreateWithoutAsignacionesMensualesCreadasInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutAsignacionesMensualesCreadasInput = {
@@ -1675,13 +1675,13 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesCreadasInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutAsignacionesMensualesCreadasInput = {
@@ -1720,13 +1720,13 @@ export type UsuarioUpdateWithoutAsignacionesMensualesComoAuditorInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesComoAuditorInput = {
@@ -1750,13 +1750,13 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesComoAuditorInput =
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUpsertWithoutAsignacionesMensualesCreadasInput = {
@@ -1790,13 +1790,13 @@ export type UsuarioUpdateWithoutAsignacionesMensualesCreadasInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesCreadasInput = {
@@ -1820,13 +1820,13 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesCreadasInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutAsignacionesCreadasInput = {
@@ -1849,13 +1849,13 @@ export type UsuarioCreateWithoutAsignacionesCreadasInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutAsignacionesCreadasInput = {
@@ -1879,13 +1879,13 @@ export type UsuarioUncheckedCreateWithoutAsignacionesCreadasInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutAsignacionesCreadasInput = {
@@ -1913,13 +1913,13 @@ export type UsuarioCreateWithoutAsignacionesComoAuditorInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutAsignacionesComoAuditorInput = {
@@ -1943,13 +1943,13 @@ export type UsuarioUncheckedCreateWithoutAsignacionesComoAuditorInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutAsignacionesComoAuditorInput = {
@@ -1988,13 +1988,13 @@ export type UsuarioUpdateWithoutAsignacionesCreadasInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutAsignacionesCreadasInput = {
@@ -2018,13 +2018,13 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesCreadasInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUpsertWithoutAsignacionesComoAuditorInput = {
@@ -2058,13 +2058,13 @@ export type UsuarioUpdateWithoutAsignacionesComoAuditorInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutAsignacionesComoAuditorInput = {
@@ -2088,13 +2088,13 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesComoAuditorInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutEnlacesCreadosInput = {
@@ -2117,13 +2117,13 @@ export type UsuarioCreateWithoutEnlacesCreadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutEnlacesCreadosInput = {
@@ -2147,13 +2147,13 @@ export type UsuarioUncheckedCreateWithoutEnlacesCreadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutEnlacesCreadosInput = {
@@ -2192,13 +2192,13 @@ export type UsuarioUpdateWithoutEnlacesCreadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutEnlacesCreadosInput = {
@@ -2222,13 +2222,13 @@ export type UsuarioUncheckedUpdateWithoutEnlacesCreadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutEnviosRealizadosInput = {
@@ -2251,13 +2251,13 @@ export type UsuarioCreateWithoutEnviosRealizadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutEnviosRealizadosInput = {
@@ -2281,13 +2281,13 @@ export type UsuarioUncheckedCreateWithoutEnviosRealizadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutEnviosRealizadosInput = {
@@ -2326,13 +2326,13 @@ export type UsuarioUpdateWithoutEnviosRealizadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutEnviosRealizadosInput = {
@@ -2356,13 +2356,13 @@ export type UsuarioUncheckedUpdateWithoutEnviosRealizadosInput = {
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutSuscripcionesPushInput = {
@@ -2386,12 +2386,12 @@ export type UsuarioCreateWithoutSuscripcionesPushInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutSuscripcionesPushInput = {
@@ -2416,12 +2416,12 @@ export type UsuarioUncheckedCreateWithoutSuscripcionesPushInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutSuscripcionesPushInput = {
@@ -2461,12 +2461,12 @@ export type UsuarioUpdateWithoutSuscripcionesPushInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutSuscripcionesPushInput = {
@@ -2491,12 +2491,12 @@ export type UsuarioUncheckedUpdateWithoutSuscripcionesPushInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutNotificacionesInput = {
@@ -2520,12 +2520,12 @@ export type UsuarioCreateWithoutNotificacionesInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioUncheckedCreateWithoutNotificacionesInput = {
@@ -2550,12 +2550,12 @@ export type UsuarioUncheckedCreateWithoutNotificacionesInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
 }
 
 export type UsuarioCreateOrConnectWithoutNotificacionesInput = {
@@ -2595,12 +2595,12 @@ export type UsuarioUpdateWithoutNotificacionesInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutNotificacionesInput = {
@@ -2625,12 +2625,12 @@ export type UsuarioUncheckedUpdateWithoutNotificacionesInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
-  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 export type UsuarioCreateWithoutRegistrosAuditoriaInput = {
@@ -2654,12 +2654,12 @@ export type UsuarioCreateWithoutRegistrosAuditoriaInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
 }
 
 export type UsuarioUncheckedCreateWithoutRegistrosAuditoriaInput = {
@@ -2684,12 +2684,12 @@ export type UsuarioUncheckedCreateWithoutRegistrosAuditoriaInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
   sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
 }
 
 export type UsuarioCreateOrConnectWithoutRegistrosAuditoriaInput = {
@@ -2729,12 +2729,12 @@ export type UsuarioUpdateWithoutRegistrosAuditoriaInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
 }
 
 export type UsuarioUncheckedUpdateWithoutRegistrosAuditoriaInput = {
@@ -2759,12 +2759,12 @@ export type UsuarioUncheckedUpdateWithoutRegistrosAuditoriaInput = {
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
   sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
-  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
 }
 
 
@@ -2780,13 +2780,13 @@ export type UsuarioCountOutputType = {
   enlacesCreados: number
   enviosRealizados: number
   formulariosCreados: number
+  versionesCreadas: number
   notificaciones: number
-  registrosAuditoria: number
   sesiones: number
   suscripcionesPush: number
   tokensRestablecimiento: number
   areasUsuario: number
-  versionesCreadas: number
+  registrosAuditoria: number
 }
 
 export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2797,13 +2797,13 @@ export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   enlacesCreados?: boolean | UsuarioCountOutputTypeCountEnlacesCreadosArgs
   enviosRealizados?: boolean | UsuarioCountOutputTypeCountEnviosRealizadosArgs
   formulariosCreados?: boolean | UsuarioCountOutputTypeCountFormulariosCreadosArgs
+  versionesCreadas?: boolean | UsuarioCountOutputTypeCountVersionesCreadasArgs
   notificaciones?: boolean | UsuarioCountOutputTypeCountNotificacionesArgs
-  registrosAuditoria?: boolean | UsuarioCountOutputTypeCountRegistrosAuditoriaArgs
   sesiones?: boolean | UsuarioCountOutputTypeCountSesionesArgs
   suscripcionesPush?: boolean | UsuarioCountOutputTypeCountSuscripcionesPushArgs
   tokensRestablecimiento?: boolean | UsuarioCountOutputTypeCountTokensRestablecimientoArgs
   areasUsuario?: boolean | UsuarioCountOutputTypeCountAreasUsuarioArgs
-  versionesCreadas?: boolean | UsuarioCountOutputTypeCountVersionesCreadasArgs
+  registrosAuditoria?: boolean | UsuarioCountOutputTypeCountRegistrosAuditoriaArgs
 }
 
 /**
@@ -2868,15 +2868,15 @@ export type UsuarioCountOutputTypeCountFormulariosCreadosArgs<ExtArgs extends ru
 /**
  * UsuarioCountOutputType without action
  */
-export type UsuarioCountOutputTypeCountNotificacionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.NotificacionWhereInput
+export type UsuarioCountOutputTypeCountVersionesCreadasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VersionFormularioWhereInput
 }
 
 /**
  * UsuarioCountOutputType without action
  */
-export type UsuarioCountOutputTypeCountRegistrosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RegistroAuditoriaWhereInput
+export type UsuarioCountOutputTypeCountNotificacionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificacionWhereInput
 }
 
 /**
@@ -2910,8 +2910,8 @@ export type UsuarioCountOutputTypeCountAreasUsuarioArgs<ExtArgs extends runtime.
 /**
  * UsuarioCountOutputType without action
  */
-export type UsuarioCountOutputTypeCountVersionesCreadasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.VersionFormularioWhereInput
+export type UsuarioCountOutputTypeCountRegistrosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RegistroAuditoriaWhereInput
 }
 
 
@@ -2937,13 +2937,13 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   enlacesCreados?: boolean | Prisma.Usuario$enlacesCreadosArgs<ExtArgs>
   enviosRealizados?: boolean | Prisma.Usuario$enviosRealizadosArgs<ExtArgs>
   formulariosCreados?: boolean | Prisma.Usuario$formulariosCreadosArgs<ExtArgs>
+  versionesCreadas?: boolean | Prisma.Usuario$versionesCreadasArgs<ExtArgs>
   notificaciones?: boolean | Prisma.Usuario$notificacionesArgs<ExtArgs>
-  registrosAuditoria?: boolean | Prisma.Usuario$registrosAuditoriaArgs<ExtArgs>
   sesiones?: boolean | Prisma.Usuario$sesionesArgs<ExtArgs>
   suscripcionesPush?: boolean | Prisma.Usuario$suscripcionesPushArgs<ExtArgs>
   tokensRestablecimiento?: boolean | Prisma.Usuario$tokensRestablecimientoArgs<ExtArgs>
   areasUsuario?: boolean | Prisma.Usuario$areasUsuarioArgs<ExtArgs>
-  versionesCreadas?: boolean | Prisma.Usuario$versionesCreadasArgs<ExtArgs>
+  registrosAuditoria?: boolean | Prisma.Usuario$registrosAuditoriaArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["usuario"]>
 
@@ -2975,13 +2975,13 @@ export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   enlacesCreados?: boolean | Prisma.Usuario$enlacesCreadosArgs<ExtArgs>
   enviosRealizados?: boolean | Prisma.Usuario$enviosRealizadosArgs<ExtArgs>
   formulariosCreados?: boolean | Prisma.Usuario$formulariosCreadosArgs<ExtArgs>
+  versionesCreadas?: boolean | Prisma.Usuario$versionesCreadasArgs<ExtArgs>
   notificaciones?: boolean | Prisma.Usuario$notificacionesArgs<ExtArgs>
-  registrosAuditoria?: boolean | Prisma.Usuario$registrosAuditoriaArgs<ExtArgs>
   sesiones?: boolean | Prisma.Usuario$sesionesArgs<ExtArgs>
   suscripcionesPush?: boolean | Prisma.Usuario$suscripcionesPushArgs<ExtArgs>
   tokensRestablecimiento?: boolean | Prisma.Usuario$tokensRestablecimientoArgs<ExtArgs>
   areasUsuario?: boolean | Prisma.Usuario$areasUsuarioArgs<ExtArgs>
-  versionesCreadas?: boolean | Prisma.Usuario$versionesCreadasArgs<ExtArgs>
+  registrosAuditoria?: boolean | Prisma.Usuario$registrosAuditoriaArgs<ExtArgs>
   _count?: boolean | Prisma.UsuarioCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -2995,13 +2995,13 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     enlacesCreados: Prisma.$EnlaceInvitadoPayload<ExtArgs>[]
     enviosRealizados: Prisma.$EnvioAuditoriaPayload<ExtArgs>[]
     formulariosCreados: Prisma.$FormularioPayload<ExtArgs>[]
+    versionesCreadas: Prisma.$VersionFormularioPayload<ExtArgs>[]
     notificaciones: Prisma.$NotificacionPayload<ExtArgs>[]
-    registrosAuditoria: Prisma.$RegistroAuditoriaPayload<ExtArgs>[]
     sesiones: Prisma.$SesionPayload<ExtArgs>[]
     suscripcionesPush: Prisma.$SuscripcionPushPayload<ExtArgs>[]
     tokensRestablecimiento: Prisma.$TokenRestablecimientoContrasenaPayload<ExtArgs>[]
     areasUsuario: Prisma.$UsuarioAreaPayload<ExtArgs>[]
-    versionesCreadas: Prisma.$VersionFormularioPayload<ExtArgs>[]
+    registrosAuditoria: Prisma.$RegistroAuditoriaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -3365,13 +3365,13 @@ export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.
   enlacesCreados<T extends Prisma.Usuario$enlacesCreadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$enlacesCreadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnlaceInvitadoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   enviosRealizados<T extends Prisma.Usuario$enviosRealizadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$enviosRealizadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   formulariosCreados<T extends Prisma.Usuario$formulariosCreadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$formulariosCreadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FormularioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  versionesCreadas<T extends Prisma.Usuario$versionesCreadasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$versionesCreadasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VersionFormularioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notificaciones<T extends Prisma.Usuario$notificacionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$notificacionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificacionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  registrosAuditoria<T extends Prisma.Usuario$registrosAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$registrosAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RegistroAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sesiones<T extends Prisma.Usuario$sesionesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$sesionesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SesionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   suscripcionesPush<T extends Prisma.Usuario$suscripcionesPushArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$suscripcionesPushArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SuscripcionPushPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tokensRestablecimiento<T extends Prisma.Usuario$tokensRestablecimientoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$tokensRestablecimientoArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TokenRestablecimientoContrasenaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   areasUsuario<T extends Prisma.Usuario$areasUsuarioArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$areasUsuarioArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UsuarioAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  versionesCreadas<T extends Prisma.Usuario$versionesCreadasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$versionesCreadasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VersionFormularioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  registrosAuditoria<T extends Prisma.Usuario$registrosAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$registrosAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RegistroAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3931,6 +3931,30 @@ export type Usuario$formulariosCreadosArgs<ExtArgs extends runtime.Types.Extensi
 }
 
 /**
+ * Usuario.versionesCreadas
+ */
+export type Usuario$versionesCreadasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VersionFormulario
+   */
+  select?: Prisma.VersionFormularioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VersionFormulario
+   */
+  omit?: Prisma.VersionFormularioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VersionFormularioInclude<ExtArgs> | null
+  where?: Prisma.VersionFormularioWhereInput
+  orderBy?: Prisma.VersionFormularioOrderByWithRelationInput | Prisma.VersionFormularioOrderByWithRelationInput[]
+  cursor?: Prisma.VersionFormularioWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VersionFormularioScalarFieldEnum | Prisma.VersionFormularioScalarFieldEnum[]
+}
+
+/**
  * Usuario.notificaciones
  */
 export type Usuario$notificacionesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3952,30 +3976,6 @@ export type Usuario$notificacionesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.NotificacionScalarFieldEnum | Prisma.NotificacionScalarFieldEnum[]
-}
-
-/**
- * Usuario.registrosAuditoria
- */
-export type Usuario$registrosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the RegistroAuditoria
-   */
-  select?: Prisma.RegistroAuditoriaSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the RegistroAuditoria
-   */
-  omit?: Prisma.RegistroAuditoriaOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.RegistroAuditoriaInclude<ExtArgs> | null
-  where?: Prisma.RegistroAuditoriaWhereInput
-  orderBy?: Prisma.RegistroAuditoriaOrderByWithRelationInput | Prisma.RegistroAuditoriaOrderByWithRelationInput[]
-  cursor?: Prisma.RegistroAuditoriaWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.RegistroAuditoriaScalarFieldEnum | Prisma.RegistroAuditoriaScalarFieldEnum[]
 }
 
 /**
@@ -4075,27 +4075,27 @@ export type Usuario$areasUsuarioArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * Usuario.versionesCreadas
+ * Usuario.registrosAuditoria
  */
-export type Usuario$versionesCreadasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Usuario$registrosAuditoriaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the VersionFormulario
+   * Select specific fields to fetch from the RegistroAuditoria
    */
-  select?: Prisma.VersionFormularioSelect<ExtArgs> | null
+  select?: Prisma.RegistroAuditoriaSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the VersionFormulario
+   * Omit specific fields from the RegistroAuditoria
    */
-  omit?: Prisma.VersionFormularioOmit<ExtArgs> | null
+  omit?: Prisma.RegistroAuditoriaOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.VersionFormularioInclude<ExtArgs> | null
-  where?: Prisma.VersionFormularioWhereInput
-  orderBy?: Prisma.VersionFormularioOrderByWithRelationInput | Prisma.VersionFormularioOrderByWithRelationInput[]
-  cursor?: Prisma.VersionFormularioWhereUniqueInput
+  include?: Prisma.RegistroAuditoriaInclude<ExtArgs> | null
+  where?: Prisma.RegistroAuditoriaWhereInput
+  orderBy?: Prisma.RegistroAuditoriaOrderByWithRelationInput | Prisma.RegistroAuditoriaOrderByWithRelationInput[]
+  cursor?: Prisma.RegistroAuditoriaWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.VersionFormularioScalarFieldEnum | Prisma.VersionFormularioScalarFieldEnum[]
+  distinct?: Prisma.RegistroAuditoriaScalarFieldEnum | Prisma.RegistroAuditoriaScalarFieldEnum[]
 }
 
 /**

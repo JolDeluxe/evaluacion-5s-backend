@@ -109,7 +109,6 @@ const CONFIG_TIPOS: Record<TipoHistorico, ConfigTipo> = {
     formularioSlug: FORMULARIO_ADMIN_SLUG,
     alcanceAceptado: [
       AlcanceFormulario.ADMINISTRATIVO,
-      AlcanceFormulario.AMBOS,
     ],
     totalPreguntas2026: 23,
   },
@@ -120,7 +119,6 @@ const CONFIG_TIPOS: Record<TipoHistorico, ConfigTipo> = {
     formularioSlug: FORMULARIO_OPERATIVO_SLUG,
     alcanceAceptado: [
       AlcanceFormulario.OPERATIVO,
-      AlcanceFormulario.AMBOS,
     ],
     totalPreguntas2026: 34,
   },

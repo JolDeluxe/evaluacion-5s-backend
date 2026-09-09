@@ -748,8 +748,7 @@ const obtenerVersionAdministrativa = async () => {
   }
 
   if (
-    formulario.alcance !== AlcanceFormulario.ADMINISTRATIVO &&
-    formulario.alcance !== AlcanceFormulario.AMBOS
+    formulario.alcance !== AlcanceFormulario.ADMINISTRATIVO
   ) {
     throw new Error(
       `El formulario ${FORMULARIO_SLUG} no tiene alcance administrativo.`,

@@ -331,8 +331,8 @@ export type ObjetivoAuditoriaWhereInput = {
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaListRelationFilter
   enviosAuditoria?: Prisma.EnvioAuditoriaListRelationFilter
   area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
-  envioResultado?: Prisma.XOR<Prisma.EnvioAuditoriaNullableScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput> | null
   versionFormulario?: Prisma.XOR<Prisma.VersionFormularioScalarRelationFilter, Prisma.VersionFormularioWhereInput>
+  envioResultado?: Prisma.XOR<Prisma.EnvioAuditoriaNullableScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput> | null
 }
 
 export type ObjetivoAuditoriaOrderByWithRelationInput = {
@@ -355,8 +355,8 @@ export type ObjetivoAuditoriaOrderByWithRelationInput = {
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaOrderByRelationAggregateInput
   enviosAuditoria?: Prisma.EnvioAuditoriaOrderByRelationAggregateInput
   area?: Prisma.AreaOrderByWithRelationInput
-  envioResultado?: Prisma.EnvioAuditoriaOrderByWithRelationInput
   versionFormulario?: Prisma.VersionFormularioOrderByWithRelationInput
+  envioResultado?: Prisma.EnvioAuditoriaOrderByWithRelationInput
   _relevance?: Prisma.ObjetivoAuditoriaOrderByRelevanceInput
 }
 
@@ -384,8 +384,8 @@ export type ObjetivoAuditoriaWhereUniqueInput = Prisma.AtLeast<{
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaListRelationFilter
   enviosAuditoria?: Prisma.EnvioAuditoriaListRelationFilter
   area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
-  envioResultado?: Prisma.XOR<Prisma.EnvioAuditoriaNullableScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput> | null
   versionFormulario?: Prisma.XOR<Prisma.VersionFormularioScalarRelationFilter, Prisma.VersionFormularioWhereInput>
+  envioResultado?: Prisma.XOR<Prisma.EnvioAuditoriaNullableScalarRelationFilter, Prisma.EnvioAuditoriaWhereInput> | null
 }, "id" | "envioResultadoId" | "areaId_anio_mes_periodo">
 
 export type ObjetivoAuditoriaOrderByWithAggregationInput = {
@@ -450,8 +450,8 @@ export type ObjetivoAuditoriaCreateInput = {
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
-  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
   versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
+  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateInput = {
@@ -491,8 +491,8 @@ export type ObjetivoAuditoriaUpdateInput = {
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
   versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateInput = {
@@ -846,8 +846,8 @@ export type ObjetivoAuditoriaCreateWithoutAreaInput = {
   actualizadoEn?: Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
-  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
   versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
+  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateWithoutAreaInput = {
@@ -998,8 +998,8 @@ export type ObjetivoAuditoriaCreateWithoutAsignacionesAuditoriaInput = {
   actualizadoEn?: Date | string
   enviosAuditoria?: Prisma.EnvioAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
-  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
   versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
+  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateWithoutAsignacionesAuditoriaInput = {
@@ -1053,8 +1053,8 @@ export type ObjetivoAuditoriaUpdateWithoutAsignacionesAuditoriaInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
   versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateWithoutAsignacionesAuditoriaInput = {
@@ -1092,8 +1092,8 @@ export type ObjetivoAuditoriaCreateWithoutEnviosAuditoriaInput = {
   actualizadoEn?: Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutObjetivoAuditoriaInput
   area: Prisma.AreaCreateNestedOneWithoutObjetivosAuditoriaInput
-  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
   versionFormulario: Prisma.VersionFormularioCreateNestedOneWithoutObjetivosAuditoriaInput
+  envioResultado?: Prisma.EnvioAuditoriaCreateNestedOneWithoutObjetivoComoResultadoInput
 }
 
 export type ObjetivoAuditoriaUncheckedCreateWithoutEnviosAuditoriaInput = {
@@ -1191,8 +1191,8 @@ export type ObjetivoAuditoriaUpdateWithoutEnviosAuditoriaInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   area?: Prisma.AreaUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
-  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
   versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateWithoutEnviosAuditoriaInput = {
@@ -1298,8 +1298,8 @@ export type ObjetivoAuditoriaUpdateWithoutAreaInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
   enviosAuditoria?: Prisma.EnvioAuditoriaUpdateManyWithoutObjetivoAuditoriaNestedInput
-  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
   versionFormulario?: Prisma.VersionFormularioUpdateOneRequiredWithoutObjetivosAuditoriaNestedInput
+  envioResultado?: Prisma.EnvioAuditoriaUpdateOneWithoutObjetivoComoResultadoNestedInput
 }
 
 export type ObjetivoAuditoriaUncheckedUpdateWithoutAreaInput = {
@@ -1475,8 +1475,8 @@ export type ObjetivoAuditoriaSelect<ExtArgs extends runtime.Types.Extensions.Int
   asignacionesAuditoria?: boolean | Prisma.ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs>
   enviosAuditoria?: boolean | Prisma.ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs>
   area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
-  envioResultado?: boolean | Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>
   versionFormulario?: boolean | Prisma.VersionFormularioDefaultArgs<ExtArgs>
+  envioResultado?: boolean | Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>
   _count?: boolean | Prisma.ObjetivoAuditoriaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["objetivoAuditoria"]>
 
@@ -1506,8 +1506,8 @@ export type ObjetivoAuditoriaInclude<ExtArgs extends runtime.Types.Extensions.In
   asignacionesAuditoria?: boolean | Prisma.ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs>
   enviosAuditoria?: boolean | Prisma.ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs>
   area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
-  envioResultado?: boolean | Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>
   versionFormulario?: boolean | Prisma.VersionFormularioDefaultArgs<ExtArgs>
+  envioResultado?: boolean | Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>
   _count?: boolean | Prisma.ObjetivoAuditoriaCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1517,8 +1517,8 @@ export type $ObjetivoAuditoriaPayload<ExtArgs extends runtime.Types.Extensions.I
     asignacionesAuditoria: Prisma.$AsignacionAuditoriaPayload<ExtArgs>[]
     enviosAuditoria: Prisma.$EnvioAuditoriaPayload<ExtArgs>[]
     area: Prisma.$AreaPayload<ExtArgs>
-    envioResultado: Prisma.$EnvioAuditoriaPayload<ExtArgs> | null
     versionFormulario: Prisma.$VersionFormularioPayload<ExtArgs>
+    envioResultado: Prisma.$EnvioAuditoriaPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1880,8 +1880,8 @@ export interface Prisma__ObjetivoAuditoriaClient<T, Null = never, ExtArgs extend
   asignacionesAuditoria<T extends Prisma.ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoria$asignacionesAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   enviosAuditoria<T extends Prisma.ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoria$enviosAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   area<T extends Prisma.AreaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AreaDefaultArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  envioResultado<T extends Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>>): Prisma.Prisma__EnvioAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   versionFormulario<T extends Prisma.VersionFormularioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VersionFormularioDefaultArgs<ExtArgs>>): Prisma.Prisma__VersionFormularioClient<runtime.Types.Result.GetResult<Prisma.$VersionFormularioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  envioResultado<T extends Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ObjetivoAuditoria$envioResultadoArgs<ExtArgs>>): Prisma.Prisma__EnvioAuditoriaClient<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

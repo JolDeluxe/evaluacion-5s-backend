@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `formularios` MODIFY `alcance` ENUM('ADMINISTRATIVO', 'OPERATIVO') NOT NULL;

@@ -28,8 +28,7 @@ export type TipoArea = (typeof TipoArea)[keyof typeof TipoArea]
 
 export const AlcanceFormulario = {
   ADMINISTRATIVO: 'ADMINISTRATIVO',
-  OPERATIVO: 'OPERATIVO',
-  AMBOS: 'AMBOS'
+  OPERATIVO: 'OPERATIVO'
 } as const
 
 export type AlcanceFormulario = (typeof AlcanceFormulario)[keyof typeof AlcanceFormulario]

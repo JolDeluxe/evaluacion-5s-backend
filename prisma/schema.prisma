@@ -11,7 +11,6 @@ datasource db {
   provider = "mysql"
 }
 
-
 // =============================================================================
 // USUARIOS, AUTENTICACIÓN Y ACCESO
 // =============================================================================
@@ -77,11 +76,9 @@ model Usuario {
 
   // ÍNDICES
   @@index([rol, activo])
-
   // TABLA FÍSICA
   @@map("usuarios")
 }
-
 
 // -----------------------------------------------------------------------------
 // Sesion
@@ -115,10 +112,8 @@ model Sesion {
   @@index([usuarioId])
   @@index([expiraEn])
   @@index([usuarioId, revocadoEn, expiraEn])
-
   @@map("sesiones")
 }
-
 
 // -----------------------------------------------------------------------------
 // TokenRestablecimientoContrasena
@@ -145,10 +140,8 @@ model TokenRestablecimientoContrasena {
   @@index([usuarioId])
   @@index([expiraEn])
   @@index([usuarioId, usadoEn, expiraEn])
-
   @@map("tokens_restablecimiento_contrasena")
 }
-
 
 // =============================================================================
 // ÁREAS Y RESPONSABILIDADES
@@ -166,7 +159,7 @@ model Area {
 
   // CLASIFICACIÓN Y ESTADO
   tipo   TipoArea
-  activo Boolean @default(true)
+  activo Boolean  @default(true)
 
   // VIGENCIA PARA AUDITORÍAS
   auditableDesde DateTime? @db.Date
@@ -187,10 +180,8 @@ model Area {
   // ÍNDICES
   @@index([tipo, activo])
   @@index([activo, auditableDesde])
-
   @@map("areas")
 }
-
 
 // -----------------------------------------------------------------------------
 // UsuarioArea
@@ -215,14 +206,11 @@ model UsuarioArea {
 
   // RESTRICCIONES
   @@unique([usuarioId, areaId])
-
   // ÍNDICES
   @@index([usuarioId])
   @@index([areaId])
-
   @@map("usuarios_areas")
 }
-
 
 // =============================================================================
 // FORMULARIOS Y VERSIONADO
@@ -242,7 +230,7 @@ model Formulario {
 
   // CONFIGURACIÓN
   alcance AlcanceFormulario
-  activo  Boolean @default(true)
+  activo  Boolean           @default(true)
 
   // AUTORÍA
   creadoPorId Int
@@ -252,17 +240,15 @@ model Formulario {
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES
-  creadoPor Usuario @relation( "UsuarioCreadorFormulario", fields: [creadoPorId], references: [id] )
+  creadoPor Usuario @relation("UsuarioCreadorFormulario", fields: [creadoPorId], references: [id])
 
   versiones VersionFormulario[]
 
   // ÍNDICES
   @@index([alcance, activo])
   @@index([creadoPorId])
-
   @@map("formularios")
 }
-
 
 // -----------------------------------------------------------------------------
 // VersionFormulario
@@ -289,20 +275,17 @@ model VersionFormulario {
   secciones          SeccionFormulario[]
 
   // RELACIONES DE AUTORÍA
-  creadoPor Usuario @relation( "UsuarioCreadorVersionFormulario", fields: [creadoPorId], references: [id] )
+  creadoPor Usuario @relation("UsuarioCreadorVersionFormulario", fields: [creadoPorId], references: [id])
 
-  formulario Formulario @relation( fields: [formularioId], references: [id] )
+  formulario Formulario @relation(fields: [formularioId], references: [id])
 
   // RESTRICCIONES
   @@unique([formularioId, numeroVersion])
-
   // ÍNDICES
   @@index([formularioId, activa])
   @@index([creadoPorId])
-
   @@map("versiones_formulario")
 }
-
 
 // -----------------------------------------------------------------------------
 // SeccionFormulario
@@ -325,17 +308,14 @@ model SeccionFormulario {
 
   // RELACIONES
   preguntas         PreguntaFormulario[]
-  versionFormulario VersionFormulario @relation( fields: [versionFormularioId], references: [id] )
+  versionFormulario VersionFormulario    @relation(fields: [versionFormularioId], references: [id])
 
   // RESTRICCIONES
   @@unique([versionFormularioId, claveEstable])
-
   // ÍNDICES
   @@index([versionFormularioId, orden])
-
   @@map("secciones_formulario")
 }
-
 
 // -----------------------------------------------------------------------------
 // PreguntaFormulario
@@ -359,19 +339,16 @@ model PreguntaFormulario {
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES
-  seccionFormulario SeccionFormulario @relation( fields: [seccionFormularioId], references: [id] )
+  seccionFormulario SeccionFormulario @relation(fields: [seccionFormularioId], references: [id])
 
   respuestasAuditoria RespuestaAuditoria[]
 
   // RESTRICCIONES
   @@unique([seccionFormularioId, claveEstable])
-
   // ÍNDICES
   @@index([seccionFormularioId, orden])
-
   @@map("preguntas_formulario")
 }
-
 
 // =============================================================================
 // PLANIFICACIÓN DE AUDITORÍAS
@@ -417,26 +394,23 @@ model ObjetivoAuditoria {
 
   // RELACIONES: EJECUCIÓN
   asignacionesAuditoria AsignacionAuditoria[]
-  enviosAuditoria       EnvioAuditoria[] @relation("EnviosObjetivo")
+  enviosAuditoria       EnvioAuditoria[]      @relation("EnviosObjetivo")
 
   // RELACIONES: DEFINICIÓN
-  area Area @relation( fields: [areaId], references: [id] )
+  area Area @relation(fields: [areaId], references: [id])
 
-  versionFormulario VersionFormulario @relation( fields: [versionFormularioId], references: [id] )
+  versionFormulario VersionFormulario @relation(fields: [versionFormularioId], references: [id])
 
   // RELACIÓN: ENVÍO CONSIDERADO COMO RESULTADO
-  envioResultado EnvioAuditoria? @relation( "EnvioResultadoObjetivo", fields: [envioResultadoId], references: [id], onDelete: Restrict )
+  envioResultado EnvioAuditoria? @relation("EnvioResultadoObjetivo", fields: [envioResultadoId], references: [id], onDelete: Restrict)
 
   // RESTRICCIONES
   @@unique([areaId, anio, mes, periodo])
-
   // ÍNDICES
   @@index([anio, mes, periodo, tipoAreaSnapshot])
   @@index([versionFormularioId])
-
   @@map("objetivos_auditoria")
 }
-
 
 // -----------------------------------------------------------------------------
 // AsignacionMensual
@@ -463,23 +437,20 @@ model AsignacionMensual {
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES
-  area Area @relation( fields: [areaId], references: [id] )
+  area Area @relation(fields: [areaId], references: [id])
 
-  auditor Usuario @relation( "UsuarioAuditorAsignacionMensual", fields: [auditorId], references: [id] )
+  auditor Usuario @relation("UsuarioAuditorAsignacionMensual", fields: [auditorId], references: [id])
 
-  asignadoPor Usuario @relation( "UsuarioCreadorAsignacionMensual", fields: [asignadoPorId], references: [id] )
+  asignadoPor Usuario @relation("UsuarioCreadorAsignacionMensual", fields: [asignadoPorId], references: [id])
 
   asignacionesAuditoria AsignacionAuditoria[]
 
   // RESTRICCIONES
   @@unique([areaId, anio, mes])
-
   // ÍNDICES
   @@index([auditorId, anio, mes])
-
   @@map("asignaciones_mensuales")
 }
-
 
 // -----------------------------------------------------------------------------
 // AsignacionAuditoria
@@ -510,7 +481,7 @@ model AsignacionAuditoria {
 
   // CANCELACIÓN
   canceladoEn       DateTime?
-  motivoCancelacion String? @db.Text
+  motivoCancelacion String?   @db.Text
 
   // EXCEPCIONES
   motivoExcepcion String? @db.Text
@@ -519,21 +490,21 @@ model AsignacionAuditoria {
   reabiertaHasta   DateTime?
   reabiertaEn      DateTime?
   reabiertaPorId   Int?
-  motivoReapertura String? @db.Text
+  motivoReapertura String?   @db.Text
 
   // METADATOS
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES: RESPONSABLES
-  asignadoPor Usuario @relation( "UsuarioCreadorAsignacion", fields: [asignadoPorId], references: [id] )
+  asignadoPor Usuario @relation("UsuarioCreadorAsignacion", fields: [asignadoPorId], references: [id])
 
-  auditor Usuario @relation( "UsuarioAuditorAsignacion", fields: [auditorId], references: [id] )
+  auditor Usuario @relation("UsuarioAuditorAsignacion", fields: [auditorId], references: [id])
 
   // RELACIONES: PLANIFICACIÓN
-  objetivoAuditoria ObjetivoAuditoria @relation( fields: [objetivoAuditoriaId], references: [id] )
+  objetivoAuditoria ObjetivoAuditoria @relation(fields: [objetivoAuditoriaId], references: [id])
 
-  asignacionMensual AsignacionMensual? @relation( fields: [asignacionMensualId], references: [id] )
+  asignacionMensual AsignacionMensual? @relation(fields: [asignacionMensualId], references: [id])
 
   // RELACIONES: EJECUCIÓN
   enlacesInvitado EnlaceInvitado[]
@@ -545,10 +516,8 @@ model AsignacionAuditoria {
   @@index([asignacionMensualId])
   @@index([asignadoPorId])
   @@index([reabiertaHasta])
-
   @@map("asignaciones_auditoria")
 }
-
 
 // =============================================================================
 // AUDITORÍAS POR INVITADO
@@ -567,19 +536,19 @@ model EnlaceInvitado {
   creadoPorId           Int
 
   // TOKEN Y VIGENCIA
-  hashToken   String    @unique @db.Char(64)
-  expiraEn    DateTime
-  usadoEn     DateTime?
-  revocadoEn  DateTime?
+  hashToken  String    @unique @db.Char(64)
+  expiraEn   DateTime
+  usadoEn    DateTime?
+  revocadoEn DateTime?
 
   // METADATOS
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES
-  asignacionAuditoria AsignacionAuditoria @relation( fields: [asignacionAuditoriaId], references: [id] )
+  asignacionAuditoria AsignacionAuditoria @relation(fields: [asignacionAuditoriaId], references: [id])
 
-  creadoPor Usuario @relation( "UsuarioCreadorEnlace", fields: [creadoPorId], references: [id] )
+  creadoPor Usuario @relation("UsuarioCreadorEnlace", fields: [creadoPorId], references: [id])
 
   enviosAuditoria EnvioAuditoria[]
 
@@ -587,10 +556,8 @@ model EnlaceInvitado {
   @@index([asignacionAuditoriaId])
   @@index([creadoPorId])
   @@index([expiraEn, revocadoEn])
-
   @@map("enlaces_invitado")
 }
-
 
 // =============================================================================
 // EJECUCIÓN Y RESULTADOS DE AUDITORÍAS
@@ -632,20 +599,20 @@ model EnvioAuditoria {
 
   // INVALIDACIÓN
   invalidadoEn       DateTime?
-  motivoInvalidacion String? @db.Text
+  motivoInvalidacion String?   @db.Text
 
   // METADATOS
   creadoEn      DateTime @default(now())
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES
-  asignacionAuditoria AsignacionAuditoria? @relation( fields: [asignacionAuditoriaId], references: [id], onDelete: Restrict )
+  asignacionAuditoria AsignacionAuditoria? @relation(fields: [asignacionAuditoriaId], references: [id], onDelete: Restrict)
 
-  enlaceInvitado EnlaceInvitado? @relation( fields: [enlaceInvitadoId], references: [id], onDelete: Restrict )
+  enlaceInvitado EnlaceInvitado? @relation(fields: [enlaceInvitadoId], references: [id], onDelete: Restrict)
 
-  enviadoPorUsuario Usuario? @relation( "UsuarioEnviadorAuditoria", fields: [enviadoPorUsuarioId], references: [id], onDelete: Restrict )
+  enviadoPorUsuario Usuario? @relation("UsuarioEnviadorAuditoria", fields: [enviadoPorUsuarioId], references: [id], onDelete: Restrict)
 
-  objetivoAuditoria ObjetivoAuditoria @relation( "EnviosObjetivo", fields: [objetivoAuditoriaId], references: [id] )
+  objetivoAuditoria ObjetivoAuditoria @relation("EnviosObjetivo", fields: [objetivoAuditoriaId], references: [id])
 
   objetivoComoResultado ObjetivoAuditoria? @relation("EnvioResultadoObjetivo")
 
@@ -657,10 +624,8 @@ model EnvioAuditoria {
   @@index([enviadoPorUsuarioId, finalizadoEn(sort: Desc)])
   @@index([recibidoEn(sort: Desc)])
   @@index([enlaceInvitadoId])
-
   @@map("envios_auditoria")
 }
-
 
 // -----------------------------------------------------------------------------
 // RespuestaAuditoria
@@ -685,19 +650,16 @@ model RespuestaAuditoria {
   // RELACIONES
   fotosAuditoria FotoAuditoria[]
 
-  envioAuditoria EnvioAuditoria @relation( fields: [envioAuditoriaId], references: [id] )
+  envioAuditoria EnvioAuditoria @relation(fields: [envioAuditoriaId], references: [id])
 
-  preguntaFormulario PreguntaFormulario @relation( fields: [preguntaFormularioId], references: [id] )
+  preguntaFormulario PreguntaFormulario @relation(fields: [preguntaFormularioId], references: [id])
 
   // RESTRICCIONES
   @@unique([envioAuditoriaId, preguntaFormularioId])
-
   // ÍNDICES
   @@index([preguntaFormularioId])
-
   @@map("respuestas_auditoria")
 }
-
 
 // -----------------------------------------------------------------------------
 // FotoAuditoria
@@ -732,15 +694,13 @@ model FotoAuditoria {
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES
-  respuestaAuditoria RespuestaAuditoria @relation( fields: [respuestaAuditoriaId], references: [id] )
+  respuestaAuditoria RespuestaAuditoria @relation(fields: [respuestaAuditoriaId], references: [id])
 
   // ÍNDICES
   @@index([respuestaAuditoriaId])
   @@index([publicIdCloudinary])
-
   @@map("fotos_auditoria")
 }
-
 
 // =============================================================================
 // NOTIFICACIONES Y CANALES
@@ -777,16 +737,14 @@ model SuscripcionPush {
   // RELACIONES
   entregasNotificacion EntregaNotificacion[]
 
-  usuario Usuario @relation( fields: [usuarioId], references: [id] )
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
 
   // ÍNDICES
   @@index([usuarioId, revocadoEn])
   @@index([expiraEn])
   @@index([ultimoUsoEn])
-
   @@map("suscripciones_push")
 }
-
 
 // -----------------------------------------------------------------------------
 // Notificacion
@@ -803,9 +761,9 @@ model Notificacion {
 
   // CONTENIDO
   tipo    TipoNotificacion
-  titulo  String @db.VarChar(180)
-  mensaje String @db.Text
-  ruta    String? @db.VarChar(255)
+  titulo  String           @db.VarChar(180)
+  mensaje String           @db.Text
+  ruta    String?          @db.VarChar(255)
   datos   Json?
 
   // ESTADO EN LA APLICACIÓN
@@ -818,15 +776,13 @@ model Notificacion {
   // RELACIONES
   entregasNotificacion EntregaNotificacion[]
 
-  usuario Usuario @relation( fields: [usuarioId], references: [id] )
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
 
   // ÍNDICES
   @@index([usuarioId, leidaEn, creadoEn(sort: Desc)])
   @@index([tipo, creadoEn(sort: Desc)])
-
   @@map("notificaciones")
 }
-
 
 // -----------------------------------------------------------------------------
 // EntregaNotificacion
@@ -855,7 +811,7 @@ model EntregaNotificacion {
 
   // LOCK DEL WORKER
   bloqueadoHasta DateTime?
-  bloqueadoPor   String? @db.VarChar(120)
+  bloqueadoPor   String?   @db.VarChar(120)
 
   // INTENTOS Y RESULTADO
   intentos        Int       @default(0)
@@ -871,25 +827,21 @@ model EntregaNotificacion {
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES
-  notificacion Notificacion @relation( fields: [notificacionId], references: [id] )
+  notificacion Notificacion @relation(fields: [notificacionId], references: [id])
 
-  suscripcionPush SuscripcionPush? @relation( fields: [suscripcionPushId], references: [id], onDelete: Restrict )
+  suscripcionPush SuscripcionPush? @relation(fields: [suscripcionPushId], references: [id], onDelete: Restrict)
 
   // RESTRICCIONES
   @@unique([notificacionId, canal, destinoHash])
-
   // ÍNDICES DE COLA
   @@index([estado, programadoEn])
   @@index([estado, proximoIntentoEn])
   @@index([estado, bloqueadoHasta])
-
   // ÍNDICES DE RELACIÓN
   @@index([suscripcionPushId])
   @@index([notificacionId, canal])
-
   @@map("entregas_notificacion")
 }
-
 
 // =============================================================================
 // AUDITORÍA INTERNA DEL SISTEMA
@@ -925,16 +877,14 @@ model RegistroAuditoria {
   actualizadoEn DateTime @updatedAt
 
   // RELACIONES
-  usuario Usuario? @relation( fields: [usuarioId], references: [id] )
+  usuario Usuario? @relation(fields: [usuarioId], references: [id])
 
   // ÍNDICES
   @@index([usuarioId, creadoEn(sort: Desc)])
   @@index([tipoEntidad, idEntidad, creadoEn(sort: Desc)])
   @@index([accion, creadoEn(sort: Desc)])
-
   @@map("registros_auditoria")
 }
-
 
 // =============================================================================
 // CONFIGURACIÓN SEGURA DEL SISTEMA
@@ -961,7 +911,6 @@ model SecretoSistema {
   @@map("secretos_sistema")
 }
 
-
 // =============================================================================
 // ENUMS
 // =============================================================================
@@ -974,21 +923,17 @@ enum RolUsuario {
   AUDITOR
 }
 
-
 // Clasificación organizacional del área.
 enum TipoArea {
   ADMINISTRATIVA
   OPERATIVA
 }
 
-
 // Tipo de áreas donde puede utilizarse un formulario.
 enum AlcanceFormulario {
   ADMINISTRATIVO
   OPERATIVO
-  AMBOS
 }
-
 
 // Ciclo de vida operativo de una asignación de auditoría.
 enum EstadoAsignacionAuditoria {
@@ -999,13 +944,11 @@ enum EstadoAsignacionAuditoria {
   VENCIDA
 }
 
-
 // Actor que realizó un envío de auditoría.
 enum OrigenEnvioAuditoria {
   USUARIO
   INVITADO
 }
-
 
 // Clasificación lógica de las notificaciones.
 enum TipoNotificacion {
@@ -1020,14 +963,12 @@ enum TipoNotificacion {
   RESULTADO_MENSUAL_CORREO
 }
 
-
 // Canal físico por el cual puede despacharse una notificación.
 enum CanalNotificacion {
   PUSH
   CORREO
   WHATSAPP
 }
-
 
 // Estado de una entrega física.
 enum EstadoEntregaNotificacion {

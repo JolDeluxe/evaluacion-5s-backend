@@ -51,8 +51,8 @@ export const periodoMensual = (anio: number, mes: number, numeroCorte: number) =
 
 const alcancesPorTipo = (tipo: TipoArea) => (
   tipo === TipoArea.ADMINISTRATIVA
-    ? [AlcanceFormulario.ADMINISTRATIVO, AlcanceFormulario.AMBOS]
-    : [AlcanceFormulario.OPERATIVO, AlcanceFormulario.AMBOS]
+    ? [AlcanceFormulario.ADMINISTRATIVO]
+    : [AlcanceFormulario.OPERATIVO]
 );
 
 export type VersionCandidata = {
