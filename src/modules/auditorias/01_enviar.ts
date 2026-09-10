@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { EstadoAsignacionAuditoria, OrigenEnvioAuditoria } from '../../generated/prisma/enums';
+import { EstadoAsignacionAuditoria, OrigenEnvioAuditoria, RolUsuario } from '../../generated/prisma/enums';
 import { conflicto, prohibido, solicitudInvalida } from '../../utils/errores';
 import { puedeEjecutarAuditoria } from '../../utils/permisos';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
@@ -44,7 +44,19 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
         },
       },
     });
-    if (asignacion.auditorId !== usuarioId) throw prohibido('La asignacion no pertenece al auditor autenticado');
+
+    const usuarioAutenticado = await tx.usuario.findUniqueOrThrow({
+      where: { id: usuarioId },
+      select: { id: true, rol: true, esComodin: true, nombre: true },
+    });
+
+    const esAuditorTitular = asignacion.auditorId === usuarioId;
+    const esComodinValido = usuarioAutenticado.rol === RolUsuario.ADMINISTRADOR && usuarioAutenticado.esComodin;
+
+    if (!esAuditorTitular && !esComodinValido) {
+      throw prohibido('La asignacion no pertenece al auditor autenticado');
+    }
+
     if (asignacion.estado === EstadoAsignacionAuditoria.CANCELADA) {
       throw solicitudInvalida('Esta auditoría ya no es requerida porque el área fue desactivada.');
     }
@@ -57,7 +69,20 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     }
 
     const objetivo = asignacion.objetivoAuditoria;
-    await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, usuarioId, verificadoEn, asignacion.reabiertaHasta);
+
+    if (!esAuditorTitular && esComodinValido) {
+      if (verificadoEn < objetivo.iniciaEn || verificadoEn > objetivo.terminaEn) {
+        throw solicitudInvalida('El administrador comodín solo puede intervenir en periodos en curso');
+      }
+    }
+
+    await validarObjetivoRealizableMasAntiguo(
+      tx,
+      objetivo.id,
+      esAuditorTitular ? usuarioId : null,
+      verificadoEn,
+      asignacion.reabiertaHasta,
+    );
 
     const perteneceAlArea = await tx.usuarioArea.findFirst({
       where: { usuarioId, areaId: objetivo.areaId },
@@ -87,17 +112,21 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     validarRespuestas5S(preguntas, body.respuestas);
     const puntaje = calcularPuntaje5S(body.respuestas);
 
+    const ahoraServidor = new Date();
+    const realizadaATiempo = ahoraServidor.getTime() <= objetivo.terminaEn.getTime();
+
     const creado = await tx.envioAuditoria.create({
       data: {
         identificadorCliente: body.identificadorCliente,
         objetivoAuditoriaId: objetivo.id,
         asignacionAuditoriaId: asignacion.id,
         enviadoPorUsuarioId: usuarioId,
-        nombreAuditorSnapshot: body.nombreAuditorSnapshot,
+        nombreAuditorSnapshot: body.nombreAuditorSnapshot || usuarioAutenticado.nombre,
         origen: OrigenEnvioAuditoria.USUARIO,
         puntajeObtenido: puntaje.puntajeObtenido,
         puntajePosible: puntaje.puntajePosible,
         porcentaje: puntaje.porcentaje,
+        realizadaATiempo,
         finalizadoEn: body.finalizadoEn,
         verificadoEn,
       },
@@ -149,7 +178,17 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
       data: { revocadoEn: new Date() },
     });
 
-    await registrarAuditoria({ usuarioId, accion: 'ENVIAR_AUDITORIA', tipoEntidad: 'EnvioAuditoria', idEntidad: creado.id, datosNuevos: creado }, tx);
+    await registrarAuditoria({
+      usuarioId,
+      accion: esAuditorTitular ? 'ENVIAR_AUDITORIA' : 'ENVIAR_AUDITORIA_COMODIN',
+      tipoEntidad: 'EnvioAuditoria',
+      idEntidad: creado.id,
+      datosNuevos: {
+        ...creado,
+        ejecutadoComoComodin: !esAuditorTitular,
+        auditorTitularId: asignacion.auditorId,
+      },
+    }, tx);
     return tx.envioAuditoria.findUniqueOrThrow({
       where: { id: creado.id },
       include: { respuestasAuditoria: { include: { fotosAuditoria: true } } },

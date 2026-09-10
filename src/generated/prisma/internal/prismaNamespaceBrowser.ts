@@ -71,7 +71,11 @@ export const ModelName = {
   Notificacion: 'Notificacion',
   EntregaNotificacion: 'EntregaNotificacion',
   RegistroAuditoria: 'RegistroAuditoria',
-  SecretoSistema: 'SecretoSistema'
+  SecretoSistema: 'SecretoSistema',
+  DelegacionCumplimiento: 'DelegacionCumplimiento',
+  CumplimientoMensualUsuario: 'CumplimientoMensualUsuario',
+  CumplimientoMensualArea: 'CumplimientoMensualArea',
+  DiaInhabil: 'DiaInhabil'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -101,6 +105,9 @@ export const UsuarioScalarFieldEnum = {
   rol: 'rol',
   activo: 'activo',
   debeCambiarContrasena: 'debeCambiarContrasena',
+  esComodin: 'esComodin',
+  puedeSerAsignadoAuditoria: 'puedeSerAsignadoAuditoria',
+  seEvalua: 'seEvalua',
   ultimoInicioSesionEn: 'ultimoInicioSesionEn',
   contrasenaCambiadaEn: 'contrasenaCambiadaEn',
   creadoEn: 'creadoEn',
@@ -252,6 +259,7 @@ export const AsignacionMensualScalarFieldEnum = {
   mes: 'mes',
   auditorId: 'auditorId',
   asignadoPorId: 'asignadoPorId',
+  responsableCumplimientoId: 'responsableCumplimientoId',
   asignadoEn: 'asignadoEn',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
@@ -266,6 +274,7 @@ export const AsignacionAuditoriaScalarFieldEnum = {
   objetivoAuditoriaId: 'objetivoAuditoriaId',
   auditorId: 'auditorId',
   asignadoPorId: 'asignadoPorId',
+  responsableCumplimientoId: 'responsableCumplimientoId',
   estado: 'estado',
   asignadoEn: 'asignadoEn',
   venceEn: 'venceEn',
@@ -315,6 +324,7 @@ export const EnvioAuditoriaScalarFieldEnum = {
   finalizadoEn: 'finalizadoEn',
   verificadoEn: 'verificadoEn',
   recibidoEn: 'recibidoEn',
+  realizadaATiempo: 'realizadaATiempo',
   invalidadoEn: 'invalidadoEn',
   motivoInvalidacion: 'motivoInvalidacion',
   creadoEn: 'creadoEn',
@@ -443,6 +453,65 @@ export const SecretoSistemaScalarFieldEnum = {
 } as const
 
 export type SecretoSistemaScalarFieldEnum = (typeof SecretoSistemaScalarFieldEnum)[keyof typeof SecretoSistemaScalarFieldEnum]
+
+
+export const DelegacionCumplimientoScalarFieldEnum = {
+  id: 'id',
+  ejecutorId: 'ejecutorId',
+  responsableId: 'responsableId',
+  vigenteDesde: 'vigenteDesde',
+  vigenteHasta: 'vigenteHasta',
+  activa: 'activa',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type DelegacionCumplimientoScalarFieldEnum = (typeof DelegacionCumplimientoScalarFieldEnum)[keyof typeof DelegacionCumplimientoScalarFieldEnum]
+
+
+export const CumplimientoMensualUsuarioScalarFieldEnum = {
+  id: 'id',
+  usuarioId: 'usuarioId',
+  anio: 'anio',
+  mes: 'mes',
+  seEvaluaSnapshot: 'seEvaluaSnapshot',
+  auditoriasEsperadas: 'auditoriasEsperadas',
+  auditoriasATiempo: 'auditoriasATiempo',
+  porcentajeCumplimiento: 'porcentajeCumplimiento',
+  promedioAreas: 'promedioAreas',
+  areasConResultado: 'areasConResultado',
+  kpiFinal: 'kpiFinal',
+  calculadoEn: 'calculadoEn',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type CumplimientoMensualUsuarioScalarFieldEnum = (typeof CumplimientoMensualUsuarioScalarFieldEnum)[keyof typeof CumplimientoMensualUsuarioScalarFieldEnum]
+
+
+export const CumplimientoMensualAreaScalarFieldEnum = {
+  id: 'id',
+  cumplimientoMensualUsuarioId: 'cumplimientoMensualUsuarioId',
+  areaId: 'areaId',
+  codigoAreaSnapshot: 'codigoAreaSnapshot',
+  nombreAreaSnapshot: 'nombreAreaSnapshot',
+  tipoAreaSnapshot: 'tipoAreaSnapshot',
+  resultadoMensualUtilizado: 'resultadoMensualUtilizado',
+  creadoEn: 'creadoEn'
+} as const
+
+export type CumplimientoMensualAreaScalarFieldEnum = (typeof CumplimientoMensualAreaScalarFieldEnum)[keyof typeof CumplimientoMensualAreaScalarFieldEnum]
+
+
+export const DiaInhabilScalarFieldEnum = {
+  id: 'id',
+  fecha: 'fecha',
+  descripcion: 'descripcion',
+  tipo: 'tipo',
+  creadoEn: 'creadoEn'
+} as const
+
+export type DiaInhabilScalarFieldEnum = (typeof DiaInhabilScalarFieldEnum)[keyof typeof DiaInhabilScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -651,4 +720,19 @@ export const SecretoSistemaOrderByRelevanceFieldEnum = {
 } as const
 
 export type SecretoSistemaOrderByRelevanceFieldEnum = (typeof SecretoSistemaOrderByRelevanceFieldEnum)[keyof typeof SecretoSistemaOrderByRelevanceFieldEnum]
+
+
+export const CumplimientoMensualAreaOrderByRelevanceFieldEnum = {
+  codigoAreaSnapshot: 'codigoAreaSnapshot',
+  nombreAreaSnapshot: 'nombreAreaSnapshot'
+} as const
+
+export type CumplimientoMensualAreaOrderByRelevanceFieldEnum = (typeof CumplimientoMensualAreaOrderByRelevanceFieldEnum)[keyof typeof CumplimientoMensualAreaOrderByRelevanceFieldEnum]
+
+
+export const DiaInhabilOrderByRelevanceFieldEnum = {
+  descripcion: 'descripcion'
+} as const
+
+export type DiaInhabilOrderByRelevanceFieldEnum = (typeof DiaInhabilOrderByRelevanceFieldEnum)[keyof typeof DiaInhabilOrderByRelevanceFieldEnum]
 

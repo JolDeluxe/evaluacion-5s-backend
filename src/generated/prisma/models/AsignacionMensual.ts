@@ -33,6 +33,7 @@ export type AsignacionMensualAvgAggregateOutputType = {
   mes: number | null
   auditorId: number | null
   asignadoPorId: number | null
+  responsableCumplimientoId: number | null
 }
 
 export type AsignacionMensualSumAggregateOutputType = {
@@ -42,6 +43,7 @@ export type AsignacionMensualSumAggregateOutputType = {
   mes: number | null
   auditorId: number | null
   asignadoPorId: number | null
+  responsableCumplimientoId: number | null
 }
 
 export type AsignacionMensualMinAggregateOutputType = {
@@ -51,6 +53,7 @@ export type AsignacionMensualMinAggregateOutputType = {
   mes: number | null
   auditorId: number | null
   asignadoPorId: number | null
+  responsableCumplimientoId: number | null
   asignadoEn: Date | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -63,6 +66,7 @@ export type AsignacionMensualMaxAggregateOutputType = {
   mes: number | null
   auditorId: number | null
   asignadoPorId: number | null
+  responsableCumplimientoId: number | null
   asignadoEn: Date | null
   creadoEn: Date | null
   actualizadoEn: Date | null
@@ -75,6 +79,7 @@ export type AsignacionMensualCountAggregateOutputType = {
   mes: number
   auditorId: number
   asignadoPorId: number
+  responsableCumplimientoId: number
   asignadoEn: number
   creadoEn: number
   actualizadoEn: number
@@ -89,6 +94,7 @@ export type AsignacionMensualAvgAggregateInputType = {
   mes?: true
   auditorId?: true
   asignadoPorId?: true
+  responsableCumplimientoId?: true
 }
 
 export type AsignacionMensualSumAggregateInputType = {
@@ -98,6 +104,7 @@ export type AsignacionMensualSumAggregateInputType = {
   mes?: true
   auditorId?: true
   asignadoPorId?: true
+  responsableCumplimientoId?: true
 }
 
 export type AsignacionMensualMinAggregateInputType = {
@@ -107,6 +114,7 @@ export type AsignacionMensualMinAggregateInputType = {
   mes?: true
   auditorId?: true
   asignadoPorId?: true
+  responsableCumplimientoId?: true
   asignadoEn?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -119,6 +127,7 @@ export type AsignacionMensualMaxAggregateInputType = {
   mes?: true
   auditorId?: true
   asignadoPorId?: true
+  responsableCumplimientoId?: true
   asignadoEn?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -131,6 +140,7 @@ export type AsignacionMensualCountAggregateInputType = {
   mes?: true
   auditorId?: true
   asignadoPorId?: true
+  responsableCumplimientoId?: true
   asignadoEn?: true
   creadoEn?: true
   actualizadoEn?: true
@@ -230,6 +240,7 @@ export type AsignacionMensualGroupByOutputType = {
   mes: number
   auditorId: number
   asignadoPorId: number
+  responsableCumplimientoId: number | null
   asignadoEn: Date | null
   creadoEn: Date
   actualizadoEn: Date
@@ -265,12 +276,14 @@ export type AsignacionMensualWhereInput = {
   mes?: Prisma.IntFilter<"AsignacionMensual"> | number
   auditorId?: Prisma.IntFilter<"AsignacionMensual"> | number
   asignadoPorId?: Prisma.IntFilter<"AsignacionMensual"> | number
+  responsableCumplimientoId?: Prisma.IntNullableFilter<"AsignacionMensual"> | number | null
   asignadoEn?: Prisma.DateTimeNullableFilter<"AsignacionMensual"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"AsignacionMensual"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"AsignacionMensual"> | Date | string
   area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
   auditor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   asignadoPor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  responsableCumplimiento?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaListRelationFilter
 }
 
@@ -281,12 +294,14 @@ export type AsignacionMensualOrderByWithRelationInput = {
   mes?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   asignadoPorId?: Prisma.SortOrder
+  responsableCumplimientoId?: Prisma.SortOrderInput | Prisma.SortOrder
   asignadoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
   area?: Prisma.AreaOrderByWithRelationInput
   auditor?: Prisma.UsuarioOrderByWithRelationInput
   asignadoPor?: Prisma.UsuarioOrderByWithRelationInput
+  responsableCumplimiento?: Prisma.UsuarioOrderByWithRelationInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaOrderByRelationAggregateInput
 }
 
@@ -301,12 +316,14 @@ export type AsignacionMensualWhereUniqueInput = Prisma.AtLeast<{
   mes?: Prisma.IntFilter<"AsignacionMensual"> | number
   auditorId?: Prisma.IntFilter<"AsignacionMensual"> | number
   asignadoPorId?: Prisma.IntFilter<"AsignacionMensual"> | number
+  responsableCumplimientoId?: Prisma.IntNullableFilter<"AsignacionMensual"> | number | null
   asignadoEn?: Prisma.DateTimeNullableFilter<"AsignacionMensual"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"AsignacionMensual"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"AsignacionMensual"> | Date | string
   area?: Prisma.XOR<Prisma.AreaScalarRelationFilter, Prisma.AreaWhereInput>
   auditor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
   asignadoPor?: Prisma.XOR<Prisma.UsuarioScalarRelationFilter, Prisma.UsuarioWhereInput>
+  responsableCumplimiento?: Prisma.XOR<Prisma.UsuarioNullableScalarRelationFilter, Prisma.UsuarioWhereInput> | null
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaListRelationFilter
 }, "id" | "areaId_anio_mes">
 
@@ -317,6 +334,7 @@ export type AsignacionMensualOrderByWithAggregationInput = {
   mes?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   asignadoPorId?: Prisma.SortOrder
+  responsableCumplimientoId?: Prisma.SortOrderInput | Prisma.SortOrder
   asignadoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -337,6 +355,7 @@ export type AsignacionMensualScalarWhereWithAggregatesInput = {
   mes?: Prisma.IntWithAggregatesFilter<"AsignacionMensual"> | number
   auditorId?: Prisma.IntWithAggregatesFilter<"AsignacionMensual"> | number
   asignadoPorId?: Prisma.IntWithAggregatesFilter<"AsignacionMensual"> | number
+  responsableCumplimientoId?: Prisma.IntNullableWithAggregatesFilter<"AsignacionMensual"> | number | null
   asignadoEn?: Prisma.DateTimeNullableWithAggregatesFilter<"AsignacionMensual"> | Date | string | null
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"AsignacionMensual"> | Date | string
   actualizadoEn?: Prisma.DateTimeWithAggregatesFilter<"AsignacionMensual"> | Date | string
@@ -351,6 +370,7 @@ export type AsignacionMensualCreateInput = {
   area: Prisma.AreaCreateNestedOneWithoutAsignacionesMensualesInput
   auditor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesComoAuditorInput
   asignadoPor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesCreadasInput
+  responsableCumplimiento?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesResponsableInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignacionMensualInput
 }
 
@@ -361,6 +381,7 @@ export type AsignacionMensualUncheckedCreateInput = {
   mes: number
   auditorId: number
   asignadoPorId: number
+  responsableCumplimientoId?: number | null
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -376,6 +397,7 @@ export type AsignacionMensualUpdateInput = {
   area?: Prisma.AreaUpdateOneRequiredWithoutAsignacionesMensualesNestedInput
   auditor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesComoAuditorNestedInput
   asignadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesCreadasNestedInput
+  responsableCumplimiento?: Prisma.UsuarioUpdateOneWithoutAsignacionesMensualesResponsableNestedInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignacionMensualNestedInput
 }
 
@@ -386,6 +408,7 @@ export type AsignacionMensualUncheckedUpdateInput = {
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   auditorId?: Prisma.IntFieldUpdateOperationsInput | number
   asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -399,6 +422,7 @@ export type AsignacionMensualCreateManyInput = {
   mes: number
   auditorId: number
   asignadoPorId: number
+  responsableCumplimientoId?: number | null
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -419,6 +443,7 @@ export type AsignacionMensualUncheckedUpdateManyInput = {
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   auditorId?: Prisma.IntFieldUpdateOperationsInput | number
   asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -447,6 +472,7 @@ export type AsignacionMensualCountOrderByAggregateInput = {
   mes?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   asignadoPorId?: Prisma.SortOrder
+  responsableCumplimientoId?: Prisma.SortOrder
   asignadoEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -459,6 +485,7 @@ export type AsignacionMensualAvgOrderByAggregateInput = {
   mes?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   asignadoPorId?: Prisma.SortOrder
+  responsableCumplimientoId?: Prisma.SortOrder
 }
 
 export type AsignacionMensualMaxOrderByAggregateInput = {
@@ -468,6 +495,7 @@ export type AsignacionMensualMaxOrderByAggregateInput = {
   mes?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   asignadoPorId?: Prisma.SortOrder
+  responsableCumplimientoId?: Prisma.SortOrder
   asignadoEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -480,6 +508,7 @@ export type AsignacionMensualMinOrderByAggregateInput = {
   mes?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   asignadoPorId?: Prisma.SortOrder
+  responsableCumplimientoId?: Prisma.SortOrder
   asignadoEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
   actualizadoEn?: Prisma.SortOrder
@@ -492,6 +521,7 @@ export type AsignacionMensualSumOrderByAggregateInput = {
   mes?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   asignadoPorId?: Prisma.SortOrder
+  responsableCumplimientoId?: Prisma.SortOrder
 }
 
 export type AsignacionMensualNullableScalarRelationFilter = {
@@ -513,6 +543,13 @@ export type AsignacionMensualCreateNestedManyWithoutAuditorInput = {
   connect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
 }
 
+export type AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput = {
+  create?: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput, Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput> | Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput[] | Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput[]
+  connectOrCreate?: Prisma.AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput[]
+  createMany?: Prisma.AsignacionMensualCreateManyResponsableCumplimientoInputEnvelope
+  connect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+}
+
 export type AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput = {
   create?: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutAsignadoPorInput, Prisma.AsignacionMensualUncheckedCreateWithoutAsignadoPorInput> | Prisma.AsignacionMensualCreateWithoutAsignadoPorInput[] | Prisma.AsignacionMensualUncheckedCreateWithoutAsignadoPorInput[]
   connectOrCreate?: Prisma.AsignacionMensualCreateOrConnectWithoutAsignadoPorInput | Prisma.AsignacionMensualCreateOrConnectWithoutAsignadoPorInput[]
@@ -524,6 +561,13 @@ export type AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput = {
   create?: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutAuditorInput, Prisma.AsignacionMensualUncheckedCreateWithoutAuditorInput> | Prisma.AsignacionMensualCreateWithoutAuditorInput[] | Prisma.AsignacionMensualUncheckedCreateWithoutAuditorInput[]
   connectOrCreate?: Prisma.AsignacionMensualCreateOrConnectWithoutAuditorInput | Prisma.AsignacionMensualCreateOrConnectWithoutAuditorInput[]
   createMany?: Prisma.AsignacionMensualCreateManyAuditorInputEnvelope
+  connect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+}
+
+export type AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput = {
+  create?: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput, Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput> | Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput[] | Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput[]
+  connectOrCreate?: Prisma.AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput[]
+  createMany?: Prisma.AsignacionMensualCreateManyResponsableCumplimientoInputEnvelope
   connect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
 }
 
@@ -555,6 +599,20 @@ export type AsignacionMensualUpdateManyWithoutAuditorNestedInput = {
   deleteMany?: Prisma.AsignacionMensualScalarWhereInput | Prisma.AsignacionMensualScalarWhereInput[]
 }
 
+export type AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput = {
+  create?: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput, Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput> | Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput[] | Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput[]
+  connectOrCreate?: Prisma.AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput[]
+  upsert?: Prisma.AsignacionMensualUpsertWithWhereUniqueWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualUpsertWithWhereUniqueWithoutResponsableCumplimientoInput[]
+  createMany?: Prisma.AsignacionMensualCreateManyResponsableCumplimientoInputEnvelope
+  set?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+  disconnect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+  delete?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+  connect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+  update?: Prisma.AsignacionMensualUpdateWithWhereUniqueWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualUpdateWithWhereUniqueWithoutResponsableCumplimientoInput[]
+  updateMany?: Prisma.AsignacionMensualUpdateManyWithWhereWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualUpdateManyWithWhereWithoutResponsableCumplimientoInput[]
+  deleteMany?: Prisma.AsignacionMensualScalarWhereInput | Prisma.AsignacionMensualScalarWhereInput[]
+}
+
 export type AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput = {
   create?: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutAsignadoPorInput, Prisma.AsignacionMensualUncheckedCreateWithoutAsignadoPorInput> | Prisma.AsignacionMensualCreateWithoutAsignadoPorInput[] | Prisma.AsignacionMensualUncheckedCreateWithoutAsignadoPorInput[]
   connectOrCreate?: Prisma.AsignacionMensualCreateOrConnectWithoutAsignadoPorInput | Prisma.AsignacionMensualCreateOrConnectWithoutAsignadoPorInput[]
@@ -580,6 +638,20 @@ export type AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput = {
   connect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
   update?: Prisma.AsignacionMensualUpdateWithWhereUniqueWithoutAuditorInput | Prisma.AsignacionMensualUpdateWithWhereUniqueWithoutAuditorInput[]
   updateMany?: Prisma.AsignacionMensualUpdateManyWithWhereWithoutAuditorInput | Prisma.AsignacionMensualUpdateManyWithWhereWithoutAuditorInput[]
+  deleteMany?: Prisma.AsignacionMensualScalarWhereInput | Prisma.AsignacionMensualScalarWhereInput[]
+}
+
+export type AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput = {
+  create?: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput, Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput> | Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput[] | Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput[]
+  connectOrCreate?: Prisma.AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput[]
+  upsert?: Prisma.AsignacionMensualUpsertWithWhereUniqueWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualUpsertWithWhereUniqueWithoutResponsableCumplimientoInput[]
+  createMany?: Prisma.AsignacionMensualCreateManyResponsableCumplimientoInputEnvelope
+  set?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+  disconnect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+  delete?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+  connect?: Prisma.AsignacionMensualWhereUniqueInput | Prisma.AsignacionMensualWhereUniqueInput[]
+  update?: Prisma.AsignacionMensualUpdateWithWhereUniqueWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualUpdateWithWhereUniqueWithoutResponsableCumplimientoInput[]
+  updateMany?: Prisma.AsignacionMensualUpdateManyWithWhereWithoutResponsableCumplimientoInput | Prisma.AsignacionMensualUpdateManyWithWhereWithoutResponsableCumplimientoInput[]
   deleteMany?: Prisma.AsignacionMensualScalarWhereInput | Prisma.AsignacionMensualScalarWhereInput[]
 }
 
@@ -649,6 +721,7 @@ export type AsignacionMensualCreateWithoutAsignadoPorInput = {
   actualizadoEn?: Date | string
   area: Prisma.AreaCreateNestedOneWithoutAsignacionesMensualesInput
   auditor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesComoAuditorInput
+  responsableCumplimiento?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesResponsableInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignacionMensualInput
 }
 
@@ -658,6 +731,7 @@ export type AsignacionMensualUncheckedCreateWithoutAsignadoPorInput = {
   anio: number
   mes: number
   auditorId: number
+  responsableCumplimientoId?: number | null
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -682,6 +756,7 @@ export type AsignacionMensualCreateWithoutAuditorInput = {
   actualizadoEn?: Date | string
   area: Prisma.AreaCreateNestedOneWithoutAsignacionesMensualesInput
   asignadoPor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesCreadasInput
+  responsableCumplimiento?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesResponsableInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignacionMensualInput
 }
 
@@ -691,6 +766,7 @@ export type AsignacionMensualUncheckedCreateWithoutAuditorInput = {
   anio: number
   mes: number
   asignadoPorId: number
+  responsableCumplimientoId?: number | null
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -704,6 +780,41 @@ export type AsignacionMensualCreateOrConnectWithoutAuditorInput = {
 
 export type AsignacionMensualCreateManyAuditorInputEnvelope = {
   data: Prisma.AsignacionMensualCreateManyAuditorInput | Prisma.AsignacionMensualCreateManyAuditorInput[]
+  skipDuplicates?: boolean
+}
+
+export type AsignacionMensualCreateWithoutResponsableCumplimientoInput = {
+  anio: number
+  mes: number
+  asignadoEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  area: Prisma.AreaCreateNestedOneWithoutAsignacionesMensualesInput
+  auditor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesComoAuditorInput
+  asignadoPor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesCreadasInput
+  asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignacionMensualInput
+}
+
+export type AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput = {
+  id?: number
+  areaId: number
+  anio: number
+  mes: number
+  auditorId: number
+  asignadoPorId: number
+  asignadoEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignacionMensualInput
+}
+
+export type AsignacionMensualCreateOrConnectWithoutResponsableCumplimientoInput = {
+  where: Prisma.AsignacionMensualWhereUniqueInput
+  create: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput, Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput>
+}
+
+export type AsignacionMensualCreateManyResponsableCumplimientoInputEnvelope = {
+  data: Prisma.AsignacionMensualCreateManyResponsableCumplimientoInput | Prisma.AsignacionMensualCreateManyResponsableCumplimientoInput[]
   skipDuplicates?: boolean
 }
 
@@ -733,6 +844,7 @@ export type AsignacionMensualScalarWhereInput = {
   mes?: Prisma.IntFilter<"AsignacionMensual"> | number
   auditorId?: Prisma.IntFilter<"AsignacionMensual"> | number
   asignadoPorId?: Prisma.IntFilter<"AsignacionMensual"> | number
+  responsableCumplimientoId?: Prisma.IntNullableFilter<"AsignacionMensual"> | number | null
   asignadoEn?: Prisma.DateTimeNullableFilter<"AsignacionMensual"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"AsignacionMensual"> | Date | string
   actualizadoEn?: Prisma.DateTimeFilter<"AsignacionMensual"> | Date | string
@@ -754,6 +866,22 @@ export type AsignacionMensualUpdateManyWithWhereWithoutAuditorInput = {
   data: Prisma.XOR<Prisma.AsignacionMensualUpdateManyMutationInput, Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorInput>
 }
 
+export type AsignacionMensualUpsertWithWhereUniqueWithoutResponsableCumplimientoInput = {
+  where: Prisma.AsignacionMensualWhereUniqueInput
+  update: Prisma.XOR<Prisma.AsignacionMensualUpdateWithoutResponsableCumplimientoInput, Prisma.AsignacionMensualUncheckedUpdateWithoutResponsableCumplimientoInput>
+  create: Prisma.XOR<Prisma.AsignacionMensualCreateWithoutResponsableCumplimientoInput, Prisma.AsignacionMensualUncheckedCreateWithoutResponsableCumplimientoInput>
+}
+
+export type AsignacionMensualUpdateWithWhereUniqueWithoutResponsableCumplimientoInput = {
+  where: Prisma.AsignacionMensualWhereUniqueInput
+  data: Prisma.XOR<Prisma.AsignacionMensualUpdateWithoutResponsableCumplimientoInput, Prisma.AsignacionMensualUncheckedUpdateWithoutResponsableCumplimientoInput>
+}
+
+export type AsignacionMensualUpdateManyWithWhereWithoutResponsableCumplimientoInput = {
+  where: Prisma.AsignacionMensualScalarWhereInput
+  data: Prisma.XOR<Prisma.AsignacionMensualUpdateManyMutationInput, Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoInput>
+}
+
 export type AsignacionMensualCreateWithoutAreaInput = {
   anio: number
   mes: number
@@ -762,6 +890,7 @@ export type AsignacionMensualCreateWithoutAreaInput = {
   actualizadoEn?: Date | string
   auditor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesComoAuditorInput
   asignadoPor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesCreadasInput
+  responsableCumplimiento?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesResponsableInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignacionMensualInput
 }
 
@@ -771,6 +900,7 @@ export type AsignacionMensualUncheckedCreateWithoutAreaInput = {
   mes: number
   auditorId: number
   asignadoPorId: number
+  responsableCumplimientoId?: number | null
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -812,6 +942,7 @@ export type AsignacionMensualCreateWithoutAsignacionesAuditoriaInput = {
   area: Prisma.AreaCreateNestedOneWithoutAsignacionesMensualesInput
   auditor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesComoAuditorInput
   asignadoPor: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesCreadasInput
+  responsableCumplimiento?: Prisma.UsuarioCreateNestedOneWithoutAsignacionesMensualesResponsableInput
 }
 
 export type AsignacionMensualUncheckedCreateWithoutAsignacionesAuditoriaInput = {
@@ -821,6 +952,7 @@ export type AsignacionMensualUncheckedCreateWithoutAsignacionesAuditoriaInput = 
   mes: number
   auditorId: number
   asignadoPorId: number
+  responsableCumplimientoId?: number | null
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -851,6 +983,7 @@ export type AsignacionMensualUpdateWithoutAsignacionesAuditoriaInput = {
   area?: Prisma.AreaUpdateOneRequiredWithoutAsignacionesMensualesNestedInput
   auditor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesComoAuditorNestedInput
   asignadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesCreadasNestedInput
+  responsableCumplimiento?: Prisma.UsuarioUpdateOneWithoutAsignacionesMensualesResponsableNestedInput
 }
 
 export type AsignacionMensualUncheckedUpdateWithoutAsignacionesAuditoriaInput = {
@@ -860,6 +993,7 @@ export type AsignacionMensualUncheckedUpdateWithoutAsignacionesAuditoriaInput = 
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   auditorId?: Prisma.IntFieldUpdateOperationsInput | number
   asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -871,6 +1005,7 @@ export type AsignacionMensualCreateManyAsignadoPorInput = {
   anio: number
   mes: number
   auditorId: number
+  responsableCumplimientoId?: number | null
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -881,6 +1016,19 @@ export type AsignacionMensualCreateManyAuditorInput = {
   areaId: number
   anio: number
   mes: number
+  asignadoPorId: number
+  responsableCumplimientoId?: number | null
+  asignadoEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+}
+
+export type AsignacionMensualCreateManyResponsableCumplimientoInput = {
+  id?: number
+  areaId: number
+  anio: number
+  mes: number
+  auditorId: number
   asignadoPorId: number
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
@@ -895,6 +1043,7 @@ export type AsignacionMensualUpdateWithoutAsignadoPorInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   area?: Prisma.AreaUpdateOneRequiredWithoutAsignacionesMensualesNestedInput
   auditor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesComoAuditorNestedInput
+  responsableCumplimiento?: Prisma.UsuarioUpdateOneWithoutAsignacionesMensualesResponsableNestedInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignacionMensualNestedInput
 }
 
@@ -904,6 +1053,7 @@ export type AsignacionMensualUncheckedUpdateWithoutAsignadoPorInput = {
   anio?: Prisma.IntFieldUpdateOperationsInput | number
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   auditorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -916,6 +1066,7 @@ export type AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorInput = {
   anio?: Prisma.IntFieldUpdateOperationsInput | number
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   auditorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -929,6 +1080,7 @@ export type AsignacionMensualUpdateWithoutAuditorInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   area?: Prisma.AreaUpdateOneRequiredWithoutAsignacionesMensualesNestedInput
   asignadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesCreadasNestedInput
+  responsableCumplimiento?: Prisma.UsuarioUpdateOneWithoutAsignacionesMensualesResponsableNestedInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignacionMensualNestedInput
 }
 
@@ -938,6 +1090,7 @@ export type AsignacionMensualUncheckedUpdateWithoutAuditorInput = {
   anio?: Prisma.IntFieldUpdateOperationsInput | number
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -950,6 +1103,44 @@ export type AsignacionMensualUncheckedUpdateManyWithoutAuditorInput = {
   anio?: Prisma.IntFieldUpdateOperationsInput | number
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AsignacionMensualUpdateWithoutResponsableCumplimientoInput = {
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  area?: Prisma.AreaUpdateOneRequiredWithoutAsignacionesMensualesNestedInput
+  auditor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesComoAuditorNestedInput
+  asignadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesCreadasNestedInput
+  asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignacionMensualNestedInput
+}
+
+export type AsignacionMensualUncheckedUpdateWithoutResponsableCumplimientoInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  auditorId?: Prisma.IntFieldUpdateOperationsInput | number
+  asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
+  asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesAuditoria?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignacionMensualNestedInput
+}
+
+export type AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  areaId?: Prisma.IntFieldUpdateOperationsInput | number
+  anio?: Prisma.IntFieldUpdateOperationsInput | number
+  mes?: Prisma.IntFieldUpdateOperationsInput | number
+  auditorId?: Prisma.IntFieldUpdateOperationsInput | number
+  asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -961,6 +1152,7 @@ export type AsignacionMensualCreateManyAreaInput = {
   mes: number
   auditorId: number
   asignadoPorId: number
+  responsableCumplimientoId?: number | null
   asignadoEn?: Date | string | null
   creadoEn?: Date | string
   actualizadoEn?: Date | string
@@ -974,6 +1166,7 @@ export type AsignacionMensualUpdateWithoutAreaInput = {
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesComoAuditorNestedInput
   asignadoPor?: Prisma.UsuarioUpdateOneRequiredWithoutAsignacionesMensualesCreadasNestedInput
+  responsableCumplimiento?: Prisma.UsuarioUpdateOneWithoutAsignacionesMensualesResponsableNestedInput
   asignacionesAuditoria?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignacionMensualNestedInput
 }
 
@@ -983,6 +1176,7 @@ export type AsignacionMensualUncheckedUpdateWithoutAreaInput = {
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   auditorId?: Prisma.IntFieldUpdateOperationsInput | number
   asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -995,6 +1189,7 @@ export type AsignacionMensualUncheckedUpdateManyWithoutAreaInput = {
   mes?: Prisma.IntFieldUpdateOperationsInput | number
   auditorId?: Prisma.IntFieldUpdateOperationsInput | number
   asignadoPorId?: Prisma.IntFieldUpdateOperationsInput | number
+  responsableCumplimientoId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   asignadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1038,12 +1233,14 @@ export type AsignacionMensualSelect<ExtArgs extends runtime.Types.Extensions.Int
   mes?: boolean
   auditorId?: boolean
   asignadoPorId?: boolean
+  responsableCumplimientoId?: boolean
   asignadoEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
   area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
   auditor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   asignadoPor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  responsableCumplimiento?: boolean | Prisma.AsignacionMensual$responsableCumplimientoArgs<ExtArgs>
   asignacionesAuditoria?: boolean | Prisma.AsignacionMensual$asignacionesAuditoriaArgs<ExtArgs>
   _count?: boolean | Prisma.AsignacionMensualCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["asignacionMensual"]>
@@ -1057,16 +1254,18 @@ export type AsignacionMensualSelectScalar = {
   mes?: boolean
   auditorId?: boolean
   asignadoPorId?: boolean
+  responsableCumplimientoId?: boolean
   asignadoEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type AsignacionMensualOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "areaId" | "anio" | "mes" | "auditorId" | "asignadoPorId" | "asignadoEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["asignacionMensual"]>
+export type AsignacionMensualOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "areaId" | "anio" | "mes" | "auditorId" | "asignadoPorId" | "responsableCumplimientoId" | "asignadoEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["asignacionMensual"]>
 export type AsignacionMensualInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   area?: boolean | Prisma.AreaDefaultArgs<ExtArgs>
   auditor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
   asignadoPor?: boolean | Prisma.UsuarioDefaultArgs<ExtArgs>
+  responsableCumplimiento?: boolean | Prisma.AsignacionMensual$responsableCumplimientoArgs<ExtArgs>
   asignacionesAuditoria?: boolean | Prisma.AsignacionMensual$asignacionesAuditoriaArgs<ExtArgs>
   _count?: boolean | Prisma.AsignacionMensualCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1077,6 +1276,7 @@ export type $AsignacionMensualPayload<ExtArgs extends runtime.Types.Extensions.I
     area: Prisma.$AreaPayload<ExtArgs>
     auditor: Prisma.$UsuarioPayload<ExtArgs>
     asignadoPor: Prisma.$UsuarioPayload<ExtArgs>
+    responsableCumplimiento: Prisma.$UsuarioPayload<ExtArgs> | null
     asignacionesAuditoria: Prisma.$AsignacionAuditoriaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1086,6 +1286,7 @@ export type $AsignacionMensualPayload<ExtArgs extends runtime.Types.Extensions.I
     mes: number
     auditorId: number
     asignadoPorId: number
+    responsableCumplimientoId: number | null
     asignadoEn: Date | null
     creadoEn: Date
     actualizadoEn: Date
@@ -1432,6 +1633,7 @@ export interface Prisma__AsignacionMensualClient<T, Null = never, ExtArgs extend
   area<T extends Prisma.AreaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AreaDefaultArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   auditor<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   asignadoPor<T extends Prisma.UsuarioDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UsuarioDefaultArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  responsableCumplimiento<T extends Prisma.AsignacionMensual$responsableCumplimientoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AsignacionMensual$responsableCumplimientoArgs<ExtArgs>>): Prisma.Prisma__UsuarioClient<runtime.Types.Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   asignacionesAuditoria<T extends Prisma.AsignacionMensual$asignacionesAuditoriaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AsignacionMensual$asignacionesAuditoriaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1468,6 +1670,7 @@ export interface AsignacionMensualFieldRefs {
   readonly mes: Prisma.FieldRef<"AsignacionMensual", 'Int'>
   readonly auditorId: Prisma.FieldRef<"AsignacionMensual", 'Int'>
   readonly asignadoPorId: Prisma.FieldRef<"AsignacionMensual", 'Int'>
+  readonly responsableCumplimientoId: Prisma.FieldRef<"AsignacionMensual", 'Int'>
   readonly asignadoEn: Prisma.FieldRef<"AsignacionMensual", 'DateTime'>
   readonly creadoEn: Prisma.FieldRef<"AsignacionMensual", 'DateTime'>
   readonly actualizadoEn: Prisma.FieldRef<"AsignacionMensual", 'DateTime'>
@@ -1816,6 +2019,25 @@ export type AsignacionMensualDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many AsignacionMensuals to delete.
    */
   limit?: number
+}
+
+/**
+ * AsignacionMensual.responsableCumplimiento
+ */
+export type AsignacionMensual$responsableCumplimientoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Usuario
+   */
+  select?: Prisma.UsuarioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Usuario
+   */
+  omit?: Prisma.UsuarioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UsuarioInclude<ExtArgs> | null
+  where?: Prisma.UsuarioWhereInput
 }
 
 /**

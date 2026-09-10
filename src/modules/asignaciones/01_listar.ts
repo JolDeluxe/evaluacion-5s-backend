@@ -3,7 +3,8 @@ import { z } from 'zod';
 import type { PrismaTransaction } from '../../db';
 import { prisma } from '../../db';
 import { Prisma } from '../../generated/prisma/client';
-import { EstadoAsignacionAuditoria } from '../../generated/prisma/enums';
+import { EstadoAsignacionAuditoria, RolUsuario } from '../../generated/prisma/enums';
+import { prohibido } from '../../utils/errores';
 import { obtenerPaginacion } from '../../utils/paginacion';
 import { puedeAdministrar5S } from '../../utils/permisos';
 import { responderLista } from '../../utils/respuesta';
@@ -14,7 +15,7 @@ const esquemaQuery = z
     estado: z.enum(EstadoAsignacionAuditoria).optional(),
     auditorId: z.coerce.number().int().positive().optional(),
     objetivoAuditoriaId: z.coerce.number().int().positive().optional(),
-    tipoBandeja: z.enum(['EJECUTABLES', 'HISTORIAL']).optional(),
+    tipoBandeja: z.enum(['EJECUTABLES', 'HISTORIAL', 'COMODIN']).optional(),
     anio: z.coerce.number().int().optional(),
     mes: z.coerce.number().int().optional(),
   })
@@ -221,6 +222,84 @@ export const listarAsignaciones = async (
   const ahora = new Date();
 
   const esAdmin = puedeAdministrar5S(req.autenticacion?.rol);
+
+  if (query.tipoBandeja === 'COMODIN') {
+    const usuarioAutenticado = await prisma.usuario.findUnique({
+      where: { id: req.autenticacion?.usuarioId },
+      select: { id: true, rol: true, esComodin: true },
+    });
+    if (!usuarioAutenticado || usuarioAutenticado.rol !== RolUsuario.ADMINISTRADOR || !usuarioAutenticado.esComodin) {
+      throw prohibido('Solo los administradores comodín pueden consultar esta bandeja');
+    }
+
+    const misAreas = await prisma.usuarioArea.findMany({
+      where: { usuarioId: usuarioAutenticado.id },
+      select: { areaId: true },
+    });
+    const misAreaIds = misAreas.map((a) => a.areaId);
+
+    const comodinAsignaciones = await prisma.asignacionAuditoria.findMany({
+      where: {
+        auditorId: { not: usuarioAutenticado.id },
+        estado: EstadoAsignacionAuditoria.PENDIENTE,
+        objetivoAuditoria: {
+          iniciaEn: { lte: ahora },
+          terminaEn: { gte: ahora },
+          envioResultadoId: null,
+          ...(misAreaIds.length > 0 ? { areaId: { notIn: misAreaIds } } : {}),
+          ...(query.anio ? { anio: query.anio } : {}),
+          ...(query.mes ? { mes: query.mes } : {}),
+        },
+      },
+      include: {
+        auditor: {
+          select: {
+            id: true,
+            nombre: true,
+            nombreUsuario: true,
+          },
+        },
+        responsableCumplimiento: {
+          select: {
+            id: true,
+            nombre: true,
+            nombreUsuario: true,
+          },
+        },
+        objetivoAuditoria: {
+          include: {
+            area: {
+              select: {
+                id: true,
+                codigo: true,
+                nombre: true,
+                tipo: true,
+              },
+            },
+            envioResultado: true,
+            enviosAuditoria: true,
+          },
+        },
+      },
+      orderBy: [
+        { venceEn: 'asc' },
+        { id: 'asc' },
+      ],
+    });
+
+    const mappedComodin = comodinAsignaciones.map((asig) => {
+      const infoPeriodo = obtenerEstadoEjecucion(asig, ahora);
+      return {
+        ...asig,
+        esComodin: true,
+        venceEn: new Date(asig.objetivoAuditoria.terminaEn),
+        infoPeriodo,
+        invitacionActiva: null,
+      };
+    }).filter((asig) => asig.infoPeriodo.realizable);
+
+    return responderLista(res, mappedComodin, { pagina: 1, limite: 100, total: mappedComodin.length });
+  }
 
   // Filter tray lists (EJECUTABLES or HISTORIAL) for the logged-in auditor
   if (query.tipoBandeja) {

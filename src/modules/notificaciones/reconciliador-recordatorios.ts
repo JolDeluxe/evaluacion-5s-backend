@@ -54,7 +54,17 @@ export const reconciliarRecordatoriosPeriodo = async (
   const yyyyMM = `${anio}-${String(mes).padStart(2, '0')}`;
   const mesEtiqueta = `${MESES_NOMBRES[mes - 1]} ${anio}`;
 
-  const fechaRecordatorio = obtenerUltimoDiaHabilPeriodo(anio, mes, periodo);
+  const diasInhabiles = tx.diaInhabil?.findMany
+    ? await tx.diaInhabil.findMany({ select: { fecha: true } })
+    : [];
+  const diasInhabilesSet = new Set(
+    diasInhabiles.map((d) => {
+      const f = new Date(d.fecha);
+      return `${f.getUTCFullYear()}-${String(f.getUTCMonth() + 1).padStart(2, '0')}-${String(f.getUTCDate()).padStart(2, '0')}`;
+    }),
+  );
+
+  const fechaRecordatorio = obtenerUltimoDiaHabilPeriodo(anio, mes, periodo, diasInhabilesSet);
   const fechaRecordatorioStr = `${fechaRecordatorio.getFullYear()}-${String(fechaRecordatorio.getMonth() + 1).padStart(2, '0')}-${String(fechaRecordatorio.getDate()).padStart(2, '0')}`;
   const fechaLimiteTexto = `${fechaRecordatorio.getDate()} de ${MESES_NOMBRES[mes - 1]} de ${anio}`;
 

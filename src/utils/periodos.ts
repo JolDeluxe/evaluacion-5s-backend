@@ -21,38 +21,45 @@ type ObjetivoConPeriodo = Pick<ObjetivoAuditoria, 'id' | 'areaId' | 'envioResult
   enviosAuditoria?: Pick<EnvioAuditoria, 'id' | 'verificadoEn' | 'invalidadoEn' | 'porcentaje'>[];
 };
 
-export const esDiaHabil = (fecha: Date) => {
+export const esDiaHabil = (fecha: Date, diasInhabilesFechas?: Set<string>): boolean => {
   const dia = fecha.getDay();
-  return dia >= 1 && dia <= 5;
+  if (dia === 0 || dia === 6) return false;
+  if (diasInhabilesFechas) {
+    const yyyyMMdd = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
+    if (diasInhabilesFechas.has(yyyyMMdd)) return false;
+  }
+  return true;
 };
 
-export const sumarDiasHabiles = (fecha: Date, dias: number) => {
+export const sumarDiasHabiles = (fecha: Date, dias: number, diasInhabilesFechas?: Set<string>) => {
   const resultado = new Date(fecha);
   if (Number.isNaN(resultado.getTime())) return resultado;
   let restantes = dias;
 
   while (restantes > 0) {
     resultado.setDate(resultado.getDate() + 1);
-    if (esDiaHabil(resultado)) restantes -= 1;
+    if (esDiaHabil(resultado, diasInhabilesFechas)) restantes -= 1;
   }
 
   return resultado;
 };
 
-export const calcularCierreConGracia = (terminaEn: Date) => sumarDiasHabiles(terminaEn, DIAS_HABILES_GRACIA);
+export const calcularCierreConGracia = (terminaEn: Date, diasInhabilesFechas?: Set<string>) => (
+  sumarDiasHabiles(terminaEn, DIAS_HABILES_GRACIA, diasInhabilesFechas)
+);
 
 /**
  * Devuelve el primer día hábil del mes (lunes–viernes).
  * Si el día 1 del mes ya es hábil, lo devuelve tal cual.
- * De lo contrario avanza hasta el primer lunes.
+ * De lo contrario avanza hasta el primer lunes o día hábil.
  * La hora devuelta es 00:00:00.000 del día resultante.
  */
-export const primerDiaHabilMes = (anio: number, mes: number): Date => {
+export const primerDiaHabilMes = (anio: number, mes: number, diasInhabilesFechas?: Set<string>): Date => {
   const dia1 = new Date(anio, mes - 1, 1, 0, 0, 0, 0);
-  if (esDiaHabil(dia1)) return dia1;
+  if (esDiaHabil(dia1, diasInhabilesFechas)) return dia1;
   // Avanzar hasta el primer día hábil
   const resultado = new Date(dia1);
-  while (!esDiaHabil(resultado)) {
+  while (!esDiaHabil(resultado, diasInhabilesFechas)) {
     resultado.setDate(resultado.getDate() + 1);
   }
   return resultado;
@@ -70,11 +77,16 @@ export const mesAnteriorDe = (anio: number, mes: number): { anio: number; mes: n
  * - Para P2: último día hábil <= fin de mes.
  * La hora devuelta es 00:00:00.000 del día resultante.
  */
-export const obtenerUltimoDiaHabilPeriodo = (anio: number, mes: number, periodo: 1 | 2): Date => {
+export const obtenerUltimoDiaHabilPeriodo = (
+  anio: number,
+  mes: number,
+  periodo: 1 | 2,
+  diasInhabilesFechas?: Set<string>,
+): Date => {
   const diaInicio = periodo === 1 ? 15 : new Date(anio, mes, 0).getDate();
   const fecha = new Date(anio, mes - 1, diaInicio, 0, 0, 0, 0);
 
-  while (!esDiaHabil(fecha)) {
+  while (!esDiaHabil(fecha, diasInhabilesFechas)) {
     fecha.setDate(fecha.getDate() - 1);
   }
 

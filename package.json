@@ -13,6 +13,7 @@
     "superadmin:restablecer": "bun scripts/restablecer-superadmin.ts",
     "datos:formulario-administrativo": "bun scripts/poblar-formulario-administrativo.ts",
     "datos:formularios-5s": "bun scripts/poblar-formularios-5s.ts",
+    "datos:dias-inhabiles": "bun scripts/poblar-dias-inhabiles-2026.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"

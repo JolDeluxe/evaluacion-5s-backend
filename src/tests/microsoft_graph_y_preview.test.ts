@@ -43,7 +43,7 @@ describe('Microsoft Graph, Worker Pause & Email Preview', () => {
 
     // 2. Ejecutar el worker con EMAIL_ENABLED=false
     const prevEmailEnabled = env.EMAIL_ENABLED;
-    (env as any).EMAIL_ENABLED = false;
+    (env as { EMAIL_ENABLED: boolean }).EMAIL_ENABLED = false;
     try {
       await procesarEntregasPendientes();
 
@@ -56,7 +56,7 @@ describe('Microsoft Graph, Worker Pause & Email Preview', () => {
       expect(entregaDespues.intentos).toBe(0);
       expect(entregaDespues.ultimoError).toBeNull();
     } finally {
-      (env as any).EMAIL_ENABLED = prevEmailEnabled;
+      (env as { EMAIL_ENABLED: boolean }).EMAIL_ENABLED = prevEmailEnabled;
     }
 
     // Limpieza

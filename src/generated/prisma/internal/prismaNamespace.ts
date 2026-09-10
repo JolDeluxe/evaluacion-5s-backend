@@ -417,7 +417,11 @@ export const ModelName = {
   Notificacion: 'Notificacion',
   EntregaNotificacion: 'EntregaNotificacion',
   RegistroAuditoria: 'RegistroAuditoria',
-  SecretoSistema: 'SecretoSistema'
+  SecretoSistema: 'SecretoSistema',
+  DelegacionCumplimiento: 'DelegacionCumplimiento',
+  CumplimientoMensualUsuario: 'CumplimientoMensualUsuario',
+  CumplimientoMensualArea: 'CumplimientoMensualArea',
+  DiaInhabil: 'DiaInhabil'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -433,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "usuario" | "sesion" | "tokenRestablecimientoContrasena" | "area" | "usuarioArea" | "formulario" | "versionFormulario" | "seccionFormulario" | "preguntaFormulario" | "objetivoAuditoria" | "asignacionMensual" | "asignacionAuditoria" | "enlaceInvitado" | "envioAuditoria" | "respuestaAuditoria" | "fotoAuditoria" | "suscripcionPush" | "notificacion" | "entregaNotificacion" | "registroAuditoria" | "secretoSistema"
+    modelProps: "usuario" | "sesion" | "tokenRestablecimientoContrasena" | "area" | "usuarioArea" | "formulario" | "versionFormulario" | "seccionFormulario" | "preguntaFormulario" | "objetivoAuditoria" | "asignacionMensual" | "asignacionAuditoria" | "enlaceInvitado" | "envioAuditoria" | "respuestaAuditoria" | "fotoAuditoria" | "suscripcionPush" | "notificacion" | "entregaNotificacion" | "registroAuditoria" | "secretoSistema" | "delegacionCumplimiento" | "cumplimientoMensualUsuario" | "cumplimientoMensualArea" | "diaInhabil"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1823,6 +1827,270 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DelegacionCumplimiento: {
+      payload: Prisma.$DelegacionCumplimientoPayload<ExtArgs>
+      fields: Prisma.DelegacionCumplimientoFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DelegacionCumplimientoFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DelegacionCumplimientoFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload>
+        }
+        findFirst: {
+          args: Prisma.DelegacionCumplimientoFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DelegacionCumplimientoFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload>
+        }
+        findMany: {
+          args: Prisma.DelegacionCumplimientoFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload>[]
+        }
+        create: {
+          args: Prisma.DelegacionCumplimientoCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload>
+        }
+        createMany: {
+          args: Prisma.DelegacionCumplimientoCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.DelegacionCumplimientoDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload>
+        }
+        update: {
+          args: Prisma.DelegacionCumplimientoUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload>
+        }
+        deleteMany: {
+          args: Prisma.DelegacionCumplimientoDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DelegacionCumplimientoUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.DelegacionCumplimientoUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DelegacionCumplimientoPayload>
+        }
+        aggregate: {
+          args: Prisma.DelegacionCumplimientoAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDelegacionCumplimiento>
+        }
+        groupBy: {
+          args: Prisma.DelegacionCumplimientoGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DelegacionCumplimientoGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DelegacionCumplimientoCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DelegacionCumplimientoCountAggregateOutputType> | number
+        }
+      }
+    }
+    CumplimientoMensualUsuario: {
+      payload: Prisma.$CumplimientoMensualUsuarioPayload<ExtArgs>
+      fields: Prisma.CumplimientoMensualUsuarioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CumplimientoMensualUsuarioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CumplimientoMensualUsuarioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload>
+        }
+        findFirst: {
+          args: Prisma.CumplimientoMensualUsuarioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CumplimientoMensualUsuarioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload>
+        }
+        findMany: {
+          args: Prisma.CumplimientoMensualUsuarioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload>[]
+        }
+        create: {
+          args: Prisma.CumplimientoMensualUsuarioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload>
+        }
+        createMany: {
+          args: Prisma.CumplimientoMensualUsuarioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CumplimientoMensualUsuarioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload>
+        }
+        update: {
+          args: Prisma.CumplimientoMensualUsuarioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload>
+        }
+        deleteMany: {
+          args: Prisma.CumplimientoMensualUsuarioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CumplimientoMensualUsuarioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CumplimientoMensualUsuarioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualUsuarioPayload>
+        }
+        aggregate: {
+          args: Prisma.CumplimientoMensualUsuarioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCumplimientoMensualUsuario>
+        }
+        groupBy: {
+          args: Prisma.CumplimientoMensualUsuarioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CumplimientoMensualUsuarioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CumplimientoMensualUsuarioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CumplimientoMensualUsuarioCountAggregateOutputType> | number
+        }
+      }
+    }
+    CumplimientoMensualArea: {
+      payload: Prisma.$CumplimientoMensualAreaPayload<ExtArgs>
+      fields: Prisma.CumplimientoMensualAreaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CumplimientoMensualAreaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CumplimientoMensualAreaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload>
+        }
+        findFirst: {
+          args: Prisma.CumplimientoMensualAreaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CumplimientoMensualAreaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload>
+        }
+        findMany: {
+          args: Prisma.CumplimientoMensualAreaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload>[]
+        }
+        create: {
+          args: Prisma.CumplimientoMensualAreaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload>
+        }
+        createMany: {
+          args: Prisma.CumplimientoMensualAreaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CumplimientoMensualAreaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload>
+        }
+        update: {
+          args: Prisma.CumplimientoMensualAreaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload>
+        }
+        deleteMany: {
+          args: Prisma.CumplimientoMensualAreaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CumplimientoMensualAreaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CumplimientoMensualAreaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CumplimientoMensualAreaPayload>
+        }
+        aggregate: {
+          args: Prisma.CumplimientoMensualAreaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCumplimientoMensualArea>
+        }
+        groupBy: {
+          args: Prisma.CumplimientoMensualAreaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CumplimientoMensualAreaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CumplimientoMensualAreaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CumplimientoMensualAreaCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiaInhabil: {
+      payload: Prisma.$DiaInhabilPayload<ExtArgs>
+      fields: Prisma.DiaInhabilFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiaInhabilFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiaInhabilFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload>
+        }
+        findFirst: {
+          args: Prisma.DiaInhabilFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiaInhabilFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload>
+        }
+        findMany: {
+          args: Prisma.DiaInhabilFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload>[]
+        }
+        create: {
+          args: Prisma.DiaInhabilCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload>
+        }
+        createMany: {
+          args: Prisma.DiaInhabilCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.DiaInhabilDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload>
+        }
+        update: {
+          args: Prisma.DiaInhabilUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiaInhabilDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiaInhabilUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.DiaInhabilUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiaInhabilPayload>
+        }
+        aggregate: {
+          args: Prisma.DiaInhabilAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiaInhabil>
+        }
+        groupBy: {
+          args: Prisma.DiaInhabilGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiaInhabilGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiaInhabilCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiaInhabilCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1873,6 +2141,9 @@ export const UsuarioScalarFieldEnum = {
   rol: 'rol',
   activo: 'activo',
   debeCambiarContrasena: 'debeCambiarContrasena',
+  esComodin: 'esComodin',
+  puedeSerAsignadoAuditoria: 'puedeSerAsignadoAuditoria',
+  seEvalua: 'seEvalua',
   ultimoInicioSesionEn: 'ultimoInicioSesionEn',
   contrasenaCambiadaEn: 'contrasenaCambiadaEn',
   creadoEn: 'creadoEn',
@@ -2024,6 +2295,7 @@ export const AsignacionMensualScalarFieldEnum = {
   mes: 'mes',
   auditorId: 'auditorId',
   asignadoPorId: 'asignadoPorId',
+  responsableCumplimientoId: 'responsableCumplimientoId',
   asignadoEn: 'asignadoEn',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn'
@@ -2038,6 +2310,7 @@ export const AsignacionAuditoriaScalarFieldEnum = {
   objetivoAuditoriaId: 'objetivoAuditoriaId',
   auditorId: 'auditorId',
   asignadoPorId: 'asignadoPorId',
+  responsableCumplimientoId: 'responsableCumplimientoId',
   estado: 'estado',
   asignadoEn: 'asignadoEn',
   venceEn: 'venceEn',
@@ -2087,6 +2360,7 @@ export const EnvioAuditoriaScalarFieldEnum = {
   finalizadoEn: 'finalizadoEn',
   verificadoEn: 'verificadoEn',
   recibidoEn: 'recibidoEn',
+  realizadaATiempo: 'realizadaATiempo',
   invalidadoEn: 'invalidadoEn',
   motivoInvalidacion: 'motivoInvalidacion',
   creadoEn: 'creadoEn',
@@ -2215,6 +2489,65 @@ export const SecretoSistemaScalarFieldEnum = {
 } as const
 
 export type SecretoSistemaScalarFieldEnum = (typeof SecretoSistemaScalarFieldEnum)[keyof typeof SecretoSistemaScalarFieldEnum]
+
+
+export const DelegacionCumplimientoScalarFieldEnum = {
+  id: 'id',
+  ejecutorId: 'ejecutorId',
+  responsableId: 'responsableId',
+  vigenteDesde: 'vigenteDesde',
+  vigenteHasta: 'vigenteHasta',
+  activa: 'activa',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type DelegacionCumplimientoScalarFieldEnum = (typeof DelegacionCumplimientoScalarFieldEnum)[keyof typeof DelegacionCumplimientoScalarFieldEnum]
+
+
+export const CumplimientoMensualUsuarioScalarFieldEnum = {
+  id: 'id',
+  usuarioId: 'usuarioId',
+  anio: 'anio',
+  mes: 'mes',
+  seEvaluaSnapshot: 'seEvaluaSnapshot',
+  auditoriasEsperadas: 'auditoriasEsperadas',
+  auditoriasATiempo: 'auditoriasATiempo',
+  porcentajeCumplimiento: 'porcentajeCumplimiento',
+  promedioAreas: 'promedioAreas',
+  areasConResultado: 'areasConResultado',
+  kpiFinal: 'kpiFinal',
+  calculadoEn: 'calculadoEn',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn'
+} as const
+
+export type CumplimientoMensualUsuarioScalarFieldEnum = (typeof CumplimientoMensualUsuarioScalarFieldEnum)[keyof typeof CumplimientoMensualUsuarioScalarFieldEnum]
+
+
+export const CumplimientoMensualAreaScalarFieldEnum = {
+  id: 'id',
+  cumplimientoMensualUsuarioId: 'cumplimientoMensualUsuarioId',
+  areaId: 'areaId',
+  codigoAreaSnapshot: 'codigoAreaSnapshot',
+  nombreAreaSnapshot: 'nombreAreaSnapshot',
+  tipoAreaSnapshot: 'tipoAreaSnapshot',
+  resultadoMensualUtilizado: 'resultadoMensualUtilizado',
+  creadoEn: 'creadoEn'
+} as const
+
+export type CumplimientoMensualAreaScalarFieldEnum = (typeof CumplimientoMensualAreaScalarFieldEnum)[keyof typeof CumplimientoMensualAreaScalarFieldEnum]
+
+
+export const DiaInhabilScalarFieldEnum = {
+  id: 'id',
+  fecha: 'fecha',
+  descripcion: 'descripcion',
+  tipo: 'tipo',
+  creadoEn: 'creadoEn'
+} as const
+
+export type DiaInhabilScalarFieldEnum = (typeof DiaInhabilScalarFieldEnum)[keyof typeof DiaInhabilScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2425,6 +2758,21 @@ export const SecretoSistemaOrderByRelevanceFieldEnum = {
 export type SecretoSistemaOrderByRelevanceFieldEnum = (typeof SecretoSistemaOrderByRelevanceFieldEnum)[keyof typeof SecretoSistemaOrderByRelevanceFieldEnum]
 
 
+export const CumplimientoMensualAreaOrderByRelevanceFieldEnum = {
+  codigoAreaSnapshot: 'codigoAreaSnapshot',
+  nombreAreaSnapshot: 'nombreAreaSnapshot'
+} as const
+
+export type CumplimientoMensualAreaOrderByRelevanceFieldEnum = (typeof CumplimientoMensualAreaOrderByRelevanceFieldEnum)[keyof typeof CumplimientoMensualAreaOrderByRelevanceFieldEnum]
+
+
+export const DiaInhabilOrderByRelevanceFieldEnum = {
+  descripcion: 'descripcion'
+} as const
+
+export type DiaInhabilOrderByRelevanceFieldEnum = (typeof DiaInhabilOrderByRelevanceFieldEnum)[keyof typeof DiaInhabilOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -2533,6 +2881,13 @@ export type EnumCanalNotificacionFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'EstadoEntregaNotificacion'
  */
 export type EnumEstadoEntregaNotificacionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoEntregaNotificacion'>
+    
+
+
+/**
+ * Reference to a field of type 'TipoDiaInhabil'
+ */
+export type EnumTipoDiaInhabilFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TipoDiaInhabil'>
     
 
 
@@ -2714,6 +3069,10 @@ export type GlobalOmitConfig = {
   entregaNotificacion?: Prisma.EntregaNotificacionOmit
   registroAuditoria?: Prisma.RegistroAuditoriaOmit
   secretoSistema?: Prisma.SecretoSistemaOmit
+  delegacionCumplimiento?: Prisma.DelegacionCumplimientoOmit
+  cumplimientoMensualUsuario?: Prisma.CumplimientoMensualUsuarioOmit
+  cumplimientoMensualArea?: Prisma.CumplimientoMensualAreaOmit
+  diaInhabil?: Prisma.DiaInhabilOmit
 }
 
 /* Types for Logging */

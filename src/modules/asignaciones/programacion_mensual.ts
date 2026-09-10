@@ -174,8 +174,12 @@ const cargarObjetivosMes = async (tx: PrismaTransaction, anio: number, mes: numb
       asignacionesAuditoria: {
         include: {
           auditor: { select: { id: true, nombre: true, nombreUsuario: true, rol: true, activo: true } },
+          responsableCumplimiento: { select: { id: true, nombre: true, nombreUsuario: true, rol: true } },
           asignacionMensual: {
-            include: { auditor: { select: { id: true, nombre: true, nombreUsuario: true, rol: true } } },
+            include: {
+              auditor: { select: { id: true, nombre: true, nombreUsuario: true, rol: true } },
+              responsableCumplimiento: { select: { id: true, nombre: true, nombreUsuario: true, rol: true } },
+            },
           },
         },
         orderBy: [{ estado: 'asc' }, { actualizadoEn: 'desc' }],
@@ -191,7 +195,10 @@ const cargarObjetivosMes = async (tx: PrismaTransaction, anio: number, mes: numb
 const cargarAsignacionesMensualesMes = async (tx: PrismaTransaction, anio: number, mes: number) => (
   tx.asignacionMensual.findMany({
     where: { anio, mes },
-    include: { auditor: { select: { id: true, nombre: true, nombreUsuario: true, rol: true } } },
+    include: {
+      auditor: { select: { id: true, nombre: true, nombreUsuario: true, rol: true } },
+      responsableCumplimiento: { select: { id: true, nombre: true, nombreUsuario: true, rol: true } },
+    },
   })
 );
 
@@ -236,6 +243,7 @@ const construirPeriodoFila = (
     motivoReasignacion: asignacionAnterior?.motivoCancelacion ?? null,
     reabiertaHasta: asignacion?.reabiertaHasta ?? null,
     cierreGracia: detalle.cierreGracia,
+    responsableCumplimiento: asignacion?.responsableCumplimiento ? mapearUsuario(asignacion.responsableCumplimiento) : null,
   };
 };
 
@@ -266,6 +274,7 @@ const construirFilasMensuales = (objetivos: PeriodoObjetivo[], asignacionesMensu
       ? auditoresEfectivos[0]
       : null;
     const auditorMensual = requiereAuditor ? null : asignacionMensual?.auditor ?? auditorInferido;
+    const responsableCumplimiento = asignacionMensual?.responsableCumplimiento ? mapearUsuario(asignacionMensual.responsableCumplimiento) : null;
     const estado = requiereAuditor ? ('SIN_AUDITOR' as const) : ('ASIGNADO' as const);
 
     return {
@@ -277,6 +286,7 @@ const construirFilasMensuales = (objetivos: PeriodoObjetivo[], asignacionesMensu
         responsablesIds: areaBase?.usuariosArea.map((usuarioArea) => usuarioArea.usuarioId) ?? [],
       },
       auditorMensual: auditorMensual ? mapearUsuario(auditorMensual) : null,
+      responsableCumplimiento,
       estado,
       requiereAuditor,
       periodos: { p1, p2 },
@@ -304,7 +314,7 @@ const filtrarFilas = (
 
 export const obtenerAuditoresDisponibles = async (tx: PrismaTransaction) => (
   tx.usuario.findMany({
-    where: { activo: true, rol: { in: rolesAuditores } },
+    where: { activo: true, rol: { in: rolesAuditores }, puedeSerAsignadoAuditoria: true },
     select: { id: true, nombre: true, nombreUsuario: true, rol: true },
     orderBy: { nombre: 'asc' },
   })
@@ -370,6 +380,7 @@ const aplicarAsignacionPeriodo = async (
   asignacionMensualId: number,
   asignadoPorId: number,
   soloPendientes = false,
+  responsableCumplimientoId: number | null = null,
 ) => {
   await bloquearObjetivoAuditoria(tx, objetivo.id);
 
@@ -430,6 +441,7 @@ const aplicarAsignacionPeriodo = async (
   const datosAsignacion = {
     asignacionMensualId,
     auditorId,
+    responsableCumplimientoId,
     asignadoPorId,
     estado: EstadoAsignacionAuditoria.PENDIENTE,
     asignadoEn: ahora,
@@ -460,6 +472,7 @@ const aplicarAsignacionPeriodo = async (
       where: { id: asignacion.id },
       data: {
         asignacionMensualId,
+        responsableCumplimientoId,
         motivoExcepcion: null,
         venceEn,
       },
@@ -494,6 +507,52 @@ const aplicarAsignacionPeriodo = async (
   return { actualizada: true, protegida: false, asignacion: creada };
 };
 
+export const resolverResponsableCumplimiento = async (
+  tx: PrismaTransaction,
+  auditorId: number,
+  anio: number,
+  mes: number,
+  responsableEspecificado?: number | null,
+): Promise<number> => {
+  const inicioCorte = inicioDia(anio, mes, 1);
+  const finCorte = finDia(anio, mes, ultimoDiaMes(anio, mes));
+
+  if (!tx.delegacionCumplimiento?.findMany) {
+    return auditorId;
+  }
+
+  const delegaciones = await tx.delegacionCumplimiento.findMany({
+    where: {
+      ejecutorId: auditorId,
+      activa: true,
+      vigenteDesde: { lte: finCorte },
+      OR: [
+        { vigenteHasta: null },
+        { vigenteHasta: { gte: inicioCorte } },
+      ],
+    },
+    select: { id: true, responsableId: true },
+  });
+
+  if (delegaciones.length === 0) {
+    return auditorId;
+  }
+
+  if (delegaciones.length === 1) {
+    return delegaciones[0].responsableId;
+  }
+
+  if (responsableEspecificado) {
+    const valida = delegaciones.some((d) => d.responsableId === responsableEspecificado);
+    if (valida) return responsableEspecificado;
+    throw solicitudInvalida('El responsable de cumplimiento especificado no coincide con ninguna delegación activa del auditor para este periodo');
+  }
+
+  throw solicitudInvalida(
+    'El auditor tiene múltiples delegaciones de cumplimiento activas para este periodo. Debes seleccionar al responsable.',
+  );
+};
+
 export const guardarAsignacionMensual = async (
   tx: PrismaTransaction,
   params: {
@@ -502,6 +561,7 @@ export const guardarAsignacionMensual = async (
     mes: number;
     auditorMensualId: number;
     asignadoPorId: number;
+    responsableCumplimientoId?: number | null;
     expectedAuditorId?: number | null;
     soloSiSinAuditor?: boolean;
     soloPendientes?: boolean;
@@ -533,8 +593,6 @@ export const guardarAsignacionMensual = async (
     throw conflicto('No es posible modificar el auditor de este periodo porque todas sus auditorías ya fueron realizadas.');
   }
 
-  await validarAuditorMensualArea(tx, params.areaId, params.auditorMensualId);
-
   const asignacionMensualExistente = await tx.asignacionMensual.findUnique({
     where: { areaId_anio_mes: { areaId: params.areaId, anio: params.anio, mes: params.mes } },
     include: { auditor: { select: { nombre: true } } },
@@ -547,6 +605,16 @@ export const guardarAsignacionMensual = async (
       throw conflicto('La asignación mensual de esta área fue modificada por otro administrador. Actualiza la información antes de guardar.');
     }
   }
+
+  await validarAuditorMensualArea(tx, params.areaId, params.auditorMensualId);
+
+  const responsableCumplimientoId = await resolverResponsableCumplimiento(
+    tx,
+    params.auditorMensualId,
+    params.anio,
+    params.mes,
+    params.responsableCumplimientoId,
+  );
 
   const tienePendiente = objetivos.some((objetivo) => {
     const asignacion = asignacionVigente(objetivo.asignacionesAuditoria);
@@ -566,6 +634,7 @@ export const guardarAsignacionMensual = async (
     where: { areaId_anio_mes: { areaId: params.areaId, anio: params.anio, mes: params.mes } },
     update: {
       auditorId: params.auditorMensualId,
+      responsableCumplimientoId,
       asignadoPorId: params.asignadoPorId,
       asignadoEn: new Date(),
     },
@@ -574,6 +643,7 @@ export const guardarAsignacionMensual = async (
       anio: params.anio,
       mes: params.mes,
       auditorId: params.auditorMensualId,
+      responsableCumplimientoId,
       asignadoPorId: params.asignadoPorId,
       asignadoEn: new Date(),
     },
@@ -616,6 +686,7 @@ export const guardarAsignacionMensual = async (
       asignacionMensual.id,
       params.asignadoPorId,
       params.soloPendientes,
+      responsableCumplimientoId,
     );
     if (resultado.protegida) protegidas += 1;
     if (resultado.actualizada) actualizadas += 1;
@@ -696,33 +767,43 @@ export const autoasignarPendientes = async (
   let asignadas = 0;
   const sinCandidato = propuesta.sinCandidato.length;
   let omitidasPorConcurrencia = 0;
+  let omitidasPorDelegacionMultiple = 0;
 
   for (const item of propuesta.propuestas) {
     if (!item.auditor) continue;
-    const resultado = await guardarAsignacionMensual(tx, {
-      areaId: item.area.id,
-      anio,
-      mes,
-      auditorMensualId: item.auditor.id,
-      asignadoPorId,
-      soloSiSinAuditor: true,
-      soloPendientes: true,
-    });
-    if (resultado.omitida) {
-      omitidasPorConcurrencia += 1;
-      continue;
+    try {
+      const resultado = await guardarAsignacionMensual(tx, {
+        areaId: item.area.id,
+        anio,
+        mes,
+        auditorMensualId: item.auditor.id,
+        asignadoPorId,
+        soloSiSinAuditor: true,
+        soloPendientes: true,
+      });
+      if (resultado.omitida) {
+        omitidasPorConcurrencia += 1;
+        continue;
+      }
+      asignadas += 1;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (msg.includes('múltiples delegaciones')) {
+        omitidasPorDelegacionMultiple += 1;
+        continue;
+      }
+      throw err;
     }
-    asignadas += 1;
   }
 
-  return { asignadas, sinCandidato, omitidasPorConcurrencia };
+  return { asignadas, sinCandidato, omitidasPorConcurrencia, omitidasPorDelegacionMultiple };
 };
 
 export const confirmarPropuestaAutoasignacion = async (
   tx: PrismaTransaction,
   anio: number,
   mes: number,
-  asignaciones: Array<{ areaId: number; auditorId: number }>,
+  asignaciones: Array<{ areaId: number; auditorId: number; responsableCumplimientoId?: number | null }>,
   asignadoPorId: number,
 ) => {
   let guardadas = 0;
@@ -733,6 +814,7 @@ export const confirmarPropuestaAutoasignacion = async (
       anio,
       mes,
       auditorMensualId: item.auditorId,
+      responsableCumplimientoId: item.responsableCumplimientoId,
       asignadoPorId,
       soloSiSinAuditor: true,
       soloPendientes: true,
@@ -749,6 +831,18 @@ export const auditableDesdeParaInicio = (inicio: 'ESTE_MES' | 'PROXIMO_MES', aho
 };
 
 export const validarAuditorMensualArea = async (tx: PrismaTransaction, areaId: number, auditorId: number) => {
+  if (tx.usuario?.findUnique) {
+    const usuario = await tx.usuario.findUnique({
+      where: { id: auditorId },
+      select: { id: true, activo: true, puedeSerAsignadoAuditoria: true },
+    });
+    if (!usuario || !usuario.activo) {
+      throw solicitudInvalida('El auditor seleccionado no existe o no está activo');
+    }
+    if (usuario.puedeSerAsignadoAuditoria === false) {
+      throw solicitudInvalida('El usuario seleccionado no está habilitado para ser asignado a auditorías');
+    }
+  }
   const usuarioArea = await tx.usuarioArea.findFirst({ where: { areaId, usuarioId: auditorId }, select: { id: true } });
   if (usuarioArea) throw solicitudInvalida('El auditor no puede auditar su propia area');
 };

@@ -11,6 +11,9 @@ const esquemaQuery = z.object({
   rol: z.enum(RolUsuario).optional(),
   activo: z.coerce.boolean().optional(),
   responsabilidad: z.string().trim().optional(), // 'con' | 'sin'
+  esComodin: z.coerce.boolean().optional(),
+  puedeSerAsignadoAuditoria: z.coerce.boolean().optional(),
+  seEvalua: z.coerce.boolean().optional(),
 }).passthrough();
 
 export const listarUsuarios = async (req: Request, res: Response) => {
@@ -20,6 +23,9 @@ export const listarUsuarios = async (req: Request, res: Response) => {
   const where: Record<string, unknown> = {
     ...(query.rol ? { rol: query.rol } : {}),
     ...(query.activo === undefined ? {} : { activo: query.activo }),
+    ...(query.esComodin === undefined ? {} : { esComodin: query.esComodin }),
+    ...(query.puedeSerAsignadoAuditoria === undefined ? {} : { puedeSerAsignadoAuditoria: query.puedeSerAsignadoAuditoria }),
+    ...(query.seEvalua === undefined ? {} : { seEvalua: query.seEvalua }),
   };
 
   if (query.busqueda) {

@@ -16,6 +16,7 @@ export const esquemaQueryMensual = esquemaMes.extend({
 
 export const esquemaGuardarAsignacionMensual = esquemaMes.extend({
   auditorMensualId: z.number().int().positive(),
+  responsableCumplimientoId: z.number().int().positive().nullable().optional(),
   expectedAuditorId: z.number().int().positive().nullable().optional(),
 });
 
@@ -25,6 +26,7 @@ export const esquemaConfirmarAutoasignacion = esquemaMes.extend({
   asignaciones: z.array(z.object({
     areaId: z.number().int().positive(),
     auditorId: z.number().int().positive(),
+    responsableCumplimientoId: z.number().int().positive().nullable().optional(),
   })).min(1),
 }).superRefine((body, context) => {
   const areas = new Set<number>();

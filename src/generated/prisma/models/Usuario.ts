@@ -45,6 +45,9 @@ export type UsuarioMinAggregateOutputType = {
   rol: $Enums.RolUsuario | null
   activo: boolean | null
   debeCambiarContrasena: boolean | null
+  esComodin: boolean | null
+  puedeSerAsignadoAuditoria: boolean | null
+  seEvalua: boolean | null
   ultimoInicioSesionEn: Date | null
   contrasenaCambiadaEn: Date | null
   creadoEn: Date | null
@@ -62,6 +65,9 @@ export type UsuarioMaxAggregateOutputType = {
   rol: $Enums.RolUsuario | null
   activo: boolean | null
   debeCambiarContrasena: boolean | null
+  esComodin: boolean | null
+  puedeSerAsignadoAuditoria: boolean | null
+  seEvalua: boolean | null
   ultimoInicioSesionEn: Date | null
   contrasenaCambiadaEn: Date | null
   creadoEn: Date | null
@@ -79,6 +85,9 @@ export type UsuarioCountAggregateOutputType = {
   rol: number
   activo: number
   debeCambiarContrasena: number
+  esComodin: number
+  puedeSerAsignadoAuditoria: number
+  seEvalua: number
   ultimoInicioSesionEn: number
   contrasenaCambiadaEn: number
   creadoEn: number
@@ -106,6 +115,9 @@ export type UsuarioMinAggregateInputType = {
   rol?: true
   activo?: true
   debeCambiarContrasena?: true
+  esComodin?: true
+  puedeSerAsignadoAuditoria?: true
+  seEvalua?: true
   ultimoInicioSesionEn?: true
   contrasenaCambiadaEn?: true
   creadoEn?: true
@@ -123,6 +135,9 @@ export type UsuarioMaxAggregateInputType = {
   rol?: true
   activo?: true
   debeCambiarContrasena?: true
+  esComodin?: true
+  puedeSerAsignadoAuditoria?: true
+  seEvalua?: true
   ultimoInicioSesionEn?: true
   contrasenaCambiadaEn?: true
   creadoEn?: true
@@ -140,6 +155,9 @@ export type UsuarioCountAggregateInputType = {
   rol?: true
   activo?: true
   debeCambiarContrasena?: true
+  esComodin?: true
+  puedeSerAsignadoAuditoria?: true
+  seEvalua?: true
   ultimoInicioSesionEn?: true
   contrasenaCambiadaEn?: true
   creadoEn?: true
@@ -244,6 +262,9 @@ export type UsuarioGroupByOutputType = {
   rol: $Enums.RolUsuario
   activo: boolean
   debeCambiarContrasena: boolean
+  esComodin: boolean
+  puedeSerAsignadoAuditoria: boolean
+  seEvalua: boolean
   ultimoInicioSesionEn: Date | null
   contrasenaCambiadaEn: Date | null
   creadoEn: Date
@@ -284,6 +305,9 @@ export type UsuarioWhereInput = {
   rol?: Prisma.EnumRolUsuarioFilter<"Usuario"> | $Enums.RolUsuario
   activo?: Prisma.BoolFilter<"Usuario"> | boolean
   debeCambiarContrasena?: Prisma.BoolFilter<"Usuario"> | boolean
+  esComodin?: Prisma.BoolFilter<"Usuario"> | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFilter<"Usuario"> | boolean
+  seEvalua?: Prisma.BoolFilter<"Usuario"> | boolean
   ultimoInicioSesionEn?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   contrasenaCambiadaEn?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"Usuario"> | Date | string
@@ -292,6 +316,11 @@ export type UsuarioWhereInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaListRelationFilter
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualListRelationFilter
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualListRelationFilter
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoListRelationFilter
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoListRelationFilter
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualListRelationFilter
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaListRelationFilter
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioListRelationFilter
   enlacesCreados?: Prisma.EnlaceInvitadoListRelationFilter
   enviosRealizados?: Prisma.EnvioAuditoriaListRelationFilter
   formulariosCreados?: Prisma.FormularioListRelationFilter
@@ -315,6 +344,9 @@ export type UsuarioOrderByWithRelationInput = {
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
+  esComodin?: Prisma.SortOrder
+  puedeSerAsignadoAuditoria?: Prisma.SortOrder
+  seEvalua?: Prisma.SortOrder
   ultimoInicioSesionEn?: Prisma.SortOrderInput | Prisma.SortOrder
   contrasenaCambiadaEn?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -323,6 +355,11 @@ export type UsuarioOrderByWithRelationInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaOrderByRelationAggregateInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualOrderByRelationAggregateInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualOrderByRelationAggregateInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoOrderByRelationAggregateInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoOrderByRelationAggregateInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualOrderByRelationAggregateInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaOrderByRelationAggregateInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioOrderByRelationAggregateInput
   enlacesCreados?: Prisma.EnlaceInvitadoOrderByRelationAggregateInput
   enviosRealizados?: Prisma.EnvioAuditoriaOrderByRelationAggregateInput
   formulariosCreados?: Prisma.FormularioOrderByRelationAggregateInput
@@ -350,6 +387,9 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   rol?: Prisma.EnumRolUsuarioFilter<"Usuario"> | $Enums.RolUsuario
   activo?: Prisma.BoolFilter<"Usuario"> | boolean
   debeCambiarContrasena?: Prisma.BoolFilter<"Usuario"> | boolean
+  esComodin?: Prisma.BoolFilter<"Usuario"> | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFilter<"Usuario"> | boolean
+  seEvalua?: Prisma.BoolFilter<"Usuario"> | boolean
   ultimoInicioSesionEn?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   contrasenaCambiadaEn?: Prisma.DateTimeNullableFilter<"Usuario"> | Date | string | null
   creadoEn?: Prisma.DateTimeFilter<"Usuario"> | Date | string
@@ -358,6 +398,11 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaListRelationFilter
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualListRelationFilter
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualListRelationFilter
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoListRelationFilter
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoListRelationFilter
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualListRelationFilter
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaListRelationFilter
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioListRelationFilter
   enlacesCreados?: Prisma.EnlaceInvitadoListRelationFilter
   enviosRealizados?: Prisma.EnvioAuditoriaListRelationFilter
   formulariosCreados?: Prisma.FormularioListRelationFilter
@@ -381,6 +426,9 @@ export type UsuarioOrderByWithAggregationInput = {
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
+  esComodin?: Prisma.SortOrder
+  puedeSerAsignadoAuditoria?: Prisma.SortOrder
+  seEvalua?: Prisma.SortOrder
   ultimoInicioSesionEn?: Prisma.SortOrderInput | Prisma.SortOrder
   contrasenaCambiadaEn?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -406,6 +454,9 @@ export type UsuarioScalarWhereWithAggregatesInput = {
   rol?: Prisma.EnumRolUsuarioWithAggregatesFilter<"Usuario"> | $Enums.RolUsuario
   activo?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
   debeCambiarContrasena?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
+  esComodin?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
+  seEvalua?: Prisma.BoolWithAggregatesFilter<"Usuario"> | boolean
   ultimoInicioSesionEn?: Prisma.DateTimeNullableWithAggregatesFilter<"Usuario"> | Date | string | null
   contrasenaCambiadaEn?: Prisma.DateTimeNullableWithAggregatesFilter<"Usuario"> | Date | string | null
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
@@ -422,6 +473,9 @@ export type UsuarioCreateInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -430,6 +484,11 @@ export type UsuarioCreateInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -453,6 +512,9 @@ export type UsuarioUncheckedCreateInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -461,6 +523,11 @@ export type UsuarioUncheckedCreateInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -483,6 +550,9 @@ export type UsuarioUpdateInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -491,6 +561,11 @@ export type UsuarioUpdateInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -514,6 +589,9 @@ export type UsuarioUncheckedUpdateInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -522,6 +600,11 @@ export type UsuarioUncheckedUpdateInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -545,6 +628,9 @@ export type UsuarioCreateManyInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -561,6 +647,9 @@ export type UsuarioUpdateManyMutationInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -578,6 +667,9 @@ export type UsuarioUncheckedUpdateManyInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -601,6 +693,9 @@ export type UsuarioCountOrderByAggregateInput = {
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
+  esComodin?: Prisma.SortOrder
+  puedeSerAsignadoAuditoria?: Prisma.SortOrder
+  seEvalua?: Prisma.SortOrder
   ultimoInicioSesionEn?: Prisma.SortOrder
   contrasenaCambiadaEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -622,6 +717,9 @@ export type UsuarioMaxOrderByAggregateInput = {
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
+  esComodin?: Prisma.SortOrder
+  puedeSerAsignadoAuditoria?: Prisma.SortOrder
+  seEvalua?: Prisma.SortOrder
   ultimoInicioSesionEn?: Prisma.SortOrder
   contrasenaCambiadaEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -639,6 +737,9 @@ export type UsuarioMinOrderByAggregateInput = {
   rol?: Prisma.SortOrder
   activo?: Prisma.SortOrder
   debeCambiarContrasena?: Prisma.SortOrder
+  esComodin?: Prisma.SortOrder
+  puedeSerAsignadoAuditoria?: Prisma.SortOrder
+  seEvalua?: Prisma.SortOrder
   ultimoInicioSesionEn?: Prisma.SortOrder
   contrasenaCambiadaEn?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -773,6 +874,12 @@ export type UsuarioCreateNestedOneWithoutAsignacionesMensualesCreadasInput = {
   connect?: Prisma.UsuarioWhereUniqueInput
 }
 
+export type UsuarioCreateNestedOneWithoutAsignacionesMensualesResponsableInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesMensualesResponsableInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesMensualesResponsableInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesMensualesResponsableInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
 export type UsuarioUpdateOneRequiredWithoutAsignacionesMensualesComoAuditorNestedInput = {
   create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesMensualesComoAuditorInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesMensualesComoAuditorInput>
   connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesMensualesComoAuditorInput
@@ -789,6 +896,16 @@ export type UsuarioUpdateOneRequiredWithoutAsignacionesMensualesCreadasNestedInp
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutAsignacionesMensualesCreadasInput, Prisma.UsuarioUpdateWithoutAsignacionesMensualesCreadasInput>, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesMensualesCreadasInput>
 }
 
+export type UsuarioUpdateOneWithoutAsignacionesMensualesResponsableNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesMensualesResponsableInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesMensualesResponsableInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesMensualesResponsableInput
+  upsert?: Prisma.UsuarioUpsertWithoutAsignacionesMensualesResponsableInput
+  disconnect?: Prisma.UsuarioWhereInput | boolean
+  delete?: Prisma.UsuarioWhereInput | boolean
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutAsignacionesMensualesResponsableInput, Prisma.UsuarioUpdateWithoutAsignacionesMensualesResponsableInput>, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesMensualesResponsableInput>
+}
+
 export type UsuarioCreateNestedOneWithoutAsignacionesCreadasInput = {
   create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesCreadasInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesCreadasInput>
   connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesCreadasInput
@@ -798,6 +915,12 @@ export type UsuarioCreateNestedOneWithoutAsignacionesCreadasInput = {
 export type UsuarioCreateNestedOneWithoutAsignacionesComoAuditorInput = {
   create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesComoAuditorInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesComoAuditorInput>
   connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesComoAuditorInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioCreateNestedOneWithoutAsignacionesAuditoriaResponsableInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesAuditoriaResponsableInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesAuditoriaResponsableInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesAuditoriaResponsableInput
   connect?: Prisma.UsuarioWhereUniqueInput
 }
 
@@ -815,6 +938,16 @@ export type UsuarioUpdateOneRequiredWithoutAsignacionesComoAuditorNestedInput = 
   upsert?: Prisma.UsuarioUpsertWithoutAsignacionesComoAuditorInput
   connect?: Prisma.UsuarioWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutAsignacionesComoAuditorInput, Prisma.UsuarioUpdateWithoutAsignacionesComoAuditorInput>, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesComoAuditorInput>
+}
+
+export type UsuarioUpdateOneWithoutAsignacionesAuditoriaResponsableNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesAuditoriaResponsableInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesAuditoriaResponsableInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutAsignacionesAuditoriaResponsableInput
+  upsert?: Prisma.UsuarioUpsertWithoutAsignacionesAuditoriaResponsableInput
+  disconnect?: Prisma.UsuarioWhereInput | boolean
+  delete?: Prisma.UsuarioWhereInput | boolean
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutAsignacionesAuditoriaResponsableInput, Prisma.UsuarioUpdateWithoutAsignacionesAuditoriaResponsableInput>, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesAuditoriaResponsableInput>
 }
 
 export type UsuarioCreateNestedOneWithoutEnlacesCreadosInput = {
@@ -891,6 +1024,48 @@ export type UsuarioUpdateOneWithoutRegistrosAuditoriaNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutRegistrosAuditoriaInput, Prisma.UsuarioUpdateWithoutRegistrosAuditoriaInput>, Prisma.UsuarioUncheckedUpdateWithoutRegistrosAuditoriaInput>
 }
 
+export type UsuarioCreateNestedOneWithoutDelegacionesComoEjecutorInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutDelegacionesComoEjecutorInput, Prisma.UsuarioUncheckedCreateWithoutDelegacionesComoEjecutorInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutDelegacionesComoEjecutorInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioCreateNestedOneWithoutDelegacionesComoResponsableInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutDelegacionesComoResponsableInput, Prisma.UsuarioUncheckedCreateWithoutDelegacionesComoResponsableInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutDelegacionesComoResponsableInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutDelegacionesComoEjecutorNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutDelegacionesComoEjecutorInput, Prisma.UsuarioUncheckedCreateWithoutDelegacionesComoEjecutorInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutDelegacionesComoEjecutorInput
+  upsert?: Prisma.UsuarioUpsertWithoutDelegacionesComoEjecutorInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutDelegacionesComoEjecutorInput, Prisma.UsuarioUpdateWithoutDelegacionesComoEjecutorInput>, Prisma.UsuarioUncheckedUpdateWithoutDelegacionesComoEjecutorInput>
+}
+
+export type UsuarioUpdateOneRequiredWithoutDelegacionesComoResponsableNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutDelegacionesComoResponsableInput, Prisma.UsuarioUncheckedCreateWithoutDelegacionesComoResponsableInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutDelegacionesComoResponsableInput
+  upsert?: Prisma.UsuarioUpsertWithoutDelegacionesComoResponsableInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutDelegacionesComoResponsableInput, Prisma.UsuarioUpdateWithoutDelegacionesComoResponsableInput>, Prisma.UsuarioUncheckedUpdateWithoutDelegacionesComoResponsableInput>
+}
+
+export type UsuarioCreateNestedOneWithoutCumplimientosMensualesInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutCumplimientosMensualesInput, Prisma.UsuarioUncheckedCreateWithoutCumplimientosMensualesInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutCumplimientosMensualesInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+}
+
+export type UsuarioUpdateOneRequiredWithoutCumplimientosMensualesNestedInput = {
+  create?: Prisma.XOR<Prisma.UsuarioCreateWithoutCumplimientosMensualesInput, Prisma.UsuarioUncheckedCreateWithoutCumplimientosMensualesInput>
+  connectOrCreate?: Prisma.UsuarioCreateOrConnectWithoutCumplimientosMensualesInput
+  upsert?: Prisma.UsuarioUpsertWithoutCumplimientosMensualesInput
+  connect?: Prisma.UsuarioWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UsuarioUpdateToOneWithWhereWithoutCumplimientosMensualesInput, Prisma.UsuarioUpdateWithoutCumplimientosMensualesInput>, Prisma.UsuarioUncheckedUpdateWithoutCumplimientosMensualesInput>
+}
+
 export type UsuarioCreateWithoutSesionesInput = {
   nombreUsuario: string
   correo?: string | null
@@ -901,6 +1076,9 @@ export type UsuarioCreateWithoutSesionesInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -909,6 +1087,11 @@ export type UsuarioCreateWithoutSesionesInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -931,6 +1114,9 @@ export type UsuarioUncheckedCreateWithoutSesionesInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -939,6 +1125,11 @@ export type UsuarioUncheckedCreateWithoutSesionesInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -976,6 +1167,9 @@ export type UsuarioUpdateWithoutSesionesInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -984,6 +1178,11 @@ export type UsuarioUpdateWithoutSesionesInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -1006,6 +1205,9 @@ export type UsuarioUncheckedUpdateWithoutSesionesInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1014,6 +1216,11 @@ export type UsuarioUncheckedUpdateWithoutSesionesInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -1035,6 +1242,9 @@ export type UsuarioCreateWithoutTokensRestablecimientoInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1043,6 +1253,11 @@ export type UsuarioCreateWithoutTokensRestablecimientoInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -1065,6 +1280,9 @@ export type UsuarioUncheckedCreateWithoutTokensRestablecimientoInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1073,6 +1291,11 @@ export type UsuarioUncheckedCreateWithoutTokensRestablecimientoInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -1110,6 +1333,9 @@ export type UsuarioUpdateWithoutTokensRestablecimientoInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1118,6 +1344,11 @@ export type UsuarioUpdateWithoutTokensRestablecimientoInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -1140,6 +1371,9 @@ export type UsuarioUncheckedUpdateWithoutTokensRestablecimientoInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1148,6 +1382,11 @@ export type UsuarioUncheckedUpdateWithoutTokensRestablecimientoInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -1169,6 +1408,9 @@ export type UsuarioCreateWithoutAreasUsuarioInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1177,6 +1419,11 @@ export type UsuarioCreateWithoutAreasUsuarioInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -1199,6 +1446,9 @@ export type UsuarioUncheckedCreateWithoutAreasUsuarioInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1207,6 +1457,11 @@ export type UsuarioUncheckedCreateWithoutAreasUsuarioInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -1244,6 +1499,9 @@ export type UsuarioUpdateWithoutAreasUsuarioInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1252,6 +1510,11 @@ export type UsuarioUpdateWithoutAreasUsuarioInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -1274,6 +1537,9 @@ export type UsuarioUncheckedUpdateWithoutAreasUsuarioInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1282,6 +1548,11 @@ export type UsuarioUncheckedUpdateWithoutAreasUsuarioInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -1303,6 +1574,9 @@ export type UsuarioCreateWithoutFormulariosCreadosInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1311,6 +1585,11 @@ export type UsuarioCreateWithoutFormulariosCreadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
@@ -1333,6 +1612,9 @@ export type UsuarioUncheckedCreateWithoutFormulariosCreadosInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1341,6 +1623,11 @@ export type UsuarioUncheckedCreateWithoutFormulariosCreadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -1378,6 +1665,9 @@ export type UsuarioUpdateWithoutFormulariosCreadosInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1386,6 +1676,11 @@ export type UsuarioUpdateWithoutFormulariosCreadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
@@ -1408,6 +1703,9 @@ export type UsuarioUncheckedUpdateWithoutFormulariosCreadosInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1416,6 +1714,11 @@ export type UsuarioUncheckedUpdateWithoutFormulariosCreadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -1437,6 +1740,9 @@ export type UsuarioCreateWithoutVersionesCreadasInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1445,6 +1751,11 @@ export type UsuarioCreateWithoutVersionesCreadasInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -1467,6 +1778,9 @@ export type UsuarioUncheckedCreateWithoutVersionesCreadasInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1475,6 +1789,11 @@ export type UsuarioUncheckedCreateWithoutVersionesCreadasInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -1512,6 +1831,9 @@ export type UsuarioUpdateWithoutVersionesCreadasInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1520,6 +1842,11 @@ export type UsuarioUpdateWithoutVersionesCreadasInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -1542,6 +1869,9 @@ export type UsuarioUncheckedUpdateWithoutVersionesCreadasInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1550,6 +1880,11 @@ export type UsuarioUncheckedUpdateWithoutVersionesCreadasInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -1571,6 +1906,9 @@ export type UsuarioCreateWithoutAsignacionesMensualesComoAuditorInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1578,6 +1916,11 @@ export type UsuarioCreateWithoutAsignacionesMensualesComoAuditorInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignadoPorInput
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -1601,6 +1944,9 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesComoAuditorInput =
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1608,6 +1954,11 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesComoAuditorInput =
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -1635,6 +1986,9 @@ export type UsuarioCreateWithoutAsignacionesMensualesCreadasInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1642,6 +1996,11 @@ export type UsuarioCreateWithoutAsignacionesMensualesCreadasInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignadoPorInput
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -1665,6 +2024,9 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesCreadasInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1672,6 +2034,11 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesCreadasInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -1687,6 +2054,86 @@ export type UsuarioUncheckedCreateWithoutAsignacionesMensualesCreadasInput = {
 export type UsuarioCreateOrConnectWithoutAsignacionesMensualesCreadasInput = {
   where: Prisma.UsuarioWhereUniqueInput
   create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesMensualesCreadasInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesMensualesCreadasInput>
+}
+
+export type UsuarioCreateWithoutAsignacionesMensualesResponsableInput = {
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
+  enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutAsignacionesMensualesResponsableInput = {
+  id?: number
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutAsignacionesMensualesResponsableInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesMensualesResponsableInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesMensualesResponsableInput>
 }
 
 export type UsuarioUpsertWithoutAsignacionesMensualesComoAuditorInput = {
@@ -1710,6 +2157,9 @@ export type UsuarioUpdateWithoutAsignacionesMensualesComoAuditorInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1717,6 +2167,11 @@ export type UsuarioUpdateWithoutAsignacionesMensualesComoAuditorInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignadoPorNestedInput
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -1740,6 +2195,9 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesComoAuditorInput =
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1747,6 +2205,11 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesComoAuditorInput =
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -1780,6 +2243,9 @@ export type UsuarioUpdateWithoutAsignacionesMensualesCreadasInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1787,6 +2253,11 @@ export type UsuarioUpdateWithoutAsignacionesMensualesCreadasInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignadoPorNestedInput
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -1810,6 +2281,9 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesCreadasInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1817,6 +2291,97 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesCreadasInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUpsertWithoutAsignacionesMensualesResponsableInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutAsignacionesMensualesResponsableInput, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesMensualesResponsableInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesMensualesResponsableInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesMensualesResponsableInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutAsignacionesMensualesResponsableInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutAsignacionesMensualesResponsableInput, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesMensualesResponsableInput>
+}
+
+export type UsuarioUpdateWithoutAsignacionesMensualesResponsableInput = {
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutAsignacionesMensualesResponsableInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -1839,6 +2404,9 @@ export type UsuarioCreateWithoutAsignacionesCreadasInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1846,6 +2414,11 @@ export type UsuarioCreateWithoutAsignacionesCreadasInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -1869,6 +2442,9 @@ export type UsuarioUncheckedCreateWithoutAsignacionesCreadasInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1876,6 +2452,11 @@ export type UsuarioUncheckedCreateWithoutAsignacionesCreadasInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -1903,6 +2484,9 @@ export type UsuarioCreateWithoutAsignacionesComoAuditorInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1910,6 +2494,11 @@ export type UsuarioCreateWithoutAsignacionesComoAuditorInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -1933,6 +2522,9 @@ export type UsuarioUncheckedCreateWithoutAsignacionesComoAuditorInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -1940,6 +2532,11 @@ export type UsuarioUncheckedCreateWithoutAsignacionesComoAuditorInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -1955,6 +2552,86 @@ export type UsuarioUncheckedCreateWithoutAsignacionesComoAuditorInput = {
 export type UsuarioCreateOrConnectWithoutAsignacionesComoAuditorInput = {
   where: Prisma.UsuarioWhereUniqueInput
   create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesComoAuditorInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesComoAuditorInput>
+}
+
+export type UsuarioCreateWithoutAsignacionesAuditoriaResponsableInput = {
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
+  enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutAsignacionesAuditoriaResponsableInput = {
+  id?: number
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutAsignacionesAuditoriaResponsableInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesAuditoriaResponsableInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesAuditoriaResponsableInput>
 }
 
 export type UsuarioUpsertWithoutAsignacionesCreadasInput = {
@@ -1978,6 +2655,9 @@ export type UsuarioUpdateWithoutAsignacionesCreadasInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1985,6 +2665,11 @@ export type UsuarioUpdateWithoutAsignacionesCreadasInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -2008,6 +2693,9 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesCreadasInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2015,6 +2703,11 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesCreadasInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -2048,6 +2741,9 @@ export type UsuarioUpdateWithoutAsignacionesComoAuditorInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2055,6 +2751,11 @@ export type UsuarioUpdateWithoutAsignacionesComoAuditorInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -2078,6 +2779,9 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesComoAuditorInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2085,6 +2789,97 @@ export type UsuarioUncheckedUpdateWithoutAsignacionesComoAuditorInput = {
   asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUpsertWithoutAsignacionesAuditoriaResponsableInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutAsignacionesAuditoriaResponsableInput, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesAuditoriaResponsableInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutAsignacionesAuditoriaResponsableInput, Prisma.UsuarioUncheckedCreateWithoutAsignacionesAuditoriaResponsableInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutAsignacionesAuditoriaResponsableInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutAsignacionesAuditoriaResponsableInput, Prisma.UsuarioUncheckedUpdateWithoutAsignacionesAuditoriaResponsableInput>
+}
+
+export type UsuarioUpdateWithoutAsignacionesAuditoriaResponsableInput = {
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutAsignacionesAuditoriaResponsableInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -2107,6 +2902,9 @@ export type UsuarioCreateWithoutEnlacesCreadosInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2115,6 +2913,11 @@ export type UsuarioCreateWithoutEnlacesCreadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
   versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
@@ -2137,6 +2940,9 @@ export type UsuarioUncheckedCreateWithoutEnlacesCreadosInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2145,6 +2951,11 @@ export type UsuarioUncheckedCreateWithoutEnlacesCreadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -2182,6 +2993,9 @@ export type UsuarioUpdateWithoutEnlacesCreadosInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2190,6 +3004,11 @@ export type UsuarioUpdateWithoutEnlacesCreadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
   versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
@@ -2212,6 +3031,9 @@ export type UsuarioUncheckedUpdateWithoutEnlacesCreadosInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2220,6 +3042,11 @@ export type UsuarioUncheckedUpdateWithoutEnlacesCreadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -2241,6 +3068,9 @@ export type UsuarioCreateWithoutEnviosRealizadosInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2249,6 +3079,11 @@ export type UsuarioCreateWithoutEnviosRealizadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
   versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
@@ -2271,6 +3106,9 @@ export type UsuarioUncheckedCreateWithoutEnviosRealizadosInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2279,6 +3117,11 @@ export type UsuarioUncheckedCreateWithoutEnviosRealizadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
   versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -2316,6 +3159,9 @@ export type UsuarioUpdateWithoutEnviosRealizadosInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2324,6 +3170,11 @@ export type UsuarioUpdateWithoutEnviosRealizadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
   versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
@@ -2346,6 +3197,9 @@ export type UsuarioUncheckedUpdateWithoutEnviosRealizadosInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2354,6 +3208,11 @@ export type UsuarioUncheckedUpdateWithoutEnviosRealizadosInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
   versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -2375,6 +3234,9 @@ export type UsuarioCreateWithoutSuscripcionesPushInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2383,6 +3245,11 @@ export type UsuarioCreateWithoutSuscripcionesPushInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -2405,6 +3272,9 @@ export type UsuarioUncheckedCreateWithoutSuscripcionesPushInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2413,6 +3283,11 @@ export type UsuarioUncheckedCreateWithoutSuscripcionesPushInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -2450,6 +3325,9 @@ export type UsuarioUpdateWithoutSuscripcionesPushInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2458,6 +3336,11 @@ export type UsuarioUpdateWithoutSuscripcionesPushInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -2480,6 +3363,9 @@ export type UsuarioUncheckedUpdateWithoutSuscripcionesPushInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2488,6 +3374,11 @@ export type UsuarioUncheckedUpdateWithoutSuscripcionesPushInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -2509,6 +3400,9 @@ export type UsuarioCreateWithoutNotificacionesInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2517,6 +3411,11 @@ export type UsuarioCreateWithoutNotificacionesInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -2539,6 +3438,9 @@ export type UsuarioUncheckedCreateWithoutNotificacionesInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2547,6 +3449,11 @@ export type UsuarioUncheckedCreateWithoutNotificacionesInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -2584,6 +3491,9 @@ export type UsuarioUpdateWithoutNotificacionesInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2592,6 +3502,11 @@ export type UsuarioUpdateWithoutNotificacionesInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -2614,6 +3529,9 @@ export type UsuarioUncheckedUpdateWithoutNotificacionesInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2622,6 +3540,11 @@ export type UsuarioUncheckedUpdateWithoutNotificacionesInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -2643,6 +3566,9 @@ export type UsuarioCreateWithoutRegistrosAuditoriaInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2651,6 +3577,11 @@ export type UsuarioCreateWithoutRegistrosAuditoriaInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
@@ -2673,6 +3604,9 @@ export type UsuarioUncheckedCreateWithoutRegistrosAuditoriaInput = {
   rol: $Enums.RolUsuario
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: Date | string | null
   contrasenaCambiadaEn?: Date | string | null
   creadoEn?: Date | string
@@ -2681,6 +3615,11 @@ export type UsuarioUncheckedCreateWithoutRegistrosAuditoriaInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
   formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
@@ -2718,6 +3657,9 @@ export type UsuarioUpdateWithoutRegistrosAuditoriaInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2726,6 +3668,11 @@ export type UsuarioUpdateWithoutRegistrosAuditoriaInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
@@ -2748,6 +3695,9 @@ export type UsuarioUncheckedUpdateWithoutRegistrosAuditoriaInput = {
   rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
   activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2756,6 +3706,11 @@ export type UsuarioUncheckedUpdateWithoutRegistrosAuditoriaInput = {
   asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
   asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
   asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
   enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
   enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
   formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
@@ -2765,6 +3720,504 @@ export type UsuarioUncheckedUpdateWithoutRegistrosAuditoriaInput = {
   suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
   tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
   areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutDelegacionesComoEjecutorInput = {
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
+  enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutDelegacionesComoEjecutorInput = {
+  id?: number
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutDelegacionesComoEjecutorInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutDelegacionesComoEjecutorInput, Prisma.UsuarioUncheckedCreateWithoutDelegacionesComoEjecutorInput>
+}
+
+export type UsuarioCreateWithoutDelegacionesComoResponsableInput = {
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioCreateNestedManyWithoutUsuarioInput
+  enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutDelegacionesComoResponsableInput = {
+  id?: number
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedCreateNestedManyWithoutUsuarioInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutDelegacionesComoResponsableInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutDelegacionesComoResponsableInput, Prisma.UsuarioUncheckedCreateWithoutDelegacionesComoResponsableInput>
+}
+
+export type UsuarioUpsertWithoutDelegacionesComoEjecutorInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutDelegacionesComoEjecutorInput, Prisma.UsuarioUncheckedUpdateWithoutDelegacionesComoEjecutorInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutDelegacionesComoEjecutorInput, Prisma.UsuarioUncheckedCreateWithoutDelegacionesComoEjecutorInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutDelegacionesComoEjecutorInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutDelegacionesComoEjecutorInput, Prisma.UsuarioUncheckedUpdateWithoutDelegacionesComoEjecutorInput>
+}
+
+export type UsuarioUpdateWithoutDelegacionesComoEjecutorInput = {
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutDelegacionesComoEjecutorInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUpsertWithoutDelegacionesComoResponsableInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutDelegacionesComoResponsableInput, Prisma.UsuarioUncheckedUpdateWithoutDelegacionesComoResponsableInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutDelegacionesComoResponsableInput, Prisma.UsuarioUncheckedCreateWithoutDelegacionesComoResponsableInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutDelegacionesComoResponsableInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutDelegacionesComoResponsableInput, Prisma.UsuarioUncheckedUpdateWithoutDelegacionesComoResponsableInput>
+}
+
+export type UsuarioUpdateWithoutDelegacionesComoResponsableInput = {
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUpdateManyWithoutUsuarioNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutDelegacionesComoResponsableInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  cumplimientosMensuales?: Prisma.CumplimientoMensualUsuarioUncheckedUpdateManyWithoutUsuarioNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioCreateWithoutCumplimientosMensualesInput = {
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaCreateNestedManyWithoutResponsableCumplimientoInput
+  enlacesCreados?: Prisma.EnlaceInvitadoCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioUncheckedCreateWithoutCumplimientosMensualesInput = {
+  id?: number
+  nombreUsuario: string
+  correo?: string | null
+  telefonoE164?: string | null
+  nombre: string
+  hashContrasena: string
+  credencialCifrada?: string | null
+  rol: $Enums.RolUsuario
+  activo?: boolean
+  debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
+  ultimoInicioSesionEn?: Date | string | null
+  contrasenaCambiadaEn?: Date | string | null
+  creadoEn?: Date | string
+  actualizadoEn?: Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutAuditorInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAsignadoPorInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutAuditorInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutEjecutorInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedCreateNestedManyWithoutResponsableInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedCreateNestedManyWithoutResponsableCumplimientoInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedCreateNestedManyWithoutCreadoPorInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedCreateNestedManyWithoutEnviadoPorUsuarioInput
+  formulariosCreados?: Prisma.FormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedCreateNestedManyWithoutCreadoPorInput
+  notificaciones?: Prisma.NotificacionUncheckedCreateNestedManyWithoutUsuarioInput
+  sesiones?: Prisma.SesionUncheckedCreateNestedManyWithoutUsuarioInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedCreateNestedManyWithoutUsuarioInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedCreateNestedManyWithoutUsuarioInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedCreateNestedManyWithoutUsuarioInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedCreateNestedManyWithoutUsuarioInput
+}
+
+export type UsuarioCreateOrConnectWithoutCumplimientosMensualesInput = {
+  where: Prisma.UsuarioWhereUniqueInput
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutCumplimientosMensualesInput, Prisma.UsuarioUncheckedCreateWithoutCumplimientosMensualesInput>
+}
+
+export type UsuarioUpsertWithoutCumplimientosMensualesInput = {
+  update: Prisma.XOR<Prisma.UsuarioUpdateWithoutCumplimientosMensualesInput, Prisma.UsuarioUncheckedUpdateWithoutCumplimientosMensualesInput>
+  create: Prisma.XOR<Prisma.UsuarioCreateWithoutCumplimientosMensualesInput, Prisma.UsuarioUncheckedCreateWithoutCumplimientosMensualesInput>
+  where?: Prisma.UsuarioWhereInput
+}
+
+export type UsuarioUpdateToOneWithWhereWithoutCumplimientosMensualesInput = {
+  where?: Prisma.UsuarioWhereInput
+  data: Prisma.XOR<Prisma.UsuarioUpdateWithoutCumplimientosMensualesInput, Prisma.UsuarioUncheckedUpdateWithoutCumplimientosMensualesInput>
+}
+
+export type UsuarioUpdateWithoutCumplimientosMensualesInput = {
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUpdateManyWithoutResponsableCumplimientoNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUpdateManyWithoutUsuarioNestedInput
+}
+
+export type UsuarioUncheckedUpdateWithoutCumplimientosMensualesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombreUsuario?: Prisma.StringFieldUpdateOperationsInput | string
+  correo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefonoE164?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  hashContrasena?: Prisma.StringFieldUpdateOperationsInput | string
+  credencialCifrada?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rol?: Prisma.EnumRolUsuarioFieldUpdateOperationsInput | $Enums.RolUsuario
+  activo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  debeCambiarContrasena?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  esComodin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  puedeSerAsignadoAuditoria?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  seEvalua?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ultimoInicioSesionEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contrasenaCambiadaEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  actualizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  asignacionesCreadas?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesComoAuditor?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutAuditorNestedInput
+  asignacionesMensualesCreadas?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAsignadoPorNestedInput
+  asignacionesMensualesComoAuditor?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutAuditorNestedInput
+  delegacionesComoEjecutor?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutEjecutorNestedInput
+  delegacionesComoResponsable?: Prisma.DelegacionCumplimientoUncheckedUpdateManyWithoutResponsableNestedInput
+  asignacionesMensualesResponsable?: Prisma.AsignacionMensualUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  asignacionesAuditoriaResponsable?: Prisma.AsignacionAuditoriaUncheckedUpdateManyWithoutResponsableCumplimientoNestedInput
+  enlacesCreados?: Prisma.EnlaceInvitadoUncheckedUpdateManyWithoutCreadoPorNestedInput
+  enviosRealizados?: Prisma.EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioNestedInput
+  formulariosCreados?: Prisma.FormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  versionesCreadas?: Prisma.VersionFormularioUncheckedUpdateManyWithoutCreadoPorNestedInput
+  notificaciones?: Prisma.NotificacionUncheckedUpdateManyWithoutUsuarioNestedInput
+  sesiones?: Prisma.SesionUncheckedUpdateManyWithoutUsuarioNestedInput
+  suscripcionesPush?: Prisma.SuscripcionPushUncheckedUpdateManyWithoutUsuarioNestedInput
+  tokensRestablecimiento?: Prisma.TokenRestablecimientoContrasenaUncheckedUpdateManyWithoutUsuarioNestedInput
+  areasUsuario?: Prisma.UsuarioAreaUncheckedUpdateManyWithoutUsuarioNestedInput
+  registrosAuditoria?: Prisma.RegistroAuditoriaUncheckedUpdateManyWithoutUsuarioNestedInput
 }
 
 
@@ -2777,6 +4230,11 @@ export type UsuarioCountOutputType = {
   asignacionesComoAuditor: number
   asignacionesMensualesCreadas: number
   asignacionesMensualesComoAuditor: number
+  delegacionesComoEjecutor: number
+  delegacionesComoResponsable: number
+  asignacionesMensualesResponsable: number
+  asignacionesAuditoriaResponsable: number
+  cumplimientosMensuales: number
   enlacesCreados: number
   enviosRealizados: number
   formulariosCreados: number
@@ -2794,6 +4252,11 @@ export type UsuarioCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   asignacionesComoAuditor?: boolean | UsuarioCountOutputTypeCountAsignacionesComoAuditorArgs
   asignacionesMensualesCreadas?: boolean | UsuarioCountOutputTypeCountAsignacionesMensualesCreadasArgs
   asignacionesMensualesComoAuditor?: boolean | UsuarioCountOutputTypeCountAsignacionesMensualesComoAuditorArgs
+  delegacionesComoEjecutor?: boolean | UsuarioCountOutputTypeCountDelegacionesComoEjecutorArgs
+  delegacionesComoResponsable?: boolean | UsuarioCountOutputTypeCountDelegacionesComoResponsableArgs
+  asignacionesMensualesResponsable?: boolean | UsuarioCountOutputTypeCountAsignacionesMensualesResponsableArgs
+  asignacionesAuditoriaResponsable?: boolean | UsuarioCountOutputTypeCountAsignacionesAuditoriaResponsableArgs
+  cumplimientosMensuales?: boolean | UsuarioCountOutputTypeCountCumplimientosMensualesArgs
   enlacesCreados?: boolean | UsuarioCountOutputTypeCountEnlacesCreadosArgs
   enviosRealizados?: boolean | UsuarioCountOutputTypeCountEnviosRealizadosArgs
   formulariosCreados?: boolean | UsuarioCountOutputTypeCountFormulariosCreadosArgs
@@ -2842,6 +4305,41 @@ export type UsuarioCountOutputTypeCountAsignacionesMensualesCreadasArgs<ExtArgs 
  */
 export type UsuarioCountOutputTypeCountAsignacionesMensualesComoAuditorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AsignacionMensualWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountDelegacionesComoEjecutorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DelegacionCumplimientoWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountDelegacionesComoResponsableArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DelegacionCumplimientoWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountAsignacionesMensualesResponsableArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AsignacionMensualWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountAsignacionesAuditoriaResponsableArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AsignacionAuditoriaWhereInput
+}
+
+/**
+ * UsuarioCountOutputType without action
+ */
+export type UsuarioCountOutputTypeCountCumplimientosMensualesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CumplimientoMensualUsuarioWhereInput
 }
 
 /**
@@ -2926,6 +4424,9 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   rol?: boolean
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: boolean
   contrasenaCambiadaEn?: boolean
   creadoEn?: boolean
@@ -2934,6 +4435,11 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   asignacionesComoAuditor?: boolean | Prisma.Usuario$asignacionesComoAuditorArgs<ExtArgs>
   asignacionesMensualesCreadas?: boolean | Prisma.Usuario$asignacionesMensualesCreadasArgs<ExtArgs>
   asignacionesMensualesComoAuditor?: boolean | Prisma.Usuario$asignacionesMensualesComoAuditorArgs<ExtArgs>
+  delegacionesComoEjecutor?: boolean | Prisma.Usuario$delegacionesComoEjecutorArgs<ExtArgs>
+  delegacionesComoResponsable?: boolean | Prisma.Usuario$delegacionesComoResponsableArgs<ExtArgs>
+  asignacionesMensualesResponsable?: boolean | Prisma.Usuario$asignacionesMensualesResponsableArgs<ExtArgs>
+  asignacionesAuditoriaResponsable?: boolean | Prisma.Usuario$asignacionesAuditoriaResponsableArgs<ExtArgs>
+  cumplimientosMensuales?: boolean | Prisma.Usuario$cumplimientosMensualesArgs<ExtArgs>
   enlacesCreados?: boolean | Prisma.Usuario$enlacesCreadosArgs<ExtArgs>
   enviosRealizados?: boolean | Prisma.Usuario$enviosRealizadosArgs<ExtArgs>
   formulariosCreados?: boolean | Prisma.Usuario$formulariosCreadosArgs<ExtArgs>
@@ -2960,18 +4466,26 @@ export type UsuarioSelectScalar = {
   rol?: boolean
   activo?: boolean
   debeCambiarContrasena?: boolean
+  esComodin?: boolean
+  puedeSerAsignadoAuditoria?: boolean
+  seEvalua?: boolean
   ultimoInicioSesionEn?: boolean
   contrasenaCambiadaEn?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombreUsuario" | "correo" | "telefonoE164" | "nombre" | "hashContrasena" | "credencialCifrada" | "rol" | "activo" | "debeCambiarContrasena" | "ultimoInicioSesionEn" | "contrasenaCambiadaEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuario"]>
+export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombreUsuario" | "correo" | "telefonoE164" | "nombre" | "hashContrasena" | "credencialCifrada" | "rol" | "activo" | "debeCambiarContrasena" | "esComodin" | "puedeSerAsignadoAuditoria" | "seEvalua" | "ultimoInicioSesionEn" | "contrasenaCambiadaEn" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   asignacionesCreadas?: boolean | Prisma.Usuario$asignacionesCreadasArgs<ExtArgs>
   asignacionesComoAuditor?: boolean | Prisma.Usuario$asignacionesComoAuditorArgs<ExtArgs>
   asignacionesMensualesCreadas?: boolean | Prisma.Usuario$asignacionesMensualesCreadasArgs<ExtArgs>
   asignacionesMensualesComoAuditor?: boolean | Prisma.Usuario$asignacionesMensualesComoAuditorArgs<ExtArgs>
+  delegacionesComoEjecutor?: boolean | Prisma.Usuario$delegacionesComoEjecutorArgs<ExtArgs>
+  delegacionesComoResponsable?: boolean | Prisma.Usuario$delegacionesComoResponsableArgs<ExtArgs>
+  asignacionesMensualesResponsable?: boolean | Prisma.Usuario$asignacionesMensualesResponsableArgs<ExtArgs>
+  asignacionesAuditoriaResponsable?: boolean | Prisma.Usuario$asignacionesAuditoriaResponsableArgs<ExtArgs>
+  cumplimientosMensuales?: boolean | Prisma.Usuario$cumplimientosMensualesArgs<ExtArgs>
   enlacesCreados?: boolean | Prisma.Usuario$enlacesCreadosArgs<ExtArgs>
   enviosRealizados?: boolean | Prisma.Usuario$enviosRealizadosArgs<ExtArgs>
   formulariosCreados?: boolean | Prisma.Usuario$formulariosCreadosArgs<ExtArgs>
@@ -2992,6 +4506,11 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     asignacionesComoAuditor: Prisma.$AsignacionAuditoriaPayload<ExtArgs>[]
     asignacionesMensualesCreadas: Prisma.$AsignacionMensualPayload<ExtArgs>[]
     asignacionesMensualesComoAuditor: Prisma.$AsignacionMensualPayload<ExtArgs>[]
+    delegacionesComoEjecutor: Prisma.$DelegacionCumplimientoPayload<ExtArgs>[]
+    delegacionesComoResponsable: Prisma.$DelegacionCumplimientoPayload<ExtArgs>[]
+    asignacionesMensualesResponsable: Prisma.$AsignacionMensualPayload<ExtArgs>[]
+    asignacionesAuditoriaResponsable: Prisma.$AsignacionAuditoriaPayload<ExtArgs>[]
+    cumplimientosMensuales: Prisma.$CumplimientoMensualUsuarioPayload<ExtArgs>[]
     enlacesCreados: Prisma.$EnlaceInvitadoPayload<ExtArgs>[]
     enviosRealizados: Prisma.$EnvioAuditoriaPayload<ExtArgs>[]
     formulariosCreados: Prisma.$FormularioPayload<ExtArgs>[]
@@ -3014,6 +4533,9 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     rol: $Enums.RolUsuario
     activo: boolean
     debeCambiarContrasena: boolean
+    esComodin: boolean
+    puedeSerAsignadoAuditoria: boolean
+    seEvalua: boolean
     ultimoInicioSesionEn: Date | null
     contrasenaCambiadaEn: Date | null
     creadoEn: Date
@@ -3362,6 +4884,11 @@ export interface Prisma__UsuarioClient<T, Null = never, ExtArgs extends runtime.
   asignacionesComoAuditor<T extends Prisma.Usuario$asignacionesComoAuditorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesComoAuditorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   asignacionesMensualesCreadas<T extends Prisma.Usuario$asignacionesMensualesCreadasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesMensualesCreadasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionMensualPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   asignacionesMensualesComoAuditor<T extends Prisma.Usuario$asignacionesMensualesComoAuditorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesMensualesComoAuditorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionMensualPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  delegacionesComoEjecutor<T extends Prisma.Usuario$delegacionesComoEjecutorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$delegacionesComoEjecutorArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DelegacionCumplimientoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  delegacionesComoResponsable<T extends Prisma.Usuario$delegacionesComoResponsableArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$delegacionesComoResponsableArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DelegacionCumplimientoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  asignacionesMensualesResponsable<T extends Prisma.Usuario$asignacionesMensualesResponsableArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesMensualesResponsableArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionMensualPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  asignacionesAuditoriaResponsable<T extends Prisma.Usuario$asignacionesAuditoriaResponsableArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$asignacionesAuditoriaResponsableArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AsignacionAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  cumplimientosMensuales<T extends Prisma.Usuario$cumplimientosMensualesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$cumplimientosMensualesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CumplimientoMensualUsuarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   enlacesCreados<T extends Prisma.Usuario$enlacesCreadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$enlacesCreadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnlaceInvitadoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   enviosRealizados<T extends Prisma.Usuario$enviosRealizadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$enviosRealizadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnvioAuditoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   formulariosCreados<T extends Prisma.Usuario$formulariosCreadosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Usuario$formulariosCreadosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FormularioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3411,6 +4938,9 @@ export interface UsuarioFieldRefs {
   readonly rol: Prisma.FieldRef<"Usuario", 'RolUsuario'>
   readonly activo: Prisma.FieldRef<"Usuario", 'Boolean'>
   readonly debeCambiarContrasena: Prisma.FieldRef<"Usuario", 'Boolean'>
+  readonly esComodin: Prisma.FieldRef<"Usuario", 'Boolean'>
+  readonly puedeSerAsignadoAuditoria: Prisma.FieldRef<"Usuario", 'Boolean'>
+  readonly seEvalua: Prisma.FieldRef<"Usuario", 'Boolean'>
   readonly ultimoInicioSesionEn: Prisma.FieldRef<"Usuario", 'DateTime'>
   readonly contrasenaCambiadaEn: Prisma.FieldRef<"Usuario", 'DateTime'>
   readonly creadoEn: Prisma.FieldRef<"Usuario", 'DateTime'>
@@ -3856,6 +5386,126 @@ export type Usuario$asignacionesMensualesComoAuditorArgs<ExtArgs extends runtime
   take?: number
   skip?: number
   distinct?: Prisma.AsignacionMensualScalarFieldEnum | Prisma.AsignacionMensualScalarFieldEnum[]
+}
+
+/**
+ * Usuario.delegacionesComoEjecutor
+ */
+export type Usuario$delegacionesComoEjecutorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DelegacionCumplimiento
+   */
+  select?: Prisma.DelegacionCumplimientoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DelegacionCumplimiento
+   */
+  omit?: Prisma.DelegacionCumplimientoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DelegacionCumplimientoInclude<ExtArgs> | null
+  where?: Prisma.DelegacionCumplimientoWhereInput
+  orderBy?: Prisma.DelegacionCumplimientoOrderByWithRelationInput | Prisma.DelegacionCumplimientoOrderByWithRelationInput[]
+  cursor?: Prisma.DelegacionCumplimientoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DelegacionCumplimientoScalarFieldEnum | Prisma.DelegacionCumplimientoScalarFieldEnum[]
+}
+
+/**
+ * Usuario.delegacionesComoResponsable
+ */
+export type Usuario$delegacionesComoResponsableArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DelegacionCumplimiento
+   */
+  select?: Prisma.DelegacionCumplimientoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DelegacionCumplimiento
+   */
+  omit?: Prisma.DelegacionCumplimientoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DelegacionCumplimientoInclude<ExtArgs> | null
+  where?: Prisma.DelegacionCumplimientoWhereInput
+  orderBy?: Prisma.DelegacionCumplimientoOrderByWithRelationInput | Prisma.DelegacionCumplimientoOrderByWithRelationInput[]
+  cursor?: Prisma.DelegacionCumplimientoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DelegacionCumplimientoScalarFieldEnum | Prisma.DelegacionCumplimientoScalarFieldEnum[]
+}
+
+/**
+ * Usuario.asignacionesMensualesResponsable
+ */
+export type Usuario$asignacionesMensualesResponsableArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AsignacionMensual
+   */
+  select?: Prisma.AsignacionMensualSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AsignacionMensual
+   */
+  omit?: Prisma.AsignacionMensualOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AsignacionMensualInclude<ExtArgs> | null
+  where?: Prisma.AsignacionMensualWhereInput
+  orderBy?: Prisma.AsignacionMensualOrderByWithRelationInput | Prisma.AsignacionMensualOrderByWithRelationInput[]
+  cursor?: Prisma.AsignacionMensualWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AsignacionMensualScalarFieldEnum | Prisma.AsignacionMensualScalarFieldEnum[]
+}
+
+/**
+ * Usuario.asignacionesAuditoriaResponsable
+ */
+export type Usuario$asignacionesAuditoriaResponsableArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AsignacionAuditoria
+   */
+  select?: Prisma.AsignacionAuditoriaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AsignacionAuditoria
+   */
+  omit?: Prisma.AsignacionAuditoriaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AsignacionAuditoriaInclude<ExtArgs> | null
+  where?: Prisma.AsignacionAuditoriaWhereInput
+  orderBy?: Prisma.AsignacionAuditoriaOrderByWithRelationInput | Prisma.AsignacionAuditoriaOrderByWithRelationInput[]
+  cursor?: Prisma.AsignacionAuditoriaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AsignacionAuditoriaScalarFieldEnum | Prisma.AsignacionAuditoriaScalarFieldEnum[]
+}
+
+/**
+ * Usuario.cumplimientosMensuales
+ */
+export type Usuario$cumplimientosMensualesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CumplimientoMensualUsuario
+   */
+  select?: Prisma.CumplimientoMensualUsuarioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CumplimientoMensualUsuario
+   */
+  omit?: Prisma.CumplimientoMensualUsuarioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CumplimientoMensualUsuarioInclude<ExtArgs> | null
+  where?: Prisma.CumplimientoMensualUsuarioWhereInput
+  orderBy?: Prisma.CumplimientoMensualUsuarioOrderByWithRelationInput | Prisma.CumplimientoMensualUsuarioOrderByWithRelationInput[]
+  cursor?: Prisma.CumplimientoMensualUsuarioWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CumplimientoMensualUsuarioScalarFieldEnum | Prisma.CumplimientoMensualUsuarioScalarFieldEnum[]
 }
 
 /**

@@ -70,6 +70,9 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
       : null;
     const nombreAuditorSnapshot = usuarioSesion?.nombre?.trim() || body.nombreAuditorSnapshot.trim();
 
+    const ahoraServidor = new Date();
+    const realizadaATiempo = ahoraServidor.getTime() <= objetivo.terminaEn.getTime();
+
     const creado = await tx.envioAuditoria.create({
       data: {
         identificadorCliente: body.identificadorCliente,
@@ -82,6 +85,7 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
         puntajeObtenido: puntaje.puntajeObtenido,
         puntajePosible: puntaje.puntajePosible,
         porcentaje: puntaje.porcentaje,
+        realizadaATiempo,
         finalizadoEn: body.finalizadoEn,
         verificadoEn,
       },

@@ -37,6 +37,11 @@ model Usuario {
   activo                Boolean    @default(true)
   debeCambiarContrasena Boolean    @default(false)
 
+  // CONFIGURACIÓN OPERATIVA Y DE EVALUACIÓN
+  esComodin                 Boolean @default(false)
+  puedeSerAsignadoAuditoria Boolean @default(true)
+  seEvalua                  Boolean @default(false)
+
   // ACTIVIDAD DE LA CUENTA
   ultimoInicioSesionEn DateTime?
   contrasenaCambiadaEn DateTime?
@@ -53,6 +58,16 @@ model Usuario {
   asignacionesMensualesCreadas AsignacionMensual[] @relation("UsuarioCreadorAsignacionMensual")
 
   asignacionesMensualesComoAuditor AsignacionMensual[] @relation("UsuarioAuditorAsignacionMensual")
+
+  // RELACIONES: DELEGACIÓN Y RESPONSABILIDAD DE CUMPLIMIENTO
+  delegacionesComoEjecutor    DelegacionCumplimiento[] @relation("DelegacionesEjecutor")
+  delegacionesComoResponsable DelegacionCumplimiento[] @relation("DelegacionesResponsable")
+
+  asignacionesMensualesResponsable AsignacionMensual[]   @relation("UsuarioResponsableCumplimientoMensual")
+  asignacionesAuditoriaResponsable AsignacionAuditoria[] @relation("UsuarioResponsableCumplimientoAuditoria")
+
+  // RELACIONES: EVALUACIÓN Y KPI
+  cumplimientosMensuales CumplimientoMensualUsuario[]
 
   // RELACIONES: AUDITORÍAS E INVITADOS
   enlacesCreados EnlaceInvitado[] @relation("UsuarioCreadorEnlace")
@@ -426,8 +441,9 @@ model AsignacionMensual {
   mes    Int
 
   // RESPONSABLES
-  auditorId     Int
-  asignadoPorId Int
+  auditorId                 Int
+  asignadoPorId             Int
+  responsableCumplimientoId Int?
 
   // FECHA DE ASIGNACIÓN
   asignadoEn DateTime?
@@ -443,12 +459,15 @@ model AsignacionMensual {
 
   asignadoPor Usuario @relation("UsuarioCreadorAsignacionMensual", fields: [asignadoPorId], references: [id])
 
+  responsableCumplimiento Usuario? @relation("UsuarioResponsableCumplimientoMensual", fields: [responsableCumplimientoId], references: [id])
+
   asignacionesAuditoria AsignacionAuditoria[]
 
   // RESTRICCIONES
   @@unique([areaId, anio, mes])
   // ÍNDICES
   @@index([auditorId, anio, mes])
+  @@index([responsableCumplimientoId])
   @@map("asignaciones_mensuales")
 }
 
@@ -467,8 +486,9 @@ model AsignacionAuditoria {
   objetivoAuditoriaId Int
 
   // RESPONSABLES
-  auditorId     Int
-  asignadoPorId Int
+  auditorId                 Int
+  asignadoPorId             Int
+  responsableCumplimientoId Int?
 
   // ESTADO
   estado EstadoAsignacionAuditoria @default(PENDIENTE)
@@ -501,6 +521,8 @@ model AsignacionAuditoria {
 
   auditor Usuario @relation("UsuarioAuditorAsignacion", fields: [auditorId], references: [id])
 
+  responsableCumplimiento Usuario? @relation("UsuarioResponsableCumplimientoAuditoria", fields: [responsableCumplimientoId], references: [id])
+
   // RELACIONES: PLANIFICACIÓN
   objetivoAuditoria ObjetivoAuditoria @relation(fields: [objetivoAuditoriaId], references: [id])
 
@@ -515,6 +537,7 @@ model AsignacionAuditoria {
   @@index([objetivoAuditoriaId, estado])
   @@index([asignacionMensualId])
   @@index([asignadoPorId])
+  @@index([responsableCumplimientoId])
   @@index([reabiertaHasta])
   @@map("asignaciones_auditoria")
 }
@@ -593,9 +616,10 @@ model EnvioAuditoria {
   porcentaje      Decimal @db.Decimal(10, 4)
 
   // FECHAS DE EJECUCIÓN
-  finalizadoEn DateTime
-  verificadoEn DateTime
-  recibidoEn   DateTime @default(now())
+  finalizadoEn     DateTime
+  verificadoEn     DateTime
+  recibidoEn       DateTime @default(now())
+  realizadaATiempo Boolean  @default(true)
 
   // INVALIDACIÓN
   invalidadoEn       DateTime?
@@ -912,6 +936,127 @@ model SecretoSistema {
 }
 
 // =============================================================================
+// CUMPLIMIENTO, EVALUACIÓN (KPI 50/50) Y DELEGACIÓN
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// DelegacionCumplimiento
+// Configura que las auditorías asignadas a un ejecutor computan para un responsable.
+// -----------------------------------------------------------------------------
+model DelegacionCumplimiento {
+  // IDENTIFICACIÓN
+  id            Int @id @default(autoincrement())
+  ejecutorId    Int
+  responsableId Int
+
+  // VIGENCIA Y ESTADO
+  vigenteDesde DateTime  @db.Date
+  vigenteHasta DateTime? @db.Date
+  activa       Boolean   @default(true)
+
+  // METADATOS
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  ejecutor    Usuario @relation("DelegacionesEjecutor", fields: [ejecutorId], references: [id])
+  responsable Usuario @relation("DelegacionesResponsable", fields: [responsableId], references: [id])
+
+  // ÍNDICES
+  @@index([ejecutorId, activa, vigenteDesde])
+  @@index([responsableId])
+  @@map("delegaciones_cumplimiento")
+}
+
+// -----------------------------------------------------------------------------
+// CumplimientoMensualUsuario
+// Materialización del KPI mensual consolidado de un usuario (50/50).
+// -----------------------------------------------------------------------------
+model CumplimientoMensualUsuario {
+  // IDENTIFICACIÓN
+  id        Int @id @default(autoincrement())
+  usuarioId Int
+  anio      Int
+  mes       Int
+
+  // CONFIGURACIÓN HISTÓRICA
+  seEvaluaSnapshot Boolean @default(false)
+
+  // COMPONENTE 1: AUDITORÍAS ORDINARIAS
+  auditoriasEsperadas    Int      @default(0)
+  auditoriasATiempo      Int      @default(0)
+  porcentajeCumplimiento Decimal? @db.Decimal(10, 4)
+
+  // COMPONENTE 2: PROMEDIO DE ÁREAS A CARGO
+  promedioAreas     Decimal? @db.Decimal(10, 4)
+  areasConResultado Int      @default(0)
+
+  // KPI CONSOLIDADO
+  kpiFinal Decimal? @db.Decimal(10, 4)
+
+  // METADATOS Y TIEMPO
+  calculadoEn   DateTime @default(now())
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  // RELACIONES
+  usuario       Usuario                   @relation(fields: [usuarioId], references: [id])
+  detallesAreas CumplimientoMensualArea[]
+
+  // RESTRICCIONES
+  @@unique([usuarioId, anio, mes])
+  // ÍNDICES
+  @@index([anio, mes])
+  @@map("cumplimientos_mensuales_usuario")
+}
+
+// -----------------------------------------------------------------------------
+// CumplimientoMensualArea
+// Detalle y snapshot de las áreas a cargo consideradas en el cálculo mensual del KPI.
+// -----------------------------------------------------------------------------
+model CumplimientoMensualArea {
+  // IDENTIFICACIÓN
+  id                           Int @id @default(autoincrement())
+  cumplimientoMensualUsuarioId Int
+  areaId                       Int
+
+  // SNAPSHOT HISTÓRICO DEL ÁREA
+  codigoAreaSnapshot        String   @db.VarChar(50)
+  nombreAreaSnapshot        String   @db.VarChar(160)
+  tipoAreaSnapshot          TipoArea
+  resultadoMensualUtilizado Decimal  @db.Decimal(10, 4)
+
+  // METADATOS
+  creadoEn DateTime @default(now())
+
+  // RELACIONES
+  cumplimientoMensualUsuario CumplimientoMensualUsuario @relation(fields: [cumplimientoMensualUsuarioId], references: [id], onDelete: Cascade)
+
+  // RESTRICCIONES
+  @@unique([cumplimientoMensualUsuarioId, areaId])
+  // ÍNDICES
+  @@index([areaId])
+  @@map("cumplimientos_mensuales_area")
+}
+
+// -----------------------------------------------------------------------------
+// DiaInhabil
+// Registro de días no laborables oficiales para cálculo de recordatorios hábiles.
+// -----------------------------------------------------------------------------
+model DiaInhabil {
+  // IDENTIFICACIÓN
+  id          Int            @id @default(autoincrement())
+  fecha       DateTime       @unique @db.Date
+  descripcion String         @db.VarChar(160)
+  tipo        TipoDiaInhabil @default(DESCANSO_OFICIAL)
+
+  // METADATOS
+  creadoEn DateTime @default(now())
+
+  @@map("dias_inhabiles")
+}
+
+// =============================================================================
 // ENUMS
 // =============================================================================
 
@@ -921,6 +1066,13 @@ enum RolUsuario {
   SUPER_ADMIN
   ADMINISTRADOR
   AUDITOR
+  VISUALIZADOR
+}
+
+// Clasificación de días no laborables según LFT.
+enum TipoDiaInhabil {
+  DESCANSO_OFICIAL
+  ELECTORAL
 }
 
 // Clasificación organizacional del área.

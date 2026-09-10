@@ -11,7 +11,7 @@ export const validarAuditorAsignable = async (
   const [auditor, objetivo] = await Promise.all([
     tx.usuario.findUniqueOrThrow({
       where: { id: auditorId },
-      select: { id: true, rol: true, activo: true, nombre: true },
+      select: { id: true, rol: true, activo: true, nombre: true, puedeSerAsignadoAuditoria: true },
     }),
     tx.objetivoAuditoria.findUniqueOrThrow({
       where: { id: objetivoAuditoriaId },
@@ -20,6 +20,9 @@ export const validarAuditorAsignable = async (
   ]);
 
   if (!auditor.activo) throw solicitudInvalida('El auditor seleccionado no esta activo');
+  if (auditor.puedeSerAsignadoAuditoria === false) {
+    throw solicitudInvalida('El usuario seleccionado no está habilitado para ser asignado a auditorías');
+  }
   if (!puedeEjecutarAuditoria(auditor.rol)) {
     throw prohibido('El usuario seleccionado no puede realizar auditorias');
   }

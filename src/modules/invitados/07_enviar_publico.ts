@@ -44,6 +44,9 @@ export const enviarAuditoriaInvitadoPublico = async (req: Request, res: Response
     validarRespuestas5S(preguntas, body.respuestas);
     const puntaje = calcularPuntaje5S(body.respuestas);
 
+    const ahoraServidor = new Date();
+    const realizadaATiempo = ahoraServidor.getTime() <= objetivo.terminaEn.getTime();
+
     const creado = await tx.envioAuditoria.create({
       data: {
         identificadorCliente: body.identificadorCliente,
@@ -56,6 +59,7 @@ export const enviarAuditoriaInvitadoPublico = async (req: Request, res: Response
         puntajeObtenido: puntaje.puntajeObtenido,
         puntajePosible: puntaje.puntajePosible,
         porcentaje: puntaje.porcentaje,
+        realizadaATiempo,
         finalizadoEn: body.finalizadoEn,
         verificadoEn,
       },

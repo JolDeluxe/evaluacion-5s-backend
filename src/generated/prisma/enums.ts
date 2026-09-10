@@ -12,10 +12,19 @@
 export const RolUsuario = {
   SUPER_ADMIN: 'SUPER_ADMIN',
   ADMINISTRADOR: 'ADMINISTRADOR',
-  AUDITOR: 'AUDITOR'
+  AUDITOR: 'AUDITOR',
+  VISUALIZADOR: 'VISUALIZADOR'
 } as const
 
 export type RolUsuario = (typeof RolUsuario)[keyof typeof RolUsuario]
+
+
+export const TipoDiaInhabil = {
+  DESCANSO_OFICIAL: 'DESCANSO_OFICIAL',
+  ELECTORAL: 'ELECTORAL'
+} as const
+
+export type TipoDiaInhabil = (typeof TipoDiaInhabil)[keyof typeof TipoDiaInhabil]
 
 
 export const TipoArea = {

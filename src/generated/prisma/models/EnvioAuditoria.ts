@@ -63,6 +63,7 @@ export type EnvioAuditoriaMinAggregateOutputType = {
   finalizadoEn: Date | null
   verificadoEn: Date | null
   recibidoEn: Date | null
+  realizadaATiempo: boolean | null
   invalidadoEn: Date | null
   motivoInvalidacion: string | null
   creadoEn: Date | null
@@ -84,6 +85,7 @@ export type EnvioAuditoriaMaxAggregateOutputType = {
   finalizadoEn: Date | null
   verificadoEn: Date | null
   recibidoEn: Date | null
+  realizadaATiempo: boolean | null
   invalidadoEn: Date | null
   motivoInvalidacion: string | null
   creadoEn: Date | null
@@ -105,6 +107,7 @@ export type EnvioAuditoriaCountAggregateOutputType = {
   finalizadoEn: number
   verificadoEn: number
   recibidoEn: number
+  realizadaATiempo: number
   invalidadoEn: number
   motivoInvalidacion: number
   creadoEn: number
@@ -150,6 +153,7 @@ export type EnvioAuditoriaMinAggregateInputType = {
   finalizadoEn?: true
   verificadoEn?: true
   recibidoEn?: true
+  realizadaATiempo?: true
   invalidadoEn?: true
   motivoInvalidacion?: true
   creadoEn?: true
@@ -171,6 +175,7 @@ export type EnvioAuditoriaMaxAggregateInputType = {
   finalizadoEn?: true
   verificadoEn?: true
   recibidoEn?: true
+  realizadaATiempo?: true
   invalidadoEn?: true
   motivoInvalidacion?: true
   creadoEn?: true
@@ -192,6 +197,7 @@ export type EnvioAuditoriaCountAggregateInputType = {
   finalizadoEn?: true
   verificadoEn?: true
   recibidoEn?: true
+  realizadaATiempo?: true
   invalidadoEn?: true
   motivoInvalidacion?: true
   creadoEn?: true
@@ -300,6 +306,7 @@ export type EnvioAuditoriaGroupByOutputType = {
   finalizadoEn: Date
   verificadoEn: Date
   recibidoEn: Date
+  realizadaATiempo: boolean
   invalidadoEn: Date | null
   motivoInvalidacion: string | null
   creadoEn: Date
@@ -344,6 +351,7 @@ export type EnvioAuditoriaWhereInput = {
   finalizadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
   verificadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
   recibidoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
+  realizadaATiempo?: Prisma.BoolFilter<"EnvioAuditoria"> | boolean
   invalidadoEn?: Prisma.DateTimeNullableFilter<"EnvioAuditoria"> | Date | string | null
   motivoInvalidacion?: Prisma.StringNullableFilter<"EnvioAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
@@ -371,6 +379,7 @@ export type EnvioAuditoriaOrderByWithRelationInput = {
   finalizadoEn?: Prisma.SortOrder
   verificadoEn?: Prisma.SortOrder
   recibidoEn?: Prisma.SortOrder
+  realizadaATiempo?: Prisma.SortOrder
   invalidadoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   motivoInvalidacion?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -402,6 +411,7 @@ export type EnvioAuditoriaWhereUniqueInput = Prisma.AtLeast<{
   finalizadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
   verificadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
   recibidoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
+  realizadaATiempo?: Prisma.BoolFilter<"EnvioAuditoria"> | boolean
   invalidadoEn?: Prisma.DateTimeNullableFilter<"EnvioAuditoria"> | Date | string | null
   motivoInvalidacion?: Prisma.StringNullableFilter<"EnvioAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
@@ -429,6 +439,7 @@ export type EnvioAuditoriaOrderByWithAggregationInput = {
   finalizadoEn?: Prisma.SortOrder
   verificadoEn?: Prisma.SortOrder
   recibidoEn?: Prisma.SortOrder
+  realizadaATiempo?: Prisma.SortOrder
   invalidadoEn?: Prisma.SortOrderInput | Prisma.SortOrder
   motivoInvalidacion?: Prisma.SortOrderInput | Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -458,6 +469,7 @@ export type EnvioAuditoriaScalarWhereWithAggregatesInput = {
   finalizadoEn?: Prisma.DateTimeWithAggregatesFilter<"EnvioAuditoria"> | Date | string
   verificadoEn?: Prisma.DateTimeWithAggregatesFilter<"EnvioAuditoria"> | Date | string
   recibidoEn?: Prisma.DateTimeWithAggregatesFilter<"EnvioAuditoria"> | Date | string
+  realizadaATiempo?: Prisma.BoolWithAggregatesFilter<"EnvioAuditoria"> | boolean
   invalidadoEn?: Prisma.DateTimeNullableWithAggregatesFilter<"EnvioAuditoria"> | Date | string | null
   motivoInvalidacion?: Prisma.StringNullableWithAggregatesFilter<"EnvioAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeWithAggregatesFilter<"EnvioAuditoria"> | Date | string
@@ -474,6 +486,7 @@ export type EnvioAuditoriaCreateInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -501,6 +514,7 @@ export type EnvioAuditoriaUncheckedCreateInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -519,6 +533,7 @@ export type EnvioAuditoriaUpdateInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -546,6 +561,7 @@ export type EnvioAuditoriaUncheckedUpdateInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -569,6 +585,7 @@ export type EnvioAuditoriaCreateManyInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -585,6 +602,7 @@ export type EnvioAuditoriaUpdateManyMutationInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -606,6 +624,7 @@ export type EnvioAuditoriaUncheckedUpdateManyInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -648,6 +667,7 @@ export type EnvioAuditoriaCountOrderByAggregateInput = {
   finalizadoEn?: Prisma.SortOrder
   verificadoEn?: Prisma.SortOrder
   recibidoEn?: Prisma.SortOrder
+  realizadaATiempo?: Prisma.SortOrder
   invalidadoEn?: Prisma.SortOrder
   motivoInvalidacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -680,6 +700,7 @@ export type EnvioAuditoriaMaxOrderByAggregateInput = {
   finalizadoEn?: Prisma.SortOrder
   verificadoEn?: Prisma.SortOrder
   recibidoEn?: Prisma.SortOrder
+  realizadaATiempo?: Prisma.SortOrder
   invalidadoEn?: Prisma.SortOrder
   motivoInvalidacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -701,6 +722,7 @@ export type EnvioAuditoriaMinOrderByAggregateInput = {
   finalizadoEn?: Prisma.SortOrder
   verificadoEn?: Prisma.SortOrder
   recibidoEn?: Prisma.SortOrder
+  realizadaATiempo?: Prisma.SortOrder
   invalidadoEn?: Prisma.SortOrder
   motivoInvalidacion?: Prisma.SortOrder
   creadoEn?: Prisma.SortOrder
@@ -943,6 +965,7 @@ export type EnvioAuditoriaCreateWithoutEnviadoPorUsuarioInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -968,6 +991,7 @@ export type EnvioAuditoriaUncheckedCreateWithoutEnviadoPorUsuarioInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1020,6 +1044,7 @@ export type EnvioAuditoriaScalarWhereInput = {
   finalizadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
   verificadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
   recibidoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
+  realizadaATiempo?: Prisma.BoolFilter<"EnvioAuditoria"> | boolean
   invalidadoEn?: Prisma.DateTimeNullableFilter<"EnvioAuditoria"> | Date | string | null
   motivoInvalidacion?: Prisma.StringNullableFilter<"EnvioAuditoria"> | string | null
   creadoEn?: Prisma.DateTimeFilter<"EnvioAuditoria"> | Date | string
@@ -1036,6 +1061,7 @@ export type EnvioAuditoriaCreateWithoutObjetivoAuditoriaInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1061,6 +1087,7 @@ export type EnvioAuditoriaUncheckedCreateWithoutObjetivoAuditoriaInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1089,6 +1116,7 @@ export type EnvioAuditoriaCreateWithoutObjetivoComoResultadoInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1115,6 +1143,7 @@ export type EnvioAuditoriaUncheckedCreateWithoutObjetivoComoResultadoInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1164,6 +1193,7 @@ export type EnvioAuditoriaUpdateWithoutObjetivoComoResultadoInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1190,6 +1220,7 @@ export type EnvioAuditoriaUncheckedUpdateWithoutObjetivoComoResultadoInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1207,6 +1238,7 @@ export type EnvioAuditoriaCreateWithoutAsignacionAuditoriaInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1232,6 +1264,7 @@ export type EnvioAuditoriaUncheckedCreateWithoutAsignacionAuditoriaInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1276,6 +1309,7 @@ export type EnvioAuditoriaCreateWithoutEnlaceInvitadoInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1301,6 +1335,7 @@ export type EnvioAuditoriaUncheckedCreateWithoutEnlaceInvitadoInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1345,6 +1380,7 @@ export type EnvioAuditoriaCreateWithoutRespuestasAuditoriaInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1371,6 +1407,7 @@ export type EnvioAuditoriaUncheckedCreateWithoutRespuestasAuditoriaInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1404,6 +1441,7 @@ export type EnvioAuditoriaUpdateWithoutRespuestasAuditoriaInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1430,6 +1468,7 @@ export type EnvioAuditoriaUncheckedUpdateWithoutRespuestasAuditoriaInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1451,6 +1490,7 @@ export type EnvioAuditoriaCreateManyEnviadoPorUsuarioInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1467,6 +1507,7 @@ export type EnvioAuditoriaUpdateWithoutEnviadoPorUsuarioInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1492,6 +1533,7 @@ export type EnvioAuditoriaUncheckedUpdateWithoutEnviadoPorUsuarioInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1514,6 +1556,7 @@ export type EnvioAuditoriaUncheckedUpdateManyWithoutEnviadoPorUsuarioInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1534,6 +1577,7 @@ export type EnvioAuditoriaCreateManyObjetivoAuditoriaInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1550,6 +1594,7 @@ export type EnvioAuditoriaUpdateWithoutObjetivoAuditoriaInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1575,6 +1620,7 @@ export type EnvioAuditoriaUncheckedUpdateWithoutObjetivoAuditoriaInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1597,6 +1643,7 @@ export type EnvioAuditoriaUncheckedUpdateManyWithoutObjetivoAuditoriaInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1617,6 +1664,7 @@ export type EnvioAuditoriaCreateManyAsignacionAuditoriaInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1633,6 +1681,7 @@ export type EnvioAuditoriaUpdateWithoutAsignacionAuditoriaInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1658,6 +1707,7 @@ export type EnvioAuditoriaUncheckedUpdateWithoutAsignacionAuditoriaInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1680,6 +1730,7 @@ export type EnvioAuditoriaUncheckedUpdateManyWithoutAsignacionAuditoriaInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1700,6 +1751,7 @@ export type EnvioAuditoriaCreateManyEnlaceInvitadoInput = {
   finalizadoEn: Date | string
   verificadoEn: Date | string
   recibidoEn?: Date | string
+  realizadaATiempo?: boolean
   invalidadoEn?: Date | string | null
   motivoInvalidacion?: string | null
   creadoEn?: Date | string
@@ -1716,6 +1768,7 @@ export type EnvioAuditoriaUpdateWithoutEnlaceInvitadoInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1741,6 +1794,7 @@ export type EnvioAuditoriaUncheckedUpdateWithoutEnlaceInvitadoInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1763,6 +1817,7 @@ export type EnvioAuditoriaUncheckedUpdateManyWithoutEnlaceInvitadoInput = {
   finalizadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recibidoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  realizadaATiempo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   invalidadoEn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   motivoInvalidacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   creadoEn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1815,6 +1870,7 @@ export type EnvioAuditoriaSelect<ExtArgs extends runtime.Types.Extensions.Intern
   finalizadoEn?: boolean
   verificadoEn?: boolean
   recibidoEn?: boolean
+  realizadaATiempo?: boolean
   invalidadoEn?: boolean
   motivoInvalidacion?: boolean
   creadoEn?: boolean
@@ -1845,13 +1901,14 @@ export type EnvioAuditoriaSelectScalar = {
   finalizadoEn?: boolean
   verificadoEn?: boolean
   recibidoEn?: boolean
+  realizadaATiempo?: boolean
   invalidadoEn?: boolean
   motivoInvalidacion?: boolean
   creadoEn?: boolean
   actualizadoEn?: boolean
 }
 
-export type EnvioAuditoriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identificadorCliente" | "objetivoAuditoriaId" | "asignacionAuditoriaId" | "enviadoPorUsuarioId" | "enlaceInvitadoId" | "nombreAuditorSnapshot" | "origen" | "puntajeObtenido" | "puntajePosible" | "porcentaje" | "finalizadoEn" | "verificadoEn" | "recibidoEn" | "invalidadoEn" | "motivoInvalidacion" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["envioAuditoria"]>
+export type EnvioAuditoriaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identificadorCliente" | "objetivoAuditoriaId" | "asignacionAuditoriaId" | "enviadoPorUsuarioId" | "enlaceInvitadoId" | "nombreAuditorSnapshot" | "origen" | "puntajeObtenido" | "puntajePosible" | "porcentaje" | "finalizadoEn" | "verificadoEn" | "recibidoEn" | "realizadaATiempo" | "invalidadoEn" | "motivoInvalidacion" | "creadoEn" | "actualizadoEn", ExtArgs["result"]["envioAuditoria"]>
 export type EnvioAuditoriaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   asignacionAuditoria?: boolean | Prisma.EnvioAuditoria$asignacionAuditoriaArgs<ExtArgs>
   enlaceInvitado?: boolean | Prisma.EnvioAuditoria$enlaceInvitadoArgs<ExtArgs>
@@ -1887,6 +1944,7 @@ export type $EnvioAuditoriaPayload<ExtArgs extends runtime.Types.Extensions.Inte
     finalizadoEn: Date
     verificadoEn: Date
     recibidoEn: Date
+    realizadaATiempo: boolean
     invalidadoEn: Date | null
     motivoInvalidacion: string | null
     creadoEn: Date
@@ -2280,6 +2338,7 @@ export interface EnvioAuditoriaFieldRefs {
   readonly finalizadoEn: Prisma.FieldRef<"EnvioAuditoria", 'DateTime'>
   readonly verificadoEn: Prisma.FieldRef<"EnvioAuditoria", 'DateTime'>
   readonly recibidoEn: Prisma.FieldRef<"EnvioAuditoria", 'DateTime'>
+  readonly realizadaATiempo: Prisma.FieldRef<"EnvioAuditoria", 'Boolean'>
   readonly invalidadoEn: Prisma.FieldRef<"EnvioAuditoria", 'DateTime'>
   readonly motivoInvalidacion: Prisma.FieldRef<"EnvioAuditoria", 'String'>
   readonly creadoEn: Prisma.FieldRef<"EnvioAuditoria", 'DateTime'>

@@ -15,6 +15,13 @@ export const crearUsuario = async (req: Request, res: Response) => {
   const errorContrasena = validarContrasena(contrasenaTemporal);
   if (errorContrasena) throw solicitudInvalida(errorContrasena);
 
+  if (body.esComodin && body.rol !== 'ADMINISTRADOR') {
+    throw solicitudInvalida('El atributo esComodin solo está permitido para usuarios con rol ADMINISTRADOR');
+  }
+  if (body.seEvalua) {
+    throw solicitudInvalida('Para activar seEvalua, el usuario debe tener al menos un área asignada en el sistema');
+  }
+
   const camposContrasena = await prepararCamposContrasena(contrasenaTemporal);
 
   const usuario = await prisma.$transaction(async (tx) => {
@@ -26,6 +33,9 @@ export const crearUsuario = async (req: Request, res: Response) => {
         telefonoE164: body.telefonoE164?.trim() || null,
         nombre: body.nombre.trim(),
         rol: body.rol,
+        esComodin: body.esComodin ?? false,
+        puedeSerAsignadoAuditoria: body.puedeSerAsignadoAuditoria ?? true,
+        seEvalua: false,
         ...camposContrasena,
         debeCambiarContrasena: true,
       },

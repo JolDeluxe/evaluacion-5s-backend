@@ -19,6 +19,9 @@ export const esquemaCrearUsuario = z.object({
   nombre: z.string().trim().min(1).max(160),
   rol: z.enum(RolUsuario),
   contrasena: z.string().min(6).max(128).optional(),
+  esComodin: z.boolean().optional().default(false),
+  puedeSerAsignadoAuditoria: z.boolean().optional().default(true),
+  seEvalua: z.boolean().optional().default(false),
 });
 
 const esquemaDecisionAuditoria = z.object({

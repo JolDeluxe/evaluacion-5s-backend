@@ -10,16 +10,39 @@ const mockReq = (params: { id: string | number }, usuarioId = 1): Request => ({
   autenticacion: { usuarioId, rol: RolUsuario.SUPER_ADMIN },
 } as unknown as Request);
 
+interface MockResData {
+  datos: {
+    entrega: {
+      id: number;
+      estado: EstadoEntregaNotificacion;
+      destinoSnapshot: string;
+      notificacionId: number;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
 const mockRes = () => {
   let status = 200;
-  let respuestaJson: any = null;
+  let respuestaJson: MockResData = {
+    datos: {
+      entrega: {
+        id: 0,
+        estado: EstadoEntregaNotificacion.PENDIENTE,
+        destinoSnapshot: '',
+        notificacionId: 0,
+      },
+    },
+  };
   const res = {
     status: (s: number) => {
       status = s;
       return res;
     },
-    json: (j: any) => {
-      respuestaJson = j;
+    json: (j: unknown) => {
+      respuestaJson = j as MockResData;
       return res;
     },
   } as unknown as Response;

@@ -4,9 +4,14 @@ export const ROLES_CON_CUENTA = [
   RolUsuario.SUPER_ADMIN,
   RolUsuario.ADMINISTRADOR,
   RolUsuario.AUDITOR,
+  RolUsuario.VISUALIZADOR,
 ] as const;
 
-export const ROLES_QUE_CONSULTAN_AUDITORIAS = ROLES_CON_CUENTA;
+export const ROLES_QUE_CONSULTAN_AUDITORIAS = [
+  RolUsuario.SUPER_ADMIN,
+  RolUsuario.ADMINISTRADOR,
+  RolUsuario.AUDITOR,
+] as const;
 
 export const ROLES_QUE_EJECUTAN_AUDITORIAS = [
   RolUsuario.AUDITOR,
@@ -23,7 +28,12 @@ export const ROLES_RESULTADOS_COMPLETOS = [
   RolUsuario.SUPER_ADMIN,
 ] as const;
 
-export const ROLES_RESULTADOS_GENERAL = ROLES_CON_CUENTA;
+export const ROLES_RESULTADOS_GENERAL = [
+  RolUsuario.SUPER_ADMIN,
+  RolUsuario.ADMINISTRADOR,
+  RolUsuario.AUDITOR,
+  RolUsuario.VISUALIZADOR,
+] as const;
 
 export const esSuperAdmin = (rol?: RolUsuario | null) => rol === RolUsuario.SUPER_ADMIN;
 export const puedeConsultarAuditorias = (rol?: RolUsuario | null) => Boolean(

@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { normalizarCorreo, normalizarNombreUsuario } from '../../utils/crypto';
-import { conflicto } from '../../utils/errores';
+import { conflicto, solicitudInvalida } from '../../utils/errores';
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
@@ -20,6 +20,18 @@ export const actualizarUsuario = async (req: Request, res: Response) => {
       await assertNoQuitaUltimoSuperAdmin(id, anterior.rol, body.rol, anterior.activo, tx);
     }
     const rolResultante = body.rol ?? anterior.rol;
+    const esComodinResultante = body.esComodin !== undefined ? body.esComodin : anterior.esComodin;
+    if (esComodinResultante && rolResultante !== 'ADMINISTRADOR') {
+      throw solicitudInvalida('El atributo esComodin solo está permitido para usuarios con rol ADMINISTRADOR');
+    }
+
+    if (body.seEvalua === true) {
+      const totalAreas = await tx.usuarioArea.count({ where: { usuarioId: id } });
+      if (totalAreas === 0) {
+        throw solicitudInvalida('Para activar seEvalua, el usuario debe tener al menos un área asignada en el sistema');
+      }
+    }
+
     const pierdeCapacidad = puedeUsuarioAuditar(anterior)
       && !puedeUsuarioAuditar({ activo: anterior.activo, rol: rolResultante });
     let impacto = { completadas: 0, vencidas: 0, reasignadas: 0, pendientes: 0 };
@@ -49,6 +61,9 @@ export const actualizarUsuario = async (req: Request, res: Response) => {
         ...(body.telefonoE164 !== undefined ? { telefonoE164: body.telefonoE164?.trim() || null } : {}),
         ...(body.nombre ? { nombre: body.nombre.trim() } : {}),
         ...(body.rol ? { rol: body.rol } : {}),
+        ...(body.esComodin !== undefined ? { esComodin: body.esComodin } : {}),
+        ...(body.puedeSerAsignadoAuditoria !== undefined ? { puedeSerAsignadoAuditoria: body.puedeSerAsignadoAuditoria } : {}),
+        ...(body.seEvalua !== undefined ? { seEvalua: body.seEvalua } : {}),
       },
       select: seleccionarUsuarioSeguro,
     });

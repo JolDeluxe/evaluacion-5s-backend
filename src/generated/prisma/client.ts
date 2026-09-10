@@ -146,3 +146,23 @@ export type RegistroAuditoria = Prisma.RegistroAuditoriaModel
  * 
  */
 export type SecretoSistema = Prisma.SecretoSistemaModel
+/**
+ * Model DelegacionCumplimiento
+ * 
+ */
+export type DelegacionCumplimiento = Prisma.DelegacionCumplimientoModel
+/**
+ * Model CumplimientoMensualUsuario
+ * 
+ */
+export type CumplimientoMensualUsuario = Prisma.CumplimientoMensualUsuarioModel
+/**
+ * Model CumplimientoMensualArea
+ * 
+ */
+export type CumplimientoMensualArea = Prisma.CumplimientoMensualAreaModel
+/**
+ * Model DiaInhabil
+ * 
+ */
+export type DiaInhabil = Prisma.DiaInhabilModel

@@ -7,6 +7,7 @@ export const obtenerAreaIdsConDetalle = async (
   autenticacion: { usuarioId: number; rol: RolUsuario } | undefined,
 ) => {
   if (!autenticacion) return [];
+  if (autenticacion.rol === RolUsuario.VISUALIZADOR) return [];
   if (puedeAdministrar5S(autenticacion.rol)) return null;
 
   const relaciones = await tx.usuarioArea.findMany({
@@ -24,6 +25,7 @@ export const tieneDetalleDeArea = async (
   autenticacion: { usuarioId: number; rol: RolUsuario } | undefined,
   areaId: number,
 ) => {
+  if (!autenticacion || autenticacion.rol === RolUsuario.VISUALIZADOR) return false;
   const areaIds = await obtenerAreaIdsConDetalle(tx, autenticacion);
   return areaIds === null || areaIds.includes(areaId);
 };

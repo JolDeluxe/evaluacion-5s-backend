@@ -137,7 +137,12 @@ const procesarEntrega = async (id: number) => {
 
         if (anio && mes && (periodo === 1 || periodo === 2)) {
           // Revalidar si la ventana ya es obsoleta
-          const fechaRecordatorio = obtenerUltimoDiaHabilPeriodo(anio, mes, periodo as 1 | 2);
+          const diasInhabiles = await prisma.diaInhabil.findMany({ select: { fecha: true } });
+          const diasInhabilesSet = new Set(diasInhabiles.map((d) => {
+            const f = new Date(d.fecha);
+            return `${f.getUTCFullYear()}-${String(f.getUTCMonth() + 1).padStart(2, '0')}-${String(f.getUTCDate()).padStart(2, '0')}`;
+          }));
+          const fechaRecordatorio = obtenerUltimoDiaHabilPeriodo(anio, mes, periodo as 1 | 2, diasInhabilesSet);
           const ventana = evaluarVentanaRecordatorioPeriodo(fechaRecordatorio, new Date());
           if (ventana.esObsoleto) {
             await prisma.entregaNotificacion.update({

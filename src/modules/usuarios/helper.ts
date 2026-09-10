@@ -18,6 +18,9 @@ export const seleccionarUsuarioSeguro = {
   creadoEn: true,
   actualizadoEn: true,
   credencialCifrada: true,
+  esComodin: true,
+  puedeSerAsignadoAuditoria: true,
+  seEvalua: true,
 };
 
 export const limpiarUsuario = <T extends Pick<Usuario, 'credencialCifrada'>>(usuario: T) => {
