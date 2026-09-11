@@ -1,6 +1,6 @@
 import type { PrismaTransaction } from '../../db';
 import { env } from '../../config/env';
-import { TipoArea } from '../../generated/prisma/enums';
+import { OrigenEnvioAuditoria, TipoArea } from '../../generated/prisma/enums';
 import { noEncontrado, prohibido, solicitudInvalida } from '../../utils/errores';
 import { obtenerAreaIdsConDetalle, tieneDetalleDeArea } from '../../utils/areas_permitidas';
 import { puedeAdministrar5S, puedeVerResultadosCompletos } from '../../utils/permisos';
@@ -97,6 +97,50 @@ const envioValido = <T extends { invalidadoEn: Date | null }>(envio: T | null | 
   envio && !envio.invalidadoEn ? envio : null
 );
 
+export type AuditorEjecutor = {
+  nombre: string;
+  origen: OrigenEnvioAuditoria;
+  esApoyo: boolean;
+  esInvitado: boolean;
+  etiqueta: string | null;
+} | null;
+
+const derivarAuditorEjecutor = (envio: {
+  nombreAuditorSnapshot?: string | null;
+  origen?: OrigenEnvioAuditoria | null;
+  enviadoPorUsuarioId?: number | null;
+  enlaceInvitadoId?: number | null;
+  asignacionAuditoria?: {
+    auditorId?: number | null;
+    auditor?: { nombre: string } | null;
+  } | null;
+} | null | undefined): AuditorEjecutor => {
+  if (!envio || !envio.nombreAuditorSnapshot) return null;
+
+  const esInvitado = envio.origen === OrigenEnvioAuditoria.INVITADO || Boolean(envio.enlaceInvitadoId);
+  const auditorAsignadoId = envio.asignacionAuditoria?.auditorId;
+  const esApoyo = !esInvitado && Boolean(
+    envio.enviadoPorUsuarioId &&
+    auditorAsignadoId &&
+    envio.enviadoPorUsuarioId !== auditorAsignadoId
+  );
+
+  let etiqueta: string | null = null;
+  if (esInvitado) {
+    etiqueta = `Invitado: ${envio.nombreAuditorSnapshot}`;
+  } else if (esApoyo) {
+    etiqueta = `Apoyo: ${envio.nombreAuditorSnapshot}`;
+  }
+
+  return {
+    nombre: envio.nombreAuditorSnapshot,
+    origen: envio.origen ?? OrigenEnvioAuditoria.USUARIO,
+    esApoyo,
+    esInvitado,
+    etiqueta,
+  };
+};
+
 const construirPeriodoVacio = (periodo: number, referencia?: { terminaEn: Date }) => {
   let situacion: SituacionObjetivo = SituacionObjetivo.PENDIENTE;
   let estado = 'PENDIENTE';
@@ -127,6 +171,7 @@ const construirPeriodoVacio = (periodo: number, referencia?: { terminaEn: Date }
     finalizadoEn: null,
     recibidoEn: null,
     envioResultadoId: null,
+    auditorEjecutor: null as AuditorEjecutor,
   };
 };
 
@@ -188,6 +233,7 @@ export const construirPeriodoResumen = (
     realizadaConAtraso: situacion.situacion === SituacionObjetivo.REALIZADA_CON_ATRASO,
     terminaEn: objetivo.terminaEn,
     cierreGracia: situacion.cierreGracia,
+    auditorEjecutor: derivarAuditorEjecutor(envio),
   };
 };
 
@@ -429,6 +475,12 @@ const obtenerObjetivosMes = async (
       },
       envioResultado: {
         include: {
+          asignacionAuditoria: {
+            select: {
+              auditorId: true,
+              auditor: { select: { nombre: true } },
+            },
+          },
           respuestasAuditoria: {
             select: {
               id: true,
@@ -768,6 +820,12 @@ export const obtenerResultadoPeriodo = async (
     include: {
       envioResultado: {
         include: {
+          asignacionAuditoria: {
+            select: {
+              auditorId: true,
+              auditor: { select: { nombre: true } },
+            },
+          },
           respuestasAuditoria: {
             where: { cumple: false },
             include: {

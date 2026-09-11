@@ -286,4 +286,104 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
       expect(construirResultadoMensualCanonico(periodos2)).toBe(100);
     });
   });
+
+  describe('Auditor Ejecutor (Apoyo / Invitado / Titular)', () => {
+    test('Auditor titular devuelve etiqueta null', () => {
+      const objetivo = {
+        id: 1,
+        canceladoEn: null,
+        anio: 2026,
+        mes: 8,
+        periodo: 1,
+        iniciaEn: new Date(2026, 7, 1),
+        terminaEn: new Date(2026, 7, 15),
+        envioResultado: {
+          id: 50,
+          porcentaje: 95,
+          puntajeObtenido: 95,
+          puntajePosible: 100,
+          finalizadoEn: new Date(),
+          recibidoEn: new Date(),
+          invalidadoEn: null,
+          nombreAuditorSnapshot: 'Juan Pérez',
+          origen: 'USUARIO',
+          enviadoPorUsuarioId: 10,
+          enlaceInvitadoId: null,
+          asignacionAuditoria: { auditorId: 10, auditor: { nombre: 'Juan Pérez' } },
+          respuestasAuditoria: [],
+        },
+      } as unknown as Parameters<typeof construirPeriodoResumen>[0];
+
+      const resumen = construirPeriodoResumen(objetivo, 1);
+      expect(resumen.auditorEjecutor).toBeDefined();
+      expect(resumen.auditorEjecutor?.nombre).toBe('Juan Pérez');
+      expect(resumen.auditorEjecutor?.esApoyo).toBe(false);
+      expect(resumen.auditorEjecutor?.esInvitado).toBe(false);
+      expect(resumen.auditorEjecutor?.etiqueta).toBe(null);
+    });
+
+    test('Auditor comodín/apoyo devuelve etiqueta Apoyo: [Nombre]', () => {
+      const objetivo = {
+        id: 2,
+        canceladoEn: null,
+        anio: 2026,
+        mes: 8,
+        periodo: 1,
+        iniciaEn: new Date(2026, 7, 1),
+        terminaEn: new Date(2026, 7, 15),
+        envioResultado: {
+          id: 51,
+          porcentaje: 90,
+          puntajeObtenido: 90,
+          puntajePosible: 100,
+          finalizadoEn: new Date(),
+          recibidoEn: new Date(),
+          invalidadoEn: null,
+          nombreAuditorSnapshot: 'Admin Comodín',
+          origen: 'USUARIO',
+          enviadoPorUsuarioId: 99,
+          enlaceInvitadoId: null,
+          asignacionAuditoria: { auditorId: 10, auditor: { nombre: 'Juan Pérez' } },
+          respuestasAuditoria: [],
+        },
+      } as unknown as Parameters<typeof construirPeriodoResumen>[0];
+
+      const resumen = construirPeriodoResumen(objetivo, 1);
+      expect(resumen.auditorEjecutor?.esApoyo).toBe(true);
+      expect(resumen.auditorEjecutor?.esInvitado).toBe(false);
+      expect(resumen.auditorEjecutor?.etiqueta).toBe('Apoyo: Admin Comodín');
+    });
+
+    test('Auditor invitado devuelve etiqueta Invitado: [Nombre]', () => {
+      const objetivo = {
+        id: 3,
+        canceladoEn: null,
+        anio: 2026,
+        mes: 8,
+        periodo: 1,
+        iniciaEn: new Date(2026, 7, 1),
+        terminaEn: new Date(2026, 7, 15),
+        envioResultado: {
+          id: 52,
+          porcentaje: 88,
+          puntajeObtenido: 88,
+          puntajePosible: 100,
+          finalizadoEn: new Date(),
+          recibidoEn: new Date(),
+          invalidadoEn: null,
+          nombreAuditorSnapshot: 'Visitante Externo',
+          origen: 'INVITADO',
+          enviadoPorUsuarioId: null,
+          enlaceInvitadoId: 4,
+          asignacionAuditoria: { auditorId: 10, auditor: { nombre: 'Juan Pérez' } },
+          respuestasAuditoria: [],
+        },
+      } as unknown as Parameters<typeof construirPeriodoResumen>[0];
+
+      const resumen = construirPeriodoResumen(objetivo, 1);
+      expect(resumen.auditorEjecutor?.esApoyo).toBe(false);
+      expect(resumen.auditorEjecutor?.esInvitado).toBe(true);
+      expect(resumen.auditorEjecutor?.etiqueta).toBe('Invitado: Visitante Externo');
+    });
+  });
 });

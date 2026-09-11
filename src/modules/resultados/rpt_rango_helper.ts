@@ -185,6 +185,12 @@ export async function obtenerResultadosRangoGeneral(
     include: {
       envioResultado: {
         include: {
+          asignacionAuditoria: {
+            select: {
+              auditorId: true,
+              auditor: { select: { nombre: true } },
+            },
+          },
           respuestasAuditoria: {
             select: {
               id: true,
