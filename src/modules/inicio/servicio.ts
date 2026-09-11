@@ -39,10 +39,10 @@ export const obtenerDashboardInicio = async (
   const mesPrev = calcularMesAnterior(anioActual, mesActual);
   const [resultadosMesActual, resultadosMesAnterior] = await Promise.all([
     obtenerResultadosAreas(tx, autenticacion, { anio: anioActual, mes: mesActual }),
-    obtenerResultadosAreas(tx, autenticacion, { anio: mesPrev.anio, mes: mesPrev.mes }),
+    obtenerResultadosAreas(tx, autenticacion, { anio: mesPrev.anio, mes: mesPrev.mes }, { alcanceGeneral: true }),
   ]);
 
-  // Calcular Resultado Global del mes anterior
+  // Calcular Resultado Global del mes anterior (de toda la empresa)
   const areasConResultado = resultadosMesAnterior.areas.filter((a) => a.resultadoMensual !== null);
   const sumaGlobal = areasConResultado.reduce((acc, curr) => acc + (curr.resultadoMensual ?? 0), 0);
   const porcentajeGlobal = areasConResultado.length > 0 ? sumaGlobal / areasConResultado.length : null;
@@ -173,8 +173,32 @@ export const obtenerDashboardInicio = async (
           etiqueta: resultadosMesAnterior.mes.etiqueta,
           porcentaje: aPrev?.resultadoMensual ?? null,
         },
+        resultadoActual: {
+          clave: resultadosMesActual.mes.clave,
+          etiqueta: resultadosMesActual.mes.etiqueta,
+          porcentaje: aActual.resultadoMensual ?? null,
+        },
+        mesAnterior: {
+          clave: resultadosMesAnterior.mes.clave,
+          etiqueta: resultadosMesAnterior.mes.etiqueta,
+          porcentaje: aPrev?.resultadoMensual ?? null,
+        },
+        mesActual: {
+          clave: resultadosMesActual.mes.clave,
+          etiqueta: resultadosMesActual.mes.etiqueta,
+          porcentaje: aActual.resultadoMensual ?? null,
+        },
       };
     });
+
+  // Calcular promedio general de las áreas a cargo del usuario (del mes anterior)
+  const areasCargoConResultado = departamentosCargo
+    .map((dep) => dep.resultadoAnterior.porcentaje)
+    .filter((pct): pct is number => pct !== null && pct !== undefined);
+
+  const resultadoMisAreas = areasCargoConResultado.length > 0
+    ? Number((areasCargoConResultado.reduce((acc, curr) => acc + curr, 0) / areasCargoConResultado.length).toFixed(2))
+    : null;
 
   if (esAdmin) {
     // -------------------------------------------------------------
@@ -203,17 +227,50 @@ export const obtenerDashboardInicio = async (
     const mapActual = new Map(resultadosMesActual.areas.map((a) => [a.area.id, a]));
     const mostrarMesAnterior = previosPorAreaMap.size > 0;
 
+    const [asignacionesMensualesActual, asignacionesMensualesPrev] = await Promise.all([
+      tx.asignacionMensual.findMany({
+        where: { anio: anioActual, mes: mesActual },
+        include: {
+          auditor: { select: { id: true, nombre: true } },
+        },
+      }),
+      tx.asignacionMensual.findMany({
+        where: { anio: mesPrev.anio, mes: mesPrev.mes },
+        include: {
+          auditor: { select: { id: true, nombre: true } },
+        },
+      }),
+    ]);
+    const mapAsignacionesActual = new Map(asignacionesMensualesActual.map((asig) => [asig.areaId, asig.auditor]));
+    const mapAsignacionesPrev = new Map(asignacionesMensualesPrev.map((asig) => [asig.areaId, asig.auditor]));
+
     const controlFilas = vistaMensual.filas.map((fila) => {
       const previo = previosPorAreaMap.get(fila.area.id) ?? null;
       const aPrev = mapPrev.get(fila.area.id);
       const aActual = mapActual.get(fila.area.id);
 
+      // Auditor actual: asignación mensual explícita o periodo efectivo o fila.auditorMensual
+      const auditorActualMensual = mapAsignacionesActual.get(fila.area.id) ?? null;
+      const auditorActual = fila.auditorMensual
+        ?? (auditorActualMensual ? { id: auditorActualMensual.id, nombre: auditorActualMensual.nombre } : null)
+        ?? fila.periodos.p1.auditorEfectivo
+        ?? fila.periodos.p2.auditorEfectivo
+        ?? null;
+
+      // Auditor anterior: asignación mensual previa o periodo previo hábil
+      const auditorPrevMensual = mapAsignacionesPrev.get(fila.area.id) ?? null;
+      const auditorAnterior = auditorPrevMensual
+        ? { id: String(auditorPrevMensual.id), nombre: auditorPrevMensual.nombre }
+        : (previo?.auditorNombre ? { id: '', nombre: previo.auditorNombre } : null);
+
       return {
         area: fila.area,
-        auditorMensual: fila.auditorMensual,
+        auditorMensual: auditorActual,
+        auditorAnterior,
         mesAnterior: {
           clave: mesPrev.clave,
           etiqueta: `${MESES[mesPrev.mes - 1]} ${mesPrev.anio}`,
+          auditor: auditorAnterior,
           periodoAnterior: previo ? {
             periodo: previo.periodo,
             mesNombre: previo.mesNombre,
@@ -253,7 +310,7 @@ export const obtenerDashboardInicio = async (
         mesActual: {
           clave: `${anioActual}-${String(mesActual).padStart(2, '0')}`,
           etiqueta: `${MESES[mesActual - 1]} ${anioActual}`,
-          auditorMensual: fila.auditorMensual,
+          auditorMensual: auditorActual,
           periodos: fila.periodos,
           resultado: aActual?.resultadoMensual ?? null,
         },
@@ -277,6 +334,7 @@ export const obtenerDashboardInicio = async (
       },
       controlFilas,
       resultadoGlobal,
+      resultadoMisAreas,
       misPendientesResumen,
       departamentosCargo,
     };
@@ -315,6 +373,7 @@ export const obtenerDashboardInicio = async (
       realizadas: auditorRealizadas,
     },
     resultadoGlobal,
+    resultadoMisAreas,
     departamentosCargo,
     misPendientesResumen,
   };
