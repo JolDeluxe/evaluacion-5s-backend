@@ -40,11 +40,27 @@ export const obtenerContextoAuditoriaAsignacion = async (req: Request, res: Resp
   }
 
   const esAdmin = puedeAdministrar5S(req.autenticacion.rol);
-  if (!puedeUsarAsignacionEjecutable(req.autenticacion, asignacion.auditorId)) {
-    throw prohibido('La asignacion no pertenece al auditor autenticado');
+  const esAuditorTitular = asignacion.auditorId === req.autenticacion.usuarioId;
+
+  // Si no es el auditor titular, verificar si es administrador comodín válido
+  if (!esAuditorTitular) {
+    const usuarioAutenticado = await prisma.usuario.findUnique({
+      where: { id: req.autenticacion.usuarioId },
+      select: { id: true, rol: true, esComodin: true },
+    });
+    const esComodinValido = usuarioAutenticado?.rol === 'ADMINISTRADOR' && usuarioAutenticado?.esComodin;
+    if (!esComodinValido && !puedeUsarAsignacionEjecutable(req.autenticacion, asignacion.auditorId)) {
+      throw prohibido('La asignacion no pertenece al auditor autenticado');
+    }
   }
 
-  await validarObjetivoRealizableMasAntiguo(prisma, asignacion.objetivoAuditoriaId, asignacion.auditorId, new Date(), asignacion.reabiertaHasta);
+  await validarObjetivoRealizableMasAntiguo(
+    prisma,
+    asignacion.objetivoAuditoriaId,
+    esAuditorTitular ? asignacion.auditorId : null,
+    new Date(),
+    asignacion.reabiertaHasta,
+  );
 
   let versionFormulario = asignacion.objetivoAuditoria.versionFormulario;
 

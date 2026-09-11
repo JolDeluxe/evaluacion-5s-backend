@@ -184,6 +184,9 @@ export const construirPeriodoResumen = (
     envioResultadoId: envio.id,
     situacion: situacion.situacion,
     estado: 'REALIZADA',
+    realizadaATiempo: situacion.situacion === SituacionObjetivo.REALIZADA_A_TIEMPO,
+    realizadaConAtraso: situacion.situacion === SituacionObjetivo.REALIZADA_CON_ATRASO,
+    terminaEn: objetivo.terminaEn,
     cierreGracia: situacion.cierreGracia,
   };
 };

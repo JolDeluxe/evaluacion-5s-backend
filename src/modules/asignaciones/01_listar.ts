@@ -3,7 +3,7 @@ import { z } from 'zod';
 import type { PrismaTransaction } from '../../db';
 import { prisma } from '../../db';
 import { Prisma } from '../../generated/prisma/client';
-import { EstadoAsignacionAuditoria, RolUsuario } from '../../generated/prisma/enums';
+import { EstadoAsignacionAuditoria, OrigenEnvioAuditoria, RolUsuario } from '../../generated/prisma/enums';
 import { prohibido } from '../../utils/errores';
 import { obtenerPaginacion } from '../../utils/paginacion';
 import { puedeAdministrar5S } from '../../utils/permisos';
@@ -27,6 +27,39 @@ const mismoDia = (d1: Date, d2: Date) => (
   && d1.getMonth() === d2.getMonth()
   && d1.getDate() === d2.getDate()
 );
+
+const mapearResultadoAuditoria = (asig: {
+  auditorId: number;
+  objetivoAuditoria: {
+    terminaEn: Date | string;
+    envioResultado?: {
+      invalidadoEn?: Date | string | null;
+      realizadaATiempo?: boolean | null;
+      verificadoEn?: Date | string | null;
+      porcentaje?: Prisma.Decimal | number | string | null;
+      enviadoPorUsuarioId?: number | null;
+      enlaceInvitadoId?: number | null;
+      origen?: string | null;
+      enviadoPorUsuario?: { nombre?: string | null } | null;
+    } | null;
+  };
+}) => {
+  const objetivo = asig.objetivoAuditoria;
+  const envio = objetivo.envioResultado;
+  const realizada = Boolean(envio && !envio.invalidadoEn);
+  const realizadaATiempoCalculada = envio?.verificadoEn
+    ? new Date(envio.verificadoEn) <= new Date(objetivo.terminaEn)
+    : false;
+
+  return {
+    realizada,
+    realizadaATiempo: Boolean(envio?.realizadaATiempo ?? realizadaATiempoCalculada),
+    porcentaje: realizada && envio?.porcentaje != null ? Number(envio.porcentaje) : null,
+    ejecutadoPorApoyo: Boolean(envio?.enviadoPorUsuarioId && envio.enviadoPorUsuarioId !== asig.auditorId),
+    nombreEjecutor: envio?.enviadoPorUsuario?.nombre || null,
+    esInvitado: Boolean(envio?.enlaceInvitadoId || envio?.origen === OrigenEnvioAuditoria.INVITADO),
+  };
+};
 
 export const obtenerEjecutablesUsuario = async (
   tx: PrismaTransaction,
@@ -59,7 +92,16 @@ export const obtenerEjecutablesUsuario = async (
               tipo: true,
             },
           },
-          envioResultado: true,
+          envioResultado: {
+            include: {
+              enviadoPorUsuario: {
+                select: {
+                  id: true,
+                  nombre: true,
+                },
+              },
+            },
+          },
           enviosAuditoria: true,
         },
       },
@@ -97,6 +139,7 @@ export const obtenerEjecutablesUsuario = async (
 
       return {
         ...asig,
+        ...mapearResultadoAuditoria(asig),
         venceEn: venceEnEfectiva,
         infoPeriodo,
         bloqueoPeriodoAnterior,
@@ -232,21 +275,15 @@ export const listarAsignaciones = async (
       throw prohibido('Solo los administradores comodín pueden consultar esta bandeja');
     }
 
-    const misAreas = await prisma.usuarioArea.findMany({
-      where: { usuarioId: usuarioAutenticado.id },
-      select: { areaId: true },
-    });
-    const misAreaIds = misAreas.map((a) => a.areaId);
-
+    // Se consultan asignaciones pendientes que ya hayan iniciado.
+    // El filtro de periodo realizable (ordinario + días de gracia) se aplica con infoPeriodo.realizable
     const comodinAsignaciones = await prisma.asignacionAuditoria.findMany({
       where: {
         auditorId: { not: usuarioAutenticado.id },
         estado: EstadoAsignacionAuditoria.PENDIENTE,
         objetivoAuditoria: {
           iniciaEn: { lte: ahora },
-          terminaEn: { gte: ahora },
           envioResultadoId: null,
-          ...(misAreaIds.length > 0 ? { areaId: { notIn: misAreaIds } } : {}),
           ...(query.anio ? { anio: query.anio } : {}),
           ...(query.mes ? { mes: query.mes } : {}),
         },
@@ -276,7 +313,16 @@ export const listarAsignaciones = async (
                 tipo: true,
               },
             },
-            envioResultado: true,
+            envioResultado: {
+              include: {
+                enviadoPorUsuario: {
+                  select: {
+                    id: true,
+                    nombre: true,
+                  },
+                },
+              },
+            },
             enviosAuditoria: true,
           },
         },
@@ -291,6 +337,7 @@ export const listarAsignaciones = async (
       const infoPeriodo = obtenerEstadoEjecucion(asig, ahora);
       return {
         ...asig,
+        ...mapearResultadoAuditoria(asig),
         esComodin: true,
         venceEn: new Date(asig.objetivoAuditoria.terminaEn),
         infoPeriodo,
@@ -334,7 +381,16 @@ export const listarAsignaciones = async (
                 tipo: true,
               },
             },
-            envioResultado: true,
+            envioResultado: {
+              include: {
+                enviadoPorUsuario: {
+                  select: {
+                    id: true,
+                    nombre: true,
+                  },
+                },
+              },
+            },
             enviosAuditoria: true,
           },
         },
@@ -367,6 +423,7 @@ export const listarAsignaciones = async (
       const infoPeriodo = obtenerEstadoEjecucion(asig, ahora);
       return {
         ...asig,
+        ...mapearResultadoAuditoria(asig),
         venceEn: venceEnEfectiva,
         infoPeriodo,
         invitacionActiva: asig.enlacesInvitado[0] ?? null,

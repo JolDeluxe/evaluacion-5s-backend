@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { EstadoAsignacionAuditoria, OrigenEnvioAuditoria, RolUsuario } from '../../generated/prisma/enums';
 import { conflicto, prohibido, solicitudInvalida } from '../../utils/errores';
 import { puedeEjecutarAuditoria } from '../../utils/permisos';
+import { calcularCierreConGracia } from '../../utils/periodos';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 import { responder, responderCreado } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
@@ -71,8 +72,9 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     const objetivo = asignacion.objetivoAuditoria;
 
     if (!esAuditorTitular && esComodinValido) {
-      if (verificadoEn < objetivo.iniciaEn || verificadoEn > objetivo.terminaEn) {
-        throw solicitudInvalida('El administrador comodín solo puede intervenir en periodos en curso');
+      const cierreGracia = calcularCierreConGracia(objetivo.terminaEn);
+      if (verificadoEn < objetivo.iniciaEn || verificadoEn > cierreGracia) {
+        throw solicitudInvalida('El administrador comodín solo puede intervenir en periodos en curso o en periodo de gracia');
       }
     }
 
@@ -84,11 +86,13 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
       asignacion.reabiertaHasta,
     );
 
-    const perteneceAlArea = await tx.usuarioArea.findFirst({
-      where: { usuarioId, areaId: objetivo.areaId },
-      select: { id: true },
-    });
-    if (perteneceAlArea) throw prohibido('No puedes auditar tu propia area');
+    if (!esComodinValido) {
+      const perteneceAlArea = await tx.usuarioArea.findFirst({
+        where: { usuarioId, areaId: objetivo.areaId },
+        select: { id: true },
+      });
+      if (perteneceAlArea) throw prohibido('No puedes auditar tu propia area');
+    }
 
     let versionFormulario = objetivo.versionFormulario;
     if (!objetivo.envioResultadoId) {
@@ -113,7 +117,8 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     const puntaje = calcularPuntaje5S(body.respuestas);
 
     const ahoraServidor = new Date();
-    const realizadaATiempo = ahoraServidor.getTime() <= objetivo.terminaEn.getTime();
+    const terminaEnDate = new Date(objetivo.terminaEn); // garantiza Date aunque Prisma devuelva string
+    const realizadaATiempo = ahoraServidor.getTime() <= terminaEnDate.getTime();
 
     const creado = await tx.envioAuditoria.create({
       data: {

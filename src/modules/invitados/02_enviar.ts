@@ -71,7 +71,8 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
     const nombreAuditorSnapshot = usuarioSesion?.nombre?.trim() || body.nombreAuditorSnapshot.trim();
 
     const ahoraServidor = new Date();
-    const realizadaATiempo = ahoraServidor.getTime() <= objetivo.terminaEn.getTime();
+    const terminaEnDate = new Date(objetivo.terminaEn); // garantiza Date aunque Prisma devuelva string
+    const realizadaATiempo = ahoraServidor.getTime() <= terminaEnDate.getTime();
 
     const creado = await tx.envioAuditoria.create({
       data: {
