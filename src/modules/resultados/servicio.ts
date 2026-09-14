@@ -4,7 +4,7 @@ import { OrigenEnvioAuditoria, TipoArea } from '../../generated/prisma/enums';
 import { noEncontrado, prohibido, solicitudInvalida } from '../../utils/errores';
 import { obtenerAreaIdsConDetalle, tieneDetalleDeArea } from '../../utils/areas_permitidas';
 import { puedeAdministrar5S, puedeVerResultadosCompletos } from '../../utils/permisos';
-import { calcularCierreConGracia, derivarSituacionObjetivo, SituacionObjetivo } from '../../utils/periodos';
+import { calcularCierreConGracia, calcularResultadoMensualCanonico, derivarSituacionObjetivo, SituacionObjetivo } from '../../utils/periodos';
 import { promedio } from './helper';
 import { areaEsAuditableEnPeriodo } from '../areas/servicio_vigencia_area';
 import { parsearRangoQuery, obtenerResultadosRangoGeneral } from './rpt_rango_helper';
@@ -241,20 +241,10 @@ export const construirResultadoMensualCanonico = (periodos: ReturnType<typeof co
   const p1 = periodos.find((p) => p.periodo === 1);
   const p2 = periodos.find((p) => p.periodo === 2);
 
-  const p1Realizado = Boolean(p1?.completado && p1?.porcentaje !== null && p1?.porcentaje !== undefined);
-  const p2Realizado = Boolean(p2?.completado && p2?.porcentaje !== null && p2?.porcentaje !== undefined);
+  const p1Score = p1?.completado && p1?.porcentaje !== null && p1?.porcentaje !== undefined ? Number(p1.porcentaje) : null;
+  const p2Score = p2?.completado && p2?.porcentaje !== null && p2?.porcentaje !== undefined ? Number(p2.porcentaje) : null;
 
-  if (p1Realizado && p2Realizado) {
-    return promedio([p1!.porcentaje!, p2!.porcentaje!]);
-  }
-  if (p1Realizado && (p2?.estado === 'NO_REALIZADA' || p2?.estado === 'NO_APLICA')) {
-    return p1!.porcentaje!;
-  }
-  if (p2Realizado && (p1?.estado === 'NO_REALIZADA' || p1?.estado === 'NO_APLICA')) {
-    return p2!.porcentaje!;
-  }
-
-  return null;
+  return calcularResultadoMensualCanonico(p1Score, p2Score, p1?.estado ?? 'PENDIENTE', p2?.estado ?? 'PENDIENTE');
 };
 
 const construirEstadoArea = (periodos: ReturnType<typeof construirPeriodoResumen>[]) => {

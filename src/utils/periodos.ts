@@ -418,3 +418,35 @@ export const construirPeriodoCompat = (
   iniciaEn: objetivo.iniciaEn,
   terminaEn: objetivo.terminaEn,
 });
+
+/**
+ * FUENTE DE VERDAD ÚNICA PARA EL CÁLCULO DEL RESULTADO MENSUAL DEL ÁREA
+ * 
+ * Reglas de negocio:
+ * 1. P1 y P2 realizados -> Promedio ((P1 + P2) / 2)
+ * 2. P1 realizado y P2 no realizada / no aplica -> P1
+ * 3. P2 realizado y P1 no realizada / no aplica -> P2
+ * 4. P1 realizado y P2 pendiente (mes en curso) -> null (Sin resultado final aún)
+ */
+export function calcularResultadoMensualCanonico(
+  p1Score: number | null,
+  p2Score: number | null,
+  chipP1: string,
+  chipP2: string,
+): number | null {
+  const p1Realizado = p1Score !== null && p1Score !== undefined;
+  const p2Realizado = p2Score !== null && p2Score !== undefined;
+
+  if (p1Realizado && p2Realizado) {
+    return Number(((p1Score + p2Score) / 2).toFixed(4));
+  }
+  if (p1Realizado && (chipP2 === 'NO_REALIZADA' || chipP2 === 'NO_APLICA')) {
+    return Number(p1Score.toFixed(4));
+  }
+  if (p2Realizado && (chipP1 === 'NO_REALIZADA' || chipP1 === 'NO_APLICA')) {
+    return Number(p2Score.toFixed(4));
+  }
+
+  return null;
+}
+

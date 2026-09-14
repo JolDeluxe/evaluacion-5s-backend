@@ -2,7 +2,7 @@ import type { PrismaTransaction } from '../../db';
 import { prisma } from '../../db';
 import { Prisma } from '../../generated/prisma/client';
 import { EstadoAsignacionAuditoria, TipoArea } from '../../generated/prisma/enums';
-import { calcularCierreConGracia } from '../../utils/periodos';
+import { calcularCierreConGracia, calcularResultadoMensualCanonico } from '../../utils/periodos';
 
 export const CORTE_P1 = 1;
 export const CORTE_P2 = 2;
@@ -57,9 +57,12 @@ export const calcularYGuardarCumplimientoUsuario = async (
     where: { id: usuarioId },
     include: {
       areasUsuario: {
+        where: {
+          area: { activo: true },
+        },
         include: {
           area: {
-            select: { id: true, codigo: true, nombre: true, tipo: true },
+            select: { id: true, codigo: true, nombre: true, tipo: true, activo: true },
           },
         },
       },
@@ -87,6 +90,7 @@ export const calcularYGuardarCumplimientoUsuario = async (
 
   // COMPONENTE 1: AUDITORÍAS ORDINARIAS
   // Buscamos asignaciones donde el usuario sea responsableCumplimientoId (o auditorId si responsableCumplimientoId es null)
+  // Solo se consideran auditorías de áreas activas
   const asignacionesResponsable = await tx.asignacionAuditoria.findMany({
     where: {
       estado: { not: EstadoAsignacionAuditoria.CANCELADA },
@@ -94,6 +98,7 @@ export const calcularYGuardarCumplimientoUsuario = async (
         anio,
         mes,
         canceladoEn: null,
+        area: { activo: true },
       },
       OR: [
         { responsableCumplimientoId: usuarioId },
@@ -176,14 +181,10 @@ export const calcularYGuardarCumplimientoUsuario = async (
       const p1Score = envioP1 ? Number(envioP1.porcentaje) : null;
       const p2Score = envioP2 ? Number(envioP2.porcentaje) : null;
 
-      let resultadoArea: number | null = null;
-      if (p1Score !== null && p2Score !== null) {
-        resultadoArea = Number(((p1Score + p2Score) / 2).toFixed(4));
-      } else if (p1Score !== null) {
-        resultadoArea = Number(p1Score.toFixed(4));
-      } else if (p2Score !== null) {
-        resultadoArea = Number(p2Score.toFixed(4));
-      }
+      const chipP1 = p1 ? determinarEstadoChip(p1, envioP1) : 'PENDIENTE';
+      const chipP2 = p2 ? determinarEstadoChip(p2, envioP2) : 'PENDIENTE';
+
+      const resultadoArea = calcularResultadoMensualCanonico(p1Score, p2Score, chipP1, chipP2);
 
       if (resultadoArea !== null) {
         areasConResultado += 1;
@@ -348,12 +349,18 @@ export const obtenerVistaMensualCumplimientos = async (
   }
 
   // 2. Cargar Asignaciones Mensuales y Objetivos del mes para la vista tabular operativa
+  // Solo se consideran áreas activas para el seguimiento operativo vigente
   const asignacionesMensuales = await tx.asignacionMensual.findMany({
-    where: { anio, mes },
+    where: {
+      anio,
+      mes,
+      area: { activo: true },
+    },
     include: {
       area: {
         include: {
           usuariosArea: {
+            where: { area: { activo: true } },
             include: {
               usuario: {
                 select: { id: true, nombre: true, nombreUsuario: true },
@@ -372,7 +379,12 @@ export const obtenerVistaMensualCumplimientos = async (
   });
 
   const objetivosMes = await tx.objetivoAuditoria.findMany({
-    where: { anio, mes, canceladoEn: null },
+    where: {
+      anio,
+      mes,
+      canceladoEn: null,
+      area: { activo: true },
+    },
     include: {
       envioResultado: {
         include: {
@@ -446,14 +458,7 @@ export const obtenerVistaMensualCumplimientos = async (
     const p1Porcentaje = envioP1 && !envioP1.invalidadoEn ? Number(envioP1.porcentaje) : null;
     const p2Porcentaje = envioP2 && !envioP2.invalidadoEn ? Number(envioP2.porcentaje) : null;
 
-    let calificacionAreaMes: number | null = null;
-    if (p1Porcentaje !== null && p2Porcentaje !== null) {
-      calificacionAreaMes = Number(((p1Porcentaje + p2Porcentaje) / 2).toFixed(2));
-    } else if (p1Porcentaje !== null) {
-      calificacionAreaMes = Number(p1Porcentaje.toFixed(2));
-    } else if (p2Porcentaje !== null) {
-      calificacionAreaMes = Number(p2Porcentaje.toFixed(2));
-    }
+    const calificacionAreaMes = calcularResultadoMensualCanonico(p1Porcentaje, p2Porcentaje, chipP1, chipP2);
 
     const propietarios = area.usuariosArea.map((ua) => ({
       id: ua.usuario.id,
@@ -467,6 +472,8 @@ export const obtenerVistaMensualCumplimientos = async (
       codigoArea: area.codigo,
       nombreArea: area.nombre,
       tipoArea: area.tipo,
+      activo: area.activo,
+      activa: area.activo,
       propietarios,
       resultadoMensual: calificacionAreaMes,
       calificacionAreaMes,
@@ -476,6 +483,7 @@ export const obtenerVistaMensualCumplimientos = async (
         codigo: area.codigo,
         nombre: area.nombre,
         tipo: area.tipo,
+        activo: area.activo,
         propietarios,
       },
       auditorAsignado,
