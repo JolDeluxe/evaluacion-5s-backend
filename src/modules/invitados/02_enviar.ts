@@ -8,6 +8,7 @@ import { transaccionSerializable } from '../../utils/transaccion';
 import { calcularPuntaje5S, validarCodigoArea, validarRespuestas5S } from '../auditorias/helper';
 import { esquemaEnviarAuditoria, esquemaToken } from '../auditorias/zod';
 import { registrarAuditoria } from '../registros_auditoria/helper';
+import { solicitarSincronizacionCsv } from '../sistema/servicio_exportacion_csv';
 
 export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
   const { token } = esquemaToken.parse(req.params);
@@ -138,5 +139,6 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
       include: { respuestasAuditoria: { include: { fotosAuditoria: true } } },
     });
   });
+  solicitarSincronizacionCsv();
   responderCreado(res, { envio });
 };

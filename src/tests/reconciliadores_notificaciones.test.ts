@@ -11,7 +11,12 @@ import {
 import { primerDiaHabilMes, mesAnteriorDe } from '../utils/periodos';
 import { reconciliarAsignaciones } from '../modules/notificaciones/reconciliador-asignaciones';
 import { reconciliarResultados } from '../modules/notificaciones/reconciliador-resultados';
-import { esErrorPermanenteSmtp } from '../modules/notificaciones/helper';
+import {
+  esErrorPermanenteSmtp,
+  crearNotificacionUsuario,
+  crearNotificacionAsignacion,
+  TIPOS_NOTIFICACION_CORREO_PERMITIDOS,
+} from '../modules/notificaciones/helper';
 
 describe('Utilidades de Fechas y Periodos', () => {
   test('primerDiaHabilMes: cuando el día 1 es lunes retorna el día 1', () => {
@@ -411,5 +416,201 @@ describe('Reconciliador de Resultados Mensuales', () => {
     const res2 = await reconciliarResultados(fakeTx as any, 2026, 8, fechaAhora);
     expect(res2.creadas).toBe(0);
     expect(res2.duplicadas).toBe(3);
+  });
+
+  describe('Lista Blanca de Canales de Entrega (Whitelist CORREO)', () => {
+    test('TIPOS_NOTIFICACION_CORREO_PERMITIDOS contiene únicamente los tipos autorizados para envío de correo', () => {
+      expect(TIPOS_NOTIFICACION_CORREO_PERMITIDOS).toEqual([
+        TipoNotificacion.ASIGNACION_MENSUAL_CORREO,
+        TipoNotificacion.RESULTADO_MENSUAL_CORREO,
+      ]);
+    });
+
+    test('crearNotificacionUsuario con RECORDATORIO NO crea entrega con canal CORREO', async () => {
+      const entregasCreadas: Array<{ canal: CanalNotificacion; destinoSnapshot: string }> = [];
+      const mockTx = {
+        notificacion: {
+          upsert: async (args: any) => ({ id: 101, ...args.create }),
+        },
+        suscripcionPush: {
+          findMany: async () => [],
+        },
+        entregaNotificacion: {
+          upsert: async (args: any) => {
+            entregasCreadas.push(args.create);
+            return { id: 1, ...args.create };
+          },
+        },
+      };
+
+      await crearNotificacionUsuario(mockTx as any, {
+        usuario: { id: 10, correo: 'auditor@cuadra.com.mx' },
+        claveDedupe: 'recordatorio:test:1',
+        tipo: TipoNotificacion.RECORDATORIO,
+        titulo: 'Recordatorio de auditoría',
+        mensaje: 'Faltan pocos días',
+      });
+
+      const entregaCorreo = entregasCreadas.find((e) => e.canal === CanalNotificacion.CORREO);
+      expect(entregaCorreo).toBeUndefined();
+      expect(entregasCreadas.length).toBe(0);
+    });
+
+    test('crearNotificacionUsuario con AUDITORIA_VENCIDA NO crea entrega con canal CORREO', async () => {
+      const entregasCreadas: Array<{ canal: CanalNotificacion; destinoSnapshot: string }> = [];
+      const mockTx = {
+        notificacion: {
+          upsert: async (args: any) => ({ id: 102, ...args.create }),
+        },
+        suscripcionPush: {
+          findMany: async () => [],
+        },
+        entregaNotificacion: {
+          upsert: async (args: any) => {
+            entregasCreadas.push(args.create);
+            return { id: 2, ...args.create };
+          },
+        },
+      };
+
+      await crearNotificacionUsuario(mockTx as any, {
+        usuario: { id: 11, correo: 'auditor2@cuadra.com.mx' },
+        claveDedupe: 'vencida:test:1',
+        tipo: TipoNotificacion.AUDITORIA_VENCIDA,
+        titulo: 'Auditoría vencida',
+        mensaje: 'Tu auditoría ha vencido',
+      });
+
+      const entregaCorreo = entregasCreadas.find((e) => e.canal === CanalNotificacion.CORREO);
+      expect(entregaCorreo).toBeUndefined();
+      expect(entregasCreadas.length).toBe(0);
+    });
+
+    test('crearNotificacionUsuario con ASIGNACION_MENSUAL_CORREO SÍ crea entrega con canal CORREO', async () => {
+      const entregasCreadas: Array<{ canal: CanalNotificacion; destinoSnapshot: string }> = [];
+      const mockTx = {
+        notificacion: {
+          upsert: async (args: any) => ({ id: 103, ...args.create }),
+        },
+        suscripcionPush: {
+          findMany: async () => [],
+        },
+        entregaNotificacion: {
+          upsert: async (args: any) => {
+            entregasCreadas.push(args.create);
+            return { id: 3, ...args.create };
+          },
+        },
+      };
+
+      await crearNotificacionUsuario(mockTx as any, {
+        usuario: { id: 12, correo: 'auditor3@cuadra.com.mx' },
+        claveDedupe: 'asignacion_mensual:test:1',
+        tipo: TipoNotificacion.ASIGNACION_MENSUAL_CORREO,
+        titulo: 'Asignación mensual',
+        mensaje: 'Tienes asignaciones para este mes',
+      });
+
+      const entregaCorreo = entregasCreadas.find((e) => e.canal === CanalNotificacion.CORREO);
+      expect(entregaCorreo).toBeDefined();
+      expect(entregaCorreo?.destinoSnapshot).toBe('auditor3@cuadra.com.mx');
+    });
+
+    test('crearNotificacionUsuario con RESULTADO_MENSUAL_CORREO SÍ crea entrega con canal CORREO', async () => {
+      const entregasCreadas: Array<{ canal: CanalNotificacion; destinoSnapshot: string }> = [];
+      const mockTx = {
+        notificacion: {
+          upsert: async (args: any) => ({ id: 104, ...args.create }),
+        },
+        suscripcionPush: {
+          findMany: async () => [],
+        },
+        entregaNotificacion: {
+          upsert: async (args: any) => {
+            entregasCreadas.push(args.create);
+            return { id: 4, ...args.create };
+          },
+        },
+      };
+
+      await crearNotificacionUsuario(mockTx as any, {
+        usuario: { id: 13, correo: 'auditor4@cuadra.com.mx' },
+        claveDedupe: 'resultado_mensual:test:1',
+        tipo: TipoNotificacion.RESULTADO_MENSUAL_CORREO,
+        titulo: 'Resultados mensuales',
+        mensaje: 'Resultados del mes publicados',
+      });
+
+      const entregaCorreo = entregasCreadas.find((e) => e.canal === CanalNotificacion.CORREO);
+      expect(entregaCorreo).toBeDefined();
+      expect(entregaCorreo?.destinoSnapshot).toBe('auditor4@cuadra.com.mx');
+    });
+
+    test('crearNotificacionUsuario con esCanario=true permite canal CORREO para cualquier tipo', async () => {
+      const entregasCreadas: Array<{ canal: CanalNotificacion; destinoSnapshot: string }> = [];
+      const mockTx = {
+        notificacion: {
+          upsert: async (args: any) => ({ id: 105, ...args.create }),
+        },
+        suscripcionPush: {
+          findMany: async () => [],
+        },
+        entregaNotificacion: {
+          upsert: async (args: any) => {
+            entregasCreadas.push(args.create);
+            return { id: 5, ...args.create };
+          },
+        },
+      };
+
+      await crearNotificacionUsuario(mockTx as any, {
+        usuario: { id: 14, correo: 'canario@cuadra.com.mx' },
+        claveDedupe: 'canario:test:1',
+        tipo: TipoNotificacion.SISTEMA,
+        titulo: 'Prueba canario',
+        mensaje: 'Mensaje canario de prueba',
+        esCanario: true,
+      });
+
+      const entregaCorreo = entregasCreadas.find((e) => e.canal === CanalNotificacion.CORREO);
+      expect(entregaCorreo).toBeDefined();
+      expect(entregaCorreo?.destinoSnapshot).toBe('canario@cuadra.com.mx');
+    });
+
+    test('crearNotificacionAsignacion con NUEVA_ASIGNACION NO crea entrega con canal CORREO', async () => {
+      const entregasCreadas: Array<{ canal: CanalNotificacion; destinoSnapshot: string }> = [];
+      const mockTx = {
+        notificacion: {
+          upsert: async (args: any) => ({ id: 106, ...args.create }),
+        },
+        suscripcionPush: {
+          findMany: async () => [],
+        },
+        entregaNotificacion: {
+          upsert: async (args: any) => {
+            entregasCreadas.push(args.create);
+            return { id: 6, ...args.create };
+          },
+        },
+      };
+
+      await crearNotificacionAsignacion(
+        {
+          id: 501,
+          auditorId: 15,
+          objetivoAuditoria: {
+            nombreAreaSnapshot: 'Corte y Preparación',
+          },
+          auditor: {
+            id: 15,
+            correo: 'auditor_asignacion@cuadra.com.mx',
+          },
+        } as any,
+        mockTx as any,
+      );
+
+      const entregaCorreo = entregasCreadas.find((e) => e.canal === CanalNotificacion.CORREO);
+      expect(entregaCorreo).toBeUndefined();
+    });
   });
 });

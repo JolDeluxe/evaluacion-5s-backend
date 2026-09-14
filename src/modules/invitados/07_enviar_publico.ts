@@ -6,6 +6,7 @@ import { responder, responderCreado } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { calcularPuntaje5S, validarCodigoArea, validarRespuestas5S } from '../auditorias/helper';
 import { registrarAuditoria } from '../registros_auditoria/helper';
+import { solicitarSincronizacionCsv } from '../sistema/servicio_exportacion_csv';
 import { verificarContextoInvitadoPublico } from './token_publico';
 import { esquemaEnviarInvitadoPublico } from './zod';
 
@@ -110,5 +111,6 @@ export const enviarAuditoriaInvitadoPublico = async (req: Request, res: Response
     });
   });
 
+  solicitarSincronizacionCsv();
   responderCreado(res, { envio });
 };

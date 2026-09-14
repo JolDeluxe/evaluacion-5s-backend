@@ -29,6 +29,8 @@ import {
   detalleEntregaSistema,
 } from './14_gestionar_entregas';
 import { probarColaSistema } from './15_probar_cola';
+import { despacharColaSistema } from './16_despachar_cola';
+import { sincronizarCsvSistema } from './17_sincronizar_csv';
 
 export const sistemaRouter = Router();
 
@@ -60,6 +62,12 @@ sistemaRouter.post('/correos/entregas/cancelar-masivo', cancelarEntregasMasivoSi
 
 // Prueba canario real en cola
 sistemaRouter.post('/correos/probar-cola', probarColaSistema);
+
+// Despacho de cola bajo demanda
+sistemaRouter.post('/correos/despachar-cola', despacharColaSistema);
+
+// Sincronización manual de archivos CSV (resultados.csv y atrasos.csv)
+sistemaRouter.post('/sincronizar-csv', sincronizarCsvSistema);
 
 
 

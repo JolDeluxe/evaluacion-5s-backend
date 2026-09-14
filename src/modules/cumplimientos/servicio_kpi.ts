@@ -4,6 +4,8 @@ import { Prisma } from '../../generated/prisma/client';
 import { EstadoAsignacionAuditoria, TipoArea } from '../../generated/prisma/enums';
 import { calcularCierreConGracia, calcularResultadoMensualCanonico } from '../../utils/periodos';
 
+export { calcularResultadoMensualCanonico };
+
 export const CORTE_P1 = 1;
 export const CORTE_P2 = 2;
 
@@ -20,14 +22,17 @@ export function calcularKpiFinal(cumplimiento: number | null, promedioAreas: num
   return null;
 }
 
-export type EstadoChipCumplimiento = 'A_TIEMPO' | 'TARDE' | 'NO_REALIZADA' | 'PENDIENTE';
+export type EstadoChipCumplimiento = 'A_TIEMPO' | 'TARDE' | 'NO_REALIZADA' | 'PENDIENTE' | 'NO_APLICA';
 
 export function determinarEstadoChip(
-  objetivo: { terminaEn: Date; envioResultadoId: number | null },
+  objetivo: { terminaEn: Date; envioResultadoId?: number | null; canceladoEn?: Date | null },
   envioResultado: { realizadaATiempo: boolean; invalidadoEn: Date | null } | null,
   ahora = new Date(),
   reabiertaHasta: Date | null = null,
 ): EstadoChipCumplimiento {
+  if (objetivo.canceladoEn) {
+    return 'NO_APLICA';
+  }
   if (envioResultado && !envioResultado.invalidadoEn) {
     return envioResultado.realizadaATiempo ? 'A_TIEMPO' : 'TARDE';
   }
@@ -52,6 +57,7 @@ export const calcularYGuardarCumplimientoUsuario = async (
   anio: number,
   mes: number,
   forzarRecalculoAreas = false,
+  ahora = new Date(),
 ) => {
   const usuario = await tx.usuario.findUniqueOrThrow({
     where: { id: usuarioId },
@@ -163,11 +169,16 @@ export const calcularYGuardarCumplimientoUsuario = async (
           areaId: area.id,
           anio,
           mes,
-          canceladoEn: null,
         },
         include: {
           envioResultado: {
-            select: { id: true, porcentaje: true, invalidadoEn: true },
+            select: { id: true, porcentaje: true, invalidadoEn: true, realizadaATiempo: true },
+          },
+          asignacionesAuditoria: {
+            where: { estado: { not: EstadoAsignacionAuditoria.CANCELADA } },
+            select: { reabiertaHasta: true },
+            orderBy: { creadoEn: 'desc' },
+            take: 1,
           },
         },
       });
@@ -181,8 +192,15 @@ export const calcularYGuardarCumplimientoUsuario = async (
       const p1Score = envioP1 ? Number(envioP1.porcentaje) : null;
       const p2Score = envioP2 ? Number(envioP2.porcentaje) : null;
 
-      const chipP1 = p1 ? determinarEstadoChip(p1, envioP1) : 'PENDIENTE';
-      const chipP2 = p2 ? determinarEstadoChip(p2, envioP2) : 'PENDIENTE';
+      const asigP1 = p1?.asignacionesAuditoria?.[0] ?? null;
+      const asigP2 = p2?.asignacionesAuditoria?.[0] ?? null;
+
+      const chipP1 = p1
+        ? (p1.canceladoEn ? 'NO_APLICA' : determinarEstadoChip(p1, envioP1, ahora, asigP1?.reabiertaHasta ?? null))
+        : 'NO_APLICA';
+      const chipP2 = p2
+        ? (p2.canceladoEn ? 'NO_APLICA' : determinarEstadoChip(p2, envioP2, ahora, asigP2?.reabiertaHasta ?? null))
+        : 'NO_APLICA';
 
       const resultadoArea = calcularResultadoMensualCanonico(p1Score, p2Score, chipP1, chipP2);
 
@@ -382,7 +400,6 @@ export const obtenerVistaMensualCumplimientos = async (
     where: {
       anio,
       mes,
-      canceladoEn: null,
       area: { activo: true },
     },
     include: {
@@ -430,8 +447,12 @@ export const obtenerVistaMensualCumplimientos = async (
     const envioP1 = objP1?.envioResultado ?? null;
     const envioP2 = objP2?.envioResultado ?? null;
 
-    const chipP1 = objP1 ? determinarEstadoChip(objP1, envioP1, ahora, asigP1?.reabiertaHasta ?? null) : 'PENDIENTE';
-    const chipP2 = objP2 ? determinarEstadoChip(objP2, envioP2, ahora, asigP2?.reabiertaHasta ?? null) : 'PENDIENTE';
+    const chipP1 = objP1
+      ? (objP1.canceladoEn ? 'NO_APLICA' : determinarEstadoChip(objP1, envioP1, ahora, asigP1?.reabiertaHasta ?? null))
+      : 'NO_APLICA';
+    const chipP2 = objP2
+      ? (objP2.canceladoEn ? 'NO_APLICA' : determinarEstadoChip(objP2, envioP2, ahora, asigP2?.reabiertaHasta ?? null))
+      : 'NO_APLICA';
 
     // Resolver ejecutores reales e intervenciones comodín
     const ejecutorP1 = envioP1

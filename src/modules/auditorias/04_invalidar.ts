@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
+import { solicitarSincronizacionCsv } from '../sistema/servicio_exportacion_csv';
 
 const esquemaParams = z.object({ id: z.coerce.number().int().positive() });
 const esquemaBody = z.object({ motivoInvalidacion: z.string().trim().min(1).max(5000) });
@@ -34,5 +35,6 @@ export const invalidarAuditoria = async (req: Request, res: Response) => {
     await registrarAuditoria({ usuarioId: req.autenticacion?.usuarioId, accion: 'INVALIDAR_AUDITORIA', tipoEntidad: 'EnvioAuditoria', idEntidad: id, datosAnteriores: anterior, datosNuevos: actualizado }, tx);
     return actualizado;
   });
+  solicitarSincronizacionCsv();
   responder(res, { envio });
 };

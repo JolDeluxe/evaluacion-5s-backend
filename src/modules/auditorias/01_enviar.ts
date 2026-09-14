@@ -7,6 +7,7 @@ import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_perio
 import { responder, responderCreado } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
+import { solicitarSincronizacionCsv } from '../sistema/servicio_exportacion_csv';
 import { calcularPuntaje5S, validarCodigoArea, validarRespuestas5S } from './helper';
 import { esquemaEnviarAuditoria } from './zod';
 
@@ -200,5 +201,6 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     });
   });
 
+  solicitarSincronizacionCsv();
   responderCreado(res, { envio });
 };

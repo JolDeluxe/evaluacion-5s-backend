@@ -4,6 +4,7 @@ import { conflicto } from '../../utils/errores';
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
+import { solicitarSincronizacionCsv } from '../sistema/servicio_exportacion_csv';
 
 const esquemaParams = z.object({
   objetivoId: z.coerce.number().int().positive(),
@@ -25,5 +26,6 @@ export const cambiarEnvioOficial = async (req: Request, res: Response) => {
     await registrarAuditoria({ usuarioId: req.autenticacion?.usuarioId, accion: 'CAMBIAR_ENVIO_RESULTADO', tipoEntidad: 'ObjetivoAuditoria', idEntidad: objetivo.id, datosAnteriores: objetivo, datosNuevos: actualizado }, tx);
     return { objetivo: actualizado, envio };
   });
+  solicitarSincronizacionCsv();
   responder(res, resultado);
 };

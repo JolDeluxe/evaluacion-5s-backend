@@ -50,6 +50,12 @@ const envSchema = z.object({
   SMTP_MAX_CONNECTIONS: z.coerce.number().int().positive().default(1),
   SMTP_RATE_LIMIT: z.coerce.number().int().positive().default(1),
   SMTP_RATE_DELTA_MS: z.coerce.number().int().positive().default(3000),
+  IMAP_ENABLED: booleanFromString.default(false),
+  IMAP_HOST: z.string().default('outlook.office365.com'),
+  IMAP_PORT: z.coerce.number().int().positive().default(993),
+  IMAP_SECURE: booleanFromString.default(true),
+  IMAP_USER: z.string().optional(),
+  IMAP_PASS: z.string().optional(),
   WHATSAPP_ENABLED: booleanFromString.default(false),
   EMAIL_ENABLED: booleanFromString.default(false),
   EMAIL_TEST_ENABLED: booleanFromString.default(false),
@@ -75,6 +81,9 @@ const envSchema = z.object({
   INVITADO_PUBLICO_ENABLED: booleanFromString.default(false),
   INVITADO_PUBLICO_SECRET: z.string().optional(),
   INVITADO_PUBLICO_EXPIRA_HORAS: z.coerce.number().int().positive().default(6),
+  CSV_EXPORT_DIR: z.string().default('H:\\AUDITOR INTERNO\\PRIVADO\\5 Isaac\\Auditorias 5S\\Archivos_APP'),
+  CSV_RESULTADOS_PATH: z.string().optional(),
+  CSV_ATRASOS_PATH: z.string().optional(),
 });
 
 const validarServicio = (
@@ -136,6 +145,17 @@ if (parsed.data.INVITADO_PUBLICO_ENABLED) {
     issues.push('INVITADO_PUBLICO_SECRET es requerida cuando INVITADO_PUBLICO_ENABLED=true');
   } else if (Buffer.byteLength(parsed.data.INVITADO_PUBLICO_SECRET, 'utf8') < 32) {
     issues.push('INVITADO_PUBLICO_SECRET debe tener al menos 32 bytes');
+  }
+}
+
+if (parsed.data.IMAP_ENABLED) {
+  const user = parsed.data.IMAP_USER || parsed.data.SMTP_USER;
+  const pass = parsed.data.IMAP_PASS || parsed.data.SMTP_PASS;
+  if (!user) {
+    issues.push('IMAP_USER (o SMTP_USER) es requerida cuando IMAP_ENABLED=true');
+  }
+  if (!pass) {
+    issues.push('IMAP_PASS (o SMTP_PASS) es requerida cuando IMAP_ENABLED=true');
   }
 }
 

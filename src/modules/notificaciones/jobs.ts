@@ -8,6 +8,7 @@ import { procesarEntregasPendientes } from './worker';
 import { reconciliarAsignaciones } from './reconciliador-asignaciones';
 import { reconciliarRecordatoriosPeriodo } from './reconciliador-recordatorios';
 import { reconciliarResultados } from './reconciliador-resultados';
+import { procesarRebotesEntrantes } from './servicio_rebotes';
 
 export const iniciarJobsNotificaciones = () => {
   if (!env.NOTIFICACIONES_WORKER_ENABLED) return [];
@@ -26,6 +27,17 @@ export const iniciarJobsNotificaciones = () => {
       reconciliarResultados().catch(() => undefined);
     }),
   ];
+
+  if (env.IMAP_ENABLED) {
+    tareas.push(
+      cron.schedule('*/5 * * * *', () => {
+        procesarRebotesEntrantes().catch((err) => {
+          console.error('[NDR IMAP Cron] Error al ejecutar procesarRebotesEntrantes:', err);
+        });
+      })
+    );
+  }
+
   return tareas;
 };
 
@@ -60,9 +72,10 @@ const generarNotificacionesPeriodos = async () => {
     where: {
       estado: { in: [EstadoAsignacionAuditoria.PENDIENTE, EstadoAsignacionAuditoria.EN_PROCESO] },
       completadoEn: null,
+      auditor: { activo: true },
     },
     include: {
-      auditor: { select: { id: true, correo: true } },
+      auditor: { select: { id: true, correo: true, activo: true } },
       objetivoAuditoria: {
         include: { envioResultado: true },
       },

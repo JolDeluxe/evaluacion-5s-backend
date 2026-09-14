@@ -2,9 +2,11 @@ import { app, logger } from './app';
 import { env } from './config/env';
 import { cerrarPrisma } from './db';
 import { iniciarJobsNotificaciones } from './modules/notificaciones/jobs';
+import { solicitarSincronizacionCsv } from './modules/sistema/servicio_exportacion_csv';
 
 const server = app.listen(env.PORT, () => {
   logger.info(`Servidor iniciado en puerto ${env.PORT} (${env.NODE_ENV})`);
+  solicitarSincronizacionCsv();
 });
 
 const tareasNotificaciones = iniciarJobsNotificaciones();

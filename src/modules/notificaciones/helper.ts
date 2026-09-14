@@ -3,6 +3,11 @@ import { CanalNotificacion, TipoNotificacion } from '../../generated/prisma/enum
 import { hashSha256 } from '../../utils/crypto';
 import type { PrismaTransaction } from '../../db';
 
+export const TIPOS_NOTIFICACION_CORREO_PERMITIDOS: readonly TipoNotificacion[] = [
+  TipoNotificacion.ASIGNACION_MENSUAL_CORREO,
+  TipoNotificacion.RESULTADO_MENSUAL_CORREO,
+] as const;
+
 export const crearNotificacionAsignacion = async (
   asignacion: AsignacionAuditoria & { objetivoAuditoria: ObjetivoAuditoria; auditor: Usuario },
   tx: PrismaTransaction
@@ -45,7 +50,9 @@ export const crearNotificacionAsignacion = async (
     });
   }
 
-  if (asignacion.auditor.correo) {
+  const esTipoAutorizado = TIPOS_NOTIFICACION_CORREO_PERMITIDOS.includes(TipoNotificacion.NUEVA_ASIGNACION);
+
+  if (asignacion.auditor.correo && esTipoAutorizado) {
     const destinoHash = hashSha256(asignacion.auditor.correo);
     await tx.entregaNotificacion.upsert({
       where: { notificacionId_canal_destinoHash: { notificacionId: notificacion.id, canal: CanalNotificacion.CORREO, destinoHash } },
@@ -70,6 +77,7 @@ export const crearNotificacionUsuario = async (
     titulo: string;
     mensaje: string;
     ruta?: string | null;
+    esCanario?: boolean;
   }
 ) => {
   const notificacion = await tx.notificacion.upsert({
@@ -109,7 +117,9 @@ export const crearNotificacionUsuario = async (
     });
   }
 
-  if (data.usuario.correo) {
+  const esTipoAutorizado = TIPOS_NOTIFICACION_CORREO_PERMITIDOS.includes(data.tipo) || Boolean(data.esCanario);
+
+  if (data.usuario.correo && esTipoAutorizado) {
     const destinoHash = hashSha256(data.usuario.correo);
     await tx.entregaNotificacion.upsert({
       where: { notificacionId_canal_destinoHash: { notificacionId: notificacion.id, canal: CanalNotificacion.CORREO, destinoHash } },

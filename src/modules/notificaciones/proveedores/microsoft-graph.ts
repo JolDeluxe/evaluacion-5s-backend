@@ -1,4 +1,4 @@
-﻿import type { DeviceCodeRequest, SilentFlowRequest } from '@azure/msal-node';
+import type { DeviceCodeRequest, SilentFlowRequest } from '@azure/msal-node';
 import { InteractionRequiredAuthError, PublicClientApplication } from '@azure/msal-node';
 import { env } from '../../../config/env';
 import { prisma } from '../../../db';
@@ -287,9 +287,11 @@ export const enviarCorreoMicrosoftGraph = async (input: EmailInput): Promise<Ema
     if (response.status === 202) {
       // 202 Accepted: Aceptado por Microsoft Graph
       const requestId = response.headers.get('request-id') || response.headers.get('client-request-id') || 'graph-202-accepted';
+      const matchMsgId = mimeBuffer.toString('utf8').match(/^Message-ID:\s*(<[^>]+>)/im);
+      const rfcMessageId = matchMsgId ? matchMsgId[1] : null;
       return {
         enviado: true,
-        idMensajeExterno: requestId,
+        idMensajeExterno: rfcMessageId || requestId,
       };
     }
 

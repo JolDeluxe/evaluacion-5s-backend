@@ -53,6 +53,7 @@ export const procesarEntregasPendientes = async () => {
     orderBy: { programadoEn: 'asc' },
   });
 
+  let procesadas = 0;
   for (const candidato of candidatos) {
     const reclamado = await prisma.entregaNotificacion.updateMany({
       where: {
@@ -73,7 +74,10 @@ export const procesarEntregasPendientes = async () => {
     if (reclamado.count !== 1) continue;
 
     await procesarEntrega(candidato.id);
+    procesadas++;
   }
+
+  return { procesadas, totalCandidatos: candidatos.length };
 };
 
 const procesarEntrega = async (id: number) => {
@@ -83,6 +87,7 @@ const procesarEntrega = async (id: number) => {
   });
 
   try {
+    let idMensajeExterno: string | null = null;
     if (entrega.canal === CanalNotificacion.PUSH) {
       if (!env.VAPID_ENABLED || !entrega.suscripcionPush) throw new Error('Push no configurado');
       await webPush.sendNotification(
@@ -270,6 +275,8 @@ const procesarEntrega = async (id: number) => {
         (error as unknown as { permanente?: boolean; retryAfterSeconds?: number }).retryAfterSeconds = resEnvio.retryAfterSeconds;
         throw error;
       }
+
+      idMensajeExterno = resEnvio.idMensajeExterno ?? null;
     } else if (entrega.canal === CanalNotificacion.WHATSAPP) {
       if (!entrega.destinoSnapshot) throw new Error('Destino WhatsApp no informado');
       const resultado = await enviarWhatsapp(entrega.destinoSnapshot, entrega.notificacion.mensaje);
@@ -277,16 +284,17 @@ const procesarEntrega = async (id: number) => {
     }
 
     await prisma.entregaNotificacion.update({
-      where: { id },
-      data: {
-        estado: EstadoEntregaNotificacion.ENVIADA,
-        enviadoEn: new Date(),
-        ultimoIntentoEn: new Date(),
-        bloqueadoHasta: null,
-        bloqueadoPor: null,
-        ultimoError: null,
-      },
-    });
+        where: { id },
+        data: {
+          estado: EstadoEntregaNotificacion.ENVIADA,
+          enviadoEn: new Date(),
+          ultimoIntentoEn: new Date(),
+          bloqueadoHasta: null,
+          bloqueadoPor: null,
+          ultimoError: null,
+          ...(idMensajeExterno ? { idMensajeExterno } : {}),
+        },
+      });
   } catch (error) {
     const errObj = error as { permanente?: boolean; message?: string; retryAfterSeconds?: number };
     const esPermanente = errObj?.permanente === true;
