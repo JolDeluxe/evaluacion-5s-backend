@@ -352,14 +352,71 @@ export const listarAsignaciones = async (
   if (query.tipoBandeja) {
     const auditorId = req.autenticacion?.usuarioId ?? 0;
 
-    const where: Prisma.AsignacionAuditoriaWhereInput = {
-      auditorId,
-      objetivoAuditoria: {
-        ...(query.tipoBandeja === 'EJECUTABLES' ? { iniciaEn: { lte: ahora } } : {}),
+    let where: Prisma.AsignacionAuditoriaWhereInput;
+
+    if (query.tipoBandeja === 'EJECUTABLES') {
+      where = {
+        auditorId,
+        objetivoAuditoria: {
+          iniciaEn: { lte: ahora },
+          ...(query.anio ? { anio: query.anio } : {}),
+          ...(query.mes ? { mes: query.mes } : {}),
+        },
+      };
+    } else {
+      // HISTORIAL: Permite al auditor ver la trazabilidad completa (P1 y P2) de las áreas
+      // que tiene asignadas en el mes, evitando que periodos completados por otro auditor
+      // se muestren falsamente como "pendientes".
+      const misAsignacionesDelMes = await prisma.asignacionAuditoria.findMany({
+        where: {
+          auditorId,
+          objetivoAuditoria: {
+            ...(query.anio ? { anio: query.anio } : {}),
+            ...(query.mes ? { mes: query.mes } : {}),
+          },
+        },
+        select: {
+          objetivoAuditoria: {
+            select: { areaId: true },
+          },
+        },
+      });
+
+      const areaIdsDelAuditor = Array.from(
+        new Set(
+          misAsignacionesDelMes
+            .map((a) => a.objetivoAuditoria?.areaId)
+            .filter((id): id is number => id != null)
+        )
+      );
+
+      const filtroMesAnio = {
         ...(query.anio ? { anio: query.anio } : {}),
         ...(query.mes ? { mes: query.mes } : {}),
-      }
-    };
+      };
+
+      where = {
+        AND: [
+          Object.keys(filtroMesAnio).length > 0
+            ? { objetivoAuditoria: filtroMesAnio }
+            : {},
+          {
+            OR: [
+              { auditorId },
+              ...(areaIdsDelAuditor.length > 0
+                ? [
+                    {
+                      objetivoAuditoria: {
+                        areaId: { in: areaIdsDelAuditor },
+                      },
+                    },
+                  ]
+                : []),
+            ],
+          },
+        ],
+      };
+    }
 
     const rawAsignaciones = await prisma.asignacionAuditoria.findMany({
       where,
