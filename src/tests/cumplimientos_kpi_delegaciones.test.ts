@@ -254,8 +254,8 @@ describe('Cumplimientos, KPI 50/50, Delegaciones y Días Inhábiles', () => {
       expect(resultado.promedioAreas).toBeNull();
       expect(resultado.areasConResultado).toBe(0);
       expect(detallesCreados.length).toBe(0);
-      expect(upsertPayload?.promedioAreas).toBeNull();
-      expect(upsertPayload?.areasConResultado).toBe(0);
+      expect((upsertPayload as any)?.promedioAreas).toBeNull();
+      expect((upsertPayload as any)?.areasConResultado).toBe(0);
     });
 
     test('Caso 2: P1 100%, P2 no realizada -> resultadoMensual === 100', async () => {
@@ -322,7 +322,7 @@ describe('Cumplimientos, KPI 50/50, Delegaciones y Días Inhábiles', () => {
       expect(resultado.areasConResultado).toBe(1);
       expect(detallesCreados.length).toBe(1);
       expect(Number(detallesCreados[0].resultadoMensualUtilizado)).toBe(100);
-      expect(Number(upsertPayload?.promedioAreas)).toBe(100);
+      expect(Number((upsertPayload as any)?.promedioAreas)).toBe(100);
     });
 
     test('Caso 3: P1 no realizada, P2 80% -> resultadoMensual === 80', async () => {

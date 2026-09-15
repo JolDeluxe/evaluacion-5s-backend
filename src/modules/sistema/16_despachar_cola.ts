@@ -19,10 +19,10 @@ export const despacharColaSistema = async (_req: Request, res: Response) => {
     where: { estado: EstadoEntregaNotificacion.PENDIENTE },
   });
 
-  return responder(res, 200, {
+  return responder(res, {
     mensaje: 'Despacho de cola ejecutado bajo demanda.',
     pendientesAntes: antes,
     pendientesDespues: despues,
     procesadas: resultado?.procesadas ?? Math.max(0, antes - despues),
-  });
+  }, 200);
 };
