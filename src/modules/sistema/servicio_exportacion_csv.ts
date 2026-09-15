@@ -4,11 +4,11 @@ import type { PrismaTransaction } from '../../db';
 import { prisma } from '../../db';
 import { env } from '../../config/env';
 import { logger } from '../../app';
+import { MESES_NOMBRES } from '../../utils/periodos';
 import {
-  calcularCierreConGracia,
-  calcularResultadoMensualCanonico,
-  MESES_NOMBRES,
-} from '../../utils/periodos';
+  construirPeriodoResumen,
+  construirResultadoMensualCanonico,
+} from '../resultados/servicio';
 
 export interface RutasExportacionCsv {
   dir: string;
@@ -70,17 +70,14 @@ export function resolverResponsableReal(
     responsableCumplimiento?: { id: number; nombre: string } | null;
   } | null,
 ): string {
-  // 1. Responsable de cumplimiento asignado específicamente en la auditoría
   if (asignacionAuditoria?.responsableCumplimiento?.nombre) {
     return asignacionAuditoria.responsableCumplimiento.nombre.trim();
   }
 
-  // 2. Responsable de cumplimiento asignado en la programación mensual
   if (asignacionMensual?.responsableCumplimiento?.nombre) {
     return asignacionMensual.responsableCumplimiento.nombre.trim();
   }
 
-  // 3. Usuarios asignados formalmente como responsables del área en el catálogo (UsuarioArea)
   const nombresArea = (area.usuariosArea || [])
     .map((ua) => ua.usuario?.nombre?.trim())
     .filter(Boolean) as string[];
@@ -93,6 +90,72 @@ export function resolverResponsableReal(
 }
 
 /**
+ * Resuelve el RESPONSABLE de la auditoría (el auditor asignado o que realizó la auditoría).
+ * Si nadie estuvo asignado (como en los registros históricos de migración), queda en blanco ("").
+ */
+export function resolverResponsableAuditoria(
+  p1Obj?: {
+    envioResultado?: {
+      enviadoPorUsuario?: { id?: number; nombre?: string | null } | null;
+      nombreAuditorSnapshot?: string | null;
+    } | null;
+    asignacionesAuditoria?: Array<{
+      auditor?: { id?: number; nombre?: string | null } | null;
+      estado?: string;
+    }>;
+  } | null,
+  p2Obj?: {
+    envioResultado?: {
+      enviadoPorUsuario?: { id?: number; nombre?: string | null } | null;
+      nombreAuditorSnapshot?: string | null;
+    } | null;
+    asignacionesAuditoria?: Array<{
+      auditor?: { id?: number; nombre?: string | null } | null;
+      estado?: string;
+    }>;
+  } | null,
+): string {
+  const obtenerAuditorDeObj = (obj?: typeof p1Obj) => {
+    if (!obj) return null;
+    const envio = obj.envioResultado;
+    if (envio?.enviadoPorUsuario?.nombre) {
+      return envio.enviadoPorUsuario.nombre.trim();
+    }
+    if (
+      envio?.nombreAuditorSnapshot &&
+      !envio.nombreAuditorSnapshot.toUpperCase().includes('HISTÓRICO') &&
+      !envio.nombreAuditorSnapshot.toUpperCase().includes('POWER BI') &&
+      !envio.nombreAuditorSnapshot.toUpperCase().includes('TALLY')
+    ) {
+      return envio.nombreAuditorSnapshot.trim();
+    }
+
+    const asigActiva = obj.asignacionesAuditoria?.find((a) => a.estado !== 'CANCELADA');
+    if (asigActiva?.auditor?.nombre) {
+      return asigActiva.auditor.nombre.trim();
+    }
+
+    const primeraAsig = obj.asignacionesAuditoria?.[0];
+    if (primeraAsig?.auditor?.nombre) {
+      return primeraAsig.auditor.nombre.trim();
+    }
+
+    return null;
+  };
+
+  const aud1 = obtenerAuditorDeObj(p1Obj);
+  const aud2 = obtenerAuditorDeObj(p2Obj);
+
+  if (aud1 && aud2) {
+    return aud1 === aud2 ? aud1 : `${aud1} / ${aud2}`;
+  }
+  if (aud1) return aud1;
+  if (aud2) return aud2;
+
+  return '';
+}
+
+/**
  * Genera el contenido de resultados.csv:
  * Columnas: AÑO, MES, AREA, RESPONSABLE, RESULTADO PRIMER PERIODO, RESULTADO SEGUNDO PERIODO, RESULTADO FINAL
  */
@@ -102,23 +165,21 @@ export async function generarResultadosCsvString(
   // Obtener todos los objetivos de auditoría con sus resultados y relaciones necesarias
   const objetivos = await tx.objetivoAuditoria.findMany({
     include: {
-      area: {
-        include: {
-          usuariosArea: {
-            include: { usuario: { select: { id: true, nombre: true } } },
-          },
-        },
-      },
+      area: true,
       envioResultado: {
         select: {
           id: true,
           porcentaje: true,
           invalidadoEn: true,
+          nombreAuditorSnapshot: true,
+          enviadoPorUsuario: {
+            select: { id: true, nombre: true },
+          },
         },
       },
       asignacionesAuditoria: {
         include: {
-          responsableCumplimiento: { select: { id: true, nombre: true } },
+          auditor: { select: { id: true, nombre: true } },
         },
       },
     },
@@ -191,35 +252,29 @@ export async function generarResultadosCsvString(
   });
 
   for (const g of gruposOrdenados) {
-    const asigMensual = mapaAsigMensual.get(`${g.anio}-${g.mes}-${g.areaId}`);
-    const asigAuditoria = g.p1Obj?.asignacionesAuditoria[0] || g.p2Obj?.asignacionesAuditoria[0];
-    const responsable = resolverResponsableReal(g.area, asigAuditoria, asigMensual);
+    const responsable = resolverResponsableAuditoria(g.p1Obj, g.p2Obj);
 
-    // Periodo 1
-    const p1Envio = g.p1Obj?.envioResultado && !g.p1Obj.envioResultado.invalidadoEn ? g.p1Obj.envioResultado : null;
-    const p1Score = p1Envio ? Number(p1Envio.porcentaje) : null;
-    const p1Texto = p1Score !== null ? p1Score.toFixed(2) : '';
+    const objetivosArea = [g.p1Obj, g.p2Obj].filter((o): o is NonNullable<typeof o> => Boolean(o));
+    const periodos = [1, 2].map((periodo) => {
+      const obj = objetivosArea.find((objetivo) => objetivo.periodo === periodo);
+      const referencia = obj ?? objetivosArea.find(Boolean) ?? { terminaEn: new Date(g.anio, g.mes, 0, 23, 59, 59, 999) };
+      return construirPeriodoResumen(obj as any, periodo, referencia);
+    });
 
-    // Periodo 2
-    const p2Envio = g.p2Obj?.envioResultado && !g.p2Obj.envioResultado.invalidadoEn ? g.p2Obj.envioResultado : null;
-    const p2Score = p2Envio ? Number(p2Envio.porcentaje) : null;
-    const p2Texto = p2Score !== null ? p2Score.toFixed(2) : '';
+    const resultadoMensual = construirResultadoMensualCanonico(periodos);
 
-    // Estados para cálculo canónico
-    const p1Estado = p1Score !== null
-      ? 'REALIZADA'
-      : (g.p1Obj
-        ? (g.p1Obj.canceladoEn ? 'NO_APLICA' : (ahora > calcularCierreConGracia(g.p1Obj.terminaEn) ? 'NO_REALIZADA' : 'PENDIENTE'))
-        : 'PENDIENTE');
+    const p1 = periodos.find((p) => p.periodo === 1);
+    const p2 = periodos.find((p) => p.periodo === 2);
 
-    const p2Estado = p2Score !== null
-      ? 'REALIZADA'
-      : (g.p2Obj
-        ? (g.p2Obj.canceladoEn ? 'NO_APLICA' : (ahora > calcularCierreConGracia(g.p2Obj.terminaEn) ? 'NO_REALIZADA' : 'PENDIENTE'))
-        : 'PENDIENTE');
-
-    const resultadoFinalNum = calcularResultadoMensualCanonico(p1Score, p2Score, p1Estado, p2Estado);
-    const resultadoFinalTexto = resultadoFinalNum !== null ? resultadoFinalNum.toFixed(2) : '';
+    const p1Texto = p1?.completado && p1?.porcentaje !== null && p1?.porcentaje !== undefined
+      ? Number(p1.porcentaje).toFixed(2)
+      : '';
+    const p2Texto = p2?.completado && p2?.porcentaje !== null && p2?.porcentaje !== undefined
+      ? Number(p2.porcentaje).toFixed(2)
+      : '';
+    const resultadoFinalTexto = resultadoMensual !== null && resultadoMensual !== undefined
+      ? resultadoMensual.toFixed(2)
+      : '';
 
     const mesNombre = MESES_NOMBRES[g.mes - 1] || `Mes ${g.mes}`;
 

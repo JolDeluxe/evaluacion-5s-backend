@@ -87,6 +87,7 @@ describe('servicio_exportacion_csv', () => {
                 id: 1,
                 porcentaje: '85.50',
                 invalidadoEn: null,
+                enviadoPorUsuario: { id: 201, nombre: 'Auditor Uno' },
               },
               asignacionesAuditoria: [],
             },
@@ -105,6 +106,7 @@ describe('servicio_exportacion_csv', () => {
                 id: 2,
                 porcentaje: '95.50',
                 invalidadoEn: null,
+                enviadoPorUsuario: { id: 201, nombre: 'Auditor Uno' },
               },
               asignacionesAuditoria: [],
             },
@@ -120,7 +122,7 @@ describe('servicio_exportacion_csv', () => {
 
       const lineas = contenido.split('\r\n');
       expect(lineas[0]).toBe('AÑO,MES,AREA,RESPONSABLE,RESULTADO PRIMER PERIODO,RESULTADO SEGUNDO PERIODO,RESULTADO FINAL');
-      expect(lineas[1]).toBe('2026,Enero,PESPUNTE,Patricia Sánchez,85.50,95.50,90.50');
+      expect(lineas[1]).toBe('2026,Enero,PESPUNTE,Auditor Uno,85.50,95.50,90.50');
     });
   });
 
