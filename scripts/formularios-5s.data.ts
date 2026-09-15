@@ -15,7 +15,16 @@ export type Formulario5SData = {
   secciones: SeccionFormulario5S[];
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Versión actualizada de los formularios tal como existen en BD (V4 operativo,
+// V3 administrativo). Usada por poblar-formularios-5s.ts para bootstrap de
+// entornos nuevos.
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const formularios5S: Formulario5SData[] = [
+  // ───────────────────────────────────────────────────────────────────────────
+  // OPERATIVO  (34 preguntas)
+  // ───────────────────────────────────────────────────────────────────────────
   {
     nombre: "EVALUACION 5'S OPERATIVA",
     slug: 'evaluacion-5s-operativa',
@@ -24,18 +33,18 @@ export const formularios5S: Formulario5SData[] = [
     criteriosEsperados: 34,
     secciones: [
       {
-        titulo: "1´S (SEIRI)",
-        objetivo: '"Clasificación - Separación": Identificar lo necesario de lo innecesario',
+        titulo: "1'S SEIRI - Clasificación - Separación",
+        objetivo: 'Identificar lo necesario de lo innecesario.',
         preguntas: [
           '¿En el área solo se encuentran herramientas o materiales correspondientes a la actividad y/o departamento?',
-          '¿En el área de trabajo no se encuentran objetos personales?',
+          '¿En el área de trabajo no se encuentran objetos personales',
           '¿Existen elementos inutilizados dentro del área separados e identificados (maquinaria, mp, cajones, herramientas, etc)?',
           '¿No se tiene un exceso de material?',
         ],
       },
       {
-        titulo: "2´S (SEITON)",
-        objetivo: '"Orden": Designar un lugar para cada cosa',
+        titulo: "2'S SEITON - Orden",
+        objetivo: 'Designar un lugar para cada cosa.',
         preguntas: [
           '¿Están claramente definidos los pasillos, áreas de almacenamiento y lugares de trabajo, sin objetos fuera de su lugar y/o que se encuentren obstruyendo?',
           '¿Se encuentran delimitadas las áreas de herramientas de trabajo, maquinaria, residuos o basura y producto terminado o en proceso?',
@@ -50,8 +59,8 @@ export const formularios5S: Formulario5SData[] = [
         ],
       },
       {
-        titulo: "3´S (SEISO)",
-        objetivo: '"Limpieza": Integrar hábitos de limpieza como un ámbito laboral',
+        titulo: "3'S SEISO - Limpieza",
+        objetivo: 'Integrar hábitos de limpieza como un ámbito laboral.',
         preguntas: [
           '¿Las áreas de almacenamiento de materiales se encuentran limpias (Estanterías)?',
           '¿Los espacios de trabajo se encuentran limpios (Maquinaria, equipo de cómputo, mesas de trabajo, ventiladores, lámparas, pisos)?',
@@ -61,8 +70,8 @@ export const formularios5S: Formulario5SData[] = [
         ],
       },
       {
-        titulo: "4´S (SEIKETSU)",
-        objetivo: '"Estandarizar": Mantener las condiciones de anteriores S´',
+        titulo: "4'S SEIKETSU - Estandarizar",
+        objetivo: "Mantener las condiciones de anteriores S´.",
         preguntas: [
           '¿El encargado de área aporta y trabaja con el equipo para mantener el trabajo de las ´s anteriores?',
           'Pizarrones (mismo formato en toda la planta)',
@@ -70,16 +79,16 @@ export const formularios5S: Formulario5SData[] = [
         ],
       },
       {
-        titulo: "5´S (SHITSUKE)",
-        objetivo: '"Disciplina": Fomentar la autodisciplina a los colaboradores',
+        titulo: "5'S SHITSUKE - Disciplina",
+        objetivo: 'Fomentar la autodisciplina a los colaboradores.',
         preguntas: [
           '¿Todos los trabajadores participan en mantener en orden y limpia sus áreas de trabajo?',
           '¿Todos los trabajadores utilizan su uniforme, así como el material de equipo de protección personal para las actividades diarias de su trabajo?',
         ],
       },
       {
-        titulo: "6´S (SECURITY - APPEARANCE)",
-        objetivo: '"Seguridad": Fomentar un ambiente de trabajo seguro para los colaboradores',
+        titulo: 'SEGURIDAD',
+        objetivo: 'Fomentar un ambiente de trabajo seguro para los colaboradores.',
         preguntas: [
           'Estado de iluminación',
           '¿Cuenta con equipo contra incendios? (Sin obstruir, Delimitado, y en buenas condiciones sin golpes o falta de pintura).',
@@ -92,15 +101,20 @@ export const formularios5S: Formulario5SData[] = [
       },
       {
         titulo: 'CULTURA',
-        objetivo: 'Realizar las preguntas al personal aplicable en el apartado de cultura, con la finalidad de fomentar la cultura de conocimiento realizando preguntas sobre la metodología.',
+        objetivo:
+          'Realizar las preguntas al personal aplicable en el apartado de cultura, con la finalidad de fomentar la cultura de conocimiento realizando preguntas sobre la metodología.',
         preguntas: [
-          "Se evalúa: Cultura\n¿Cuántas y cuáles son las 5'S?",
-          'Se evalúa: Cultura\n¿Qué significa WPO y para qué nos sirve dentro de nuestro lugar de trabajo?',
-          'Se evalúa: Cultura\n¿Sabes cuál es el estándar ideal de WPO en tu lugar de trabajo?',
+          'Cultura',
+          'Cultura',
+          'Cultura',
         ],
       },
     ],
   },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // ADMINISTRATIVO  (23 preguntas)
+  // ───────────────────────────────────────────────────────────────────────────
   {
     nombre: "EVALUACION 5'S ADMINISTRATIVA",
     slug: 'evaluacion-5s-administrativa',
@@ -157,20 +171,21 @@ export const formularios5S: Formulario5SData[] = [
         objetivo: '"Seguridad": Fomentar un ambiente de trabajo seguro para los colaboradores',
         preguntas: [
           'Se evalúa: Seguridad\nEstado de iluminación',
-          'Se evalúa: Seguridad\n¿Cuenta con equipo contra incendios? (Sin obstruir, Delimitado, y en buenas condiciones sin golpes o falta de pintura).',
-          'Se evalúa: Seguridad\n¿Todos los trabajadores utilizan su uniforme, así como el material de equipo de protección personal para las actividades diarias de su trabajo?',
-          'Se evalúa: Imagen\n¿Las condiciones del mobiliario y maquinaria es buena? (pintura, condiciones)',
-          'Se evalúa: Imagen\nEstado de las instalaciones (pintura, condiciones)',
-          'Se evalúa: Imagen\nInstalaciones electrónicas (seguras y no visibles)',
+          'Se evalúa: Seguridad ¿Cuenta con equipo contra incendios? (Sin obstruir, Delimitado, y en buenas condiciones sin golpes o falta de pintura).',
+          'Se evalúa: Seguridad ¿Todos los trabajadores utilizan su uniforme, así como el material de equipo de protección personal para las actividades diarias de su trabajo?',
+          'Se evalúa: Imagen ¿Las condiciones del mobiliario y maquinaria es buena? (pintura, condiciones)',
+          'Se evalúa: Imagen Estado de las instalaciones (pintura, condiciones)',
+          'Se evalúa: Imagen Instalaciones electrónicas (seguras y no visibles)',
         ],
       },
       {
         titulo: 'CULTURA',
-        objetivo: 'Realizar las preguntas al personal aplicable en el apartado de cultura, con la finalidad de fomentar la cultura de conocimiento realizando preguntas sobre la metodología.',
+        objetivo:
+          'Realizar las preguntas al personal aplicable en el apartado de cultura, con la finalidad de fomentar la cultura de conocimiento realizando preguntas sobre la metodología.',
         preguntas: [
-          "Se evalúa: Cultura\n¿Cuántas y cuáles son las 5'S?",
-          'Se evalúa: Cultura\n¿Qué significa WPO y para qué nos sirve dentro de nuestro lugar de trabajo?',
-          'Se evalúa: Cultura\n¿Sabes cuál es el estándar ideal de WPO en tu lugar de trabajo?',
+          "Se evalúa: Cultura ¿Cuántas y cuáles son las 5'S?",
+          'Se evalúa: Cultura ¿Qué significa WPO y para qué nos sirve dentro de nuestro lugar de trabajo?',
+          'Se evalúa: Cultura ¿Sabes cuál es el estándar ideal de WPO en tu lugar de trabajo?',
         ],
       },
     ],

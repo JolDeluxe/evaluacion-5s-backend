@@ -126,7 +126,15 @@ const derivarAuditorEjecutor = (envio: {
   );
 
   let etiqueta: string | null = null;
-  if (esInvitado) {
+  const esHistorico =
+    envio.nombreAuditorSnapshot.toUpperCase().includes('HISTORICO') ||
+    envio.nombreAuditorSnapshot.toUpperCase().includes('HISTÓRICO') ||
+    envio.nombreAuditorSnapshot.toUpperCase().includes('POWER BI') ||
+    envio.nombreAuditorSnapshot.toUpperCase().includes('TALLY');
+
+  if (esHistorico) {
+    etiqueta = 'HISTÓRICO';
+  } else if (esInvitado) {
     etiqueta = `Invitado: ${envio.nombreAuditorSnapshot}`;
   } else if (esApoyo) {
     etiqueta = `Apoyo: ${envio.nombreAuditorSnapshot}`;

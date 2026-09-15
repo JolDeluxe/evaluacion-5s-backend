@@ -1114,6 +1114,36 @@ async function obtenerVersion(
   };
 }
 
+/*
+ * Mapa de alias: clave normalizada tal como viene en Principal.txt/Hallazgos.txt
+ * → clave normalizada del nombre oficial nuevo en BD.
+ *
+ * Solo se necesitan entradas donde los nombres DIFIEREN.
+ * Si el nombre del histórico ya coincide con el nuevo, no hace falta listarlo.
+ *
+ * Formato: normalizarClave(nombre_historico) → normalizarClave(nombre_nuevo)
+ */
+const ALIAS_AREAS = new Map<string, string>([
+  // ADMINISTRATIVAS
+  [normalizarClave('ADMINISTRACION'),                         normalizarClave('ADMINISTRACION - FACTURACION OMEGA')],
+  [normalizarClave('CAPITAL HUMANO - VIGILANCIA'),            normalizarClave('CAPITAL HUMANO - OFICINA DE GTE CH - CONSULTORIO KAPPA - VIGILANCIAS DE KAPPA')],
+  [normalizarClave('PPCP-MAQUILAS-DIRECCION'),                normalizarClave('DIRECCION - PPCP - MAQUILAS')],
+  [normalizarClave('OFICINA CALIDAD- SALA DE JUNTAS'),        normalizarClave('OFICINA CALIDAD - TECNOLOGIAS DE INFORMACION')],
+  [normalizarClave('OFICINA ACC- ADORNO - PESPUNTE'),         normalizarClave('OFICINA PESPUNTE - OFICINA DE ACCESORIOS - OFICINA DE ADORNO')],
+  [normalizarClave('OFICINA DESARROLLO - ING. COSTOS - ING. PROCESOS'), normalizarClave('OFICINA DESARROLLO BOTA & ACCESORIOS - IMPLEMENTACIONES - INGENIERIA DE COSTOS Y PROCESOS')],
+  [normalizarClave('OFICINA DE SIGMA - VIGILANCIA'),          normalizarClave('OFICINA DE SIGMA - VIGILANCIA SIGMA')],
+  [normalizarClave('OFICINA DE BOLSAS-CONSULTORIO-VIGILANCIA'), normalizarClave('OFICINA BOLSAS - CONSULTORIO BOLSAS - VIGILANCIA BOLSAS - OFICINA DE RH EN BOLSAS')],
+  [normalizarClave('CELULA DESARROLLO'),                      normalizarClave('CELULA DE DESARROLLO')],
+  [normalizarClave('OFICINA LOGISTICA - VIGILANCIA - RECEPCION'), normalizarClave('OFICINA DE LOGISTICA - VIGILANCIA OMEGA - RECEPCION OMEGA')],
+  // OPERATIVAS
+  [normalizarClave('MANTENIMIENTO'),                          normalizarClave('MANTENIMIENTO KAPPA - SIGMA - LAMBDA')],
+  [normalizarClave('BILLETERAS'),                             normalizarClave('BILLETERA')],
+]);
+
+function resolverAliasNormalizado(areaNormalizada: string): string {
+  return ALIAS_AREAS.get(areaNormalizada) ?? areaNormalizada;
+}
+
 async function resolverAreas(
   periodos: RegistroPrincipal[],
 ) {
@@ -1142,24 +1172,42 @@ async function resolverAreas(
       continue;
     }
 
+    // Intentar primero con el nombre normalizado tal como viene del histórico.
+    // Si no hay coincidencia, aplicar el alias hacia el nombre oficial nuevo.
+    const nombreResuelto = resolverAliasNormalizado(registro.areaNormalizada);
+
     const candidatas = areas.filter(
       (area) =>
         area.tipo === registro.tipo.tipoArea &&
-        normalizarClave(area.nombre) === registro.areaNormalizada,
+        normalizarClave(area.nombre) === nombreResuelto,
     );
 
-    if (candidatas.length !== 1) {
+    if (candidatas.length === 1) {
+      mapa.set(key, candidatas[0]);
+      continue;
+    }
+
+    // Fallback: buscar solo por nombre sin filtrar por tipo.
+    // Cubre casos donde el área cambió de formulario (admin↔operativo) entre años.
+    const candidatasFallback = areas.filter(
+      (area) => normalizarClave(area.nombre) === nombreResuelto,
+    );
+
+    if (candidatasFallback.length !== 1) {
       throw new Error(
         [
           `No se pudo resolver área de forma inequívoca:`,
           `fuente="${registro.areaFuente}"`,
+          `normalizada="${registro.areaNormalizada}"`,
+          `resuelta="${nombreResuelto}"`,
           `tipo=${registro.tipo.tipoArea}`,
           `coincidencias=${candidatas.length}`,
+          `coincidencias_fallback=${candidatasFallback.length}`,
         ].join(' '),
       );
     }
 
-    mapa.set(key, candidatas[0]);
+    mapa.set(key, candidatasFallback[0]);
   }
 
   return mapa;

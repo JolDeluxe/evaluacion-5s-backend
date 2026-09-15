@@ -7,7 +7,7 @@ const nombreUsuario = z.string()
     z.string()
       .min(3, 'El nombre de usuario debe tener al menos 3 letras')
       .max(80, 'El nombre de usuario no debe exceder 80 letras')
-      .regex(/^[a-z]+$/, 'El nombre de usuario solo puede usar letras minúsculas, sin espacios, números ni símbolos'),
+      .regex(/^[a-z]+(?:\.[a-z]+)*$/, 'El nombre de usuario solo puede usar letras minúsculas y puntos, sin espacios ni otros símbolos'),
   );
 
 export const esquemaIniciarSesion = z.object({
