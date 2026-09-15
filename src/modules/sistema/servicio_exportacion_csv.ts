@@ -162,8 +162,18 @@ export function resolverResponsableAuditoria(
 export async function generarResultadosCsvString(
   tx: PrismaTransaction | typeof prisma = prisma,
 ): Promise<{ contenido: string; totalRegistros: number }> {
-  // Obtener todos los objetivos de auditoría con sus resultados y relaciones necesarias
+  const ahora = new Date();
+  const anioActual = ahora.getFullYear();
+  const mesActual = ahora.getMonth() + 1;
+
+  // Obtener objetivos de auditoría hasta el año y mes actual
   const objetivos = await tx.objetivoAuditoria.findMany({
+    where: {
+      OR: [
+        { anio: { lt: anioActual } },
+        { anio: anioActual, mes: { lte: mesActual } },
+      ],
+    },
     include: {
       area: true,
       envioResultado: {
@@ -241,8 +251,6 @@ export async function generarResultadosCsvString(
     .map(escaparCsv)
     .join(',');
   filas.push(cabecera);
-
-  const ahora = new Date();
 
   // Ordenar grupos cronológicamente y alfabéticamente por área
   const gruposOrdenados = Array.from(gruposPorClave.values()).sort((a, b) => {
