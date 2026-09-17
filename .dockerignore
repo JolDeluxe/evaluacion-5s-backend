@@ -1,0 +1,27 @@
+# Dependencias y control de versiones
+node_modules
+.git
+.gitignore
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Logs y temporales
+*.log
+logs
+.tmp
+tmp
+scratch
+
+# Archivos de documentación y composición local
+docker-compose.yml
+docker-compose.*.yml
+README.md
+AGENTS.md
+
+# Archivos de configuración local o desarrollo
+.DS_Store
+dist
+coverage

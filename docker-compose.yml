@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8
+    container_name: encuestas_5s_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: encuestas_5s
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_docker:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: encuestas_5s_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: mysql://root:rootpassword@db:3306/encuestas_5s
+
+volumes:
+  mysql_data_docker:
