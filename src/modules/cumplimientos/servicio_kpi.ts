@@ -47,18 +47,48 @@ export function determinarEstadoChip(
   return 'PENDIENTE';
 }
 
+export interface CumplimientoCalculado {
+  usuario: {
+    id: number;
+    nombre: string;
+    nombreUsuario: string;
+    correo: string | null;
+    rol: string;
+    seEvalua: boolean;
+    esComodin: boolean;
+  };
+  usuarioId: number;
+  anio: number;
+  mes: number;
+  seEvaluaSnapshot: boolean;
+  auditoriasEsperadas: number;
+  auditoriasATiempo: number;
+  porcentajeCumplimiento: number | null;
+  promedioAreas: number | null;
+  areasConResultado: number;
+  kpiFinal: number | null;
+  calculadoEn: Date;
+  detallesAreas: Array<{
+    areaId: number;
+    codigoAreaSnapshot: string;
+    nombreAreaSnapshot: string;
+    tipoAreaSnapshot: TipoArea;
+    resultadoMensualUtilizado: number;
+  }>;
+}
+
 /**
- * Calcula y materializa el cumplimiento y KPI 50/50 de un usuario para un mes dado.
- * Protege snapshots históricos de áreas ya liquidadas si existen.
+ * Calcula en memoria (operación pura de lectura sin mutaciones) el cumplimiento y KPI 50/50 de un usuario para un mes dado.
+ * Respeta snapshots históricos de áreas ya liquidadas si existen en la BD.
  */
-export const calcularYGuardarCumplimientoUsuario = async (
+export const calcularCumplimientoUsuarioEnMemoria = async (
   tx: PrismaTransaction | typeof prisma,
   usuarioId: number,
   anio: number,
   mes: number,
   forzarRecalculoAreas = false,
   ahora = new Date(),
-) => {
+): Promise<CumplimientoCalculado> => {
   const usuario = await tx.usuario.findUniqueOrThrow({
     where: { id: usuarioId },
     include: {
@@ -224,6 +254,45 @@ export const calcularYGuardarCumplimientoUsuario = async (
 
   const kpiFinal = calcularKpiFinal(porcentajeCumplimiento, promedioAreas);
 
+  return {
+    usuario: {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      nombreUsuario: usuario.nombreUsuario,
+      correo: usuario.correo,
+      rol: usuario.rol,
+      seEvalua: usuario.seEvalua,
+      esComodin: usuario.esComodin,
+    },
+    usuarioId,
+    anio,
+    mes,
+    seEvaluaSnapshot,
+    auditoriasEsperadas,
+    auditoriasATiempo,
+    porcentajeCumplimiento,
+    promedioAreas,
+    areasConResultado,
+    kpiFinal,
+    calculadoEn: ahora,
+    detallesAreas: detallesAreasParaGuardar,
+  };
+};
+
+/**
+ * Calcula y materializa el cumplimiento y KPI 50/50 de un usuario para un mes dado.
+ * Protege snapshots históricos de áreas ya liquidadas si existen.
+ */
+export const calcularYGuardarCumplimientoUsuario = async (
+  tx: PrismaTransaction | typeof prisma,
+  usuarioId: number,
+  anio: number,
+  mes: number,
+  forzarRecalculoAreas = false,
+  ahora = new Date(),
+) => {
+  const calculo = await calcularCumplimientoUsuarioEnMemoria(tx, usuarioId, anio, mes, forzarRecalculoAreas, ahora);
+
   // Materialización atómica en la base de datos
   const materializado = await tx.cumplimientoMensualUsuario.upsert({
     where: {
@@ -234,26 +303,26 @@ export const calcularYGuardarCumplimientoUsuario = async (
       },
     },
     update: {
-      seEvaluaSnapshot,
-      auditoriasEsperadas,
-      auditoriasATiempo,
-      porcentajeCumplimiento: porcentajeCumplimiento !== null ? new Prisma.Decimal(porcentajeCumplimiento) : null,
-      promedioAreas: promedioAreas !== null ? new Prisma.Decimal(promedioAreas) : null,
-      areasConResultado,
-      kpiFinal: kpiFinal !== null ? new Prisma.Decimal(kpiFinal) : null,
+      seEvaluaSnapshot: calculo.seEvaluaSnapshot,
+      auditoriasEsperadas: calculo.auditoriasEsperadas,
+      auditoriasATiempo: calculo.auditoriasATiempo,
+      porcentajeCumplimiento: calculo.porcentajeCumplimiento !== null ? new Prisma.Decimal(calculo.porcentajeCumplimiento) : null,
+      promedioAreas: calculo.promedioAreas !== null ? new Prisma.Decimal(calculo.promedioAreas) : null,
+      areasConResultado: calculo.areasConResultado,
+      kpiFinal: calculo.kpiFinal !== null ? new Prisma.Decimal(calculo.kpiFinal) : null,
       calculadoEn: new Date(),
     },
     create: {
       usuarioId,
       anio,
       mes,
-      seEvaluaSnapshot,
-      auditoriasEsperadas,
-      auditoriasATiempo,
-      porcentajeCumplimiento: porcentajeCumplimiento !== null ? new Prisma.Decimal(porcentajeCumplimiento) : null,
-      promedioAreas: promedioAreas !== null ? new Prisma.Decimal(promedioAreas) : null,
-      areasConResultado,
-      kpiFinal: kpiFinal !== null ? new Prisma.Decimal(kpiFinal) : null,
+      seEvaluaSnapshot: calculo.seEvaluaSnapshot,
+      auditoriasEsperadas: calculo.auditoriasEsperadas,
+      auditoriasATiempo: calculo.auditoriasATiempo,
+      porcentajeCumplimiento: calculo.porcentajeCumplimiento !== null ? new Prisma.Decimal(calculo.porcentajeCumplimiento) : null,
+      promedioAreas: calculo.promedioAreas !== null ? new Prisma.Decimal(calculo.promedioAreas) : null,
+      areasConResultado: calculo.areasConResultado,
+      kpiFinal: calculo.kpiFinal !== null ? new Prisma.Decimal(calculo.kpiFinal) : null,
       calculadoEn: new Date(),
     },
   });
@@ -263,9 +332,9 @@ export const calcularYGuardarCumplimientoUsuario = async (
     where: { cumplimientoMensualUsuarioId: materializado.id },
   });
 
-  if (detallesAreasParaGuardar.length > 0) {
+  if (calculo.detallesAreas.length > 0) {
     await tx.cumplimientoMensualArea.createMany({
-      data: detallesAreasParaGuardar.map((det) => ({
+      data: calculo.detallesAreas.map((det) => ({
         cumplimientoMensualUsuarioId: materializado.id,
         areaId: det.areaId,
         codigoAreaSnapshot: det.codigoAreaSnapshot,
@@ -278,10 +347,10 @@ export const calcularYGuardarCumplimientoUsuario = async (
 
   return {
     ...materializado,
-    porcentajeCumplimiento,
-    promedioAreas,
-    kpiFinal,
-    detallesAreas: detallesAreasParaGuardar,
+    porcentajeCumplimiento: calculo.porcentajeCumplimiento,
+    promedioAreas: calculo.promedioAreas,
+    kpiFinal: calculo.kpiFinal,
+    detallesAreas: calculo.detallesAreas,
   };
 };
 
@@ -320,7 +389,7 @@ export const obtenerVistaMensualCumplimientos = async (
   const ahora = new Date();
 
   // 1. Cargar KPIs de los usuarios para el periodo
-  let cumplimientosUsuarios = await tx.cumplimientoMensualUsuario.findMany({
+  const cumplimientosUsuarios = await tx.cumplimientoMensualUsuario.findMany({
     where: { anio, mes },
     include: {
       usuario: {
@@ -341,29 +410,47 @@ export const obtenerVistaMensualCumplimientos = async (
     ],
   });
 
-  // Si no hay ningún cumplimiento liquidado aún para este mes, liquidar por primera vez
-  if (cumplimientosUsuarios.length === 0) {
-    await liquidarCumplimientosMensuales(tx, anio, mes);
-    cumplimientosUsuarios = await tx.cumplimientoMensualUsuario.findMany({
-      where: { anio, mes },
-      include: {
-        usuario: {
-          select: {
-            id: true,
-            nombre: true,
-            nombreUsuario: true,
-            correo: true,
-            rol: true,
-            seEvalua: true,
-            esComodin: true,
-          },
-        },
-        detallesAreas: true,
-      },
-      orderBy: [
-        { usuario: { nombre: 'asc' } },
-      ],
+  let usuariosCalculados: Array<{
+    usuario: {
+      id: number;
+      nombre: string;
+      nombreUsuario: string;
+      correo: string | null;
+      rol: string;
+      seEvalua: boolean;
+      esComodin: boolean;
+    };
+    seEvaluaSnapshot: boolean;
+    auditoriasEsperadas: number;
+    auditoriasATiempo: number;
+    porcentajeCumplimiento: number | Prisma.Decimal | null;
+    promedioAreas: number | Prisma.Decimal | null;
+    areasConResultado: number;
+    kpiFinal: number | Prisma.Decimal | null;
+    calculadoEn: Date;
+    detallesAreas: Array<{
+      areaId: number;
+      codigoAreaSnapshot: string;
+      nombreAreaSnapshot: string;
+      tipoAreaSnapshot: TipoArea;
+      resultadoMensualUtilizado: number | Prisma.Decimal;
+    }>;
+  }>;
+
+  // Si existen registros materializados (mes liquidado/cerrado), se leen directamente.
+  // Si no existen, se calculan en memoria SIN mutar la base de datos (lectura pura).
+  if (cumplimientosUsuarios.length > 0) {
+    usuariosCalculados = cumplimientosUsuarios;
+  } else {
+    const usuariosActivos = await tx.usuario.findMany({
+      where: { activo: true },
+      select: { id: true },
+      orderBy: { nombre: 'asc' },
     });
+
+    usuariosCalculados = await Promise.all(
+      usuariosActivos.map((u) => calcularCumplimientoUsuarioEnMemoria(tx, u.id, anio, mes, false, ahora)),
+    );
   }
 
   // 2. Cargar Asignaciones Mensuales y Objetivos del mes para la vista tabular operativa
@@ -536,7 +623,7 @@ export const obtenerVistaMensualCumplimientos = async (
   }).sort((a, b) => a.nombreArea.localeCompare(b.nombreArea, 'es'));
 
   // Formatear resumen de usuarios (proporciona campos planos y anidados de usuario)
-  const usuariosKpi = cumplimientosUsuarios
+  const usuariosKpi = usuariosCalculados
     .filter((c) => c.seEvaluaSnapshot || c.auditoriasEsperadas > 0)
     .map((c) => ({
       usuarioId: c.usuario.id,

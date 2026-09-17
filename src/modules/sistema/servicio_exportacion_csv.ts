@@ -266,7 +266,7 @@ export async function generarResultadosCsvString(
     const periodos = [1, 2].map((periodo) => {
       const obj = objetivosArea.find((objetivo) => objetivo.periodo === periodo);
       const referencia = obj ?? objetivosArea.find(Boolean) ?? { terminaEn: new Date(g.anio, g.mes, 0, 23, 59, 59, 999) };
-      return construirPeriodoResumen(obj as any, periodo, referencia);
+      return construirPeriodoResumen(obj as unknown as Parameters<typeof construirPeriodoResumen>[0], periodo, referencia);
     });
 
     const resultadoMensual = construirResultadoMensualCanonico(periodos);

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { prisma } from '../../db';
 import { responder } from '../../utils/respuesta';
-import { calcularYGuardarCumplimientoUsuario } from './servicio_kpi';
+import { calcularCumplimientoUsuarioEnMemoria } from './servicio_kpi';
 import { esquemaParamUsuarioId, esquemaQueryCumplimientos } from './zod';
 
 export const obtenerCumplimientoUsuario = async (req: Request, res: Response) => {
@@ -12,7 +12,7 @@ export const obtenerCumplimientoUsuario = async (req: Request, res: Response) =>
   const anio = query.anio ?? ahora.getFullYear();
   const mes = query.mes ?? (ahora.getMonth() + 1);
 
-  let datos = await prisma.cumplimientoMensualUsuario.findUnique({
+  const datos = await prisma.cumplimientoMensualUsuario.findUnique({
     where: {
       usuarioId_anio_mes: {
         usuarioId: id,
@@ -37,30 +37,30 @@ export const obtenerCumplimientoUsuario = async (req: Request, res: Response) =>
   });
 
   if (!datos) {
-    await calcularYGuardarCumplimientoUsuario(prisma, id, anio, mes);
-    datos = await prisma.cumplimientoMensualUsuario.findUnique({
-      where: {
-        usuarioId_anio_mes: {
-          usuarioId: id,
-          anio,
-          mes,
-        },
-      },
-      include: {
-        usuario: {
-          select: {
-            id: true,
-            nombre: true,
-            nombreUsuario: true,
-            correo: true,
-            rol: true,
-            seEvalua: true,
-            esComodin: true,
-          },
-        },
-        detallesAreas: true,
-      },
+    const enMemoria = await calcularCumplimientoUsuarioEnMemoria(prisma, id, anio, mes, false, ahora);
+    responder(res, {
+      id: null,
+      usuarioId: enMemoria.usuarioId,
+      anio: enMemoria.anio,
+      mes: enMemoria.mes,
+      seEvaluaSnapshot: enMemoria.seEvaluaSnapshot,
+      auditoriasEsperadas: enMemoria.auditoriasEsperadas,
+      auditoriasATiempo: enMemoria.auditoriasATiempo,
+      porcentajeCumplimiento: enMemoria.porcentajeCumplimiento,
+      promedioAreas: enMemoria.promedioAreas,
+      areasConResultado: enMemoria.areasConResultado,
+      kpiFinal: enMemoria.kpiFinal,
+      calculadoEn: enMemoria.calculadoEn,
+      usuario: enMemoria.usuario,
+      detallesAreas: enMemoria.detallesAreas.map((d) => ({
+        areaId: d.areaId,
+        codigoAreaSnapshot: d.codigoAreaSnapshot,
+        nombreAreaSnapshot: d.nombreAreaSnapshot,
+        tipoAreaSnapshot: d.tipoAreaSnapshot,
+        resultadoMensualUtilizado: d.resultadoMensualUtilizado,
+      })),
     });
+    return;
   }
 
   responder(res, datos);
