@@ -123,22 +123,100 @@ const obtenerVersionFormularioParaTipo = async (tx: PrismaTransaction, tipoArea:
   return resolverVersionFormularioParaCandidatos(candidatos, versionIdCongeladaEnMes);
 };
 
+type AreaProgramable = {
+  id: number;
+  codigo: string;
+  nombre: string;
+  tipo: TipoArea;
+  activo: boolean;
+  auditableDesde: Date | null;
+  auditableHasta: Date | null;
+};
+
+export type ConfiguracionProgramacionMensual = {
+  estado: 'LISTA' | 'SIN_AREAS' | 'PENDIENTE';
+  puedeAsegurar: boolean;
+  totalAreasAuditables: number;
+  tiposRequeridos: TipoArea[];
+  tiposSinFormulario: TipoArea[];
+  formulariosPorTipo: Array<{
+    tipo: TipoArea;
+    formularioId: number | null;
+    versionFormularioId: number | null;
+  }>;
+};
+
+const cargarAreasAuditablesMes = async (tx: PrismaTransaction, anio: number, mes: number): Promise<AreaProgramable[]> => {
+  const areas = await tx.area.findMany({
+    select: { id: true, codigo: true, nombre: true, tipo: true, activo: true, auditableDesde: true, auditableHasta: true },
+  });
+
+  return areas.filter((area) => (
+    areaEsAuditableEnPeriodo(area, anio, mes, 15)
+    || areaEsAuditableEnPeriodo(area, anio, mes, ultimoDiaMes(anio, mes))
+  ));
+};
+
+const tiposRequeridosPorAreas = (areas: AreaProgramable[]) => (
+  Array.from(new Set(areas.map((area) => area.tipo))).sort((a, b) => a.localeCompare(b)) as TipoArea[]
+);
+
+export const evaluarConfiguracionProgramacionMensual = async (
+  tx: PrismaTransaction,
+  anio: number,
+  mes: number,
+): Promise<ConfiguracionProgramacionMensual> => {
+  const areasAuditables = await cargarAreasAuditablesMes(tx, anio, mes);
+  const tiposRequeridos = tiposRequeridosPorAreas(areasAuditables);
+
+  if (areasAuditables.length === 0) {
+    return {
+      estado: 'SIN_AREAS',
+      puedeAsegurar: false,
+      totalAreasAuditables: 0,
+      tiposRequeridos: [],
+      tiposSinFormulario: [],
+      formulariosPorTipo: [],
+    };
+  }
+
+  const formulariosPorTipo = await Promise.all(tiposRequeridos.map(async (tipo) => {
+    const version = await obtenerVersionFormularioParaTipo(tx, tipo, anio, mes);
+    return {
+      tipo,
+      formularioId: version?.formularioId ?? null,
+      versionFormularioId: version?.id ?? null,
+    };
+  }));
+
+  const tiposSinFormulario = formulariosPorTipo
+    .filter((item) => !item.versionFormularioId)
+    .map((item) => item.tipo);
+
+  return {
+    estado: tiposSinFormulario.length ? 'PENDIENTE' : 'LISTA',
+    puedeAsegurar: tiposSinFormulario.length === 0,
+    totalAreasAuditables: areasAuditables.length,
+    tiposRequeridos,
+    tiposSinFormulario,
+    formulariosPorTipo,
+  };
+};
+
 export const asegurarProgramacionMensual = async (
   tx: PrismaTransaction,
   anio: number,
   mes: number,
   creadoPorId: number,
 ) => {
+  const areas = await cargarAreasAuditablesMes(tx, anio, mes);
+  const tiposRequeridos = tiposRequeridosPorAreas(areas);
   const versionesPorTipo = new Map<TipoArea, number>();
-  for (const tipo of [TipoArea.ADMINISTRATIVA, TipoArea.OPERATIVA]) {
+  for (const tipo of tiposRequeridos) {
     const version = await obtenerVersionFormularioParaTipo(tx, tipo, anio, mes);
     if (!version) throw conflicto(`No existe formulario activo para areas ${tipo.toLowerCase()}`);
     versionesPorTipo.set(tipo, version.id);
   }
-
-  const areas = await tx.area.findMany({
-    select: { id: true, codigo: true, nombre: true, tipo: true, activo: true, auditableDesde: true, auditableHasta: true },
-  });
 
   void creadoPorId;
   for (const numeroCorte of [CORTE_P1, CORTE_P2]) {
@@ -162,6 +240,19 @@ export const asegurarProgramacionMensual = async (
       });
     }
   }
+};
+
+export const asegurarProgramacionMensualParaLectura = async (
+  tx: PrismaTransaction,
+  anio: number,
+  mes: number,
+  creadoPorId: number,
+) => {
+  const configuracion = await evaluarConfiguracionProgramacionMensual(tx, anio, mes);
+  if (configuracion.puedeAsegurar) {
+    await asegurarProgramacionMensual(tx, anio, mes, creadoPorId);
+  }
+  return configuracion;
 };
 
 const cargarObjetivosMes = async (tx: PrismaTransaction, anio: number, mes: number) => (

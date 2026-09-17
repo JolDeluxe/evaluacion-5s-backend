@@ -6,6 +6,8 @@ import {
   autoasignarPendientes,
   calcularPropuestaAutoasignacion,
   confirmarPropuestaAutoasignacion,
+  asegurarProgramacionMensualParaLectura,
+  evaluarConfiguracionProgramacionMensual,
   guardarAsignacionMensual,
   obtenerVistaMensual,
   puedeAsegurarProgramacionMensual,
@@ -318,6 +320,48 @@ const prepararMes = async (tx: FakeTx, anio = 2026, mes = 9) => {
 };
 
 describe('Asignacion mensual simplificada', () => {
+  test('evaluar configuracion: BD sin areas no busca formularios ni permite asegurar', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    tx.areas = [];
+    let consultasFormulario = 0;
+    tx.versionFormulario.findMany = async () => {
+      consultasFormulario += 1;
+      return [];
+    };
+
+    const configuracion = await evaluarConfiguracionProgramacionMensual(tx as any, 2026, 9);
+
+    expect(configuracion.estado).toBe('SIN_AREAS');
+    expect(configuracion.puedeAsegurar).toBe(false);
+    expect(configuracion.totalAreasAuditables).toBe(0);
+    expect(configuracion.tiposRequeridos).toEqual([]);
+    expect(consultasFormulario).toBe(0);
+  });
+
+  test('evaluar configuracion: solo areas operativas no exige formulario administrativo', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+
+    const configuracion = await evaluarConfiguracionProgramacionMensual(tx as any, 2026, 9);
+
+    expect(configuracion.estado).toBe('LISTA');
+    expect(configuracion.puedeAsegurar).toBe(true);
+    expect(configuracion.tiposRequeridos).toEqual([TipoArea.OPERATIVA]);
+    expect(configuracion.tiposSinFormulario).toEqual([]);
+  });
+
+  test('aseguramiento para lectura: areas con formulario faltante reportan pendiente sin crear objetivos', async () => {
+    const tx = new FakeTx({ soloArea1: true });
+    tx.versiones = [];
+
+    const configuracion = await asegurarProgramacionMensualParaLectura(tx as any, 2026, 9, 1);
+
+    expect(configuracion.estado).toBe('PENDIENTE');
+    expect(configuracion.puedeAsegurar).toBe(false);
+    expect(configuracion.totalAreasAuditables).toBe(1);
+    expect(configuracion.tiposSinFormulario).toEqual([TipoArea.OPERATIVA]);
+    expect(tx.objetivos).toHaveLength(0);
+  });
+
   test('asignar Juan crea AsignacionMensual y P1/P2 para Juan', async () => {
     const tx = new FakeTx({ soloArea1: true });
     await prepararMes(tx);

@@ -3,7 +3,7 @@ import { EstadoAsignacionAuditoria, RolUsuario } from '../../generated/prisma/en
 import { puedeAdministrar5S } from '../../utils/permisos';
 import { derivarSituacionObjetivo, objetivoEsRealizable, SituacionObjetivo, calcularCierreConGracia } from '../../utils/periodos';
 import { obtenerEjecutablesUsuario } from '../asignaciones/01_listar';
-import { asegurarProgramacionMensual, obtenerVistaMensual, puedeAsegurarProgramacionMensual, periodoMensual } from '../asignaciones/programacion_mensual';
+import { asegurarProgramacionMensualParaLectura, obtenerVistaMensual, puedeAsegurarProgramacionMensual, periodoMensual } from '../asignaciones/programacion_mensual';
 import { obtenerResultadosAreas } from '../resultados/servicio';
 
 const MESES = [
@@ -28,8 +28,9 @@ export const obtenerDashboardInicio = async (
   const esAdmin = puedeAdministrar5S(autenticacion.rol);
 
   // 1. Asegurar programación del mes actual si aplica
+  let configuracionProgramacion = null;
   if (puedeAsegurarProgramacionMensual(anioActual, mesActual, ahora)) {
-    await asegurarProgramacionMensual(tx, anioActual, mesActual, autenticacion.usuarioId);
+    configuracionProgramacion = await asegurarProgramacionMensualParaLectura(tx, anioActual, mesActual, autenticacion.usuarioId);
   }
 
   // 2. Cargar vista mensual de asignaciones del mes actual
@@ -337,6 +338,7 @@ export const obtenerDashboardInicio = async (
       resultadoMisAreas,
       misPendientesResumen,
       departamentosCargo,
+      configuracion: configuracionProgramacion,
     };
   }
 
@@ -376,6 +378,7 @@ export const obtenerDashboardInicio = async (
     resultadoMisAreas,
     departamentosCargo,
     misPendientesResumen,
+    configuracion: configuracionProgramacion,
   };
 };
 

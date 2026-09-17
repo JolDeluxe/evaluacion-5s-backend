@@ -3,7 +3,7 @@ import type { PrismaTransaction } from '../../db';
 import { prisma } from '../../db';
 import { responder } from '../../utils/respuesta';
 import {
-  asegurarProgramacionMensual,
+  asegurarProgramacionMensualParaLectura,
   obtenerVistaMensual,
   puedeAsegurarProgramacionMensual,
 } from './programacion_mensual';
@@ -16,8 +16,9 @@ export const obtenerAlertasAsignaciones = async (req: Request, res: Response) =>
 
   const tx = prisma as unknown as PrismaTransaction;
 
+  let configuracion = null;
   if (puedeAsegurarProgramacionMensual(anio, mes)) {
-    await asegurarProgramacionMensual(tx, anio, mes, usuarioId);
+    configuracion = await asegurarProgramacionMensualParaLectura(tx, anio, mes, usuarioId);
   }
 
   const vista = await obtenerVistaMensual(tx, anio, mes);
@@ -25,6 +26,7 @@ export const obtenerAlertasAsignaciones = async (req: Request, res: Response) =>
   responder(res, {
     faltantes: vista.resumen.sinAuditor,
     totalAreas: vista.resumen.areas,
+    ...(configuracion ? { configuracion } : {}),
   });
 };
 
