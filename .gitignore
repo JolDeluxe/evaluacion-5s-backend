@@ -9,3 +9,6 @@ coverage/
 .tmp/
 tmp/
 scratch/
+
+# Prisma Client generado
+src/generated/prisma/
