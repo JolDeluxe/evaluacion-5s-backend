@@ -1,0 +1,486 @@
+[
+  {
+    "formulario": {
+      "slug": "evaluacion-5s-administrativa",
+      "nombre": "EVALUACION 5'S ADMINISTRATIVA",
+      "descripcion": "Sistema de Gestión de Calidad · Formato F-16-SA",
+      "alcance": "ADMINISTRATIVO",
+      "activo": true
+    },
+    "version": {
+      "numeroVersion": 3,
+      "activa": true
+    },
+    "secciones": [
+      {
+        "claveEstable": "63b0d326-9cff-578e-b2b7-e29fb3e739d6",
+        "nombre": "1´S (SEIRI)",
+        "objetivo": "\"Clasificación - Separación\": Identificar lo necesario de lo innecesario",
+        "orden": 0,
+        "preguntas": [
+          {
+            "claveEstable": "1b1f1188-850f-511e-8723-84c3addc0481",
+            "texto": "Se evalúa: Archivo. Documentos que se tiene en escritorio, clasificados de acuerdo al uso de cada documento). ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "15bf22a9-1da1-5010-be5b-25aefe7810ab",
+            "texto": "Se evalúa: Escritorio. Documentos, materiales, equipos innecesarios almacenados o guardados en cajones o gavetas. ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "214ff673-9e8c-520c-9904-a995b7199c4e",
+            "texto": "Se evalúa: Control Visual. Artículos y documentos que no son necesarios para la realización de actividades y que son identificados a simple vista. ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "81f6f17b-939a-5e16-90e5-b3a791a4e313",
+            "texto": "Se evalúa: Elemento para descartar Documentos, materiales y equipos que deben ser devueltos o dados de baja por no prestar ninguna utilidad. ¿CUMPLE?",
+            "orden": 3,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "425480dc-9ac9-5f75-97bb-f33599d5605f",
+        "nombre": "2´S (SEITON)",
+        "objetivo": "\"Orden\": Designar un lugar para cada cosa",
+        "orden": 1,
+        "preguntas": [
+          {
+            "claveEstable": "ea66f727-5a0c-5fda-bc7c-03b121f23523",
+            "texto": "Se evalúa: Identificación de carpetas. Todas las carpetas están identificadas o rotuladas a fin de localizar documentos con la mayor facilidad posible. ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "127d1318-d2da-5dc3-88d7-e716bdfbaf81",
+            "texto": "Se evalúa: Gavetas de escritorio. Existe mezcla de documentos, elementos y/o artículos que son utilizados, pero no van acorde a la identificación de la gaveta. ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "8d1014cd-7f26-53d5-b8a8-0168de365fe0",
+            "texto": "Se evalúa: Organización de equipos y documentos en escritorio. Todos los documentos, elementos y equipos tienen un lugar fijo y siempre están en el mismo lugar. ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "eac9ec97-b77f-58d5-8e53-b046b63e15cb",
+            "texto": "Se evalúa: Documentos escritorio. No tener o contar con documentos en exceso y sin orden sobre el escritorio de trabajo. ¿CUMPLE?",
+            "orden": 3,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "0a37e142-b495-51c2-860a-450fd9820091",
+        "nombre": "3´S (SEISO)",
+        "objetivo": "\"Limpieza\": Integrar hábitos de limpieza como un ámbito laboral",
+        "orden": 2,
+        "preguntas": [
+          {
+            "claveEstable": "2ea3dce9-84f7-529f-8cb0-3add0f85d3e0",
+            "texto": "Se evalúa: Piso. El piso de trabajo se encuentra limpio y libre de obstáculos que puedan generar una caída al mismo nivel. ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "c8c05543-80a7-5002-83e3-06d25f786635",
+            "texto": "Se evalúa: Escritorio. El escritorio o mesa de trabajo se encuentra limpio y libre de suciedad. ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "f49352c9-cb9b-53ea-8fca-f4b85886a903",
+            "texto": "Se evalúa: Limpieza habitual. Diariamente se realiza limpieza al área de trabajo y equipos de oficina. (Pantallas, CPU, teclado, teléfonos, gavetas, etc.) ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "36a014fe-589a-536a-9690-df77bc9f4848",
+        "nombre": "4´S (SEIKETSU)",
+        "objetivo": "\"Estandarizar\": Mantener las condiciones de anteriores S´",
+        "orden": 3,
+        "preguntas": [
+          {
+            "claveEstable": "d1c43b33-04c1-58b0-b917-f60d783b605c",
+            "texto": "Se evalúa: Etiquetado y/o rotulado. Todas las carpetas están identificadas con el etiquetado y/o rotulado estandarizado por parte de la empresa.) ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "de4484ad-9480-5374-ad2c-390fd2d9aa00",
+        "nombre": "5´S (SHITSUKE)",
+        "objetivo": "\"Disciplina\": Fomentar la autodisciplina a los colaboradores",
+        "orden": 4,
+        "preguntas": [
+          {
+            "claveEstable": "db5acd61-4fe3-5472-ad71-0180ac987890",
+            "texto": "Se evalúa: Cultura. ¿Todos los trabajadores participan en mantener en orden y limpia sus áreas de trabajo? ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "45a3e506-14d6-5b7c-8b47-7e21ab8a740b",
+            "texto": "Se evalúa: Cultura. ¿Todos los trabajadores utilizan su uniforme, así como el material de equipo de protección personal para las actividades diarias de su trabajo? ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "1c7736fc-95d2-5589-a526-519e72646865",
+        "nombre": "6´S (SECURITY - APPEARANCE)",
+        "objetivo": "\"Seguridad\": Fomentar un ambiente de trabajo seguro para los colaboradores",
+        "orden": 5,
+        "preguntas": [
+          {
+            "claveEstable": "495b4c49-9afe-55f9-8444-3a9bae6d0a55",
+            "texto": "Se evalúa: Seguridad. Estado de iluminación ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "000d2c36-2a3f-5d4d-bf54-e41a49267fd3",
+            "texto": "Se evalúa: Seguridad ¿Cuenta con equipo contra incendios? (Sin obstruir, Delimitado, y en buenas condiciones sin golpes o falta de pintura). ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "4fdf21a9-7ff6-5ab6-9957-696391fb7e25",
+            "texto": "Se evalúa: Seguridad ¿Todos los trabajadores utilizan su uniforme, así como el material de equipo de protección personal para las actividades diarias de su trabajo? ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "b5528679-4e9b-5007-8b3a-fe4751bd2a91",
+            "texto": "Se evalúa: Imagen ¿Las condiciones del mobiliario y maquinaria es buena? (pintura, condiciones) ¿CUMPLE?",
+            "orden": 3,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "719c948b-2bd3-5a1d-be43-a9927e7d8e2d",
+            "texto": "Se evalúa: Imagen Estado de las instalaciones (pintura, condiciones) ¿CUMPLE?",
+            "orden": 4,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "1b2ebea4-81f2-5047-b090-36556f552d87",
+            "texto": "Se evalúa: Imagen Instalaciones electrónicas (seguras y no visibles) ¿CUMPLE?",
+            "orden": 5,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "bdb37162-0a6c-5db3-9a90-da574f4bfabf",
+        "nombre": "CULTURA",
+        "objetivo": "Realizar las preguntas al personal aplicable en el apartado de cultura, con la finalidad de fomentar la cultura de conocimiento realizando preguntas sobre la metodología.",
+        "orden": 6,
+        "preguntas": [
+          {
+            "claveEstable": "213f66d4-3818-5166-8416-bcad9c1afa14",
+            "texto": "¿Cuántas y cuáles son las 5'S? ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": false
+          },
+          {
+            "claveEstable": "49756481-fad5-5189-b14f-d49a76c3ff7c",
+            "texto": "¿Qué significa WPO y para qué nos sirve dentro de nuestro lugar de trabajo? ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": false
+          },
+          {
+            "claveEstable": "41b96e50-d8c3-5d05-bce2-6782aa348108",
+            "texto": "¿Sabes cuál es el estándar ideal de WPO en tu lugar de trabajo? ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "formulario": {
+      "slug": "evaluacion-5s-operativa",
+      "nombre": "EVALUACION 5'S OPERATIVA",
+      "descripcion": "Sistema de Gestión de Calidad · Formato F-16-SA",
+      "alcance": "OPERATIVO",
+      "activo": true
+    },
+    "version": {
+      "numeroVersion": 4,
+      "activa": true
+    },
+    "secciones": [
+      {
+        "claveEstable": "0352468f-1112-5b55-b7b7-96060b4d2659",
+        "nombre": "1'S SEIRI - Clasificación - Separación",
+        "objetivo": "Identificar lo necesario de lo innecesario.",
+        "orden": 0,
+        "preguntas": [
+          {
+            "claveEstable": "2edee3a1-92a7-58c3-a6d7-11c9b7519121",
+            "texto": "¿En el área solo se encuentran herramientas o materiales correspondientes a la actividad y/o departamento? ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "c96fbfda-eaa9-5977-88a8-3be4b11eed65",
+            "texto": "¿En el área de trabajo no se encuentran objetos personales? ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "e0b12bcf-6acb-571f-905b-b72d9ad7bf45",
+            "texto": "¿Existen elementos inutilizados dentro del área separados e identificados (maquinaria, mp, cajones, herramientas, etc)? ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "4632addd-4f1d-5658-be89-6e6f52d9496b",
+            "texto": "¿No se tiene un exceso de material? ¿CUMPLE?",
+            "orden": 3,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "095c59d6-59ee-5439-8869-b060db75be3b",
+        "nombre": "2'S SEITON - Orden",
+        "objetivo": "Designar un lugar para cada cosa.",
+        "orden": 1,
+        "preguntas": [
+          {
+            "claveEstable": "8fc83738-636d-539f-a231-e5b55f4cdc84",
+            "texto": "¿Están claramente definidos los pasillos, áreas de almacenamiento y lugares de trabajo, sin objetos fuera de su lugar y/o que se encuentren obstruyendo? ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "e0fb5f9e-7698-5c7b-845c-7ae425f23900",
+            "texto": "¿Se encuentran delimitadas las áreas de herramientas de trabajo, maquinaria, residuos o basura y producto terminado o en proceso? ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "be610840-bb84-5022-a24b-a4f8b672134e",
+            "texto": "¿Existen objetos fuera de sus áreas delimitadas? (Herramientas de trabajo, maquinaria, residuos o basura, producto). ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "48950498-b7e6-59c3-89d3-faa4137e0e90",
+            "texto": "¿Se manejan los residuos correctamente? ¿CUMPLE?",
+            "orden": 3,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "5f8ba638-d4e0-5aa1-a889-91f19fd371f2",
+            "texto": "Vías de circulación transitables, claras y sin obstrucción. ¿CUMPLE?",
+            "orden": 4,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "8892e8ba-c3a8-5f8d-bf16-082c05997394",
+            "texto": "Hay exceso de herramienta o maquinaria en las áreas. ¿CUMPLE?",
+            "orden": 5,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "1fc74a3a-4dac-5628-a061-fa7c34e52fd7",
+            "texto": "¿Las áreas de almacenamiento son empleadas con el propósito asignado? ¿CUMPLE?",
+            "orden": 6,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "4b3677d0-e0bd-5bd2-a2d2-052c156dd1b0",
+            "texto": "¿No existen materiales fuera de las estanterías o espacios de almacenamiento? ¿CUMPLE?",
+            "orden": 7,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "b8f846a0-24b0-5e5d-baa0-9c18e4968c0b",
+            "texto": "¿Hay información fuera de lugares asignados? ¿CUMPLE?",
+            "orden": 8,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "f90bce3c-7d46-558e-b34c-922e6747102c",
+            "texto": "¿Los materiales asignados se cuentan únicamente en los espacios correspondientes? ¿CUMPLE?",
+            "orden": 9,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "c1d4565b-4b0d-5c7d-8dfc-031d35d1d333",
+        "nombre": "3'S SEISO - Limpieza",
+        "objetivo": "Integrar hábitos de limpieza como un ámbito laboral.",
+        "orden": 2,
+        "preguntas": [
+          {
+            "claveEstable": "d158d03c-07c8-5595-8940-3806c5d9064f",
+            "texto": "¿Las áreas de almacenamiento de materiales se encuentran limpias (Estanterías)? ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "f110904e-948b-531c-8495-d358ca335b07",
+            "texto": "¿Los espacios de trabajo se encuentran limpios (Maquinaria, equipo de cómputo, mesas de trabajo, ventiladores, lámparas, pisos)? ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "585f13cb-2d8a-5ec4-a964-06441e718c0c",
+            "texto": "¿Los espacios de trabajo, maquinaria, mesas, cajones de trabajo están libres de alimentos? ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "89145f3c-6e68-5436-8bb2-08e772fed28b",
+            "texto": "Pizarrones (limpios) ¿CUMPLE?",
+            "orden": 3,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "1c51c89b-7ebe-5a64-8e19-ff73598de75b",
+            "texto": "Instalaciones (pisos, paredes, ventanas, techos) ¿Se encuentran limpias y libres de materiales innecesarios? ¿CUMPLE?",
+            "orden": 4,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "2a5adb5e-1892-5756-a9de-ec1f07acf466",
+        "nombre": "4'S SEIKETSU - Estandarizar",
+        "objetivo": "Mantener las condiciones de anteriores S´.",
+        "orden": 3,
+        "preguntas": [
+          {
+            "claveEstable": "79f2979c-e6b2-56bc-b474-ecb2f6aff555",
+            "texto": "¿El encargado de área aporta y trabaja con el equipo para mantener el trabajo de las ´s anteriores? ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "039f1fa0-b154-5a30-8be4-e6ac50e3398d",
+            "texto": "Pizarrones (mismo formato en toda la planta) ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "14071512-9cf5-5244-9b93-4d95f7e80102",
+            "texto": "¿Se cuenta con layout del área actualizado y con la correcta delimitación del espacio de trabajo para que se lleve a cabo el bueno uso de los espacios? ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "2b10f9ae-ed49-5ae3-a914-9708dfa6e44b",
+        "nombre": "5'S SHITSUKE - Disciplina",
+        "objetivo": "Fomentar la autodisciplina a los colaboradores.",
+        "orden": 4,
+        "preguntas": [
+          {
+            "claveEstable": "bdca636b-8690-5e88-9a96-e803467d87c5",
+            "texto": "¿Todos los trabajadores participan en mantener en orden y limpia sus áreas de trabajo? ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "1f792c59-e62e-5b5c-902c-351719f47db1",
+            "texto": "¿Todos los trabajadores utilizan su uniforme, así como el material de equipo de protección personal para las actividades diarias de su trabajo? ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "352318fc-9a37-5ce5-8ca5-06190fc2436c",
+        "nombre": "SEGURIDAD",
+        "objetivo": "Fomentar un ambiente de trabajo seguro para los colaboradores.",
+        "orden": 5,
+        "preguntas": [
+          {
+            "claveEstable": "2f3b0e80-4770-5f2f-91d5-5f40da7fa89d",
+            "texto": "Estado de iluminación. ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "c6ae2aba-ba96-51b9-bc36-f00c215bd75f",
+            "texto": "¿Cuenta con equipo contra incendios? (Sin obstruir, Delimitado, y en buenas condiciones sin golpes o falta de pintura). ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "e3e8bc46-5a47-59f7-b797-2631fd129d07",
+            "texto": "¿Cuenta con la señalética correspondiente y en condiciones? ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "745d7632-ee14-5c67-a3c1-9dbf69243dce",
+            "texto": "¿Las condiciones del mobiliario y maquinaria es buena? (pintura, condiciones). ¿CUMPLE?",
+            "orden": 3,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "3b38a378-a503-5078-85ea-22145b31fe59",
+            "texto": "Estado de las instalaciones (pintura, condiciones). ¿CUMPLE?",
+            "orden": 4,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "b804a2a8-cbee-5182-94dc-160469c271d0",
+            "texto": "Instalaciones electrónicas (seguras y no visibles). ¿CUMPLE?",
+            "orden": 5,
+            "requiereHallazgo": true
+          },
+          {
+            "claveEstable": "57033597-0781-546d-a95d-9a2eb5e2d859",
+            "texto": "¿Uso de equipo de protección personal de acuerdo a lo establecido por seguridad e higiene como lo marca la señalética? ¿CUMPLE?",
+            "orden": 6,
+            "requiereHallazgo": true
+          }
+        ]
+      },
+      {
+        "claveEstable": "98a7d9e5-7e82-5687-ab07-6999b5856054",
+        "nombre": "CULTURA",
+        "objetivo": "Realizar las preguntas al personal aplicable en el apartado de cultura, con la finalidad de fomentar la cultura de conocimiento realizando preguntas sobre la metodología.",
+        "orden": 6,
+        "preguntas": [
+          {
+            "claveEstable": "24b1d15a-a6c0-59aa-8185-2f52afabdb07",
+            "texto": "¿Cuántas y cuáles son las 5'S? ¿CUMPLE?",
+            "orden": 0,
+            "requiereHallazgo": false
+          },
+          {
+            "claveEstable": "940cd18f-149e-5235-bb7a-ae4bebaf4099",
+            "texto": "¿Qué significa WPO y para qué nos sirve dentro de nuestro lugar de trabajo? ¿CUMPLE?",
+            "orden": 1,
+            "requiereHallazgo": false
+          },
+          {
+            "claveEstable": "73c94db3-ec73-5d2f-8bf9-0096a9a8885e",
+            "texto": "¿Sabes cuál es el estándar ideal de WPO en tu lugar de trabajo? ¿CUMPLE?",
+            "orden": 2,
+            "requiereHallazgo": false
+          }
+        ]
+      }
+    ]
+  }
+]
