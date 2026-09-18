@@ -1,0 +1,281 @@
+[
+  {
+    "codigo": "ADM-FAC-OMEGA",
+    "nombre": "ADMINISTRACION - FACTURACION OMEGA",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "6PYZ3VHHHP"
+  },
+  {
+    "codigo": "IMG-DISENO",
+    "nombre": "IMAGEN - DISEÑO",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "NT4HZPYFCW"
+  },
+  {
+    "codigo": "CH-OFICINA-KAPPA",
+    "nombre": "CAPITAL HUMANO - OFICINA DE GTE CH - CONSULTORIO KAPPA - VIGILANCIAS DE KAPPA",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "YQQ0E6CE7Y"
+  },
+  {
+    "codigo": "DIR-PPCP-MAQ",
+    "nombre": "DIRECCION - PPCP - MAQUILAS",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "PPZRD74EEC"
+  },
+  {
+    "codigo": "ALM-PIELES",
+    "nombre": "ALMACEN DE PIELES",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "IIZYBAVH1Z"
+  },
+  {
+    "codigo": "ALM-MP",
+    "nombre": "ALMACEN DE MATERIA PRIMA",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "LHZMMFU0JR"
+  },
+  {
+    "codigo": "OFC-CALIDAD-TI",
+    "nombre": "OFICINA CALIDAD - TECNOLOGIAS DE INFORMACION",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "GBBDODCBK3"
+  },
+  {
+    "codigo": "OFC-PESPUNTE-ACC",
+    "nombre": "OFICINA PESPUNTE - OFICINA DE ACCESORIOS - OFICINA DE ADORNO",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "DYNETGTGLD"
+  },
+  {
+    "codigo": "OFC-DES-ING",
+    "nombre": "OFICINA DESARROLLO BOTA & ACCESORIOS - IMPLEMENTACIONES - INGENIERIA DE COSTOS Y PROCESOS",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "ZBKLZXM1HF"
+  },
+  {
+    "codigo": "OFC-SIGMA-VIG",
+    "nombre": "OFICINA DE SIGMA - VIGILANCIA SIGMA",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "GWKB9WE2EI"
+  },
+  {
+    "codigo": "OFC-BOLSAS-RH",
+    "nombre": "OFICINA BOLSAS - CONSULTORIO BOLSAS - VIGILANCIA BOLSAS - OFICINA DE RH EN BOLSAS",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "KP7XUWHQ1W"
+  },
+  {
+    "codigo": "CELULA-DES",
+    "nombre": "CELULA DE DESARROLLO",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "6TLTXRDFG3"
+  },
+  {
+    "codigo": "ALM-PT-DEV",
+    "nombre": "ALMACEN DE PT - DEVOLUCIONES",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "X394QREUQ0"
+  },
+  {
+    "codigo": "OFC-LOG-VIG-REC",
+    "nombre": "OFICINA DE LOGISTICA - VIGILANCIA OMEGA - RECEPCION OMEGA",
+    "tipo": "ADMINISTRATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "O1IIILGPP3"
+  },
+  {
+    "codigo": "CAL-MESAS",
+    "nombre": "CALIDAD MESAS DE TRABAJO EN PRODUCCION",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "6HFVFQYUGQ"
+  },
+  {
+    "codigo": "MTTO",
+    "nombre": "MANTENIMIENTO KAPPA - SIGMA - LAMBDA",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "YLX2AV3CGH"
+  },
+  {
+    "codigo": "MAQ-BETA7",
+    "nombre": "MAQUILAS BETA 7",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "CXT8TSQ7C8"
+  },
+  {
+    "codigo": "CORTE",
+    "nombre": "CORTE",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "QQ9GH0R1I0"
+  },
+  {
+    "codigo": "PESPUNTE",
+    "nombre": "PESPUNTE",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "YUUVK4DZZM"
+  },
+  {
+    "codigo": "PRELIM-KAPPA",
+    "nombre": "PRELIMINARES KAPPA",
+    "tipo": "OPERATIVA",
+    "activo": false,
+    "auditableDesde": null,
+    "auditableHasta": "2026-09-01T00:00:00.000Z",
+    "codigoVerificacion": "RYSI9CSDTO"
+  },
+  {
+    "codigo": "BORDADO",
+    "nombre": "BORDADO",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "1XNNWHMZ1O"
+  },
+  {
+    "codigo": "LASER",
+    "nombre": "LASER",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "KQLX2HEHPD"
+  },
+  {
+    "codigo": "PRELIM-SIGMA",
+    "nombre": "PRELIMINARES SIGMA",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "BQVII2QQAE"
+  },
+  {
+    "codigo": "MONTADO",
+    "nombre": "MONTADO",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "N7F5T0BJIS"
+  },
+  {
+    "codigo": "ACABADO",
+    "nombre": "ACABADO",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "PRG98D7HTC"
+  },
+  {
+    "codigo": "AVIO",
+    "nombre": "AVIO",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "0QLHMJ9WW0"
+  },
+  {
+    "codigo": "ADORNO",
+    "nombre": "ADORNO",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "TRYZQJZMIO"
+  },
+  {
+    "codigo": "CINTOS",
+    "nombre": "CINTOS",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "WETHRO0LIT"
+  },
+  {
+    "codigo": "CHAMARRAS",
+    "nombre": "CHAMARRAS",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "D6TSPPSXAU"
+  },
+  {
+    "codigo": "BILLETERA",
+    "nombre": "BILLETERA",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "NVQAQIWET3"
+  },
+  {
+    "codigo": "BOLSAS",
+    "nombre": "BOLSAS",
+    "tipo": "OPERATIVA",
+    "activo": true,
+    "auditableDesde": null,
+    "auditableHasta": null,
+    "codigoVerificacion": "XSN7FHXCU4"
+  }
+]
