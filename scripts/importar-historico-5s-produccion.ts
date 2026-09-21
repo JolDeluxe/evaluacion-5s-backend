@@ -523,38 +523,51 @@ function cargarFuentes() {
     const prefijo = codigoPregunta[0] as 'A' | 'F';
     const numeroPregunta = mapearNumeroPregunta(codigoPregunta, prefijo);
 
-    const url = r['f301 Fotografia'];
-    const noFoto = r['f302 NoFoto'];
+    const urlRaw = r['f301 Fotografia'] ?? '';
+    const urls = urlRaw
+      .split(/\r?\n/)
+      .map((u) => u.trim())
+      .filter(Boolean);
+    const noFotoBase = r['f302 NoFoto'];
     const fotoNombre = r['f303 Foto'];
-    const matchId = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    const tallyId = matchId ? matchId[1] : null;
 
     const configArea = CATALOGO_AREAS_HISTORICAS.get(areaClaveNorm);
     if (!configArea) throw new Error(`Área no catalogada en Imagen: "${match[1]}"`);
 
-    const item: ImagenFuente = {
-      unionFotoKey,
-      url,
-      noFoto,
-      fotoNombre,
-      tallyId,
-      areaClaveNorm,
-      rango: rangoStr,
-      codigoPregunta,
-      periodo,
-      prefijo,
-      numeroPregunta,
-    };
+    // Si no hay URLs válidas, procesar con la URL original para trazabilidad de error
+    const listaUrls = urls.length > 0 ? urls : [urlRaw];
 
-    const listaK = imagenesPorFotoKey.get(unionFotoKey) ?? [];
-    listaK.push(item);
-    imagenesPorFotoKey.set(unionFotoKey, listaK);
+    for (let uIdx = 0; uIdx < listaUrls.length; uIdx++) {
+      const url = listaUrls[uIdx];
+      // Si la celda original tenía múltiples fotos (ej. 2 URLs), numerar correlativamente (1, 2, ...)
+      const noFoto = listaUrls.length > 1 ? String(uIdx + 1) : noFotoBase;
+      const matchId = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      const tallyId = matchId ? matchId[1] : null;
 
-    const keyPeriodo = `${configArea.codigoBD}|${rangoStr}|${periodo}`;
-    const listaP = imagenesPorPeriodo.get(keyPeriodo) ?? [];
-    listaP.push(item);
-    imagenesPorPeriodo.set(keyPeriodo, listaP);
-    totalImagenesValidas++;
+      const item: ImagenFuente = {
+        unionFotoKey,
+        url,
+        noFoto,
+        fotoNombre,
+        tallyId,
+        areaClaveNorm,
+        rango: rangoStr,
+        codigoPregunta,
+        periodo,
+        prefijo,
+        numeroPregunta,
+      };
+
+      const listaK = imagenesPorFotoKey.get(unionFotoKey) ?? [];
+      listaK.push(item);
+      imagenesPorFotoKey.set(unionFotoKey, listaK);
+
+      const keyPeriodo = `${configArea.codigoBD}|${rangoStr}|${periodo}`;
+      const listaP = imagenesPorPeriodo.get(keyPeriodo) ?? [];
+      listaP.push(item);
+      imagenesPorPeriodo.set(keyPeriodo, listaP);
+      totalImagenesValidas++;
+    }
   }
 
   return {
