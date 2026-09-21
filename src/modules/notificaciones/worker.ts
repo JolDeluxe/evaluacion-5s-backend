@@ -11,6 +11,8 @@ import {
 } from '../../generated/prisma/enums';
 import {
   evaluarVentanaRecordatorioPeriodo,
+  mesAnteriorDe,
+  obtenerFechaHoraCDMX,
   obtenerUltimoDiaHabilPeriodo,
   tieneEnvioResultadoValido,
 } from '../../utils/periodos';
@@ -202,6 +204,59 @@ const procesarEntrega = async (id: number) => {
             });
             return;
           }
+        }
+      }
+
+      // Revalidación previa al envío para ASIGNACION_MENSUAL_CORREO:
+      // Si el mes asignado ya concluyó (ej. pausa prolongada), cancelar ordenadamente para no enviar correos del pasado.
+      if (
+        entrega.notificacion.tipo === TipoNotificacion.ASIGNACION_MENSUAL_CORREO ||
+        datosPayload.templateName === 'audit_assignment_monthly'
+      ) {
+        const mesStr = String(datosPayload.mes || '');
+        const cdmx = obtenerFechaHoraCDMX(new Date());
+        const mesActualYMD = cdmx.yyyyMMdd.slice(0, 7); // "YYYY-MM"
+        if (mesStr && mesStr < mesActualYMD) {
+          await prisma.entregaNotificacion.update({
+            where: { id },
+            data: {
+              estado: EstadoEntregaNotificacion.CANCELADA,
+              proximoIntentoEn: null,
+              ultimoError: `Asignación mensual caducada (mes asignado: ${mesStr}, mes en curso: ${mesActualYMD}). Envío omitido por periodo vencido.`,
+              bloqueadoHasta: null,
+              bloqueadoPor: null,
+            },
+          });
+          return;
+        }
+      }
+
+      // Revalidación previa al envío para RESULTADO_MENSUAL_CORREO:
+      // Los resultados mensuales corresponden al mes inmediatamente anterior.
+      // Si el mes reportado es anterior al mes inmediatamente anterior (ej. pausa prolongada de más de 1 mes),
+      // cancelar ordenadamente para no enviar reportes de meses ya lejanos.
+      if (
+        entrega.notificacion.tipo === TipoNotificacion.RESULTADO_MENSUAL_CORREO ||
+        datosPayload.templateName === 'monthly_results'
+      ) {
+        const mesStr = String(datosPayload.mes || '');
+        const cdmx = obtenerFechaHoraCDMX(new Date());
+        const [anioActual, mesActualNum] = cdmx.yyyyMMdd.split('-').map(Number);
+        const mesAnteriorObj = mesAnteriorDe(anioActual, mesActualNum);
+        const mesInmediatamenteAnterior = `${mesAnteriorObj.anio}-${String(mesAnteriorObj.mes).padStart(2, '0')}`;
+
+        if (mesStr && mesStr < mesInmediatamenteAnterior) {
+          await prisma.entregaNotificacion.update({
+            where: { id },
+            data: {
+              estado: EstadoEntregaNotificacion.CANCELADA,
+              proximoIntentoEn: null,
+              ultimoError: `Resultado mensual caducado (mes reportado: ${mesStr}, mes anterior oficial: ${mesInmediatamenteAnterior}). Envío omitido por antigüedad.`,
+              bloqueadoHasta: null,
+              bloqueadoPor: null,
+            },
+          });
+          return;
         }
       }
 

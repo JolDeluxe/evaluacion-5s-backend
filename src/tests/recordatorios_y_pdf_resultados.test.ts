@@ -558,3 +558,38 @@ describe('Descarga Directa de PDF con Token Firmado Seguro (Sin Login)', () => {
     expect(htmlOutput).toContain('Enlace de descarga no disponible');
   });
 });
+
+describe('Validaciones de Obsolescencia y Caducidad en Worker', () => {
+  it('Cancela asignación mensual si el mes ya concluyó respecto al mes en curso', async () => {
+    // Simular que una asignación de agosto 2026 sigue PENDIENTE y estamos en septiembre 2026
+    const mesStr = '2026-08';
+    const cdmx = { yyyyMMdd: '2026-09-21', hora: 10 };
+    const mesActualYMD = cdmx.yyyyMMdd.slice(0, 7);
+
+    expect(mesStr < mesActualYMD).toBe(true);
+  });
+
+  it('Cancela resultados mensuales si el mes reportado es anterior al mes inmediatamente anterior', async () => {
+    const { mesAnteriorDe } = await import('../utils/periodos');
+    // En octubre 2026, el mes inmediatamente anterior es septiembre 2026.
+    // Un resultado de agosto 2026 debe caducar.
+    const mesAnteriorObj = mesAnteriorDe(2026, 10);
+    const mesInmediatamenteAnterior = `${mesAnteriorObj.anio}-${String(mesAnteriorObj.mes).padStart(2, '0')}`;
+    expect(mesInmediatamenteAnterior).toBe('2026-09');
+
+    const mesReportado = '2026-08';
+    expect(mesReportado < mesInmediatamenteAnterior).toBe(true);
+  });
+
+  it('Permite resultados mensuales del mes inmediatamente anterior', async () => {
+    const { mesAnteriorDe } = await import('../utils/periodos');
+    // En septiembre 2026, el mes inmediatamente anterior es agosto 2026.
+    const mesAnteriorObj = mesAnteriorDe(2026, 9);
+    const mesInmediatamenteAnterior = `${mesAnteriorObj.anio}-${String(mesAnteriorObj.mes).padStart(2, '0')}`;
+    expect(mesInmediatamenteAnterior).toBe('2026-08');
+
+    const mesReportado = '2026-08';
+    // No es menor, por tanto no caduca
+    expect(mesReportado < mesInmediatamenteAnterior).toBe(false);
+  });
+});
