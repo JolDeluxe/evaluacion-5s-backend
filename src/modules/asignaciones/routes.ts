@@ -13,6 +13,7 @@ import { reabrirAsignacion } from './12_reabrir';
 import { confirmarAutoasignacion, generarPropuestaAutoasignacion } from './13_autoasignar_propuesta';
 import { obtenerPendientesAsignacion } from './14_pendientes_asignacion';
 import { obtenerAlertasAsignaciones } from './15_alertas_sin_asignar';
+import { guardarLoteAsignacionesMensuales } from './16_guardar_lote';
 
 export const asignacionesRouter = Router();
 
@@ -24,6 +25,7 @@ asignacionesRouter.get('/pendientes', autorizarRoles(...ROLES_ADMIN_NEGOCIO), ob
 asignacionesRouter.post('/mensual/autoasignar', autorizarRoles(...ROLES_ADMIN_NEGOCIO), autoasignarMensual);
 asignacionesRouter.post('/mensual/autoasignar/propuesta', autorizarRoles(...ROLES_ADMIN_NEGOCIO), generarPropuestaAutoasignacion);
 asignacionesRouter.post('/mensual/autoasignar/confirmar', autorizarRoles(...ROLES_ADMIN_NEGOCIO), confirmarAutoasignacion);
+asignacionesRouter.post('/mensual/lote', autorizarRoles(...ROLES_ADMIN_NEGOCIO), guardarLoteAsignacionesMensuales);
 asignacionesRouter.put('/mensual/:areaId', autorizarRoles(...ROLES_ADMIN_NEGOCIO), guardarAsignacionMensualArea);
 asignacionesRouter.get('/', autorizarRoles(...ROLES_QUE_CONSULTAN_AUDITORIAS), listarAsignaciones);
 asignacionesRouter.get('/:id/auditoria', autorizarRoles(...ROLES_QUE_EJECUTAN_AUDITORIAS), obtenerContextoAuditoriaAsignacion);

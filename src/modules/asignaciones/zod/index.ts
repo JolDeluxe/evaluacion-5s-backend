@@ -20,6 +20,27 @@ export const esquemaGuardarAsignacionMensual = esquemaMes.extend({
   expectedAuditorId: z.number().int().positive().nullable().optional(),
 });
 
+export const esquemaGuardarLoteAsignaciones = esquemaMes.extend({
+  asignaciones: z.array(z.object({
+    areaId: z.number().int().positive(),
+    auditorMensualId: z.number().int().positive(),
+    responsableCumplimientoId: z.number().int().positive().nullable().optional(),
+    expectedAuditorId: z.number().int().positive().nullable().optional(),
+  })).min(1),
+}).superRefine((body, context) => {
+  const areas = new Set<number>();
+  for (const [index, item] of body.asignaciones.entries()) {
+    if (areas.has(item.areaId)) {
+      context.addIssue({
+        code: 'custom',
+        path: ['asignaciones', index, 'areaId'],
+        message: 'Cada área solo puede enviarse una vez por lote',
+      });
+    }
+    areas.add(item.areaId);
+  }
+});
+
 export const esquemaAutoasignarMensual = esquemaMes;
 
 export const esquemaConfirmarAutoasignacion = esquemaMes.extend({
