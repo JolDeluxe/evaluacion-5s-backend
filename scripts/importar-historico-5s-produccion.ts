@@ -628,6 +628,23 @@ async function cargarFormulariosActivos() {
   };
 }
 
+function formatearTiempo(ms: number): string {
+  const totalSegundos = Math.max(0, Math.floor(ms / 1000));
+  const horas = Math.floor(totalSegundos / 3600);
+  const minutos = Math.floor((totalSegundos % 3600) / 60);
+  const segundos = totalSegundos % 60;
+  return `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+}
+
+function calcularEta(inicioMs: number, actual: number, total: number): string {
+  if (actual <= 0 || total <= 0 || actual > total) return 'calculando...';
+  const transcurridoMs = Date.now() - inicioMs;
+  if (transcurridoMs < 2000) return 'calculando...'; // Esperar al menos 2s para estabilidad inicial
+  const tasaMsPorUnidad = transcurridoMs / actual;
+  const restanteMs = (total - actual) * tasaMsPorUnidad;
+  return formatearTiempo(restanteMs);
+}
+
 // =============================================================================
 // MÓDULO CLOUDINARY CON RESILIENCIA Y RECUPERACIÓN IDEMPOTENTE
 // =============================================================================
@@ -644,6 +661,7 @@ async function asegurarAssetCloudinary(
   ancho: number | null;
   alto: number | null;
   omitidoPorVideo?: boolean;
+  yaExistiaEnCloudinary?: boolean;
 }> {
   const identificadorCliente = generarFotoUuid(
     tipoArea,
@@ -676,6 +694,7 @@ async function asegurarAssetCloudinary(
         bytes: typeof recursoExistente.bytes === 'number' ? recursoExistente.bytes : null,
         ancho: typeof recursoExistente.width === 'number' ? recursoExistente.width : null,
         alto: typeof recursoExistente.height === 'number' ? recursoExistente.height : null,
+        yaExistiaEnCloudinary: true,
       };
     }
   } catch (err: unknown) {
@@ -700,6 +719,7 @@ async function asegurarAssetCloudinary(
       bytes: typeof resultado.bytes === 'number' ? resultado.bytes : null,
       ancho: typeof resultado.width === 'number' ? resultado.width : null,
       alto: typeof resultado.height === 'number' ? resultado.height : null,
+      yaExistiaEnCloudinary: false,
     };
   } catch (errorCloudinary) {
     // Verificar si es video de Tally
@@ -724,6 +744,7 @@ async function asegurarAssetCloudinary(
           ancho: null,
           alto: null,
           omitidoPorVideo: true,
+          yaExistiaEnCloudinary: false,
         };
       }
     }
@@ -1048,8 +1069,37 @@ async function main() {
 
     let insertados = 0;
     let completados = 0;
-    let fotosSubidas = 0;
-    let fotosOmitidas = 0;
+
+    // Métricas globales solicitadas
+    let fotosEncontradasTotal = 0;
+    let fotosYaVinculadasBD = 0;
+    let assetsExistentesCloudinary = 0;
+    let nuevasSubidasCloudinary = 0;
+    let videosOmitidos = 0;
+    let erroresPermitidos = 0;
+
+    // Pre-calcular elementos objetivo según el modo
+    const auditoriasObjetivo = auditoriasClasificadas.filter((item) => {
+      if (item.estado === 'CONFLICTO') return false;
+      if (MODO_SOLO_FOTOS) return item.estado === 'SKIP';
+      return true; // NUEVO, COMPLETAR y SKIP (si aplicase)
+    });
+
+    const totalAuditoriasObjetivo = auditoriasObjetivo.length;
+    for (const item of auditoriasObjetivo) {
+      const keyPeriodo = `${item.registro.codigoAreaBD}|${item.registro.rango}|${item.registro.periodo}`;
+      fotosEncontradasTotal += fuentes.imagenesPorPeriodo.get(keyPeriodo)?.length ?? 0;
+    }
+
+    console.log(`Auditorías/Periodos a procesar en esta fase: ${totalAuditoriasObjetivo}`);
+    if (!MODO_OMITIR_FOTOS) {
+      console.log(`Fotos detectadas en archivos de origen:   ${fotosEncontradasTotal}`);
+    }
+    console.log('');
+
+    const inicioEjecucionMs = Date.now();
+    let auditoriasProcesadas = 0;
+    let fotosProcesadasGlobal = 0;
 
     for (const item of auditoriasClasificadas) {
       const aud = item.registro;
@@ -1064,6 +1114,15 @@ async function main() {
       // Si es SKIP y no estamos en modo --solo-fotos, continuar
       if (item.estado === 'SKIP' && !MODO_SOLO_FOTOS) {
         continue;
+      }
+
+      auditoriasProcesadas++;
+      const porcentajeAuditorias = ((auditoriasProcesadas / totalAuditoriasObjetivo) * 100).toFixed(1);
+      const fotosDelPeriodo = fuentes.imagenesPorPeriodo.get(keyPeriodo) ?? [];
+
+      // Log de cabecera por periodo/auditoría
+      if (MODO_SOLO_FOTOS) {
+        console.log(`📸 [${auditoriasProcesadas}/${totalAuditoriasObjetivo}] (${porcentajeAuditorias}%) | ${aud.codigoAreaBD} | ${aud.rango} P${aud.periodo} | ${fotosDelPeriodo.length} fotos registradas`);
       }
 
       // Manejo exclusivo de fotos para auditorías ya importadas (--solo-fotos)
@@ -1086,8 +1145,11 @@ async function main() {
         const versionId = envioExistente.objetivoAuditoria.versionFormularioId;
         const preguntasMap = formularios.todasLasVersiones.get(versionId);
 
-        const fotosDelPeriodo = fuentes.imagenesPorPeriodo.get(keyPeriodo) ?? [];
+        let fotoIdx = 0;
         for (const fotoFuente of fotosDelPeriodo) {
+          fotoIdx++;
+          fotosProcesadasGlobal++;
+
           const pregInfo = preguntasMap?.get(fotoFuente.numeroPregunta);
           if (!pregInfo) continue;
 
@@ -1107,14 +1169,35 @@ async function main() {
           );
 
           const yaExisteFoto = resp.fotosAuditoria.some((f) => f.identificadorCliente === uuidFoto);
-          if (yaExisteFoto) continue;
+          if (yaExisteFoto) {
+            fotosYaVinculadasBD++;
+            const pctGlobal = fotosEncontradasTotal > 0 ? ((fotosProcesadasGlobal / fotosEncontradasTotal) * 100).toFixed(1) : '100.0';
+            const transcurrido = formatearTiempo(Date.now() - inicioEjecucionMs);
+            const eta = calcularEta(inicioEjecucionMs, fotosProcesadasGlobal, fotosEncontradasTotal);
+            console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | FOTO_YA_VINCULADA_BD | ${transcurrido} | ETA ${eta}`);
+            continue;
+          }
 
           try {
             const asset = await asegurarAssetCloudinary(fotoFuente, aud.codigoAreaBD, aud.tipoArea);
+            const transcurrido = formatearTiempo(Date.now() - inicioEjecucionMs);
+            const pctGlobal = fotosEncontradasTotal > 0 ? ((fotosProcesadasGlobal / fotosEncontradasTotal) * 100).toFixed(1) : '100.0';
+            const eta = calcularEta(inicioEjecucionMs, fotosProcesadasGlobal, fotosEncontradasTotal);
+
             if (asset.omitidoPorVideo) {
-              fotosOmitidas++;
+              videosOmitidos++;
+              console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | VIDEO_OMITIDO | ${transcurrido} | ETA ${eta}`);
               continue;
             }
+
+            if (asset.yaExistiaEnCloudinary) {
+              assetsExistentesCloudinary++;
+              console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | ASSET_EXISTENTE_CLOUDINARY | ${transcurrido} | ETA ${eta}`);
+            } else {
+              nuevasSubidasCloudinary++;
+              console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | NUEVA_SUBIDA_CLOUDINARY | ${transcurrido} | ETA ${eta}`);
+            }
+
             await prisma.fotoAuditoria.create({
               data: {
                 identificadorCliente: uuidFoto,
@@ -1128,15 +1211,19 @@ async function main() {
                 subidaEn: new Date(),
               },
             });
-            fotosSubidas++;
           } catch (err) {
             if (!PERMITIR_FOTOS_FALTANTES) throw err;
+            erroresPermitidos++;
+            const transcurrido = formatearTiempo(Date.now() - inicioEjecucionMs);
+            const pctGlobal = fotosEncontradasTotal > 0 ? ((fotosProcesadasGlobal / fotosEncontradasTotal) * 100).toFixed(1) : '100.0';
+            const eta = calcularEta(inicioEjecucionMs, fotosProcesadasGlobal, fotosEncontradasTotal);
+            console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | ERROR_PERMITIDO / FOTO_FALTANTE | ${transcurrido} | ETA ${eta}`);
           }
         }
         continue;
       }
 
-      // Pre-subir fotos a Cloudinary si aplica
+      // Pre-subir fotos a Cloudinary si aplica (Modo importación normal)
       const fotosParaGuardar: Array<{
         numeroPregunta: number;
         uuidFoto: string;
@@ -1149,14 +1236,30 @@ async function main() {
       }> = [];
 
       if (!MODO_OMITIR_FOTOS) {
-        const fotosDelPeriodo = fuentes.imagenesPorPeriodo.get(keyPeriodo) ?? [];
+        let fotoIdx = 0;
         for (const fotoFuente of fotosDelPeriodo) {
+          fotoIdx++;
+          fotosProcesadasGlobal++;
           try {
             const asset = await asegurarAssetCloudinary(fotoFuente, aud.codigoAreaBD, aud.tipoArea);
+            const transcurrido = formatearTiempo(Date.now() - inicioEjecucionMs);
+            const pctGlobal = fotosEncontradasTotal > 0 ? ((fotosProcesadasGlobal / fotosEncontradasTotal) * 100).toFixed(1) : '100.0';
+            const eta = calcularEta(inicioEjecucionMs, fotosProcesadasGlobal, fotosEncontradasTotal);
+
             if (asset.omitidoPorVideo) {
-              fotosOmitidas++;
+              videosOmitidos++;
+              console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | VIDEO_OMITIDO | ${transcurrido} | ETA ${eta}`);
               continue;
             }
+
+            if (asset.yaExistiaEnCloudinary) {
+              assetsExistentesCloudinary++;
+              console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | ASSET_EXISTENTE_CLOUDINARY | ${transcurrido} | ETA ${eta}`);
+            } else {
+              nuevasSubidasCloudinary++;
+              console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | NUEVA_SUBIDA_CLOUDINARY | ${transcurrido} | ETA ${eta}`);
+            }
+
             const uuidFoto = generarFotoUuid(
               aud.tipoArea,
               aud.codigoAreaBD,
@@ -1176,9 +1279,13 @@ async function main() {
               ancho: asset.ancho,
               alto: asset.alto,
             });
-            fotosSubidas++;
           } catch (err) {
             if (!PERMITIR_FOTOS_FALTANTES) throw err;
+            erroresPermitidos++;
+            const transcurrido = formatearTiempo(Date.now() - inicioEjecucionMs);
+            const pctGlobal = fotosEncontradasTotal > 0 ? ((fotosProcesadasGlobal / fotosEncontradasTotal) * 100).toFixed(1) : '100.0';
+            const eta = calcularEta(inicioEjecucionMs, fotosProcesadasGlobal, fotosEncontradasTotal);
+            console.log(`   [Fotos] ${fotosProcesadasGlobal}/${fotosEncontradasTotal} | ${pctGlobal}% | ${aud.codigoAreaBD} ${aud.rango} P${aud.periodo} | P${fotoFuente.numeroPregunta} F${String(fotoFuente.noFoto).padStart(2, '0')} | ERROR_PERMITIDO / FOTO_FALTANTE | ${transcurrido} | ETA ${eta}`);
           }
         }
       }
@@ -1345,16 +1452,27 @@ async function main() {
 
       if (item.estado === 'NUEVO') insertados++;
       if (item.estado === 'COMPLETAR') completados++;
-      console.log(`✔ [${item.estado}] ${aud.codigoAreaBD} | ${aud.rango} P${aud.periodo} | Calificación: ${aud.porcentaje}%`);
+      const transcurrido = formatearTiempo(Date.now() - inicioEjecucionMs);
+      const eta = calcularEta(inicioEjecucionMs, auditoriasProcesadas, totalAuditoriasObjetivo);
+      console.log(`✔ [${auditoriasProcesadas}/${totalAuditoriasObjetivo}] [${item.estado}] ${aud.codigoAreaBD} | ${aud.rango} P${aud.periodo} | Calificación: ${aud.porcentaje}% | ${transcurrido} | ETA ${eta}`);
     }
+
+    const tiempoTotalMs = Date.now() - inicioEjecucionMs;
+    const tiempoTotalStr = formatearTiempo(tiempoTotalMs);
 
     console.log('\n================================================================================');
     console.log('                      RESUMEN DE EJECUCIÓN EXITOSA');
     console.log('================================================================================');
+    console.log(`Periodos procesados:                     ${auditoriasProcesadas} / ${totalAuditoriasObjetivo}`);
     console.log(`Auditorías insertadas como NUEVO:        ${insertados}`);
     console.log(`Auditorías vinculadas como COMPLETAR:    ${completados}`);
-    console.log(`Fotos subidas / vinculadas a Cloudinary: ${fotosSubidas}`);
-    console.log(`Videos de Tally omitidos:                ${fotosOmitidas}`);
+    console.log(`Fotos encontradas en origen:             ${fotosEncontradasTotal}`);
+    console.log(`Fotos ya vinculadas en BD:               ${fotosYaVinculadasBD}`);
+    console.log(`Assets existentes en Cloudinary:         ${assetsExistentesCloudinary}`);
+    console.log(`Nuevas subidas a Cloudinary:             ${nuevasSubidasCloudinary}`);
+    console.log(`Videos de Tally omitidos:                ${videosOmitidos}`);
+    console.log(`Errores / fotos faltantes permitidos:    ${erroresPermitidos}`);
+    console.log(`⏱️ Tiempo total de ejecución:             ${tiempoTotalStr}`);
     console.log('================================================================================\n');
 
     // 7. EJECUTAR RECONCILIACIÓN AUTOMÁTICA FINAL
