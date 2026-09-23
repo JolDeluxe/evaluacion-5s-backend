@@ -6,6 +6,22 @@ const serialFechaUtc = (fecha: Date) => (
   fecha.getUTCFullYear() * 10000 + (fecha.getUTCMonth() + 1) * 100 + fecha.getUTCDate()
 );
 
+const serialFechaEfectivaHasta = (fecha: Date) => {
+  // Si la fecha cae a medianoche exacta UTC (00:00:00.000Z), representa el inicio de ese día o el corte
+  // al primer día del mes entrante (e.g. 2026-09-01T00:00:00.000Z). Para efectos de vigencia auditable,
+  // el último día auditable concluyó el día anterior (ej. 2026-08-31).
+  if (
+    fecha.getUTCHours() === 0 &&
+    fecha.getUTCMinutes() === 0 &&
+    fecha.getUTCSeconds() === 0 &&
+    fecha.getUTCMilliseconds() === 0
+  ) {
+    const diaAnterior = new Date(fecha.getTime() - 1);
+    return serialFechaUtc(diaAnterior);
+  }
+  return serialFechaUtc(fecha);
+};
+
 export function fechaFinDeMes(anio: number, mes: number): Date {
   return new Date(anio, mes, 0, 23, 59, 59, 999);
 }
@@ -20,14 +36,44 @@ export function areaEsAuditableEnPeriodo(
   mes: number,
   diaTermino: number,
 ): boolean {
-  const serialPeriodo = serialFechaPeriodo(anio, mes, diaTermino);
+  const serialPeriodoTermino = serialFechaPeriodo(anio, mes, diaTermino);
+  const diaInicio = diaTermino <= 15 ? 1 : 16;
+  const serialPeriodoInicio = serialFechaPeriodo(anio, mes, diaInicio);
 
-  const inicioPeriodo = serialFechaPeriodo(anio, mes, 1);
-  if (area.auditableHasta) {
-    if (serialFechaUtc(area.auditableHasta) >= inicioPeriodo) return true;
-    if (!area.auditableDesde) return false;
+  const serialDesde = area.auditableDesde ? serialFechaUtc(area.auditableDesde) : null;
+  const serialHasta = area.auditableHasta ? serialFechaEfectivaHasta(area.auditableHasta) : null;
+
+  // Reactivación / Multi-ciclo: área dada de baja en el pasado y reactivada después (auditableDesde > auditableHasta)
+  // Ej: Enero-Julio activa (hasta Jul 31), reactivada en Noviembre (desde Nov 1)
+  if (serialDesde !== null && serialHasta !== null && serialDesde > serialHasta) {
+    if (serialPeriodoTermino >= serialDesde) {
+      return area.activo;
+    }
+    if (serialHasta >= serialPeriodoTermino) {
+      return true;
+    }
+    return false;
   }
-  if (area.auditableDesde && serialFechaUtc(area.auditableDesde) > serialPeriodo) return false;
+
+  // Rango estándar: si tiene fecha fin (auditableHasta)
+  if (serialHasta !== null) {
+    // Si la vigencia concluyó antes del inicio de este período, el área NO es auditable
+    if (serialHasta < serialPeriodoInicio) return false;
+    // Si la vigencia concluyó antes del término del período y el área ya no está activa, NO es auditable
+    if (serialHasta < serialPeriodoTermino && !area.activo) return false;
+  }
+
+  // Si tiene fecha inicio (auditableDesde)
+  if (serialDesde !== null) {
+    if (serialDesde > serialPeriodoTermino) return false;
+  }
+
+  // Si el área tiene auditableHasta y está marcada como activo=false:
+  // Es auditable si y solo si el periodo cae enteramente dentro de su ventana auditable histórica
+  if (serialHasta !== null && !area.activo) {
+    return serialHasta >= serialPeriodoTermino;
+  }
+
   return area.activo;
 }
 

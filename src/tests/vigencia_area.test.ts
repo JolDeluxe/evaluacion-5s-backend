@@ -10,6 +10,12 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
       expect(areaEsAuditableEnPeriodo(area, 2026, 8, 15)).toBe(true);
     });
 
+    test('Área inactiva sin fechas límite NO es auditable', () => {
+      const area = { activo: false, auditableDesde: null, auditableHasta: null };
+      expect(areaEsAuditableEnPeriodo(area, 2026, 9, 15)).toBe(false);
+      expect(areaEsAuditableEnPeriodo(area, 2026, 9, 30)).toBe(false);
+    });
+
     test('Área desactivada con auditableHasta en mes anterior NO es auditable en mes actual', () => {
       // Desactivada en agosto "desde este mes": auditableHasta = 31/07/2026
       const area = {
@@ -31,8 +37,32 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
       };
       // En agosto 2026 sigue siendo auditable
       expect(areaEsAuditableEnPeriodo(area, 2026, 8, 15)).toBe(true);
+      expect(areaEsAuditableEnPeriodo(area, 2026, 8, 31)).toBe(true);
       // En septiembre 2026 ya NO es auditable
       expect(areaEsAuditableEnPeriodo(area, 2026, 9, 15)).toBe(false);
+      expect(areaEsAuditableEnPeriodo(area, 2026, 9, 30)).toBe(false);
+    });
+
+    test('Área con auditableDesde futuro NO es auditable antes de esa fecha', () => {
+      const area = {
+        activo: true,
+        auditableDesde: fechaInicioDeMes(2026, 11),
+        auditableHasta: null,
+      };
+      expect(areaEsAuditableEnPeriodo(area, 2026, 9, 15)).toBe(false);
+      expect(areaEsAuditableEnPeriodo(area, 2026, 10, 31)).toBe(false);
+      expect(areaEsAuditableEnPeriodo(area, 2026, 11, 15)).toBe(true);
+    });
+
+    test('Área con auditableDesde en mes en curso es auditable desde ese mes', () => {
+      const area = {
+        activo: true,
+        auditableDesde: fechaInicioDeMes(2026, 9),
+        auditableHasta: null,
+      };
+      expect(areaEsAuditableEnPeriodo(area, 2026, 8, 31)).toBe(false);
+      expect(areaEsAuditableEnPeriodo(area, 2026, 9, 15)).toBe(true);
+      expect(areaEsAuditableEnPeriodo(area, 2026, 9, 30)).toBe(true);
     });
 
     test('Múltiples ciclos: Enero-Julio ACTIVA, Ago-Oct INACTIVA, Nov-Dic ACTIVA', () => {
@@ -52,6 +82,31 @@ describe('Reglas de Negocio - Vigencia de Área y Resultados Canónicos', () => 
 
       // Noviembre 2026 -> Auditable
       expect(areaEsAuditableEnPeriodo(area, 2026, 11, 15)).toBe(true);
+    });
+
+    test('Caso real PRELIM-KAPPA: activo=false, auditableHasta=2026-09-01 -> NO auditable en septiembre 2026', () => {
+      const areaKappa = {
+        activo: false,
+        auditableDesde: null,
+        auditableHasta: new Date('2026-09-01T00:00:00.000Z'),
+      };
+      // En septiembre 2026 (P1 y P2) NO debe ser auditable
+      expect(areaEsAuditableEnPeriodo(areaKappa, 2026, 9, 15)).toBe(false);
+      expect(areaEsAuditableEnPeriodo(areaKappa, 2026, 9, 30)).toBe(false);
+
+      // Históricamente en agosto 2026 SÍ fue auditable
+      expect(areaEsAuditableEnPeriodo(areaKappa, 2026, 8, 15)).toBe(true);
+      expect(areaEsAuditableEnPeriodo(areaKappa, 2026, 8, 31)).toBe(true);
+    });
+
+    test('Cruce de año: auditableHasta al 31 de diciembre no es auditable en enero del año siguiente', () => {
+      const area = {
+        activo: false,
+        auditableDesde: null,
+        auditableHasta: fechaFinDeMes(2026, 12),
+      };
+      expect(areaEsAuditableEnPeriodo(area, 2026, 12, 31)).toBe(true);
+      expect(areaEsAuditableEnPeriodo(area, 2027, 1, 15)).toBe(false);
     });
   });
 
