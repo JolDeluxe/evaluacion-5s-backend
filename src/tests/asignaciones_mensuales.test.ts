@@ -320,6 +320,15 @@ const prepararMes = async (tx: FakeTx, anio = 2026, mes = 9) => {
 };
 
 describe('Asignacion mensual simplificada', () => {
+  beforeEach(() => {
+    // Fijar el reloj dentro del Periodo 1 vigente (5 de septiembre de 2026 a las 12:00)
+    setSystemTime(new Date(2026, 8, 5, 12, 0, 0));
+  });
+
+  afterEach(() => {
+    setSystemTime();
+  });
+
   test('evaluar configuracion: BD sin areas no busca formularios ni permite asegurar', async () => {
     const tx = new FakeTx({ soloArea1: true });
     tx.areas = [];
