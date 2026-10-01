@@ -4,7 +4,7 @@ import { prisma } from '../db';
 import { EstadoAsignacionAuditoria } from '../generated/prisma/enums';
 import { conflicto } from './errores';
 
-export const DIAS_HABILES_GRACIA = 5;
+export const DIAS_HABILES_GRACIA = 3;
 
 export const SituacionObjetivo = {
   PENDIENTE: 'PENDIENTE',
