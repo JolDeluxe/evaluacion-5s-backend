@@ -1,3 +1,4 @@
+import { sanearUrlPublica } from '../../../utils/app-urls';
 import type { MonthlyAssignmentsData, TemplateRenderResult } from './audit_assignment_monthly';
 import { renderAuditAssignmentMonthly } from './audit_assignment_monthly';
 import type { MonthlyResultsData } from './monthly_results';
@@ -24,15 +25,30 @@ export const resolverTemplate = (
     const payload = datos as { templateName: string };
 
     if (payload.templateName === 'audit_assignment_monthly') {
-      return renderAuditAssignmentMonthly(datos as MonthlyAssignmentsData);
+      const data = { ...(datos as MonthlyAssignmentsData) };
+      if (data.urlMisAuditorias) {
+        data.urlMisAuditorias = sanearUrlPublica(data.urlMisAuditorias);
+      }
+      return renderAuditAssignmentMonthly(data);
     }
 
     if (payload.templateName === 'monthly_results') {
-      return renderMonthlyResults(datos as MonthlyResultsData);
+      const data = { ...(datos as MonthlyResultsData) };
+      if (data.urlResultados) {
+        data.urlResultados = sanearUrlPublica(data.urlResultados);
+      }
+      if (data.urlDescargaPdf) {
+        data.urlDescargaPdf = sanearUrlPublica(data.urlDescargaPdf);
+      }
+      return renderMonthlyResults(data);
     }
 
     if (payload.templateName === 'period_reminder') {
-      return renderPeriodReminder(datos as PeriodReminderData);
+      const data = { ...(datos as PeriodReminderData) };
+      if (data.urlMisAuditorias) {
+        data.urlMisAuditorias = sanearUrlPublica(data.urlMisAuditorias);
+      }
+      return renderPeriodReminder(data);
     }
   }
 

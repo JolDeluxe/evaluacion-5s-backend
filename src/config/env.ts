@@ -159,6 +159,18 @@ if (parsed.data.IMAP_ENABLED) {
   }
 }
 
+if (parsed.data.NODE_ENV === 'production') {
+  if (
+    !process.env.APP_PUBLIC_URL ||
+    parsed.data.APP_PUBLIC_URL.includes('localhost') ||
+    parsed.data.APP_PUBLIC_URL.includes('127.0.0.1')
+  ) {
+    issues.push(
+      'APP_PUBLIC_URL es requerida en producción y no puede apuntar a localhost o 127.0.0.1. Configure la URL pública oficial (ej: https://5s-mbc.netlify.app).'
+    );
+  }
+}
+
 if (issues.length) {
   console.error('❌ Environment validation failed:');
   for (const issue of issues) console.error(`- ${issue}`);

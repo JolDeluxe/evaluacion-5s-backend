@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'bun:test';
 import { generarQrBuffer } from '../modules/notificaciones/qr';
+import type { MonthlyAssignmentsData } from '../modules/notificaciones/templates/audit_assignment_monthly';
 import { renderAuditAssignmentMonthly } from '../modules/notificaciones/templates/audit_assignment_monthly';
+import type { MonthlyResultsData } from '../modules/notificaciones/templates/monthly_results';
 import { renderMonthlyResults } from '../modules/notificaciones/templates/monthly_results';
+import type { PeriodReminderData } from '../modules/notificaciones/templates/period_reminder';
 import { resolverTemplate } from '../modules/notificaciones/templates';
 
 describe('Templates de Notificaciones por Correo', () => {
@@ -183,6 +186,47 @@ describe('Templates de Notificaciones por Correo', () => {
       expect(buffer[5]).toBe(0x0A);
       expect(buffer[6]).toBe(0x1A);
       expect(buffer[7]).toBe(0x0A);
+    });
+  });
+
+  describe('sanearUrlPublica & Sanitización en Despacho', () => {
+    it('sanitiza automáticamente URLs de localhost si APP_PUBLIC_URL es pública', () => {
+      const data: MonthlyAssignmentsData = {
+        templateName: 'audit_assignment_monthly',
+        templateVersion: 'v1',
+        auditorNombre: 'Juan Pérez',
+        mes: '2026-09',
+        mesEtiqueta: 'Septiembre 2026',
+        areas: ['Almacén'],
+        urlMisAuditorias: 'http://localhost:5173/mis-auditorias',
+      };
+
+      const resolved = resolverTemplate(data);
+      expect(resolved).not.toBeNull();
+      // Con APP_PUBLIC_URL=https://5s-mbc.netlify.app en .env, debe sustituirse
+      expect(resolved?.html).toContain('href="https://5s-mbc.netlify.app/mis-auditorias"');
+      expect(resolved?.text).toContain('https://5s-mbc.netlify.app/mis-auditorias');
+      expect(resolved?.qrUrl).toBe('https://5s-mbc.netlify.app/mis-auditorias');
+      expect(resolved?.html).not.toContain('http://localhost:5173');
+    });
+
+    it('sanitiza URLs en monthly_results y period_reminder', () => {
+      const dataPeriodo: PeriodReminderData = {
+        templateName: 'period_reminder',
+        templateVersion: 'v1',
+        auditorNombre: 'María Gómez',
+        periodo: 1,
+        mes: '2026-09',
+        mesEtiqueta: 'Septiembre 2026',
+        fechaLimite: '15 de Septiembre de 2026',
+        areas: ['Ensamble'],
+        urlMisAuditorias: 'http://localhost:5173/mis-auditorias',
+      };
+
+      const resolved = resolverTemplate(dataPeriodo);
+      expect(resolved?.qrUrl).toBe('https://5s-mbc.netlify.app/mis-auditorias');
+      expect(resolved?.html).toContain('https://5s-mbc.netlify.app/mis-auditorias');
+      expect(resolved?.html).not.toContain('localhost:5173');
     });
   });
 });
