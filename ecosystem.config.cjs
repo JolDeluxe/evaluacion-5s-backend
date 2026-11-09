@@ -1,9 +1,9 @@
 module.exports = {
   apps: [
     {
-      name: 'encuestas-5s-backend',
+      name: '5s-api',
       // Apunta a la ruta real y válida de Bun en tu equipo actual:
-      script: 'C:\\Users\\CUADRA\\AppData\\Roaming\\npm\\node_modules\\bun\\bin\\bun.exe',
+      script: "C:\\Users\\joel.rodriguez\\.bun\\bin\\bun.exe",
       // Argumentos para que Bun ejecute directamente el punto de entrada TypeScript
       args: 'run src/index.ts',
       // Indicamos a PM2 que no use intérprete externo ya que script es el ejecutable de Bun
