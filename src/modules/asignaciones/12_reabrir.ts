@@ -6,7 +6,11 @@ import { calcularCierreConGracia, tieneEnvioResultadoValido } from '../../utils/
 import { responder } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
-import { bloquearObjetivoAuditoria } from './helper';
+import {
+  bloquearObjetivoAuditoria,
+  obtenerVersionFormularioActivaPorTipoArea,
+  reconciliarObjetivoPendienteConArea,
+} from './helper';
 import { esquemaReabrirAsignacion } from './zod';
 
 const asignacionActiva = <T extends { estado: EstadoAsignacionAuditoria }>(asignaciones: T[]) => (
@@ -61,6 +65,7 @@ export const reabrirAsignacionEnTransaccion = async (
     ? await tx.objetivoAuditoria.findUniqueOrThrow({
         where: { id: objetivoAuditoriaId },
         include: {
+          area: true,
           envioResultado: true,
           enviosAuditoria: true,
           asignacionesAuditoria: {
@@ -73,6 +78,7 @@ export const reabrirAsignacionEnTransaccion = async (
         const list = await tx.objetivoAuditoria.findMany({
           where: { id: objetivoAuditoriaId },
           include: {
+            area: true,
             envioResultado: true,
             enviosAuditoria: true,
             asignacionesAuditoria: {
@@ -185,6 +191,28 @@ export const reabrirAsignacionEnTransaccion = async (
         motivoCancelacion: 'Reapertura de periodo vencido',
       },
     });
+  }
+
+  // Reconciliar formulario y snapshot del objetivo reabierto si no tiene envíos previos
+  const areaObjetivo = (objetivo as { area?: { id: number; codigo: string; nombre: string; tipo: typeof objetivo.tipoAreaSnapshot } }).area;
+  const tieneVersionFindMany = Boolean((tx.versionFormulario as unknown as { findMany?: unknown })?.findMany);
+  const tieneObjetivoUpdateMany = Boolean((tx.objetivoAuditoria as unknown as { updateMany?: unknown })?.updateMany);
+  if (
+    areaObjetivo
+    && !objetivo.envioResultadoId
+    && !objetivo.canceladoEn
+    && (objetivo.enviosAuditoria?.length ?? 0) === 0
+    && tieneVersionFindMany
+  ) {
+    if (tieneObjetivoUpdateMany) {
+      await reconciliarObjetivoPendienteConArea(tx, objetivo, areaObjetivo);
+    } else {
+      const versionActiva = await obtenerVersionFormularioActivaPorTipoArea(tx, areaObjetivo.tipo);
+      objetivo.versionFormularioId = versionActiva.id;
+      objetivo.tipoAreaSnapshot = areaObjetivo.tipo;
+      objetivo.codigoAreaSnapshot = areaObjetivo.codigo;
+      objetivo.nombreAreaSnapshot = areaObjetivo.nombre;
+    }
   }
 
   let nuevaAsignacion: Awaited<ReturnType<typeof tx.asignacionAuditoria.create>>;

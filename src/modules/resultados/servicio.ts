@@ -288,10 +288,11 @@ const construirAreaDto = (
   objetivosArea: Awaited<ReturnType<typeof obtenerObjetivosMes>>,
   areaIdsPropias: number[] = [],
 ) => {
-  const base = objetivosArea[0];
+  const ordenados = [...objetivosArea].sort((a, b) => a.periodo - b.periodo);
+  const base = ordenados[ordenados.length - 1] ?? ordenados[0];
   const periodos = [1, 2].map((periodo) => {
-    const obj = objetivosArea.find((objetivo) => objetivo.periodo === periodo);
-    const referencia = obj ?? objetivosArea.find(Boolean);
+    const obj = ordenados.find((objetivo) => objetivo.periodo === periodo);
+    const referencia = obj ?? ordenados.find(Boolean);
     return construirPeriodoResumen(obj, periodo, referencia);
   });
 
@@ -449,16 +450,15 @@ const obtenerObjetivosMes = async (
   tx: PrismaTransaction,
   autenticacion: AutenticacionResultados,
   filtros: { anio: number; mes: number; tipoArea?: TipoArea },
-  options: { alcanceGeneral?: boolean } = {},
+  options: { alcanceGeneral?: boolean; filtrarIncidenciasIndividuales?: boolean } = {},
 ) => {
   const areaIdsDetalle = options.alcanceGeneral
     ? null
     : await obtenerAreaIdsConDetalle(tx, autenticacion);
 
-  return tx.objetivoAuditoria.findMany({
+  const objetivos = await tx.objetivoAuditoria.findMany({
     where: {
       ...(areaIdsDetalle === null ? {} : { areaId: { in: areaIdsDetalle } }),
-      ...(filtros.tipoArea ? { tipoAreaSnapshot: filtros.tipoArea } : {}),
       anio: filtros.anio,
       mes: filtros.mes,
       periodo: { in: [1, 2] },
@@ -506,6 +506,35 @@ const obtenerObjetivosMes = async (
       { periodo: 'asc' },
     ],
   });
+
+  if (!filtros.tipoArea) {
+    return objetivos;
+  }
+
+  if (options.filtrarIncidenciasIndividuales) {
+    return objetivos.filter((obj) => obj.tipoAreaSnapshot === filtros.tipoArea);
+  }
+
+  // Política de clasificación por unidad areaId + anio + mes:
+  // El tipo del área-mes se determina por el último periodo disponible de ese mes,
+  // e incluye el conjunto completo de objetivos P1 y P2 de ese área-mes.
+  const porArea = new Map<number, typeof objetivos>();
+  for (const obj of objetivos) {
+    const lista = porArea.get(obj.areaId) ?? [];
+    lista.push(obj);
+    porArea.set(obj.areaId, lista);
+  }
+
+  const areasPermitidasPorTipo = new Set<number>();
+  for (const [areaId, objsArea] of porArea.entries()) {
+    const ordenados = [...objsArea].sort((a, b) => a.periodo - b.periodo);
+    const ultimoPeriodo = ordenados[ordenados.length - 1];
+    if (ultimoPeriodo?.tipoAreaSnapshot === filtros.tipoArea) {
+      areasPermitidasPorTipo.add(areaId);
+    }
+  }
+
+  return objetivos.filter((obj) => areasPermitidasPorTipo.has(obj.areaId));
 };
 
 export const obtenerResultadosAreas = async (
@@ -707,7 +736,7 @@ export const obtenerResultadosGeneral = async (
     tx,
     autenticacion,
     { ...data.mes, tipoArea: obtenerTipoArea(query) },
-    { alcanceGeneral: true },
+    { alcanceGeneral: true, filtrarIncidenciasIndividuales: true },
   );
   const puedeVerDetallesRestringidos = puedeVerResultadosCompletos(autenticacion?.rol);
 

@@ -173,11 +173,11 @@ export async function obtenerResultadosRangoGeneral(
     ? null
     : await obtenerAreaIdsConDetalle(tx, autenticacion);
 
-  // Cargar todos los objetivosAuditoria dentro de los meses del rango
-  const objetivosRango = await tx.objetivoAuditoria.findMany({
+  // Cargar todos los objetivosAuditoria dentro de los meses del rango sin filtrar por tipoAreaSnapshot en SQL,
+  // para clasificar primero cada unidad areaId + anio + mes por su último periodo disponible.
+  const objetivosRangoSinFiltroTipo = await tx.objetivoAuditoria.findMany({
     where: {
       ...(areaIdsDetalle === null ? {} : { areaId: { in: areaIdsDetalle } }),
-      ...(tipoAreaFilter ? { tipoAreaSnapshot: tipoAreaFilter } : {}),
       anio: rango.anio,
       mes: { in: rango.meses.map((m) => m.mes) },
       periodo: { in: [1, 2] },
@@ -219,6 +219,49 @@ export async function obtenerResultadosRangoGeneral(
       { periodo: 'asc' },
     ],
   });
+
+  // Política de clasificación por unidad areaId + anio + mes:
+  // El tipo de cada área-mes se determina por el último periodo disponible de ese mes,
+  // conservando el conjunto completo de objetivos P1 y P2 de ese área-mes.
+  type ObjetivoElement = typeof objetivosRangoSinFiltroTipo[number];
+  type UnidadAreaMes = {
+    areaId: number;
+    anio: number;
+    mes: number;
+    codigoAreaSnapshot: string;
+    nombreAreaSnapshot: string;
+    tipoAreaMes: TipoArea;
+    objetivos: ObjetivoElement[];
+  };
+
+  const unidadesAreaMesMap = new Map<string, ObjetivoElement[]>();
+  for (const obj of objetivosRangoSinFiltroTipo) {
+    const clave = `${obj.areaId}:${obj.anio}:${obj.mes}`;
+    const lista = unidadesAreaMesMap.get(clave) ?? [];
+    lista.push(obj);
+    unidadesAreaMesMap.set(clave, lista);
+  }
+
+  const todasUnidadesAreaMes: UnidadAreaMes[] = [];
+  for (const objsMes of unidadesAreaMesMap.values()) {
+    const ordenados = [...objsMes].sort((a, b) => a.periodo - b.periodo);
+    const ultimoPeriodo = ordenados[ordenados.length - 1];
+    todasUnidadesAreaMes.push({
+      areaId: ultimoPeriodo.areaId,
+      anio: ultimoPeriodo.anio,
+      mes: ultimoPeriodo.mes,
+      codigoAreaSnapshot: ultimoPeriodo.codigoAreaSnapshot,
+      nombreAreaSnapshot: ultimoPeriodo.nombreAreaSnapshot,
+      tipoAreaMes: ultimoPeriodo.tipoAreaSnapshot,
+      objetivos: ordenados,
+    });
+  }
+
+  const unidadesAreaMesFiltradas = tipoAreaFilter
+    ? todasUnidadesAreaMes.filter((u) => u.tipoAreaMes === tipoAreaFilter)
+    : todasUnidadesAreaMes;
+
+  const objetivosRango = unidadesAreaMesFiltradas.flatMap((u) => u.objetivos);
 
   const ahora = new Date();
 
@@ -276,107 +319,127 @@ export async function obtenerResultadosRangoGeneral(
     });
   }
 
-  // Agrupar objetivos por área
-  type ObjetivoElement = typeof objetivosRango[number];
-  const objetivosPorArea = new Map<number, {
-    areaId: number;
-    codigo: string;
-    nombre: string;
-    tipo: TipoArea;
-    objetivos: ObjetivoElement[];
-  }>();
+  // Función auxiliar para construir las áreas agregadas a partir de un conjunto de unidades área-mes
+  const construirAreasAgregadasDesdeUnidades = (unidades: UnidadAreaMes[]) => {
+    const objetivosPorArea = new Map<number, {
+      areaId: number;
+      codigo: string;
+      nombre: string;
+      tipo: TipoArea;
+      unidadesPorMes: Map<number, UnidadAreaMes>;
+      objetivos: ObjetivoElement[];
+    }>();
 
-  for (const obj of objetivosRango) {
-    const actual = objetivosPorArea.get(obj.areaId) ?? {
-      areaId: obj.areaId,
-      codigo: obj.codigoAreaSnapshot,
-      nombre: obj.nombreAreaSnapshot,
-      tipo: obj.tipoAreaSnapshot,
-      objetivos: [],
-    };
-    actual.objetivos.push(obj);
-    objetivosPorArea.set(obj.areaId, actual);
-  }
+    const unidadesOrdenadas = [...unidades].sort(
+      (a, b) => a.anio - b.anio || a.mes - b.mes,
+    );
 
-  // Mapear áreas y sus resultados mensuales / por periodo
-  const areasAgregadas = [...objetivosPorArea.values()].map((areaData) => {
-    // Para cada mes del rango, calcular su resultadoMensual canónico
-    const mesesDetalle = rango.meses.map((mDef) => {
-      const objsMes = areaData.objetivos.filter((o) => o.mes === mDef.mes);
-      const periodos = [1, 2].map((periodo) => {
-        const obj = objsMes.find((o) => o.periodo === periodo);
-        const referencia = obj ?? objsMes.find(Boolean);
-        return construirPeriodoResumen(obj, periodo, referencia);
+    for (const unidad of unidadesOrdenadas) {
+      const existente = objetivosPorArea.get(unidad.areaId);
+      if (!existente) {
+        const unidadesPorMes = new Map<number, UnidadAreaMes>();
+        unidadesPorMes.set(unidad.mes, unidad);
+        objetivosPorArea.set(unidad.areaId, {
+          areaId: unidad.areaId,
+          codigo: unidad.codigoAreaSnapshot,
+          nombre: unidad.nombreAreaSnapshot,
+          tipo: unidad.tipoAreaMes,
+          unidadesPorMes,
+          objetivos: [...unidad.objetivos],
+        });
+      } else {
+        // Actualizar encabezado con el último mes disponible dentro de las unidades incluidas
+        existente.codigo = unidad.codigoAreaSnapshot;
+        existente.nombre = unidad.nombreAreaSnapshot;
+        existente.tipo = unidad.tipoAreaMes;
+        existente.unidadesPorMes.set(unidad.mes, unidad);
+        existente.objetivos.push(...unidad.objetivos);
+      }
+    }
+
+    const agregadas = [...objetivosPorArea.values()].map((areaData) => {
+      // Para cada mes del rango, calcular su resultadoMensual canónico a partir de su unidad área-mes individual
+      const mesesDetalle = rango.meses.map((mDef) => {
+        const unidadMes = areaData.unidadesPorMes.get(mDef.mes);
+        const objsMes = unidadMes?.objetivos ?? [];
+        const periodos = [1, 2].map((periodo) => {
+          const obj = objsMes.find((o) => o.periodo === periodo);
+          const referencia = obj ?? objsMes.find(Boolean);
+          return construirPeriodoResumen(obj, periodo, referencia);
+        });
+
+        const resultadoMensual = construirResultadoMensualCanonico(periodos);
+
+        return {
+          mes: mDef.mes,
+          clave: mDef.clave,
+          nombre: NOMBRES_MESES[mDef.mes - 1],
+          abrev: ABREV_MESES[mDef.mes - 1],
+          resultadoMensual,
+          programados: objsMes.length,
+          completados: periodos.filter((p) => p.completado).length,
+        };
       });
 
-      const resultadoMensual = construirResultadoMensualCanonico(periodos);
-
-      return {
-        mes: mDef.mes,
-        clave: mDef.clave,
-        nombre: NOMBRES_MESES[mDef.mes - 1],
-        abrev: ABREV_MESES[mDef.mes - 1],
-        resultadoMensual,
-        programados: objsMes.length,
-        completados: periodos.filter((p) => p.completado).length,
-      };
-    });
-
-    // Calcular resultado del rango para este área usando los resultados mensuales canónicos válidos
-    const resultadosMensualesValidosRango = mesesDetalle
-      .map((m) => m.resultadoMensual)
-      .filter((r): r is number => r !== null && r !== undefined);
-
-    const resultadoRango = resultadosMensualesValidosRango.length ? promedio(resultadosMensualesValidosRango) : null;
-
-    // Calcular desglose trimestral (promedio de los resultados mensuales canónicos de los 3 meses del trimestre)
-    const trimestresDetalle = [1, 2, 3, 4].map((tri) => {
-      const mesesTri = [(tri - 1) * 3 + 1, (tri - 1) * 3 + 2, tri * 3];
-      const resMesesTri = mesesDetalle
-        .filter((m) => mesesTri.includes(m.mes))
+      // Calcular resultado del rango para este área usando los resultados mensuales canónicos válidos
+      const resultadosMensualesValidosRango = mesesDetalle
         .map((m) => m.resultadoMensual)
         .filter((r): r is number => r !== null && r !== undefined);
 
+      const resultadoRango = resultadosMensualesValidosRango.length ? promedio(resultadosMensualesValidosRango) : null;
+
+      // Calcular desglose trimestral (promedio de los resultados mensuales canónicos de los 3 meses del trimestre)
+      const trimestresDetalle = [1, 2, 3, 4].map((tri) => {
+        const mesesTri = [(tri - 1) * 3 + 1, (tri - 1) * 3 + 2, tri * 3];
+        const resMesesTri = mesesDetalle
+          .filter((m) => mesesTri.includes(m.mes))
+          .map((m) => m.resultadoMensual)
+          .filter((r): r is number => r !== null && r !== undefined);
+
+        return {
+          trimestre: tri,
+          resultado: resMesesTri.length ? promedio(resMesesTri) : null,
+        };
+      });
+
+      // Total auditorías requeridas vs completadas en el rango
+      const enviosValidosRango = areaData.objetivos
+        .map((o) => (o.envioResultado && !o.envioResultado.invalidadoEn ? o.envioResultado : null))
+        .filter(Boolean);
+      const auditoriasRequeridas = areaData.objetivos.length;
+      const auditoriasCompletadas = enviosValidosRango.length;
+      const coberturaPct = auditoriasRequeridas ? (auditoriasCompletadas / auditoriasRequeridas) * 100 : 0;
+      const elegible = auditoriasRequeridas > 0 && auditoriasCompletadas >= auditoriasRequeridas;
+
       return {
-        trimestre: tri,
-        resultado: resMesesTri.length ? promedio(resMesesTri) : null,
+        area: {
+          id: areaData.areaId,
+          codigo: areaData.codigo,
+          nombre: areaData.nombre,
+          tipo: areaData.tipo,
+        },
+        resultadoRango,
+        mesesDetalle,
+        trimestresDetalle,
+        auditoriasRequeridas,
+        auditoriasCompletadas,
+        coberturaPct,
+        elegible,
       };
     });
 
-    // Total auditorías requeridas vs completadas en el rango
-    const enviosValidosRango = areaData.objetivos
-      .map((o) => (o.envioResultado && !o.envioResultado.invalidadoEn ? o.envioResultado : null))
-      .filter(Boolean);
-    const auditoriasRequeridas = areaData.objetivos.length;
-    const auditoriasCompletadas = enviosValidosRango.length;
-    const coberturaPct = auditoriasRequeridas ? (auditoriasCompletadas / auditoriasRequeridas) * 100 : 0;
-    const elegible = auditoriasRequeridas > 0 && auditoriasCompletadas >= auditoriasRequeridas;
+    agregadas.sort((a, b) => {
+      const resA = a.resultadoRango ?? -1;
+      const resB = b.resultadoRango ?? -1;
+      const dif = resB - resA;
+      if (dif !== 0) return dif;
+      return a.area.nombre.localeCompare(b.area.nombre, 'es');
+    });
 
-    return {
-      area: {
-        id: areaData.areaId,
-        codigo: areaData.codigo,
-        nombre: areaData.nombre,
-        tipo: areaData.tipo,
-      },
-      resultadoRango,
-      mesesDetalle,
-      trimestresDetalle,
-      auditoriasRequeridas,
-      auditoriasCompletadas,
-      coberturaPct,
-      elegible,
-    };
-  });
+    return agregadas;
+  };
 
-  // Ordenar áreas por resultado del rango
-  areasAgregadas.sort((a, b) => {
-    const resA = a.resultadoRango ?? -1;
-    const resB = b.resultadoRango ?? -1;
-    const dif = resB - resA;
-    if (dif !== 0) return dif;
-    return a.area.nombre.localeCompare(b.area.nombre, 'es');
-  });
+  const areasAgregadas = construirAreasAgregadasDesdeUnidades(unidadesAreaMesFiltradas);
 
   // Determinar si el rango completo está consolidado o en curso
   const todosMesesConsolidados = rango.meses.every((m) => estadosMesMap.get(m.clave)?.consolidado);
@@ -398,9 +461,12 @@ export async function obtenerResultadosRangoGeneral(
 
   const resultadoGeneralRango = todosResultadosMensualesRango.length ? promedio(todosResultadosMensualesRango) : null;
 
-  // Ganadores y Peores del Rango por Tipo
+  // Ganadores y Peores del Rango por Tipo (construidos a partir de los resultados mensuales clasificados individualmente)
   const construirGanadoresRango = (tipo: TipoArea) => {
-    const elegibles = areasAgregadas.filter((a) => a.area.tipo === tipo && a.elegible && a.resultadoRango !== null);
+    const areasDeTipo = construirAreasAgregadasDesdeUnidades(
+      unidadesAreaMesFiltradas.filter((u) => u.tipoAreaMes === tipo),
+    );
+    const elegibles = areasDeTipo.filter((a) => a.elegible && a.resultadoRango !== null);
     if (!elegibles.length) return { resultado: null, areas: [] };
 
     let maxRes = -Infinity;
@@ -418,7 +484,10 @@ export async function obtenerResultadosRangoGeneral(
   };
 
   const construirPeoresRango = (tipo: TipoArea) => {
-    const elegibles = areasAgregadas.filter((a) => a.area.tipo === tipo && a.elegible && a.resultadoRango !== null);
+    const areasDeTipo = construirAreasAgregadasDesdeUnidades(
+      unidadesAreaMesFiltradas.filter((u) => u.tipoAreaMes === tipo),
+    );
+    const elegibles = areasDeTipo.filter((a) => a.elegible && a.resultadoRango !== null);
     if (!elegibles.length) return { resultado: null, areas: [] };
 
     let minRes = Infinity;
@@ -435,7 +504,7 @@ export async function obtenerResultadosRangoGeneral(
     };
   };
 
-  // Top Incidencias del Rango
+  // Top Incidencias del Rango (conservan el tipo de cada evaluación individual)
   const porTipoIncidencias = {
     [TipoArea.ADMINISTRATIVA]: new Map<number, {
       preguntaId: number;
@@ -455,7 +524,11 @@ export async function obtenerResultadosRangoGeneral(
     }>(),
   };
 
-  for (const obj of objetivosRango) {
+  const objetivosParaIncidencias = tipoAreaFilter
+    ? objetivosRangoSinFiltroTipo.filter((o) => o.tipoAreaSnapshot === tipoAreaFilter)
+    : objetivosRangoSinFiltroTipo;
+
+  for (const obj of objetivosParaIncidencias) {
     const envio = obj.envioResultado && !obj.envioResultado.invalidadoEn ? obj.envioResultado : null;
     if (!envio) continue;
 

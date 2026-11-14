@@ -7,6 +7,10 @@ import { responder, responderCreado } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { calcularPuntaje5S, validarCodigoArea, validarRespuestas5S } from '../auditorias/helper';
 import { esquemaEnviarAuditoria, esquemaToken } from '../auditorias/zod';
+import {
+  bloquearObjetivoAuditoria,
+  obtenerVersionFormularioActivaPorTipoArea,
+} from '../asignaciones/helper';
 import { registrarAuditoria } from '../registros_auditoria/helper';
 import { solicitarSincronizacionCsv } from '../sistema/servicio_exportacion_csv';
 
@@ -61,9 +65,18 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
 
     const objetivo = enlace.asignacionAuditoria.objetivoAuditoria;
     await validarObjetivoRealizableMasAntiguo(tx, objetivo.id, enlace.asignacionAuditoria.auditorId, verificadoEn, enlace.asignacionAuditoria.reabiertaHasta);
+    await bloquearObjetivoAuditoria(tx, objetivo.id);
 
-    validarCodigoArea(objetivo.area.codigoVerificacion, body.codigoVerificacion);
-    const preguntas = objetivo.versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
+    const areaVigente = await tx.area.findUniqueOrThrow({
+      where: { id: objetivo.areaId },
+    });
+    const versionFormulario = await obtenerVersionFormularioActivaPorTipoArea(
+      tx,
+      areaVigente.tipo,
+    );
+
+    validarCodigoArea(areaVigente.codigoVerificacion, body.codigoVerificacion);
+    const preguntas = versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
     validarRespuestas5S(preguntas, body.respuestas);
     const puntaje = calcularPuntaje5S(body.respuestas);
     const usuarioSesion = req.autenticacion?.usuarioId
@@ -131,7 +144,16 @@ export const enviarAuditoriaInvitado = async (req: Request, res: Response) => {
       data: { revocadoEn: new Date() },
     });
     await tx.asignacionAuditoria.update({ where: { id: enlace.asignacionAuditoriaId }, data: { estado: EstadoAsignacionAuditoria.COMPLETADA, completadoEn: new Date() } });
-    const oficial = await tx.objetivoAuditoria.updateMany({ where: { id: objetivo.id, envioResultadoId: null }, data: { envioResultadoId: creado.id } });
+    const oficial = await tx.objetivoAuditoria.updateMany({
+      where: { id: objetivo.id, envioResultadoId: null, canceladoEn: null },
+      data: {
+        envioResultadoId: creado.id,
+        versionFormularioId: versionFormulario.id,
+        tipoAreaSnapshot: areaVigente.tipo,
+        codigoAreaSnapshot: areaVigente.codigo,
+        nombreAreaSnapshot: areaVigente.nombre,
+      },
+    });
     if (!oficial.count) throw conflicto('Esta auditoria ya fue completada.');
     await registrarAuditoria({ accion: 'ENVIAR_AUDITORIA_INVITADO', tipoEntidad: 'EnvioAuditoria', idEntidad: creado.id, datosNuevos: creado }, tx);
     return tx.envioAuditoria.findUniqueOrThrow({

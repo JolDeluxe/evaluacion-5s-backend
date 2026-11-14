@@ -9,7 +9,11 @@ import { conflicto, solicitudInvalida } from '../../utils/errores';
 import { calcularCierreConGracia, construirDetalleAdminPeriodo } from '../../utils/periodos';
 import { areaEsAuditableEnPeriodo } from '../areas/servicio_vigencia_area';
 import { registrarAuditoria } from '../registros_auditoria/helper';
-import { bloquearObjetivoAuditoria, validarAuditorAsignable } from './helper';
+import {
+  bloquearObjetivoAuditoria,
+  esObjetivoElegibleParaSincronizarFormulario,
+  validarAuditorAsignable,
+} from './helper';
 import { obtenerAuditorAnterior, puedeUsuarioAuditar } from './servicio_reasignacion';
 export const CORTE_P1 = 1;
 export const CORTE_P2 = 2;
@@ -79,11 +83,25 @@ export const resolverVersionFormularioParaCandidatos = <T extends VersionCandida
 };
 
 const obtenerVersionFormularioParaTipo = async (tx: PrismaTransaction, tipoArea: TipoArea, anio?: number, mes?: number) => {
+  const alcances = alcancesPorTipo(tipoArea);
+
+  if (tx.formulario?.findMany) {
+    const formulariosActivos = await tx.formulario.findMany({
+      where: { activo: true, alcance: { in: alcances } },
+      select: { id: true, alcance: true },
+    });
+    if (formulariosActivos.length > 1) {
+      throw conflicto(
+        `Configuración ambigua de formularios: existen ${formulariosActivos.length} formularios activos para áreas ${tipoArea.toLowerCase()}`,
+      );
+    }
+  }
+
   const versiones = await tx.versionFormulario.findMany({
     where: {
       formulario: {
         activo: true,
-        alcance: { in: alcancesPorTipo(tipoArea) },
+        alcance: { in: alcances },
       },
     },
     include: { formulario: true },
@@ -96,10 +114,23 @@ const obtenerVersionFormularioParaTipo = async (tx: PrismaTransaction, tipoArea:
   ));
   const candidatos = exactas.length ? exactas : versiones;
 
+  const activas = candidatos.filter((v) => v.activa && v.formulario?.activo !== false);
+  const formulariosDistintos = new Set(activas.map((v) => v.formularioId));
+  if (formulariosDistintos.size > 1) {
+    throw conflicto(
+      `Configuración ambigua de formularios: existen múltiples formularios activos para áreas ${tipoArea.toLowerCase()}`,
+    );
+  }
+  if (activas.length > 1) {
+    throw conflicto(
+      `Configuración ambigua de formularios: existen ${activas.length} versiones activas para áreas ${tipoArea.toLowerCase()}`,
+    );
+  }
+
   let versionIdCongeladaEnMes: number | null | undefined = null;
 
   if (anio !== undefined && mes !== undefined && candidatos.length > 0) {
-    const formularioId = candidatos[0].formularioId;
+    const formularioId = (activas[0] ?? candidatos[0]).formularioId;
     const enviosMes = await tx.envioAuditoria.findFirst({
       where: {
         objetivoAuditoria: {
@@ -222,7 +253,8 @@ export const asegurarProgramacionMensual = async (
   for (const numeroCorte of [CORTE_P1, CORTE_P2]) {
     const periodo = periodoMensual(anio, mes, numeroCorte);
     for (const area of areas.filter((actual) => areaEsAuditableEnPeriodo(actual, anio, mes, numeroCorte === CORTE_P1 ? 15 : ultimoDiaMes(anio, mes)))) {
-      await tx.objetivoAuditoria.upsert({
+      const versionEsperadaId = versionesPorTipo.get(area.tipo) ?? 0;
+      const objetivo = await tx.objetivoAuditoria.upsert({
         where: { areaId_anio_mes_periodo: { areaId: area.id, anio, mes, periodo: periodo.periodo } },
         update: {},
         create: {
@@ -230,7 +262,7 @@ export const asegurarProgramacionMensual = async (
           anio,
           mes,
           periodo: periodo.periodo,
-          versionFormularioId: versionesPorTipo.get(area.tipo) ?? 0,
+          versionFormularioId: versionEsperadaId,
           iniciaEn: periodo.iniciaEn,
           terminaEn: periodo.terminaEn,
           codigoAreaSnapshot: area.codigo,
@@ -238,6 +270,57 @@ export const asegurarProgramacionMensual = async (
           tipoAreaSnapshot: area.tipo,
         },
       });
+
+      const requiereReconciliacion =
+        objetivo.versionFormularioId !== versionEsperadaId
+        || objetivo.tipoAreaSnapshot !== area.tipo
+        || objetivo.codigoAreaSnapshot !== area.codigo
+        || objetivo.nombreAreaSnapshot !== area.nombre;
+
+      if (requiereReconciliacion && !objetivo.envioResultadoId && !objetivo.canceladoEn) {
+        if (tx.objetivoAuditoria.updateMany) {
+          const res = await tx.objetivoAuditoria.updateMany({
+            where: {
+              id: objetivo.id,
+              canceladoEn: null,
+              envioResultadoId: null,
+              enviosAuditoria: { none: {} },
+              asignacionesAuditoria: {
+                none: {
+                  OR: [
+                    { estado: EstadoAsignacionAuditoria.COMPLETADA },
+                    { estado: EstadoAsignacionAuditoria.EN_PROCESO },
+                    { iniciadoEn: { not: null } },
+                    { completadoEn: { not: null } },
+                  ],
+                },
+              },
+            },
+            data: {
+              versionFormularioId: versionEsperadaId,
+              tipoAreaSnapshot: area.tipo,
+              codigoAreaSnapshot: area.codigo,
+              nombreAreaSnapshot: area.nombre,
+            },
+          });
+          if (res.count > 0) {
+            objetivo.versionFormularioId = versionEsperadaId;
+            objetivo.tipoAreaSnapshot = area.tipo;
+            objetivo.codigoAreaSnapshot = area.codigo;
+            objetivo.nombreAreaSnapshot = area.nombre;
+          }
+        } else {
+          const decorado = (tx as unknown as { decorateObjetivo?: (o: typeof objetivo) => typeof objetivo }).decorateObjetivo
+            ? (tx as unknown as { decorateObjetivo: (o: typeof objetivo) => typeof objetivo }).decorateObjetivo(objetivo)
+            : objetivo;
+          if (esObjetivoElegibleParaSincronizarFormulario(decorado as Parameters<typeof esObjetivoElegibleParaSincronizarFormulario>[0])) {
+            objetivo.versionFormularioId = versionEsperadaId;
+            objetivo.tipoAreaSnapshot = area.tipo;
+            objetivo.codigoAreaSnapshot = area.codigo;
+            objetivo.nombreAreaSnapshot = area.nombre;
+          }
+        }
+      }
     }
   }
 };

@@ -7,6 +7,10 @@ import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_perio
 import { responder, responderCreado } from '../../utils/respuesta';
 import { transaccionSerializable } from '../../utils/transaccion';
 import { registrarAuditoria } from '../registros_auditoria/helper';
+import {
+  bloquearObjetivoAuditoria,
+  obtenerVersionFormularioActivaPorTipoArea,
+} from '../asignaciones/helper';
 import { solicitarSincronizacionCsv } from '../sistema/servicio_exportacion_csv';
 import { calcularPuntaje5S, validarCodigoArea, validarRespuestas5S } from './helper';
 import { esquemaEnviarAuditoria } from './zod';
@@ -95,24 +99,17 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
       if (perteneceAlArea) throw prohibido('No puedes auditar tu propia area');
     }
 
-    let versionFormulario = objetivo.versionFormulario;
-    if (!objetivo.envioResultadoId) {
-      const versionActiva = await tx.versionFormulario.findFirst({
-        where: { formularioId: versionFormulario.formularioId, activa: true },
-        include: { secciones: { include: { preguntas: true } } },
-      });
-      if (versionActiva) {
-        versionFormulario = versionActiva as typeof objetivo.versionFormulario;
-        if (objetivo.versionFormularioId !== versionActiva.id) {
-          await tx.objetivoAuditoria.update({
-            where: { id: objetivo.id },
-            data: { versionFormularioId: versionActiva.id },
-          });
-        }
-      }
-    }
+    await bloquearObjetivoAuditoria(tx, objetivo.id);
 
-    validarCodigoArea(objetivo.area.codigoVerificacion, body.codigoVerificacion);
+    const areaVigente = await tx.area.findUniqueOrThrow({
+      where: { id: objetivo.areaId },
+    });
+    const versionFormulario = await obtenerVersionFormularioActivaPorTipoArea(
+      tx,
+      areaVigente.tipo,
+    );
+
+    validarCodigoArea(areaVigente.codigoVerificacion, body.codigoVerificacion);
     const preguntas = versionFormulario.secciones.flatMap((seccion) => seccion.preguntas);
     validarRespuestas5S(preguntas, body.respuestas);
     const puntaje = calcularPuntaje5S(body.respuestas);
@@ -167,8 +164,14 @@ export const enviarAuditoria = async (req: Request, res: Response) => {
     }
 
     const oficial = await tx.objetivoAuditoria.updateMany({
-      where: { id: objetivo.id, envioResultadoId: null },
-      data: { envioResultadoId: creado.id },
+      where: { id: objetivo.id, envioResultadoId: null, canceladoEn: null },
+      data: {
+        envioResultadoId: creado.id,
+        versionFormularioId: versionFormulario.id,
+        tipoAreaSnapshot: areaVigente.tipo,
+        codigoAreaSnapshot: areaVigente.codigo,
+        nombreAreaSnapshot: areaVigente.nombre,
+      },
     });
     if (!oficial.count) throw conflicto('Esta auditoria ya fue completada.');
     await tx.asignacionAuditoria.update({

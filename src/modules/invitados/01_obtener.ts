@@ -6,6 +6,7 @@ import { noEncontrado, solicitudInvalida } from '../../utils/errores';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 import { construirDetalleAuditorPeriodo, construirPeriodoCompat } from '../../utils/periodos';
 import { responder } from '../../utils/respuesta';
+import { reconciliarObjetivoPendienteConArea } from '../asignaciones/helper';
 import { esquemaToken } from '../auditorias/zod';
 
 export const obtenerInvitacion = async (req: Request, res: Response) => {
@@ -46,27 +47,8 @@ export const obtenerInvitacion = async (req: Request, res: Response) => {
 
   let versionFormulario = objetivo.versionFormulario;
   if (!objetivo.envioResultadoId) {
-    const versionActiva = await prisma.versionFormulario.findFirst({
-      where: { formularioId: versionFormulario.formularioId, activa: true },
-      include: {
-        formulario: true,
-        secciones: {
-          orderBy: { orden: 'asc' },
-          include: { preguntas: { orderBy: { orden: 'asc' } } },
-        },
-      },
-    });
-    if (versionActiva) {
-      versionFormulario = versionActiva;
-      if (objetivo.versionFormularioId !== versionActiva.id) {
-        await prisma.objetivoAuditoria.update({
-          where: { id: objetivo.id },
-          data: { versionFormularioId: versionActiva.id },
-        });
-        objetivo.versionFormularioId = versionActiva.id;
-        objetivo.versionFormulario = versionActiva;
-      }
-    }
+    const reconciliacion = await reconciliarObjetivoPendienteConArea(prisma, objetivo, objetivo.area);
+    versionFormulario = reconciliacion.versionFormulario;
   }
 
   responder(res, {

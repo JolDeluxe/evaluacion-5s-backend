@@ -5,7 +5,10 @@ import { puedeAdministrar5S, puedeEjecutarAuditoria } from '../../utils/permisos
 import { construirDetalleAdminPeriodo, construirDetalleAuditorPeriodo, construirPeriodoCompat } from '../../utils/periodos';
 import { validarObjetivoRealizableMasAntiguo } from '../../utils/objetivos_periodo';
 import { responder } from '../../utils/respuesta';
-import { puedeUsarAsignacionEjecutable } from './helper';
+import {
+  puedeUsarAsignacionEjecutable,
+  reconciliarObjetivoPendienteConArea,
+} from './helper';
 import { esquemaId } from './zod';
 
 const includeContextoFormulario = {
@@ -64,34 +67,14 @@ export const obtenerContextoAuditoriaAsignacion = async (req: Request, res: Resp
 
   let versionFormulario = asignacion.objetivoAuditoria.versionFormulario;
 
-  // Si la auditoría está pendiente (no enviada), debemos usar la versión activa más reciente del formulario
+  // Si la auditoría está pendiente (no enviada), debemos usar la versión activa vigente según el tipo actual del área
   if (!asignacion.objetivoAuditoria.envioResultadoId) {
-    const versionActiva = await prisma.versionFormulario.findFirst({
-      where: {
-        formularioId: versionFormulario.formularioId,
-        activa: true,
-      },
-      include: {
-        formulario: true,
-        secciones: {
-          orderBy: { orden: 'asc' as const },
-          include: { preguntas: { orderBy: { orden: 'asc' as const } } },
-        },
-      },
-    });
-
-    if (versionActiva) {
-      versionFormulario = versionActiva;
-      if (asignacion.objetivoAuditoria.versionFormularioId !== versionActiva.id) {
-        // Actualizamos el objetivo para vincularlo a la versión activa actual
-        await prisma.objetivoAuditoria.update({
-          where: { id: asignacion.objetivoAuditoria.id },
-          data: { versionFormularioId: versionActiva.id },
-        });
-        asignacion.objetivoAuditoria.versionFormularioId = versionActiva.id;
-        asignacion.objetivoAuditoria.versionFormulario = versionActiva;
-      }
-    }
+    const reconciliacion = await reconciliarObjetivoPendienteConArea(
+      prisma,
+      asignacion.objetivoAuditoria,
+      asignacion.objetivoAuditoria.area,
+    );
+    versionFormulario = reconciliacion.versionFormulario;
   }
 
   responder(res, {
